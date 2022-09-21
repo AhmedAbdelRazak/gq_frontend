@@ -1,0 +1,133 @@
+/** @format */
+
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import styled from "styled-components";
+import { isAuthenticated } from "../../auth";
+import AdminMenu from "../AdminMenu/AdminMenu";
+import { getSubCategories, removeSubcategory } from "../apiAdmin";
+import Aos from "aos";
+import "aos/dist/aos.css";
+
+const DeleteSubcategory = () => {
+	const [allSubCategories, setAllSubCategories] = useState([]);
+	// eslint-disable-next-line
+	const { user, token } = isAuthenticated();
+	// eslint-disable-next-line
+	const [loading, setLoading] = useState(true);
+
+	const gettingAllSubCategories = () => {
+		setLoading(true);
+		getSubCategories(token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllSubCategories(data);
+				setLoading(false);
+			}
+		});
+	};
+
+	useEffect(() => {
+		gettingAllSubCategories();
+		// eslint-disable-next-line
+	}, []);
+
+	const handleRemove = (subcategoryId) => {
+		if (window.confirm("Are You Sure You Want To Delete?")) {
+			setLoading(true);
+			removeSubcategory(subcategoryId, user._id, token)
+				.then((res) => {
+					setLoading(false);
+					toast.error(`Gender "${res.data.name}" deleted`);
+					setTimeout(function () {
+						window.location.reload(false);
+					}, 2500);
+				})
+				.catch((err) => console.log(err));
+		}
+	};
+
+	useEffect(() => {
+		Aos.init({ duration: 1500 });
+	}, []);
+
+	return (
+		<DeleteSubcategoryWrapper>
+			<div className='row'>
+				<div className='col-3 mb-3'>
+					<AdminMenu fromPage='DeleteSubcategory' />
+				</div>
+				<div className='col-8'>
+					<div className='contentWrapper' data-aos='fade-down'>
+						<h3
+							style={{ color: "#009ef7", fontWeight: "bold" }}
+							className='mt-1 mb-3 text-center'>
+							Delete Subcategory
+						</h3>
+
+						<br />
+						<ul className='list-group text-center'>
+							<h3 className='text-center mt-5'>
+								Total of {allSubCategories.length} Added Subcategories
+							</h3>
+							<p className='mt-2 text-center'>
+								Please Select Which Subcategory You Would Like To Delete...
+							</p>
+							{allSubCategories.map((s, i) => (
+								<div key={i}>
+									<div className='row text-center mx-auto'>
+										<li
+											className='list-group-item d-flex my-1 py-4 justify-content-between align-items-center col-md-9 mx-auto'
+											style={{
+												fontSize: "0.95rem",
+												textTransform: "capitalize",
+											}}>
+											<strong>{s.SubcategoryName}</strong>
+										</li>
+
+										<li
+											onClick={() => {
+												handleRemove(s._id);
+												setTimeout(function () {
+													window.location.reload(false);
+												}, 1000);
+											}}
+											className='list-group-item d-flex my-1 py-4 justify-content-between align-items-center  col-md-3 mx-auto'
+											style={{
+												fontSize: "0.9rem",
+												color: "red",
+												fontWeight: "bold",
+												cursor: "pointer",
+											}}>
+											<strong>
+												<i className='fa fa-trash' aria-hidden='true'></i>{" "}
+												Delete{" "}
+											</strong>
+										</li>
+									</div>
+								</div>
+							))}
+						</ul>
+					</div>
+				</div>
+			</div>
+		</DeleteSubcategoryWrapper>
+	);
+};
+
+export default DeleteSubcategory;
+
+const DeleteSubcategoryWrapper = styled.div`
+	min-height: 880px;
+	overflow-x: hidden;
+	/* background: #ededed; */
+
+	.contentWrapper {
+		margin-top: 100px;
+		margin-bottom: 15px;
+		border: 2px solid lightgrey;
+		padding: 20px;
+		border-radius: 20px;
+	}
+`;
