@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import AdminMenu from "../../AdminMenu/AdminMenu";
 import { getProducts } from "../../apiAdmin";
+import CountUp from "react-countup";
 
 const UpdateProduct = () => {
 	const [allProducts, setAllProducts] = useState([]);
@@ -25,6 +26,65 @@ const UpdateProduct = () => {
 		// eslint-disable-next-line
 	}, []);
 
+	function sum_array(arr) {
+		// store our final answer
+		var sum = 0;
+
+		// loop through entire array
+		for (var i = 0; i < arr.length; i++) {
+			// loop through each inner array
+			for (var j = 0; j < arr[i].length; j++) {
+				// add this number to the current final sum
+				sum += arr[i][j];
+			}
+		}
+
+		return sum;
+	}
+
+	const productsWithNoVariables =
+		allProducts && allProducts.filter((i) => i.addVariables === false);
+
+	const productsWithVariables =
+		allProducts &&
+		allProducts
+			.filter((i) => i.addVariables === true)
+			.map((iii) => iii.productAttributes);
+
+	const overallStockLevel = () => {
+		var QtyNoVariables =
+			productsWithNoVariables &&
+			productsWithNoVariables
+				.map((iii) => Number(iii.quantity))
+				.reduce((a, b) => a + b, 0);
+
+		var QtyWithVariables = productsWithVariables.map((iii) =>
+			iii.map((iiii) => iiii.quantity),
+		);
+
+		return Number(QtyNoVariables) + Number(sum_array(QtyWithVariables));
+	};
+
+	console.log(overallStockLevel(), "Qty");
+
+	const overallStockWorth = () => {
+		var QtyNoVariables =
+			productsWithNoVariables &&
+			productsWithNoVariables
+				.map((iii) => Number(iii.quantity) * Number(iii.priceAfterDiscount))
+				.reduce((a, b) => a + b, 0);
+
+		var QtyWithVariables = productsWithVariables.map((iii) =>
+			iii.map(
+				(iiii) => Number(iiii.quantity) * Number(iiii.priceAfterDiscount),
+			),
+		);
+
+		return Number(QtyNoVariables) + Number(sum_array(QtyWithVariables));
+	};
+
+	console.log(overallStockWorth(), "overallStockWorth");
+
 	function search(orders) {
 		return orders.filter((row) => {
 			return (
@@ -35,87 +95,241 @@ const UpdateProduct = () => {
 		});
 	}
 
+	const dataTable = () => {
+		return (
+			<div className='tableData'>
+				<div className=' mb-3 form-group mx-3 text-center'>
+					<label
+						className='mt-3 mx-3'
+						style={{
+							fontWeight: "bold",
+							fontSize: "1.05rem",
+							color: "black",
+							borderRadius: "20px",
+						}}>
+						Search
+					</label>
+					<input
+						className='p-2 my-5 '
+						type='text'
+						value={q}
+						onChange={(e) => setQ(e.target.value.toLowerCase())}
+						placeholder='Search By Product Name Or SKU'
+						style={{
+							borderRadius: "20px",
+							width: "50%",
+							border: "1px lightgrey solid",
+						}}
+					/>
+				</div>
+				<table
+					className='table table-bordered table-md-responsive table-hover table-striped'
+					style={{ fontSize: "0.75rem", overflowX: "auto" }}>
+					<thead className='thead-light'>
+						<tr>
+							<th scope='col'>Item #</th>
+							<th scope='col'>Product Name</th>
+							<th scope='col'>Product Main SKU</th>
+							<th scope='col'>SubSKU</th>
+							<th scope='col'>Available Stock</th>
+							<th scope='col'>Product Creation Date</th>
+							<th scope='col'>Product Created By</th>
+							<th scope='col'>Product Updated By</th>
+							<th scope='col'>Product Image</th>
+							<th scope='col'>Update Product</th>
+						</tr>
+					</thead>
+					<tbody className='my-auto'>
+						{search(allProducts).map((s, i) => {
+							return (
+								<>
+									{s.productAttributes.length > 0 ? (
+										<>
+											{s.productAttributes.map((ss, ii) => {
+												return (
+													<tr key={ii} className=''>
+														<td className='my-auto'>{i + 1 + ii}</td>
+
+														<td>{s.productName}</td>
+														<td>{s.productSKU}</td>
+														<td>{ss.SubSKU}</td>
+														<td
+															style={{
+																background: ss.quantity <= 0 ? "#fdd0d0" : "",
+															}}>
+															{ss.quantity}
+														</td>
+														<td>
+															{new Date(s.createdAt).toLocaleDateString()}
+														</td>
+														<td>{s.addedByEmployee.name}</td>
+														<td>{s.updatedByEmployee.name}</td>
+														<td style={{ width: "10%" }}>
+															<img
+																width='60%'
+																height='60%'
+																style={{ marginLeft: "20px" }}
+																src={
+																	s.thumbnailImage[0].images[0]
+																		? s.thumbnailImage[0].images[0].url
+																		: null
+																}
+																alt={s.productName}
+															/>
+														</td>
+														<Link to={`/admin/update-product/${s._id}`}>
+															<td
+																style={{
+																	color: "blue",
+																	fontWeight: "bold",
+																	cursor: "pointer",
+																}}>
+																Update Product...
+															</td>
+														</Link>
+
+														{/* <td>{Invoice(s)}</td> */}
+													</tr>
+												);
+											})}
+										</>
+									) : (
+										<tr key={i} className=''>
+											<td className='my-auto'>{i + 1}</td>
+
+											<td>{s.productName}</td>
+											<td>{s.productSKU}</td>
+											<td>No SubSKU</td>
+											<td
+												style={{
+													background: s.quantity <= 0 ? "#fdd0d0" : "",
+												}}>
+												{s.quantity}
+											</td>
+											<td>{new Date(s.createdAt).toLocaleDateString()}</td>
+											<td>{s.addedByEmployee.name}</td>
+											<td>{s.updatedByEmployee.name}</td>
+											<td style={{ width: "10%" }}>
+												<img
+													width='60%'
+													height='60%'
+													style={{ marginLeft: "20px" }}
+													src={
+														s.thumbnailImage[0].images[0]
+															? s.thumbnailImage[0].images[0].url
+															: null
+													}
+													alt={s.productName}
+												/>
+											</td>
+											<Link to={`/admin/update-product/${s._id}`}>
+												<td
+													style={{
+														color: "blue",
+														fontWeight: "bold",
+														cursor: "pointer",
+													}}>
+													Update Product...
+												</td>
+											</Link>
+
+											{/* <td>{Invoice(s)}</td> */}
+										</tr>
+									)}
+								</>
+							);
+						})}
+					</tbody>
+				</table>
+			</div>
+		);
+	};
+
 	return (
 		<UpdateProductWrapper>
-			<div className='row'>
-				<div className='col-3'>
+			<div className='grid-container'>
+				<div className=''>
 					<AdminMenu fromPage='UpdateProduct' />
 				</div>
-				<div className='col-8'>
-					<ul className='list-group col-md-10 mx-auto'>
-						<h3
-							className='text-center mt-5'
-							style={{ color: "#009ef7", fontWeight: "bold" }}>
-							All {allProducts && allProducts.length} Products in your store
-						</h3>
-						<div className=' mb-3 form-group mx-3 text-center'>
-							<label
-								className='mt-3 mx-3'
-								style={{
-									fontWeight: "bold",
-									fontSize: "1.05rem",
-									color: "black",
-									borderRadius: "20px",
-								}}>
-								Search
-							</label>
-							<input
-								className='p-2 my-5 '
-								type='text'
-								value={q}
-								onChange={(e) => setQ(e.target.value.toLowerCase())}
-								placeholder='Search By Product Name Or SKU'
-								style={{
-									borderRadius: "20px",
-									width: "50%",
-									border: "1px lightgrey solid",
-								}}
-							/>
+
+				<div className='mr-3 tableWrapper'>
+					<div className='row'>
+						<div className='col-md-4 text-center mx-auto'>
+							<div className='card' style={{ background: "#f1416c" }}>
+								<div className='card-body'>
+									<h5 style={{ fontWeight: "bolder", color: "white" }}>
+										Overall Products Count
+									</h5>
+									<CountUp
+										style={{ color: "white" }}
+										duration='3'
+										delay={1}
+										end={allProducts.length}
+										separator=','
+									/>
+									<span
+										style={{
+											color: "white",
+											marginLeft: "5px",
+											fontSize: "1.2rem",
+										}}>
+										Products
+									</span>
+								</div>
+							</div>
 						</div>
-						{allProducts &&
-							allProducts[0] &&
-							search(allProducts).map((e, i) => (
-								<Link
-									key={i}
-									to={`/admin/update-product/${e._id}`}
-									// onClick={() => setLinkClick(true)}
-								>
-									<div className='container text-capitalize'>
-										<div className='row'>
-											<li
-												className='list-group-item d-flex justify-content-between align-items-center col-md-9'
-												style={{ fontSize: "1.1rem" }}>
-												<strong>{e.productName}</strong>
-												<span className='col-md-6 mx-auto'>
-													<img
-														width='20%'
-														height='20%'
-														style={{ marginLeft: "100px" }}
-														src={
-															e.thumbnailImage[0].images[0]
-																? e.thumbnailImage[0].images[0].url
-																: null
-														}
-														alt={e.productName}
-													/>
-												</span>
-											</li>
-											{!e.activeProduct && (
-												<li
-													className='list-group-item d-flex justify-content-between align-items-center col-md-3'
-													style={{
-														fontSize: "0.7rem",
-														color: "red",
-														fontWeight: "bold",
-													}}>
-													<strong>Inactive</strong>
-												</li>
-											)}
-										</div>
-									</div>
-								</Link>
-							))}
-					</ul>
+
+						<div className='col-md-4 text-center mx-auto'>
+							<div className='card' style={{ background: "#009ef7" }}>
+								<div className='card-body'>
+									<h5 style={{ fontWeight: "bolder", color: "white" }}>
+										Overall Inventory Level
+									</h5>
+									<CountUp
+										style={{ color: "white" }}
+										duration='3'
+										delay={1}
+										end={overallStockLevel()}
+										separator=','
+									/>
+									<span
+										style={{
+											color: "white",
+											marginLeft: "5px",
+											fontSize: "1.2rem",
+										}}>
+										Items
+									</span>
+								</div>
+							</div>
+						</div>
+
+						<div className='col-md-4 text-center mx-auto'>
+							<div className='card' style={{ background: "#50cd89" }}>
+								<div className='card-body'>
+									<h5 style={{ fontWeight: "bolder", color: "white" }}>
+										Stock Worth (L.E.)
+									</h5>
+									<CountUp
+										style={{ color: "white" }}
+										duration='3'
+										delay={1}
+										end={overallStockWorth()}
+										separator=','
+									/>
+									<span
+										style={{
+											color: "white",
+											marginLeft: "5px",
+											fontSize: "1.2rem",
+										}}>
+										EGY Pounds
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					{dataTable()}
 				</div>
 			</div>
 		</UpdateProductWrapper>
@@ -125,9 +339,27 @@ const UpdateProduct = () => {
 export default UpdateProduct;
 
 const UpdateProductWrapper = styled.div`
-	min-height: 880px;
+	min-height: 980px;
 	overflow-x: hidden;
 	/* background: #ededed; */
+
+	.grid-container {
+		display: grid;
+		grid-template-columns: 20% 80%;
+		margin: auto;
+		/* border: 1px solid red; */
+		/* grid-auto-rows: minmax(60px, auto); */
+	}
+
+	.tableWrapper {
+		overflow-x: auto;
+		margin-top: 80px;
+	}
+
+	.card-body span {
+		font-size: 1.5rem;
+		font-weight: bold;
+	}
 
 	@media (max-width: 1550px) {
 		li {

@@ -39,8 +39,8 @@ const Navbar = ({ fromPage }) => {
 								? "/admin/add-gender"
 								: fromPage === "AddCategory"
 								? "/admin/add-category"
-								: fromPage === "AddProduct"
-								? "/admin/add-product"
+								: fromPage === "UpdateProduct"
+								? "/admin/update-product"
 								: fromPage === "AddSubcategory"
 								? "/admin/add-subcategory"
 								: fromPage === "CreateNewOrder"
@@ -89,8 +89,10 @@ const Navbar = ({ fromPage }) => {
 							<Menu.Item key='/admin/add-category' icon={<AppstoreOutlined />}>
 								<Link to='/admin/add-category'>Categories Management</Link>
 							</Menu.Item>
-							<Menu.Item key='/admin/add-product' icon={<AppstoreOutlined />}>
-								<Link to='/admin/add-product'>Products And Inventory</Link>
+							<Menu.Item
+								key='/admin/update-product'
+								icon={<AppstoreOutlined />}>
+								<Link to='/admin/update-product'>Products And Inventory</Link>
 							</Menu.Item>
 							<Menu.Item
 								key='/admin/add-shipping-carrier'

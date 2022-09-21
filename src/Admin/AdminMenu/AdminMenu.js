@@ -83,7 +83,7 @@ const items = [
 			<Link
 				to='/admin/update-product'
 				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-				Update Product
+				Inventory Report
 			</Link>,
 			"/admin/update-product",
 		),
