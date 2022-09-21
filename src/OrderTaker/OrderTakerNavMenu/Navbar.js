@@ -239,4 +239,60 @@ const NavbarWrapper = styled.div`
 		transform: scale(0.9);
 		transition: opacity 200ms, transform 200ms;
 	}
+
+	@media (max-width: 1450px) {
+		.rightList > ul > li {
+			display: inline-block;
+			margin-left: 15px;
+			font-size: 1.5rem;
+			color: #b6b6b6;
+			font-weight: bold !important;
+			transition: 0.3s;
+			margin-top: 5px;
+			padding-right: 5px;
+			padding-left: 5px;
+			padding-bottom: 10px;
+		}
+
+		.rightList > ul > li:hover {
+			background: #d8ebff;
+			transition: 0.3s;
+			border-radius: 3px;
+			padding-right: 5px;
+			padding-left: 5px;
+			padding-bottom: 10px;
+			cursor: pointer;
+		}
+	}
+
+	@media (max-width: 1000px) {
+		.rightList > ul > li {
+			display: inline-block;
+			margin-left: 10px;
+			font-size: 1rem;
+			color: #b6b6b6;
+			font-weight: bold !important;
+			transition: 0.3s;
+			margin-top: 5px;
+			padding-right: 2px;
+			padding-left: 2px;
+			padding-bottom: 10px;
+		}
+
+		.rightList > ul > li:hover {
+			background: #d8ebff;
+			transition: 0.3s;
+			border-radius: 3px;
+			padding-right: 2px;
+			padding-left: 2px;
+			padding-bottom: 10px;
+			cursor: pointer;
+		}
+
+		.rightList > ul > li > img {
+			width: 18px;
+			object-fit: cover;
+			border-radius: 5px;
+		}
+	}
 `;

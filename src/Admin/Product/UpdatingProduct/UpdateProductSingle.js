@@ -125,7 +125,7 @@ const UpdateProductSingle = ({ match }) => {
 				);
 				setAddThumbnail(
 					data.filter((e) => e._id === match.params.productId)[0]
-						.thumbnailImage[0]
+						.thumbnailImage[0].images[0]
 						? data.filter((e) => e._id === match.params.productId)[0]
 								.thumbnailImage[0]
 						: [],
@@ -991,5 +991,25 @@ const UpdateProductSingleWrapper = styled.div`
 	.rightContentWrapper {
 		border-left: 1px lightgrey solid;
 		min-height: 550px;
+	}
+
+	@media (max-width: 1550px) {
+		.mainUL > li {
+			font-size: 0.75rem;
+			margin-left: 20px;
+		}
+
+		label {
+			font-size: 0.8rem !important;
+		}
+
+		h3 {
+			font-size: 1.2rem !important;
+		}
+		.rightContentWrapper {
+			border-left: 1px lightgrey solid;
+			min-height: 550px;
+			margin-left: 30px !important;
+		}
 	}
 `;

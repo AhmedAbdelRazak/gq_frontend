@@ -41,20 +41,6 @@ const items = [
 	]),
 	// getItem("Option 2", "3", <DesktopOutlined />),
 	// getItem("Option 3", "4", <ContainerOutlined />),
-	getItem("Gender Management", "sub2", <MailOutlined />, [
-		getItem(
-			<Link to='/admin/add-gender'>Add Gender</Link>,
-			"/admin/add-gender",
-		),
-		getItem(
-			<Link to='/admin/update-gender'>Update Gender</Link>,
-			"/admin/update-gender",
-		),
-		getItem(
-			<Link to='/admin/delete-gender'>Delete Gender</Link>,
-			"/admin/delete-gender",
-		),
-	]),
 
 	getItem("Products Management", "sub4", <ShoppingCartOutlined />, [
 		getItem("Categories Management", "sub3", <AppstoreOutlined />, [
@@ -171,6 +157,21 @@ const items = [
 				Update Employee Profile
 			</Link>,
 			"/admin/update-employee",
+		),
+	]),
+
+	getItem("Gender Management", "sub2", <MailOutlined />, [
+		getItem(
+			<Link to='/admin/add-gender'>Add Gender</Link>,
+			"/admin/add-gender",
+		),
+		getItem(
+			<Link to='/admin/update-gender'>Update Gender</Link>,
+			"/admin/update-gender",
+		),
+		getItem(
+			<Link to='/admin/delete-gender'>Delete Gender</Link>,
+			"/admin/delete-gender",
 		),
 	]),
 
@@ -313,5 +314,17 @@ const AdminMenuWrapper = styled.div`
 	.ant-menu.ant-menu-dark .ant-menu-sub {
 		color: rgba(255, 255, 255, 0.65);
 		background: #1e1e2d !important;
+	}
+
+	@media (max-width: 1650px) {
+		ul {
+			width: 250px;
+			padding: 0px !important;
+			margin: 0px !important;
+		}
+
+		ul > li {
+			font-size: 0.8rem !important;
+		}
 	}
 `;

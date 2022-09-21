@@ -251,7 +251,7 @@ const UpdateGenderSingle = ({ match }) => {
 					<AdminMenu fromPage='UpdateGender' />
 				</div>
 				{selectedGender && allGenders && !loading ? (
-					<div className='col-8 contentWrapper' data-aos='fade-down'>
+					<div className='col-8 contentWrapper'>
 						<form
 							onSubmit={clickSubmit}
 							className='col-md-5 mx-auto'

@@ -253,7 +253,7 @@ const UpdateCategorySingle = ({ match }) => {
 				</div>
 				<div className='col-8'>
 					{selectedCategory && allCategories && !loading ? (
-						<div className='contentWrapper' data-aos='fade-down'>
+						<div className='contentWrapper'>
 							<form
 								onSubmit={clickSubmit}
 								className='col-md-5 mx-auto'

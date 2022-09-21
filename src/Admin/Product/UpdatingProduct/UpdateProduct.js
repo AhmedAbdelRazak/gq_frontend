@@ -91,7 +91,11 @@ const UpdateProduct = () => {
 														width='20%'
 														height='20%'
 														style={{ marginLeft: "100px" }}
-														src={e.thumbnailImage[0].images[0].url}
+														src={
+															e.thumbnailImage[0].images[0]
+																? e.thumbnailImage[0].images[0].url
+																: null
+														}
 														alt={e.productName}
 													/>
 												</span>
@@ -124,4 +128,18 @@ const UpdateProductWrapper = styled.div`
 	min-height: 880px;
 	overflow-x: hidden;
 	/* background: #ededed; */
+
+	@media (max-width: 1550px) {
+		li {
+			font-size: 0.85rem !important;
+		}
+
+		label {
+			font-size: 0.8rem !important;
+		}
+
+		h3 {
+			font-size: 1.2rem !important;
+		}
+	}
 `;

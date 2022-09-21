@@ -850,4 +850,34 @@ const AddProductWrapper = styled.div`
 		border-left: 1px lightgrey solid;
 		min-height: 550px;
 	}
+
+	@media (max-width: 1750px) {
+		.grid-container {
+			display: grid;
+			grid-template-columns: 18% 82%;
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+	}
+
+	@media (max-width: 1550px) {
+		.mainUL > li {
+			font-size: 0.75rem;
+			margin-left: 20px;
+		}
+
+		label {
+			font-size: 0.8rem !important;
+		}
+
+		h3 {
+			font-size: 1.2rem !important;
+		}
+		.rightContentWrapper {
+			border-left: 1px lightgrey solid;
+			min-height: 550px;
+			margin-left: 30px !important;
+		}
+	}
 `;

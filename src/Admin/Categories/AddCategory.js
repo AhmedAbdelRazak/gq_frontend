@@ -331,4 +331,14 @@ const AddCategoryWrapper = styled.div`
 		padding: 20px;
 		border-radius: 20px;
 	}
+
+	@media (max-width: 1500px) {
+		.grid-container {
+			display: grid;
+			grid-template-columns: 20% 80%;
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+	}
 `;

@@ -325,4 +325,14 @@ const AddGenderWrapper = styled.div`
 	.overallWrapper {
 		/* background: linear-gradient(to right, #fafafa, #858585); */
 	}
+
+	@media (max-width: 1500px) {
+		.grid-container {
+			display: grid;
+			grid-template-columns: 20% 80%;
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+	}
 `;

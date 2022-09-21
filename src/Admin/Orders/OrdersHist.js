@@ -274,4 +274,14 @@ const OrdersHistWrapper = styled.div`
 		margin-left: 5px; */
 		}
 	}
+
+	@media (max-width: 1750px) {
+		.grid-container {
+			display: grid;
+			grid-template-columns: 18% 82%;
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+	}
 `;

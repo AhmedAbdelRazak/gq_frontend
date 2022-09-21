@@ -169,8 +169,12 @@ const CreateNewOrderOrderTaker = () => {
 														width='30%'
 														height='20%'
 														style={{ marginLeft: "10px" }}
-														src={e.thumbnailImage[0].images[0].url}
-														alt='hi'
+														src={
+															e.thumbnailImage[0].images[0]
+																? e.thumbnailImage[0].images[0].url
+																: null
+														}
+														alt={e.productName}
 													/>
 												</span>
 											</li>
@@ -215,7 +219,11 @@ const CreateNewOrderOrderTaker = () => {
 														width='30%'
 														height='20%'
 														style={{ marginLeft: "10px" }}
-														src={e.thumbnailImage[0].images[0].url}
+														src={
+															e.thumbnailImage[0].images[0]
+																? e.thumbnailImage[0].images[0].url
+																: null
+														}
 														alt={e.productName}
 													/>
 												</span>

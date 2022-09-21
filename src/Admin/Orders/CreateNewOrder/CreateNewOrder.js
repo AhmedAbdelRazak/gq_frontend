@@ -165,8 +165,12 @@ const CreateNewOrder = () => {
 														width='30%'
 														height='20%'
 														style={{ marginLeft: "10px" }}
-														src={e.thumbnailImage[0].images[0].url}
-														alt='hi'
+														src={
+															e.thumbnailImage[0].images[0]
+																? e.thumbnailImage[0].images[0].url
+																: null
+														}
+														alt={e.productName}
 													/>
 												</span>
 											</li>
@@ -211,7 +215,11 @@ const CreateNewOrder = () => {
 														width='30%'
 														height='20%'
 														style={{ marginLeft: "10px" }}
-														src={e.thumbnailImage[0].images[0].url}
+														src={
+															e.thumbnailImage[0].images[0]
+																? e.thumbnailImage[0].images[0].url
+																: null
+														}
 														alt={e.productName}
 													/>
 												</span>
@@ -1305,5 +1313,22 @@ const CreateNewOrderWrapper = styled.div`
 	.rightContentWrapper {
 		border-left: 1px lightgrey solid;
 		min-height: 550px;
+	}
+
+	@media (max-width: 1750px) {
+		.grid-container {
+			display: grid;
+			grid-template-columns: 18% 82%;
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+	}
+
+	@media (max-width: 1550px) {
+		.mainUL > li {
+			font-size: 0.75rem;
+			margin-left: 20px;
+		}
 	}
 `;

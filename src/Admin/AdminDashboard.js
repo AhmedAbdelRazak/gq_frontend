@@ -680,12 +680,12 @@ export default AdminDashboard;
 const AdminDashboardWrapper = styled.div`
 	min-height: 880px;
 	margin-bottom: 10px;
-	background: #fafafa;
+	/* background: #fafafa; */
 	overflow-x: hidden;
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: 15.2% 84.8%;
+		grid-template-columns: 16% 84%;
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */
@@ -777,5 +777,17 @@ const AdminDashboardWrapper = styled.div`
 		color: green;
 		font-weight: bolder;
 		margin-left: 5px;
+	}
+
+	@media (max-width: 1750px) {
+		background: white;
+
+		.grid-container {
+			display: grid;
+			grid-template-columns: 18% 82%;
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
 	}
 `;
