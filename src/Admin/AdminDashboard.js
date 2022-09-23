@@ -82,9 +82,8 @@ const AdminDashboard = () => {
 
 	let yesterdaysOrders = allOrders.filter(
 		(i) =>
-			new Date(i.createdAt).toLocaleDateString("en-US", {
-				timeZone: "Africa/Cairo",
-			}) === yesterday,
+			new Date(i.createdAt).setHours(0, 0, 0, 0) ===
+			new Date(yesterday).setHours(0, 0, 0, 0),
 	);
 
 	const todaysRevenue =
@@ -145,7 +144,11 @@ const AdminDashboard = () => {
 	);
 
 	let last7daysOrders = allOrders
-		.filter((i) => new Date(i.createdAt) >= last7Days)
+		.filter(
+			(i) =>
+				new Date(i.createdAt).setHours(0, 0, 0, 0) >=
+				new Date(last7Days).setHours(0, 0, 0, 0),
+		)
 		.map((ii) => {
 			return {
 				...ii,

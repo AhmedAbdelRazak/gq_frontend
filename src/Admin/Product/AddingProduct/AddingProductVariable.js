@@ -313,17 +313,26 @@ const AddingProductVariable = ({
 									placeholder='Please Select Colors'
 									value={chosenColors}
 									onChange={(value) => setChosenColors(value)}>
-									<Option value='red'>Red</Option>
-									<Option value='green'>Green</Option>
-									<Option value='blue'>Blue</Option>
-									<Option value='violet'>Violet</Option>
+									<Option value='aqua'>Aqua</Option>
 									<Option value='black'>Black</Option>
+									<Option value='blue'>Blue</Option>
+									<Option value='brown'>Brown</Option>
+									<Option value='crimson'>Crimson</Option>
+									<Option value='darkblue'>DarkBlue</Option>
+									<Option value='darkgray'>Darkgray</Option>
+									<Option value='darkolivegreen'>Dark Olive Green</Option>
+									<Option value='green'>Green</Option>
+									<Option value='grey'>Grey</Option>
+									<Option value='goldenrod'>Golden Rod</Option>
+									<Option value='lime'>Lime</Option>
+									<Option value='limegreen'>Lime Green</Option>
+									<Option value='hotpink'>Purple</Option>
+									<Option value='pink'>Pink</Option>
+									<Option value='red'>Red</Option>
+									<Option value='silver'>Silver</Option>
+									<Option value='violet'>Violet</Option>
 									<Option value='white'>White</Option>
 									<Option value='yellow'>Yellow</Option>
-									<Option value='silver'>Silver</Option>
-									<Option value='purple'>Purple</Option>
-									<Option value='aqua'>Aqua</Option>
-									<Option value='lime'>Lime</Option>
 								</Select>
 								{chosenColors.length > 0 && chosenSizes.length > 0 ? (
 									<button
