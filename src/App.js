@@ -43,6 +43,8 @@ import OrderTakerRoute from "./auth/OrderTakerRoute";
 import CreateNewOrderOrderTaker from "./OrderTaker/Orders/CreateNewOrder/CreateNewOrderOrderTaker";
 import OrdersHistOrderTaker from "./OrderTaker/Orders/OrdersHistOrderTaker";
 import SingleOrderPageOrderTaker from "./OrderTaker/Orders/SingleOrderPageOrderTaker";
+import CreateColor from "./Admin/Attributes/CreateColor";
+import CreateSize from "./Admin/Attributes/CreateSize";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -203,6 +205,8 @@ const App = () => {
 					exact
 					component={UpdateEmployeeSingle}
 				/>
+				<AdminRoute path='/admin/add-color' exact component={CreateColor} />
+				<AdminRoute path='/admin/add-size' exact component={CreateSize} />
 
 				<OrderTakerRoute
 					path='/order-taker/create-new-order'

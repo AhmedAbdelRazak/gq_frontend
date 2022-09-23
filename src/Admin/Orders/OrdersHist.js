@@ -20,7 +20,7 @@ const OrdersHist = () => {
 			const TotalAppointmentsA = a.createdAt;
 			const TotalAppointmentsB = b.createdAt;
 			let comparison = 0;
-			if (TotalAppointmentsA > TotalAppointmentsB) {
+			if (TotalAppointmentsA < TotalAppointmentsB) {
 				comparison = 1;
 			} else if (TotalAppointmentsA > TotalAppointmentsB) {
 				comparison = -1;
@@ -99,7 +99,7 @@ const OrdersHist = () => {
 					/>
 				</div>
 				<table
-					className='table table-bordered table-md-responsive table-hover table-striped'
+					className='table table-bordered table-md-responsive table-hover table-striped text-center'
 					style={{ fontSize: "0.75rem" }}>
 					<thead className='thead-light'>
 						<tr>
@@ -123,14 +123,49 @@ const OrdersHist = () => {
 
 					<tbody className='my-auto'>
 						{search(allOrders).map((s, i) => (
-							<tr key={i} className=''>
-								<td className='my-auto'>{i + 1}</td>
+							<tr
+								key={i}
+								className=''
+								style={{
+									background:
+										s.status === "Delivered" || s.status === "Shipped"
+											? "#004b00"
+											: s.status === "Cancelled"
+											? "darkred"
+											: "",
+									color:
+										s.status === "Delivered" || s.status === "Shipped"
+											? "white"
+											: s.status === "Cancelled"
+											? "white"
+											: "",
+								}}>
+								<td className='my-auto'>{allOrders.length - i}</td>
 
 								<td>{s.customerDetails.fullName}</td>
 								<td>{s.customerDetails.phone}</td>
 								<td>{s.customerDetails.email}</td>
 								<td>{new Date(s.createdAt).toLocaleDateString()} </td>
-								<td>{s.status}</td>
+								<td
+									style={{
+										fontWeight: "bold",
+										fontSize: "0.9rem",
+										width: "8.5%",
+										background:
+											s.status === "Delivered" || s.status === "Shipped"
+												? "#004b00"
+												: s.status === "Cancelled"
+												? "darkred"
+												: "#003264",
+										color:
+											s.status === "Delivered" || s.status === "Shipped"
+												? "white"
+												: s.status === "Cancelled"
+												? "white"
+												: "white",
+									}}>
+									{s.status}
+								</td>
 								<td>{s.customerDetails.state}</td>
 								<td>{s.customerDetails.cityName}</td>
 								<td>{s.chosenShippingOption[0].carrierName}</td>
@@ -272,16 +307,6 @@ const OrdersHistWrapper = styled.div`
 			font-size: 0.5rem;
 			/* margin-right: 5px;
 		margin-left: 5px; */
-		}
-	}
-
-	@media (max-width: 1750px) {
-		.grid-container {
-			display: grid;
-			grid-template-columns: 18% 82%;
-			margin: auto;
-			/* border: 1px solid red; */
-			/* grid-auto-rows: minmax(60px, auto); */
 		}
 	}
 `;

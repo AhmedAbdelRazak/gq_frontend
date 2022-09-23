@@ -523,3 +523,77 @@ export const updateUserByAdmin = (updatedUserId, userId, token, user) => {
 		})
 		.catch((err) => console.log(err));
 };
+
+/**
+ * Attributes Management
+ * */
+
+export const createColor = (userId, token, color) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/color/create/${userId}`, {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify(color),
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+};
+
+export const createSize = (userId, token, size) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/size/create/${userId}`, {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify(size),
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+};
+
+export const getColors = (token) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/colors`, {
+		method: "GET",
+		headers: {
+			// content type?
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const getSizes = (token) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/sizes`, {
+		method: "GET",
+		headers: {
+			// content type?
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+/**End Attributes Management */

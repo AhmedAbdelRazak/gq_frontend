@@ -6,9 +6,12 @@ import styled from "styled-components";
 import AdminMenu from "../../AdminMenu/AdminMenu";
 import { getProducts } from "../../apiAdmin";
 import CountUp from "react-countup";
+import AttributesModal from "./AttributesModal";
 
 const UpdateProduct = () => {
 	const [allProducts, setAllProducts] = useState([]);
+	const [modalVisible, setModalVisible] = useState(false);
+	const [clickedProduct, setClickedProduct] = useState({});
 	const [q, setQ] = useState("");
 
 	const gettingAllProducts = () => {
@@ -95,9 +98,37 @@ const UpdateProduct = () => {
 		});
 	}
 
+	const modifyingInventoryTable = () => {
+		let modifiedArray = allProducts.map((i) => {
+			return {
+				productId: i._id,
+				productName: i.productName,
+				productPrice: i.priceAfterDiscount,
+				productQty: i.addVariables
+					? i.productAttributes
+							.map((iii) => iii.quantity)
+							.reduce((a, b) => a + b, 0)
+					: i.quantity,
+				productImage: i.thumbnailImage,
+				productSKU: i.productSKU,
+				addedBy: i.addedByEmployee,
+				createdAt: i.createdAt,
+				addVariables: i.addVariables,
+				productAttributes: i.productAttributes,
+			};
+		});
+
+		return modifiedArray;
+	};
+
 	const dataTable = () => {
 		return (
 			<div className='tableData'>
+				<AttributesModal
+					product={clickedProduct}
+					modalVisible={modalVisible}
+					setModalVisible={setModalVisible}
+				/>
 				<div className=' mb-3 form-group mx-3 text-center'>
 					<label
 						className='mt-3 mx-3'
@@ -126,117 +157,90 @@ const UpdateProduct = () => {
 					className='table table-bordered table-md-responsive table-hover table-striped'
 					style={{ fontSize: "0.75rem", overflowX: "auto" }}>
 					<thead className='thead-light'>
-						<tr>
+						<tr
+							style={{
+								fontSize: "1rem",
+								textTransform: "capitalize",
+								textAlign: "center",
+							}}>
 							<th scope='col'>Item #</th>
 							<th scope='col'>Product Name</th>
 							<th scope='col'>Product Main SKU</th>
-							<th scope='col'>SubSKU</th>
+							<th scope='col'>Product Price</th>
 							<th scope='col'>Available Stock</th>
 							<th scope='col'>Product Creation Date</th>
 							<th scope='col'>Product Created By</th>
-							<th scope='col'>Product Updated By</th>
 							<th scope='col'>Product Image</th>
 							<th scope='col'>Update Product</th>
 						</tr>
 					</thead>
-					<tbody className='my-auto'>
-						{search(allProducts).map((s, i) => {
+					<tbody
+						className='my-auto'
+						style={{
+							fontSize: "0.9rem",
+							textTransform: "capitalize",
+							fontWeight: "bolder",
+						}}>
+						{search(modifyingInventoryTable()).map((s, i) => {
 							return (
-								<>
-									{s.productAttributes.length > 0 ? (
-										<>
-											{s.productAttributes.map((ss, ii) => {
-												return (
-													<tr key={ii} className=''>
-														<td className='my-auto'>{i + 1 + ii}</td>
+								<tr key={i} className=''>
+									<td className='my-auto'>{i + 1}</td>
 
-														<td>{s.productName}</td>
-														<td>{s.productSKU}</td>
-														<td>{ss.SubSKU}</td>
-														<td
-															style={{
-																background: ss.quantity <= 0 ? "#fdd0d0" : "",
-															}}>
-															{ss.quantity}
-														</td>
-														<td>
-															{new Date(s.createdAt).toLocaleDateString()}
-														</td>
-														<td>{s.addedByEmployee.name}</td>
-														<td>{s.updatedByEmployee.name}</td>
-														<td style={{ width: "10%" }}>
-															<img
-																width='60%'
-																height='60%'
-																style={{ marginLeft: "20px" }}
-																src={
-																	s.thumbnailImage[0].images[0]
-																		? s.thumbnailImage[0].images[0].url
-																		: null
-																}
-																alt={s.productName}
-															/>
-														</td>
-														<Link to={`/admin/update-product/${s._id}`}>
-															<td
-																style={{
-																	color: "blue",
-																	fontWeight: "bold",
-																	cursor: "pointer",
-																}}>
-																Update Product...
-															</td>
-														</Link>
-
-														{/* <td>{Invoice(s)}</td> */}
-													</tr>
-												);
-											})}
-										</>
-									) : (
-										<tr key={i} className=''>
-											<td className='my-auto'>{i + 1}</td>
-
-											<td>{s.productName}</td>
-											<td>{s.productSKU}</td>
-											<td>No SubSKU</td>
-											<td
+									<td>{s.productName}</td>
+									<td>{s.productSKU}</td>
+									<td>
+										{s.addVariables ? (
+											<span
+												onClick={() => {
+													setModalVisible(true);
+													setClickedProduct(s);
+												}}
 												style={{
-													background: s.quantity <= 0 ? "#fdd0d0" : "",
+													fontWeight: "bold",
+													textDecoration: "underline",
+													color: "darkblue",
+													cursor: "pointer",
 												}}>
-												{s.quantity}
-											</td>
-											<td>{new Date(s.createdAt).toLocaleDateString()}</td>
-											<td>{s.addedByEmployee.name}</td>
-											<td>{s.updatedByEmployee.name}</td>
-											<td style={{ width: "10%" }}>
-												<img
-													width='60%'
-													height='60%'
-													style={{ marginLeft: "20px" }}
-													src={
-														s.thumbnailImage[0].images[0]
-															? s.thumbnailImage[0].images[0].url
-															: null
-													}
-													alt={s.productName}
-												/>
-											</td>
-											<Link to={`/admin/update-product/${s._id}`}>
-												<td
-													style={{
-														color: "blue",
-														fontWeight: "bold",
-														cursor: "pointer",
-													}}>
-													Update Product...
-												</td>
-											</Link>
+												Check Product Attributes
+											</span>
+										) : (
+											s.productPrice
+										)}
+									</td>
+									<td
+										style={{
+											background: s.productQty <= 0 ? "#fdd0d0" : "",
+										}}>
+										{s.productQty}
+									</td>
+									<td>{new Date(s.createdAt).toLocaleDateString()}</td>
+									<td>{s.addedBy.name}</td>
+									<td style={{ width: "20%" }}>
+										<img
+											width='60%'
+											height='60%'
+											style={{ marginLeft: "20px" }}
+											src={
+												s.productImage[0].images[0]
+													? s.productImage[0].images[0].url
+													: null
+											}
+											alt={s.productName}
+										/>
+									</td>
+									<Link to={`/admin/update-product/${s.productId}`}>
+										<td
+											style={{
+												color: "blue",
+												fontWeight: "bold",
+												cursor: "pointer",
+											}}>
+											Update Product...
+										</td>
+									</Link>
 
-											{/* <td>{Invoice(s)}</td> */}
-										</tr>
-									)}
-								</>
+									{/* <td>{Invoice(s)}</td> */}
+								</tr>
 							);
 						})}
 					</tbody>

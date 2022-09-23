@@ -71,6 +71,13 @@ const items = [
 				"/admin/delete-subcategory",
 			),
 		]),
+		getItem("Attributes", "sub17", <AppstoreOutlined />, [
+			getItem(
+				<Link to='/admin/add-color'>Add Colors</Link>,
+				"/admin/add-color",
+			),
+			getItem(<Link to='/admin/add-size'>Add Sizes</Link>, "/admin/add-size"),
+		]),
 		getItem(
 			<Link
 				to='/admin/add-product'
@@ -97,33 +104,34 @@ const items = [
 		),
 	]),
 
+	getItem("Shipping Options", "sub30", <CopyOutlined />, [
+		getItem(
+			<Link
+				to='/admin/add-shipping-carrier'
+				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+				Add Shipping Carrier
+			</Link>,
+			"/admin/add-shipping-carrier",
+		),
+		getItem(
+			<Link
+				to='/admin/update-shipping-carrier'
+				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+				Update Shipping Carrier
+			</Link>,
+			"/admin/update-shipping-carrier",
+		),
+		getItem(
+			<Link
+				to='/admin/delete-shipping-carrier'
+				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+				Delete Shipping Carrier
+			</Link>,
+			"/admin/delete-shipping-carrier",
+		),
+	]),
+
 	getItem("Orders Management", "sub6", <DesktopOutlined />, [
-		getItem("Shipping Options", "sub30", <CopyOutlined />, [
-			getItem(
-				<Link
-					to='/admin/add-shipping-carrier'
-					onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-					Add Shipping Carrier
-				</Link>,
-				"/admin/add-shipping-carrier",
-			),
-			getItem(
-				<Link
-					to='/admin/update-shipping-carrier'
-					onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-					Update Shipping Carrier
-				</Link>,
-				"/admin/update-shipping-carrier",
-			),
-			getItem(
-				<Link
-					to='/admin/delete-shipping-carrier'
-					onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-					Delete Shipping Carrier
-				</Link>,
-				"/admin/delete-shipping-carrier",
-			),
-		]),
 		getItem(
 			<Link
 				to='/admin/create-new-order'
@@ -254,6 +262,10 @@ const AdminMenu = ({ fromPage }) => {
 						? "/admin/gq-reports"
 						: fromPage === "UpdateEmployee"
 						? "/admin/update-employee"
+						: fromPage === "AddColor"
+						? "/admin/add-color"
+						: fromPage === "AddSize"
+						? "/admin/add-size"
 						: "/admin/dashboard"
 				}
 				defaultOpenKeys={[
@@ -270,6 +282,9 @@ const AdminMenu = ({ fromPage }) => {
 					fromPage === "DeleteSubcategory"
 						? "sub7"
 						: null,
+
+					fromPage === "AddColor" || fromPage === "AddSize" ? "sub17" : null,
+
 					fromPage === "AddShippingOption" ||
 					fromPage === "UpdateShippingOption" ||
 					fromPage === "DeleteShippingOption"

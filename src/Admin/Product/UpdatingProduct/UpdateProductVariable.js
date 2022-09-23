@@ -1,9 +1,9 @@
 /** @format */
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Select } from "antd";
 import Resizer from "react-image-file-resizer";
-import { cloudinaryUpload1 } from "../../apiAdmin";
+import { cloudinaryUpload1, getColors, getSizes } from "../../apiAdmin";
 import { isAuthenticated } from "../../../auth";
 import axios from "axios";
 
@@ -42,6 +42,8 @@ const UpdatingProductVariable = ({
 	addThumbnail,
 	setAddThumbnail,
 }) => {
+	const [allColors, setAllColors] = useState([]);
+	const [allSizes, setAllSizes] = useState([]);
 	const { user, token } = isAuthenticated();
 
 	//
@@ -236,6 +238,32 @@ const UpdatingProductVariable = ({
 			});
 	};
 
+	const gettingAllColors = () => {
+		getColors(token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllColors(data);
+			}
+		});
+	};
+
+	const gettingAllSizes = () => {
+		getSizes(token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllSizes(data);
+			}
+		});
+	};
+
+	useEffect(() => {
+		gettingAllColors();
+		gettingAllSizes();
+		// eslint-disable-next-line
+	}, []);
+
 	return (
 		<div className='mb-5'>
 			<div className='row mx-auto text-center variableLinkWrapper'>
@@ -281,12 +309,17 @@ const UpdatingProductVariable = ({
 							placeholder='Please Select Sizes'
 							value={chosenSizes}
 							onChange={(value) => setChosenSizes(value)}>
-							<Option value='small'>Small</Option>
-							<Option value='medium'>Medium</Option>
-							<Option value='large'>Large</Option>
-							<Option value='xl'>XL</Option>
-							<Option value='xxl'>XXL</Option>
-							<Option value='xxxl'>XXXL</Option>
+							{allSizes &&
+								allSizes.map((ss, iii) => {
+									return (
+										<Option
+											style={{ textTransform: "uppercase" }}
+											key={iii}
+											value={ss.size}>
+											{ss.size}
+										</Option>
+									);
+								})}
 						</Select>{" "}
 						{chosenSizes.length > 0 ? (
 							<div className='mt-4'>
@@ -297,26 +330,17 @@ const UpdatingProductVariable = ({
 									placeholder='Please Select Colors'
 									value={chosenColors}
 									onChange={(value) => setChosenColors(value)}>
-									<Option value='aqua'>Aqua</Option>
-									<Option value='black'>Black</Option>
-									<Option value='blue'>Blue</Option>
-									<Option value='brown'>Brown</Option>
-									<Option value='crimson'>Crimson</Option>
-									<Option value='darkblue'>DarkBlue</Option>
-									<Option value='darkgray'>Darkgray</Option>
-									<Option value='darkolivegreen'>Dark Olive Green</Option>
-									<Option value='green'>Green</Option>
-									<Option value='grey'>Grey</Option>
-									<Option value='goldenrod'>Golden Rod</Option>
-									<Option value='lime'>Lime</Option>
-									<Option value='limegreen'>Lime Green</Option>
-									<Option value='hotpink'>Purple</Option>
-									<Option value='pink'>Pink</Option>
-									<Option value='red'>Red</Option>
-									<Option value='silver'>Silver</Option>
-									<Option value='violet'>Violet</Option>
-									<Option value='white'>White</Option>
-									<Option value='yellow'>Yellow</Option>
+									{allColors &&
+										allColors.map((c, ii) => {
+											return (
+												<Option
+													style={{ textTransform: "capitalize" }}
+													key={ii}
+													value={c.hexa}>
+													{c.color}
+												</Option>
+											);
+										})}
 								</Select>
 								{chosenColors.length > 0 && chosenSizes.length > 0 ? (
 									<button
@@ -478,10 +502,15 @@ const UpdatingProductVariable = ({
 													color: "white",
 													boxShadow: "2px 2px 2px 3px rgba(0,0,0,0.1)",
 												}}>
-												Add Product Images{" "}
+												Update Product Images{" "}
 												<span className='text-capitalize'>
 													{" "}
-													({c === "#003f79" ? "Blue" : c})
+													((
+													{allColors[allColors.map((i) => i.hexa).indexOf(c)]
+														? allColors[allColors.map((i) => i.hexa).indexOf(c)]
+																.color
+														: ""}
+													))
 												</span>
 												<input
 													type='file'
