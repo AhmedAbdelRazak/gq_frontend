@@ -323,4 +323,10 @@ const NavbarWrapper = styled.div`
 			padding-left: 0px !important;
 		}
 	}
+
+	@media (max-width: 750px) {
+		.itemsLeft {
+			display: none !important;
+		}
+	}
 `;

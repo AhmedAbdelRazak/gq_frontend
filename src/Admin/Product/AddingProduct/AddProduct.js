@@ -21,6 +21,7 @@ import { toast } from "react-toastify";
 import Navbar from "../../AdminNavMenu/Navbar";
 import Aos from "aos";
 import "aos/dist/aos.css";
+import DarkBG from "../../AdminMenu/DarkBG";
 const { Option } = Select;
 
 const isActive = (clickedLink, sureClickedLink) => {
@@ -69,7 +70,7 @@ const AddProduct = () => {
 	const [stock, setStock] = useState("");
 	const [chosenSizes, setChosenSizes] = useState([]);
 	const [chosenColors, setChosenColors] = useState([]);
-	const [addVariables, setAddVariables] = useState(false);
+	const [addVariables, setAddVariables] = useState(true);
 	const [clickedVariableLink, setClickedVariableLink] =
 		useState("SizesColorsImages");
 	const [variablesSubmit, setVariablesSubmit] = useState(false);
@@ -79,6 +80,9 @@ const AddProduct = () => {
 	const [featured, setFeatured] = useState(false);
 	const [productAttributesFinal, setProductAttributesFinal] = useState([]);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [offset, setOffset] = useState(0);
+	const [pageScrolled, setPageScrolled] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	let productAttributes = [];
 
@@ -222,8 +226,8 @@ const AddProduct = () => {
 						window.scrollTo({ top: 0, behavior: "smooth" });
 					}}>
 					{addVariables
-						? "Add Product Variables (Product Images, Sizes, Colors, etc..)"
-						: "Add Product Prices & Stock"}
+						? "Next: Add Product Variables (Product Images, Sizes, Colors, etc..)"
+						: "Next: Add Product Prices & Stock"}
 				</button>
 			</form>
 		);
@@ -446,7 +450,7 @@ const AddProduct = () => {
 						setClickedLink("ExtraOptions");
 						window.scrollTo({ top: 0, behavior: "smooth" });
 					}}>
-					Add Other Features
+					Next: Add Other Features
 				</button>
 			</form>
 		);
@@ -673,18 +677,36 @@ const AddProduct = () => {
 		Aos.init({ duration: 1500 });
 	}, []);
 
+	useEffect(() => {
+		const onScroll = () => setOffset(window.pageYOffset);
+		// clean up code
+		window.removeEventListener("scroll", onScroll);
+		window.addEventListener("scroll", onScroll, { passive: true });
+		if (window.pageYOffset > 0) {
+			setPageScrolled(true);
+		} else {
+			setPageScrolled(false);
+		}
+		return () => window.removeEventListener("scroll", onScroll);
+	}, [offset]);
+
 	return (
 		<AddProductWrapper show={AdminMenuStatus}>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu
 						fromPage='AddProduct'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 				<div className='mainContent'>
-					<Navbar fromPage='AddProduct' />
+					<Navbar fromPage='AddProduct' pageScrolled={pageScrolled} />
 
 					<h3
 						className='mx-auto text-center mb-5'
@@ -699,8 +721,9 @@ const AddProduct = () => {
 							? "Add Product Features & Status"
 							: "Add Suitable Variables and Photos"}
 					</h3>
+
 					<div className='row'>
-						<div className='col-3' data-aos='fade-up'>
+						<div className='col-md-3' data-aos='fade-up'>
 							<ul className='mainUL'>
 								<li
 									className='mb-4 mainLi'
@@ -753,7 +776,7 @@ const AddProduct = () => {
 						{clickedLink === "MainData" ? (
 							<div
 								data-aos='fade-down'
-								className='col-8 ml-3 rightContentWrapper'
+								className='col-md-8 ml-3 rightContentWrapper'
 								// style={{ borderLeft: "darkred 2px solid" }}
 							>
 								{BasicDataFormFunction()}
@@ -899,6 +922,29 @@ const AddProductWrapper = styled.div`
 			border-left: 1px lightgrey solid;
 			min-height: 550px;
 			margin-left: 30px !important;
+		}
+	}
+
+	@media (max-width: 750px) {
+		.grid-container {
+			display: grid;
+			/* grid-template-columns: 16% 84%; */
+			grid-template-columns: ${(props) => (props.show ? "0% 99%" : "0% 100%")};
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+		h3 {
+			margin-top: 60px !important;
+		}
+
+		.rightContentWrapper {
+			margin-top: 20px;
+			margin-left: ${(props) => (props.show ? "0px" : "20px")};
+		}
+
+		.mainUL {
+			display: none;
 		}
 	}
 `;

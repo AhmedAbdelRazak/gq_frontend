@@ -14,10 +14,14 @@ import axios from "axios";
 import { cloudinaryUpload1 } from "../apiAdmin";
 import Aos from "aos";
 import "aos/dist/aos.css";
+import DarkBG from "../AdminMenu/DarkBG";
 
 const AddEmployee = () => {
 	const [addThumbnail, setAddThumbnail] = useState([]);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [offset, setOffset] = useState(0);
+	const [pageScrolled, setPageScrolled] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	const [values, setValues] = useState({
 		name: "",
@@ -347,18 +351,40 @@ const AddEmployee = () => {
 
 	const MisMatchError = "Passwords Don't Match, Please Try Again!!";
 
+	useEffect(() => {
+		Aos.init({ duration: 1500 });
+	}, []);
+
+	useEffect(() => {
+		const onScroll = () => setOffset(window.pageYOffset);
+		// clean up code
+		window.removeEventListener("scroll", onScroll);
+		window.addEventListener("scroll", onScroll, { passive: true });
+		if (window.pageYOffset > 0) {
+			setPageScrolled(true);
+		} else {
+			setPageScrolled(false);
+		}
+		return () => window.removeEventListener("scroll", onScroll);
+	}, [offset]);
+
 	return (
 		<AddEmployeeWrapper show={AdminMenuStatus}>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu
 						fromPage='AddEmployee'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 				<div className='mainContent'>
-					<Navbar fromPage='AddEmployee' />
+					<Navbar fromPage='AddEmployee' pageScrolled={pageScrolled} />
 					<h3 className='mx-auto text-center mb-5'>Add A New Employee</h3>
 					{signUpForm()}
 				</div>

@@ -146,3 +146,19 @@ body {
 		opacity: 1;
 	}
 }
+
+.DarkbackgroundForSidebar2 {
+	background-color: rgba(0, 0, 0, 0.3);
+	height: 100%;
+	top: 0px;
+	left: 0;
+	position: fixed;
+	z-index: 10000;
+	padding: 1000px;
+}
+
+@media (min-width: 1400px) {
+	.DarkbackgroundForSidebar2 {
+		display: none;
+	}
+}

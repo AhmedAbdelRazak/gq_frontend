@@ -183,7 +183,7 @@ const BasicDataForm = ({
 					setClickedLink("AddCategorySubcategory");
 					window.scrollTo({ top: 0, behavior: "smooth" });
 				}}>
-				Add Product Category
+				Next: Add Product Category
 			</button>
 		</form>
 	);

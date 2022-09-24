@@ -11,6 +11,7 @@ import axios from "axios";
 import Resizer from "react-image-file-resizer";
 import Aos from "aos";
 import "aos/dist/aos.css";
+import DarkBG from "../AdminMenu/DarkBG";
 
 const UpdateGenderSingle = ({ match }) => {
 	// eslint-disable-next-line
@@ -27,6 +28,7 @@ const UpdateGenderSingle = ({ match }) => {
 	const [imageDeletedFlag1, setImageDeletedFlag1] = useState(false);
 	const [addThumbnail, setAddThumbnail] = useState([]);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	const gettingAllGenders = () => {
 		setLoading(true);
@@ -246,6 +248,9 @@ const UpdateGenderSingle = ({ match }) => {
 
 	return (
 		<UpdateGenderSingleWrapper show={AdminMenuStatus}>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<ToastContainer />
 			<div className='row'>
 				<div className='col-3 mb-3'>

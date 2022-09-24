@@ -18,9 +18,11 @@ import LetterRasha from "../GeneralImages/LetterRasha.jpg";
 import Product1 from "../GeneralImages/CategoryPants.jpg";
 import Product2 from "../GeneralImages/ProductImg2.jpg";
 import Product3 from "../GeneralImages/ProductImg3.jpg";
+
 import { listOrders } from "./apiAdmin";
 import { isAuthenticated } from "../auth";
 import { Link } from "react-router-dom";
+import DarkBG from "./AdminMenu/DarkBG";
 
 const AdminDashboard = () => {
 	const [allOrders, setAllOrders] = useState([]);
@@ -28,6 +30,7 @@ const AdminDashboard = () => {
 	// eslint-disable-next-line
 	const [offset, setOffset] = useState(0);
 	const [pageScrolled, setPageScrolled] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	const { user, token } = isAuthenticated();
 
@@ -263,13 +266,18 @@ const AdminDashboard = () => {
 	}, [offset]);
 
 	return (
-		<AdminDashboardWrapper show={AdminMenuStatus}>
+		<AdminDashboardWrapper show={collapsed}>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<div className='grid-container'>
 				<div>
 					<AdminMenu
 						fromPage='AdminDasboard'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 				<div className='navbarcontent'>
@@ -291,7 +299,7 @@ const AdminDashboard = () => {
 											<hr />
 										</div>
 										<div className='row mt-3'>
-											<div className='col-md-5 mx-auto'>
+											<div className='col-5 mx-auto'>
 												<span className='cardHeader'>Overall Orders</span>{" "}
 												<div className='metrics'>
 													<CountUp
@@ -302,7 +310,7 @@ const AdminDashboard = () => {
 													/>
 												</div>{" "}
 											</div>
-											<div className='col-md-5 mx-auto'>
+											<div className='col-5 mx-auto'>
 												<span className='cardHeader'>Today's Orders </span>{" "}
 												<div className='metrics'>
 													<CountUp
@@ -313,7 +321,7 @@ const AdminDashboard = () => {
 													/>
 												</div>{" "}
 											</div>
-											<div className='col-md-5 mt-5 mx-auto'>
+											<div className='col-5 mt-5 mx-auto'>
 												<span className='cardHeader'>Overall Orders PY</span>{" "}
 												<div className='metrics'>
 													<CountUp
@@ -324,7 +332,7 @@ const AdminDashboard = () => {
 													/>
 												</div>{" "}
 											</div>
-											<div className='col-md-5 mt-5 mx-auto'>
+											<div className='col-5 mt-5 mx-auto'>
 												<span className='cardHeader'>Yesterday's Orders</span>{" "}
 												<div className='metrics'>
 													<CountUp
@@ -335,7 +343,7 @@ const AdminDashboard = () => {
 													/>
 												</div>{" "}
 											</div>
-											<div className='col-md-5 mt-5 mx-auto'>
+											<div className='col-5 mt-5 mx-auto'>
 												<span className='cardHeader'>Today's Revenue</span>{" "}
 												<div className='metrics'>
 													<CountUp
@@ -347,7 +355,7 @@ const AdminDashboard = () => {
 													L.E.
 												</div>{" "}
 											</div>
-											<div className='col-md-5 mt-5 mx-auto'>
+											<div className='col-5 mt-5 mx-auto'>
 												<span className='cardHeader'>Yesterday's Revenue </span>{" "}
 												<div className='metrics'>
 													<CountUp
@@ -868,6 +876,25 @@ const AdminDashboardWrapper = styled.div`
 			margin: auto;
 			/* border: 1px solid red; */
 			/* grid-auto-rows: minmax(60px, auto); */
+		}
+	}
+
+	@media (max-width: 750px) {
+		.grid-container {
+			display: grid;
+			/* grid-template-columns: 16% 84%; */
+			grid-template-columns: ${(props) => (props.show ? "0% 99%" : "18% 82%")};
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+
+		.card,
+		.firstCard,
+		.secondCard,
+		.thirdCard {
+			margin-top: 20px;
+			margin-left: ${(props) => (props.show ? "0px" : "20px")};
 		}
 	}
 `;

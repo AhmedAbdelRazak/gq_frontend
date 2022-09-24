@@ -14,6 +14,7 @@ import { isAuthenticated } from "../../auth";
 import Navbar from "../AdminNavMenu/Navbar";
 import Aos from "aos";
 import "aos/dist/aos.css";
+import DarkBG from "../AdminMenu/DarkBG";
 
 const AddCategory = () => {
 	const [categoryName, setCategoryName] = useState("");
@@ -29,6 +30,9 @@ const AddCategory = () => {
 	const [success, setSuccess] = useState(false);
 	const [addThumbnail, setAddThumbnail] = useState([]);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [offset, setOffset] = useState(0);
+	const [pageScrolled, setPageScrolled] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	// destructure user and token from localstorage
 	const { user, token } = isAuthenticated();
@@ -249,19 +253,37 @@ const AddCategory = () => {
 		Aos.init({ duration: 1500 });
 	}, []);
 
+	useEffect(() => {
+		const onScroll = () => setOffset(window.pageYOffset);
+		// clean up code
+		window.removeEventListener("scroll", onScroll);
+		window.addEventListener("scroll", onScroll, { passive: true });
+		if (window.pageYOffset > 0) {
+			setPageScrolled(true);
+		} else {
+			setPageScrolled(false);
+		}
+		return () => window.removeEventListener("scroll", onScroll);
+	}, [offset]);
+
 	return (
 		<AddCategoryWrapper show={AdminMenuStatus}>
 			<ToastContainer />
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu
 						fromPage='AddCategory'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 				<div className=''>
-					<Navbar fromPage='AddCategory' />
+					<Navbar fromPage='AddCategory' pageScrolled={pageScrolled} />
 
 					<div className='container' data-aos='fade-down'>
 						<h3

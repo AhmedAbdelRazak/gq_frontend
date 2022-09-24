@@ -18,6 +18,7 @@ import Resizer from "react-image-file-resizer";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import Aos from "aos";
 import "aos/dist/aos.css";
+import DarkBG from "../AdminMenu/DarkBG";
 
 const AddSubcategory = () => {
 	const [SubcategoryName, setSubCategoryName] = useState("");
@@ -35,6 +36,7 @@ const AddSubcategory = () => {
 	const [success, setSuccess] = useState(false);
 	const [addThumbnail, setAddThumbnail] = useState([]);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	// destructure user and token from localstorage
 	const { user, token } = isAuthenticated();
@@ -292,12 +294,17 @@ const AddSubcategory = () => {
 
 	return (
 		<AddSubcategoryWrapper>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<div className='row'>
 				<div className='col-3'>
 					<AdminMenu
 						fromPage='AddSubcategory'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 

@@ -8,6 +8,7 @@ import AdminMenu from "../AdminMenu/AdminMenu";
 import { getSubCategories, removeSubcategory } from "../apiAdmin";
 import Aos from "aos";
 import "aos/dist/aos.css";
+import DarkBG from "../AdminMenu/DarkBG";
 
 const DeleteSubcategory = () => {
 	const [allSubCategories, setAllSubCategories] = useState([]);
@@ -16,6 +17,7 @@ const DeleteSubcategory = () => {
 	// eslint-disable-next-line
 	const [loading, setLoading] = useState(true);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	const gettingAllSubCategories = () => {
 		setLoading(true);
@@ -55,12 +57,17 @@ const DeleteSubcategory = () => {
 
 	return (
 		<DeleteSubcategoryWrapper>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<div className='row'>
 				<div className='col-3 mb-3'>
 					<AdminMenu
 						fromPage='DeleteSubcategory'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 				<div className='col-8'>

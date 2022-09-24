@@ -7,10 +7,14 @@ import Navbar from "../AdminNavMenu/Navbar";
 import { getAllUsers } from "../apiAdmin";
 import { isAuthenticated } from "../../auth/index";
 import { Link } from "react-router-dom";
+import DarkBG from "../AdminMenu/DarkBG";
 
 const UpdateEmployee = () => {
 	const [allUsersAvailable, setAllUsersAvailable] = useState([]);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [offset, setOffset] = useState(0);
+	const [pageScrolled, setPageScrolled] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	const { user, token } = isAuthenticated();
 
@@ -30,18 +34,36 @@ const UpdateEmployee = () => {
 		// eslint-disable-next-line
 	}, []);
 
+	useEffect(() => {
+		const onScroll = () => setOffset(window.pageYOffset);
+		// clean up code
+		window.removeEventListener("scroll", onScroll);
+		window.addEventListener("scroll", onScroll, { passive: true });
+		if (window.pageYOffset > 0) {
+			setPageScrolled(true);
+		} else {
+			setPageScrolled(false);
+		}
+		return () => window.removeEventListener("scroll", onScroll);
+	}, [offset]);
+
 	return (
 		<UpdateEmployeeWrapper show={AdminMenuStatus}>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu
 						fromPage='UpdateEmployee'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 				<div className='mainContent'>
-					<Navbar fromPage='UpdateEmployee' />
+					<Navbar fromPage='UpdateEmployee' pageScrolled={pageScrolled} />
 					<h3 className='mx-auto text-center mb-5'>Update Employee Profile</h3>
 					{allUsersAvailable.length > 0 ? (
 						<div className='container'>

@@ -9,6 +9,7 @@ import "antd/dist/antd.min.css";
 import { isAuthenticated } from "../../../auth";
 import { getShippingOptions, updateShippingOptions } from "../../apiAdmin";
 import { ShipToData } from "./ShipToData";
+import DarkBG from "../../AdminMenu/DarkBG";
 
 const { Option } = Select;
 
@@ -24,6 +25,7 @@ const UpdateShippingOptionsSingle = ({ match }) => {
 	const [allChosenGov, setAllChosenGov] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	const gettingAllShippingOptions = () => {
 		setLoading(true);
@@ -150,6 +152,9 @@ const UpdateShippingOptionsSingle = ({ match }) => {
 
 	return (
 		<UpdateShippingOptionsSingleWrapper>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<ToastContainer />
 			<div className='row'>
 				<div className='col-3 mb-3'>
@@ -157,6 +162,8 @@ const UpdateShippingOptionsSingle = ({ match }) => {
 						fromPage='UpdateShippingOption'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 				{selectedShippingOption && allShippingOptions && !loading ? (

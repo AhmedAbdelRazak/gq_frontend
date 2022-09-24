@@ -18,6 +18,7 @@ import axios from "axios";
 import Resizer from "react-image-file-resizer";
 import Aos from "aos";
 import "aos/dist/aos.css";
+import DarkBG from "../AdminMenu/DarkBG";
 
 const UpdateSubcategorySingle = ({ match }) => {
 	// eslint-disable-next-line
@@ -40,6 +41,7 @@ const UpdateSubcategorySingle = ({ match }) => {
 	const [imageDeletedFlag1, setImageDeletedFlag1] = useState(false);
 	const [addThumbnail, setAddThumbnail] = useState([]);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	const gettingAllCategories = () => {
 		getCategories(token).then((data) => {
@@ -298,12 +300,17 @@ const UpdateSubcategorySingle = ({ match }) => {
 
 	return (
 		<UpdateSubcategorySingleWrapper>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<div className='row'>
 				<div className='col-3 mb-3'>
 					<AdminMenu
 						fromPage='UpdateSubcategory'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 				<div className='col-8'>

@@ -12,6 +12,7 @@ import { isAuthenticated } from "../../auth";
 import Navbar from "../AdminNavMenu/Navbar";
 import Aos from "aos";
 import "aos/dist/aos.css";
+import DarkBG from "../AdminMenu/DarkBG";
 
 const CreateColor = () => {
 	const [color, setColor] = useState("");
@@ -25,6 +26,9 @@ const CreateColor = () => {
 	const [error, setError] = useState(false);
 	const [success, setSuccess] = useState(false);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [offset, setOffset] = useState(0);
+	const [pageScrolled, setPageScrolled] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	// destructure user and token from localstorage
 	const { user, token } = isAuthenticated();
@@ -143,19 +147,37 @@ const CreateColor = () => {
 		Aos.init({ duration: 1500 });
 	}, []);
 
+	useEffect(() => {
+		const onScroll = () => setOffset(window.pageYOffset);
+		// clean up code
+		window.removeEventListener("scroll", onScroll);
+		window.addEventListener("scroll", onScroll, { passive: true });
+		if (window.pageYOffset > 0) {
+			setPageScrolled(true);
+		} else {
+			setPageScrolled(false);
+		}
+		return () => window.removeEventListener("scroll", onScroll);
+	}, [offset]);
+
 	return (
 		<CreateColorWrapper show={AdminMenuStatus}>
 			<ToastContainer />
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu
 						fromPage='AddColor'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 				<div className=''>
-					<Navbar fromPage='AddColor' />
+					<Navbar fromPage='AddColor' pageScrolled={pageScrolled} />
 
 					<div className='container' data-aos='fade-down'>
 						<h3

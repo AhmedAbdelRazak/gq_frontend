@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import { isAuthenticated } from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
+import DarkBG from "../AdminMenu/DarkBG";
 import { getProducts, removeProduct } from "../apiAdmin";
 
 const DeleteProduct = () => {
@@ -14,6 +15,7 @@ const DeleteProduct = () => {
 	// eslint-disable-next-line
 	const [loading, setLoading] = useState(true);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	const gettingAllProduct = () => {
 		setLoading(true);
@@ -49,12 +51,17 @@ const DeleteProduct = () => {
 
 	return (
 		<DeleteProductWrapper>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<div className='row'>
 				<div className='col-3 mb-3'>
 					<AdminMenu
 						fromPage='DeleteProduct'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 				<div className='col-8'>

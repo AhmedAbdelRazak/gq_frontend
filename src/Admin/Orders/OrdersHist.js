@@ -8,11 +8,15 @@ import Navbar from "../AdminNavMenu/Navbar";
 import CountUp from "react-countup";
 import { listOrders } from "../apiAdmin";
 import { Link } from "react-router-dom";
+import DarkBG from "../AdminMenu/DarkBG";
 
 const OrdersHist = () => {
 	const [allOrders, setAllOrders] = useState([]);
 	const [q, setQ] = useState("");
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [offset, setOffset] = useState(0);
+	const [pageScrolled, setPageScrolled] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	const { user, token } = isAuthenticated();
 
@@ -195,20 +199,36 @@ const OrdersHist = () => {
 		);
 	};
 
-	console.log(allOrders, "AllOrders");
+	useEffect(() => {
+		const onScroll = () => setOffset(window.pageYOffset);
+		// clean up code
+		window.removeEventListener("scroll", onScroll);
+		window.addEventListener("scroll", onScroll, { passive: true });
+		if (window.pageYOffset > 0) {
+			setPageScrolled(true);
+		} else {
+			setPageScrolled(false);
+		}
+		return () => window.removeEventListener("scroll", onScroll);
+	}, [offset]);
 
 	return (
 		<OrdersHistWrapper show={AdminMenuStatus}>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu
 						fromPage='OrdersHist'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 				<div className='mainContent'>
-					<Navbar fromPage='OrdersHist' />
+					<Navbar fromPage='OrdersHist' pageScrolled={pageScrolled} />
 					<h3
 						style={{ color: "#009ef7", fontWeight: "bold" }}
 						className='mx-auto text-center mb-5'>
@@ -344,6 +364,25 @@ const OrdersHistWrapper = styled.div`
 			margin: auto;
 			/* border: 1px solid red; */
 			/* grid-auto-rows: minmax(60px, auto); */
+		}
+	}
+
+	@media (max-width: 750px) {
+		.grid-container {
+			display: grid;
+			/* grid-template-columns: 16% 84%; */
+			grid-template-columns: ${(props) => (props.show ? "0% 99%" : "0% 100%")};
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+		h3 {
+			margin-top: 60px !important;
+		}
+
+		.rightContentWrapper {
+			margin-top: 20px;
+			margin-left: ${(props) => (props.show ? "0px" : "20px")};
 		}
 	}
 `;

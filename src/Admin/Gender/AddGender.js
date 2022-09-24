@@ -13,6 +13,7 @@ import "react-toastify/dist/ReactToastify.min.css";
 import Navbar from "../AdminNavMenu/Navbar";
 import Aos from "aos";
 import "aos/dist/aos.css";
+import DarkBG from "../AdminMenu/DarkBG";
 
 const AddGender = () => {
 	const [genderName, setGenderName] = useState("");
@@ -29,6 +30,9 @@ const AddGender = () => {
 	const [success, setSuccess] = useState(false);
 	const [addThumbnail, setAddThumbnail] = useState([]);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [offset, setOffset] = useState(0);
+	const [pageScrolled, setPageScrolled] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	// destructure user and token from localstorage
 	const { user, token } = isAuthenticated();
@@ -225,18 +229,36 @@ const AddGender = () => {
 		Aos.init({ duration: 1500 });
 	}, []);
 
+	useEffect(() => {
+		const onScroll = () => setOffset(window.pageYOffset);
+		// clean up code
+		window.removeEventListener("scroll", onScroll);
+		window.addEventListener("scroll", onScroll, { passive: true });
+		if (window.pageYOffset > 0) {
+			setPageScrolled(true);
+		} else {
+			setPageScrolled(false);
+		}
+		return () => window.removeEventListener("scroll", onScroll);
+	}, [offset]);
+
 	return (
 		<AddGenderWrapper show={AdminMenuStatus}>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu
 						fromPage='AddGender'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 				<div className='overallWrapper'>
-					<Navbar fromPage='AddGender' />
+					<Navbar fromPage='AddGender' pageScrolled={pageScrolled} />
 
 					<div className='container' data-aos='fade-down'>
 						<h3

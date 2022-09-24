@@ -22,6 +22,7 @@ import { isAuthenticated } from "../../../auth";
 import { toast } from "react-toastify";
 import UpdateBasicDataForm from "./UpdateBasicDataForm";
 import UpdatingProductVariable from "./UpdateProductVariable";
+import DarkBG from "../../AdminMenu/DarkBG";
 const { Option } = Select;
 
 const isActive = (clickedLink, sureClickedLink) => {
@@ -80,6 +81,7 @@ const UpdateProductSingle = ({ match }) => {
 	const [featured, setFeatured] = useState(false);
 	const [productAttributesFinal, setProductAttributesFinal] = useState([]);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	let productAttributes = [];
 
@@ -341,8 +343,8 @@ const UpdateProductSingle = ({ match }) => {
 						window.scrollTo({ top: 0, behavior: "smooth" });
 					}}>
 					{addVariables
-						? "Add Product Variables (Product Images, Sizes, Colors, etc..)"
-						: "Add Product Prices & Stock"}
+						? "Next: Add Product Variables (Product Images, Sizes, Colors, etc..)"
+						: "Next: Add Product Prices & Stock"}
 				</button>
 			</form>
 		);
@@ -822,12 +824,17 @@ const UpdateProductSingle = ({ match }) => {
 
 	return (
 		<UpdateProductSingleWrapper>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu
 						fromPage='UpdateProduct'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 				<div className='mainContent'>
@@ -843,7 +850,7 @@ const UpdateProductSingle = ({ match }) => {
 							: "Update Suitable Variables and Photos"}
 					</h3>
 					<div className='row'>
-						<div className='col-3'>
+						<div className='col-md-3'>
 							<ul className='mainUL'>
 								<li
 									className='mb-4 mainLi'
@@ -895,7 +902,7 @@ const UpdateProductSingle = ({ match }) => {
 
 						{clickedLink === "MainData" ? (
 							<div
-								className='col-8 ml-3 rightContentWrapper'
+								className='col-md-8 ml-3 rightContentWrapper'
 								// style={{ borderLeft: "darkred 2px solid" }}
 							>
 								{UpdateBasicDataFormFunction()}
@@ -1015,6 +1022,28 @@ const UpdateProductSingleWrapper = styled.div`
 			border-left: 1px lightgrey solid;
 			min-height: 550px;
 			margin-left: 30px !important;
+		}
+	}
+	@media (max-width: 750px) {
+		.grid-container {
+			display: grid;
+			/* grid-template-columns: 16% 84%; */
+			grid-template-columns: ${(props) => (props.show ? "0% 99%" : "0% 100%")};
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+		h3 {
+			margin-top: 60px !important;
+		}
+
+		.rightContentWrapper {
+			margin-top: 20px;
+			margin-left: ${(props) => (props.show ? "0px" : "20px")};
+		}
+
+		.mainUL {
+			display: none;
 		}
 	}
 `;

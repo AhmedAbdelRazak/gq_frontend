@@ -193,11 +193,15 @@ const items = [
 	// ]),
 ];
 
-const AdminMenu = ({ fromPage, AdminMenuStatus, setAdminMenuStatus }) => {
+const AdminMenu = ({
+	fromPage,
+	setAdminMenuStatus,
+	collapsed,
+	setCollapsed,
+}) => {
 	const [windowDimensions, setWindowDimensions] = useState(
 		getWindowDimensions(),
 	);
-	const [collapsed, setCollapsed] = useState(false);
 
 	const toggleCollapsed = () => {
 		setCollapsed(!collapsed);
@@ -313,7 +317,13 @@ const AdminMenu = ({ fromPage, AdminMenuStatus, setAdminMenuStatus }) => {
 				}
 				defaultOpenKeys={[
 					"sub1",
-					"sub2",
+
+					fromPage === "AddGender" ||
+					fromPage === "UpdatedGender" ||
+					fromPage === "DeleteGender"
+						? "sub2"
+						: null,
+
 					fromPage === "AddCategory" ||
 					fromPage === "UpdateCategory" ||
 					fromPage === "DeleteCategory"
@@ -335,6 +345,7 @@ const AdminMenu = ({ fromPage, AdminMenuStatus, setAdminMenuStatus }) => {
 						: null,
 
 					"sub4",
+
 					"sub5",
 					"sub6",
 				]}
@@ -356,7 +367,7 @@ const AdminMenuWrapper = styled.div`
 	background: ${(props) => (props.show ? "" : "")};
 	top: 0px !important;
 	position: relative;
-	z-index: 500;
+	z-index: 11000;
 
 	li {
 		/* margin: 20px auto; */
@@ -378,6 +389,11 @@ const AdminMenuWrapper = styled.div`
 		background: #1e1e2d !important;
 	}
 
+	.ant-menu.ant-menu-dark,
+	.ant-menu-dark {
+		position: ${(props) => (props.show ? "fixed" : "")};
+	}
+
 	@media (max-width: 1650px) {
 		ul {
 			width: 250px;
@@ -387,6 +403,24 @@ const AdminMenuWrapper = styled.div`
 
 		ul > li {
 			font-size: 0.8rem !important;
+		}
+	}
+
+	@media (max-width: 750px) {
+		ul {
+			display: ${(props) => (props.show ? "none" : "")};
+			margin-top: 0px !important;
+			top: 0px !important;
+		}
+
+		.ant-menu.ant-menu-dark {
+			position: fixed;
+		}
+
+		button {
+			margin-top: 15px !important;
+			position: ${(props) => (props.show ? "" : "")};
+			display: ${(props) => (props.show ? "" : "none")};
 		}
 	}
 `;

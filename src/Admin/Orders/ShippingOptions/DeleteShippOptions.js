@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import { isAuthenticated } from "../../../auth";
 import AdminMenu from "../../AdminMenu/AdminMenu";
+import DarkBG from "../../AdminMenu/DarkBG";
 import { getShippingOptions, removeShippingOption } from "../../apiAdmin";
 
 const DeleteShippOptions = () => {
@@ -14,6 +15,7 @@ const DeleteShippOptions = () => {
 	// eslint-disable-next-line
 	const [loading, setLoading] = useState(true);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	const gettingAllShippingOptions = () => {
 		setLoading(true);
@@ -49,12 +51,17 @@ const DeleteShippOptions = () => {
 
 	return (
 		<DeleteShippOptionsWrapper>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<div className='row'>
 				<div className='col-3 mb-3'>
 					<AdminMenu
 						fromPage='DeleteShippingOption'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 				<div className='col-8'>

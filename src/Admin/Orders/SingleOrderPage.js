@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import { isAuthenticated } from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
+import DarkBG from "../AdminMenu/DarkBG";
 import Navbar from "../AdminNavMenu/Navbar";
 import { readSingleOrder, updateOrder } from "../apiAdmin";
 import Trial from "./UpdateModals/Trials";
@@ -18,6 +19,10 @@ const SingleOrderPage = (props) => {
 	const [updateSingleOrder, setUpdateSingleOrder] = useState({});
 	const [updateCustomerDetails, setUpdateCustomerDetails] = useState({});
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [offset, setOffset] = useState(0);
+	const [pageScrolled, setPageScrolled] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
+
 	const { user, token } = isAuthenticated();
 
 	const loadSingleOrder = (orderId) => {
@@ -57,18 +62,36 @@ const SingleOrderPage = (props) => {
 			});
 	};
 
+	useEffect(() => {
+		const onScroll = () => setOffset(window.pageYOffset);
+		// clean up code
+		window.removeEventListener("scroll", onScroll);
+		window.addEventListener("scroll", onScroll, { passive: true });
+		if (window.pageYOffset > 0) {
+			setPageScrolled(true);
+		} else {
+			setPageScrolled(false);
+		}
+		return () => window.removeEventListener("scroll", onScroll);
+	}, [offset]);
+
 	return (
 		<SingleOrderPageWrapper show={AdminMenuStatus}>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu
 						fromPage='OrdersHist'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 				<div className='mainContent'>
-					<Navbar fromPage='OrdersHist' />
+					<Navbar fromPage='OrdersHist' pageScrolled={pageScrolled} />
 					{loading ? (
 						<div>
 							<div

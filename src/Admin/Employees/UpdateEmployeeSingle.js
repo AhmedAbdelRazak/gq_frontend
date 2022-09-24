@@ -16,6 +16,7 @@ const UpdateEmployeeSingle = ({ match }) => {
 	const { user, token } = isAuthenticated();
 	const [addThumbnail, setAddThumbnail] = useState([]);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	const [values, setValues] = useState({
 		name: "",
@@ -362,6 +363,8 @@ const UpdateEmployeeSingle = ({ match }) => {
 						fromPage='UpdateEmployee'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 				<div className='mainContent'>

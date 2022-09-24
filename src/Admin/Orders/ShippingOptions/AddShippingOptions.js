@@ -12,6 +12,7 @@ import { Select } from "antd";
 import styled from "styled-components";
 import { ShipToData } from "./ShipToData";
 import Navbar from "../../AdminNavMenu/Navbar";
+import DarkBG from "../../AdminMenu/DarkBG";
 
 const { Option } = Select;
 
@@ -28,6 +29,9 @@ const AddShippingOptions = () => {
 	const [success, setSuccess] = useState(false);
 	const [chosenShippingData, setChosenShippingData] = useState([]);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [offset, setOffset] = useState(0);
+	const [pageScrolled, setPageScrolled] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	// destructure user and token from localstorage
 	const { user, token } = isAuthenticated();
@@ -301,8 +305,24 @@ const AddShippingOptions = () => {
 		}
 	};
 
+	useEffect(() => {
+		const onScroll = () => setOffset(window.pageYOffset);
+		// clean up code
+		window.removeEventListener("scroll", onScroll);
+		window.addEventListener("scroll", onScroll, { passive: true });
+		if (window.pageYOffset > 0) {
+			setPageScrolled(true);
+		} else {
+			setPageScrolled(false);
+		}
+		return () => window.removeEventListener("scroll", onScroll);
+	}, [offset]);
+
 	return (
 		<AddShippingOptionsWrapper show={AdminMenuStatus}>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<ToastContainer />
 			<div className='grid-container'>
 				<div className=''>
@@ -310,10 +330,12 @@ const AddShippingOptions = () => {
 						fromPage='AddShippingOption'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 				<div className=''>
-					<Navbar fromPage='AddShippingOption' />
+					<Navbar fromPage='AddShippingOption' pageScrolled={pageScrolled} />
 
 					<div className='container'>
 						<div className=' mt-2 mx-auto p-1'>

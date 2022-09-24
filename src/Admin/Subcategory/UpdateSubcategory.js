@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import Aos from "aos";
 import "aos/dist/aos.css";
+import DarkBG from "../AdminMenu/DarkBG";
 
 const UpdateSubcategory = () => {
 	const [allSubcategories, setAllSubCategories] = useState([]);
@@ -16,6 +17,7 @@ const UpdateSubcategory = () => {
 	// eslint-disable-next-line
 	const [loading, setLoading] = useState(true);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	const gettingAllSubcategories = () => {
 		setLoading(true);
@@ -40,12 +42,17 @@ const UpdateSubcategory = () => {
 
 	return (
 		<UpdateSubcategoryWrapper>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<div className='row'>
 				<div className='col-3 mb-3'>
 					<AdminMenu
 						fromPage='UpdateSubcategory'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 				<div className='col-8'>

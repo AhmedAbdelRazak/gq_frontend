@@ -15,6 +15,7 @@ import { ShipToData } from "../ShippingOptions/ShipToData";
 import { isAuthenticated } from "../../../auth";
 import { toast } from "react-toastify";
 import Navbar from "../../AdminNavMenu/Navbar";
+import DarkBG from "../../AdminMenu/DarkBG";
 const { Option } = Select;
 
 const isActive = (clickedLink, sureClickedLink) => {
@@ -45,7 +46,9 @@ const CreateNewOrder = () => {
 	const [orderSource, setOrderSource] = useState("");
 	const [allColors, setAllColors] = useState([]);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
-
+	const [offset, setOffset] = useState(0);
+	const [pageScrolled, setPageScrolled] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 	const [customerDetails, setCustomerDetails] = useState({
 		fullName: "",
 		phone: "",
@@ -1157,18 +1160,36 @@ const CreateNewOrder = () => {
 		);
 	};
 
+	useEffect(() => {
+		const onScroll = () => setOffset(window.pageYOffset);
+		// clean up code
+		window.removeEventListener("scroll", onScroll);
+		window.addEventListener("scroll", onScroll, { passive: true });
+		if (window.pageYOffset > 0) {
+			setPageScrolled(true);
+		} else {
+			setPageScrolled(false);
+		}
+		return () => window.removeEventListener("scroll", onScroll);
+	}, [offset]);
+
 	return (
 		<CreateNewOrderWrapper show={AdminMenuStatus}>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu
 						fromPage='CreateNewOrder'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 				<div className='mainContent'>
-					<Navbar fromPage='CreateNewOrder' />
+					<Navbar fromPage='CreateNewOrder' pageScrolled={pageScrolled} />
 					<h3
 						className='mx-auto text-center mb-5'
 						style={{ color: "#009ef7", fontWeight: "bold" }}>
@@ -1176,7 +1197,7 @@ const CreateNewOrder = () => {
 					</h3>
 
 					<div className='row'>
-						<div className='col-3'>
+						<div className='col-md-3'>
 							<ul className='mainUL'>
 								<li
 									className='mb-4 mainLi'
@@ -1250,10 +1271,29 @@ const CreateNewOrder = () => {
 
 						{clickedLink === "ChooseProducts" ? (
 							<div
-								className='col-8 ml-3 rightContentWrapper'
+								className='col-md-8 ml-3 rightContentWrapper'
 								// style={{ borderLeft: "darkred 2px solid" }}
 							>
 								{PickingUpProducts()}
+								{availableVariables() ? (
+									<button
+										className='btn btn-outline-primary my-4'
+										onClick={() => {
+											window.scrollTo({ top: 0, behavior: "smooth" });
+											setClickedLink("ProductFeatures");
+										}}>
+										Next: Adjust Product Features{" "}
+									</button>
+								) : (
+									<button
+										className='btn btn-outline-primary my-4'
+										onClick={() => {
+											window.scrollTo({ top: 0, behavior: "smooth" });
+											setClickedLink("AdjustQuantity");
+										}}>
+										Next: Adjust Quantity{" "}
+									</button>
+								)}
 							</div>
 						) : null}
 
@@ -1263,6 +1303,14 @@ const CreateNewOrder = () => {
 								// style={{ borderLeft: "darkred 2px solid" }}
 							>
 								{sizesAndColorsOptions()}
+								<button
+									className='btn btn-outline-primary my-4'
+									onClick={() => {
+										window.scrollTo({ top: 0, behavior: "smooth" });
+										setClickedLink("AdjustQuantity");
+									}}>
+									Next: Adjust Quantity{" "}
+								</button>
 							</div>
 						) : null}
 
@@ -1272,6 +1320,14 @@ const CreateNewOrder = () => {
 								// style={{ borderLeft: "darkred 2px solid" }}
 							>
 								{addingOrderQuantity()}
+								<button
+									className='btn btn-outline-primary my-4'
+									onClick={() => {
+										window.scrollTo({ top: 0, behavior: "smooth" });
+										setClickedLink("CustomerDetails");
+									}}>
+									Next: Fill In Customer Data{" "}
+								</button>
 							</div>
 						) : null}
 						{clickedLink === "CustomerDetails" ? (
@@ -1280,6 +1336,14 @@ const CreateNewOrder = () => {
 								// style={{ borderLeft: "darkred 2px solid" }}
 							>
 								{customerDetailsForm()}
+								<button
+									className='btn btn-outline-primary my-4'
+									onClick={() => {
+										window.scrollTo({ top: 0, behavior: "smooth" });
+										setClickedLink("ReviewOrder");
+									}}>
+									Next: Review Your Order{" "}
+								</button>
 							</div>
 						) : null}
 						{clickedLink === "ReviewOrder" ? (
@@ -1380,6 +1444,30 @@ const CreateNewOrderWrapper = styled.div`
 		.mainUL > li {
 			font-size: 0.75rem;
 			margin-left: 20px;
+		}
+	}
+
+	@media (max-width: 750px) {
+		.grid-container {
+			display: grid;
+			/* grid-template-columns: 16% 84%; */
+			grid-template-columns: ${(props) => (props.show ? "0% 99%" : "0% 100%")};
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+		h3 {
+			margin-top: 60px !important;
+		}
+		margin: auto 10px;
+
+		.mainUL {
+			display: none;
+		}
+
+		.rightContentWrapper {
+			border-left: 1px white solid;
+			margin-top: 20px;
 		}
 	}
 `;

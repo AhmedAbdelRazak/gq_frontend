@@ -8,6 +8,7 @@ import AdminMenu from "../AdminMenu/AdminMenu";
 import { getGenders, removeGender } from "../apiAdmin";
 import Aos from "aos";
 import "aos/dist/aos.css";
+import DarkBG from "../AdminMenu/DarkBG";
 
 const DeleteGender = () => {
 	const [allGenders, setAllGenders] = useState([]);
@@ -16,6 +17,7 @@ const DeleteGender = () => {
 	// eslint-disable-next-line
 	const [loading, setLoading] = useState(true);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	const gettingAllGenders = () => {
 		setLoading(true);
@@ -55,12 +57,17 @@ const DeleteGender = () => {
 
 	return (
 		<DeleteGenderWrapper show={AdminMenuStatus}>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<div className='row'>
 				<div className='col-3 mb-3'>
 					<AdminMenu
 						fromPage='DeleteGender'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 				<div className='col-8'>

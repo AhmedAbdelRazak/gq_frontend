@@ -7,6 +7,7 @@ import AdminMenu from "../../AdminMenu/AdminMenu";
 import { getProducts } from "../../apiAdmin";
 import CountUp from "react-countup";
 import AttributesModal from "./AttributesModal";
+import DarkBG from "../../AdminMenu/DarkBG";
 
 const UpdateProduct = () => {
 	const [allProducts, setAllProducts] = useState([]);
@@ -14,6 +15,7 @@ const UpdateProduct = () => {
 	const [clickedProduct, setClickedProduct] = useState({});
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [q, setQ] = useState("");
+	const [collapsed, setCollapsed] = useState(false);
 
 	const gettingAllProducts = () => {
 		getProducts().then((data) => {
@@ -252,12 +254,17 @@ const UpdateProduct = () => {
 
 	return (
 		<UpdateProductWrapper show={AdminMenuStatus}>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu
 						fromPage='UpdateProduct'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 
@@ -419,6 +426,25 @@ const UpdateProductWrapper = styled.div`
 			margin: auto;
 			/* border: 1px solid red; */
 			/* grid-auto-rows: minmax(60px, auto); */
+		}
+	}
+
+	@media (max-width: 750px) {
+		.grid-container {
+			display: grid;
+			/* grid-template-columns: 16% 84%; */
+			grid-template-columns: ${(props) => (props.show ? "0% 99%" : "0% 100%")};
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+		h3 {
+			margin-top: 60px !important;
+		}
+
+		.rightContentWrapper {
+			margin-top: 20px;
+			margin-left: ${(props) => (props.show ? "0px" : "20px")};
 		}
 	}
 `;
