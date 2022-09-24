@@ -280,7 +280,7 @@ export default OrdersHist;
 
 const OrdersHistWrapper = styled.div`
 	min-height: 880px;
-	overflow-x: hidden;
+	/* overflow-x: hidden; */
 	/* background: #ededed; */
 
 	.grid-container {

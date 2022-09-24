@@ -349,7 +349,7 @@ export default UpdateProduct;
 
 const UpdateProductWrapper = styled.div`
 	min-height: 980px;
-	overflow-x: hidden;
+	/* overflow-x: hidden; */
 	/* background: #ededed; */
 
 	.grid-container {
