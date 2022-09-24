@@ -39,6 +39,7 @@ const UpdateSubcategorySingle = ({ match }) => {
 	const [allSubCategories, setAllSubcategories] = useState([]);
 	const [imageDeletedFlag1, setImageDeletedFlag1] = useState(false);
 	const [addThumbnail, setAddThumbnail] = useState([]);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 
 	const gettingAllCategories = () => {
 		getCategories(token).then((data) => {
@@ -299,7 +300,11 @@ const UpdateSubcategorySingle = ({ match }) => {
 		<UpdateSubcategorySingleWrapper>
 			<div className='row'>
 				<div className='col-3 mb-3'>
-					<AdminMenu fromPage='UpdateSubcategory' />
+					<AdminMenu
+						fromPage='UpdateSubcategory'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 				<div className='col-8'>
 					<div className='contentWrapper' data-aos='fade-down'>

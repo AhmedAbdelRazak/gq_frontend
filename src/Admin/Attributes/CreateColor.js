@@ -24,6 +24,7 @@ const CreateColor = () => {
 	// eslint-disable-next-line
 	const [error, setError] = useState(false);
 	const [success, setSuccess] = useState(false);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 
 	// destructure user and token from localstorage
 	const { user, token } = isAuthenticated();
@@ -143,11 +144,15 @@ const CreateColor = () => {
 	}, []);
 
 	return (
-		<CreateColorWrapper>
+		<CreateColorWrapper show={AdminMenuStatus}>
 			<ToastContainer />
 			<div className='grid-container'>
 				<div className=''>
-					<AdminMenu fromPage='AddColor' />
+					<AdminMenu
+						fromPage='AddColor'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 				<div className=''>
 					<Navbar fromPage='AddColor' />
@@ -217,7 +222,7 @@ const CreateColorWrapper = styled.div`
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: 15.2% 84.8%;
+		grid-template-columns: ${(props) => (props.show ? "8% 92%" : "16% 84%")};
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */
@@ -230,10 +235,25 @@ const CreateColorWrapper = styled.div`
 		border-radius: 20px;
 	}
 
-	@media (max-width: 1500px) {
+	@media (max-width: 1750px) {
+		background: white;
+
 		.grid-container {
 			display: grid;
-			grid-template-columns: 20% 80%;
+			/* grid-template-columns: 18% 82%; */
+			grid-template-columns: ${(props) => (props.show ? "7% 93%" : "18% 82%")};
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+	}
+
+	@media (max-width: 1400px) {
+		background: white;
+
+		.grid-container {
+			display: grid;
+			grid-template-columns: 12% 88%;
 			margin: auto;
 			/* border: 1px solid red; */
 			/* grid-auto-rows: minmax(60px, auto); */

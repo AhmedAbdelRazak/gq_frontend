@@ -79,6 +79,7 @@ const UpdateProductSingle = ({ match }) => {
 	const [activeProduct, setActiveProduct] = useState(true);
 	const [featured, setFeatured] = useState(false);
 	const [productAttributesFinal, setProductAttributesFinal] = useState([]);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 
 	let productAttributes = [];
 
@@ -823,7 +824,11 @@ const UpdateProductSingle = ({ match }) => {
 		<UpdateProductSingleWrapper>
 			<div className='grid-container'>
 				<div className=''>
-					<AdminMenu fromPage='UpdateProduct' />
+					<AdminMenu
+						fromPage='UpdateProduct'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 				<div className='mainContent'>
 					<h3 className='mx-auto text-center mb-5 text-capitalize'>

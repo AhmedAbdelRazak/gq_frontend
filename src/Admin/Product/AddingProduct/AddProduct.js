@@ -78,6 +78,7 @@ const AddProduct = () => {
 	const [activeProduct, setActiveProduct] = useState(true);
 	const [featured, setFeatured] = useState(false);
 	const [productAttributesFinal, setProductAttributesFinal] = useState([]);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 
 	let productAttributes = [];
 
@@ -673,10 +674,14 @@ const AddProduct = () => {
 	}, []);
 
 	return (
-		<AddProductWrapper>
+		<AddProductWrapper show={AdminMenuStatus}>
 			<div className='grid-container'>
 				<div className=''>
-					<AdminMenu fromPage='AddProduct' />
+					<AdminMenu
+						fromPage='AddProduct'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 				<div className='mainContent'>
 					<Navbar fromPage='AddProduct' />
@@ -805,7 +810,8 @@ const AddProductWrapper = styled.div`
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: 15.5% 84.5%;
+		grid-template-columns: ${(props) =>
+			props.show ? "8% 92%" : "15.2% 84.8%"};
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */
@@ -852,9 +858,24 @@ const AddProductWrapper = styled.div`
 	}
 
 	@media (max-width: 1750px) {
+		background: white;
+
 		.grid-container {
 			display: grid;
-			grid-template-columns: 18% 82%;
+			/* grid-template-columns: 18% 82%; */
+			grid-template-columns: ${(props) => (props.show ? "7% 93%" : "18% 82%")};
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+	}
+
+	@media (max-width: 1400px) {
+		background: white;
+
+		.grid-container {
+			display: grid;
+			grid-template-columns: 12% 88%;
 			margin: auto;
 			/* border: 1px solid red; */
 			/* grid-auto-rows: minmax(60px, auto); */

@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 const OrdersHist = () => {
 	const [allOrders, setAllOrders] = useState([]);
 	const [q, setQ] = useState("");
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 
 	const { user, token } = isAuthenticated();
 
@@ -197,10 +198,14 @@ const OrdersHist = () => {
 	console.log(allOrders, "AllOrders");
 
 	return (
-		<OrdersHistWrapper>
+		<OrdersHistWrapper show={AdminMenuStatus}>
 			<div className='grid-container'>
 				<div className=''>
-					<AdminMenu fromPage='OrdersHist' />
+					<AdminMenu
+						fromPage='OrdersHist'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 				<div className='mainContent'>
 					<Navbar fromPage='OrdersHist' />
@@ -209,9 +214,9 @@ const OrdersHist = () => {
 						className='mx-auto text-center mb-5'>
 						Sales History
 					</h3>
-					<div className='container'>
+					<div className='container-fluid'>
 						<div className='row'>
-							<div className='col-md-4 text-center mx-auto'>
+							<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
 								<div className='card' style={{ background: "#f1416c" }}>
 									<div className='card-body'>
 										<h5 style={{ fontWeight: "bolder", color: "white" }}>
@@ -228,7 +233,7 @@ const OrdersHist = () => {
 								</div>
 							</div>
 
-							<div className='col-md-4 text-center mx-auto'>
+							<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
 								<div className='card' style={{ background: "#009ef7" }}>
 									<div className='card-body'>
 										<h5 style={{ fontWeight: "bolder", color: "white" }}>
@@ -245,7 +250,7 @@ const OrdersHist = () => {
 								</div>
 							</div>
 
-							<div className='col-md-4 text-center mx-auto'>
+							<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
 								<div className='card' style={{ background: "#50cd89" }}>
 									<div className='card-body'>
 										<h5 style={{ fontWeight: "bolder", color: "white" }}>
@@ -280,7 +285,8 @@ const OrdersHistWrapper = styled.div`
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: 15.5% 84.5%;
+		grid-template-columns: ${(props) =>
+			props.show ? "8% 92%" : "15.5% 84.5%"};
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */
@@ -292,6 +298,12 @@ const OrdersHistWrapper = styled.div`
 
 	.card-body span {
 		font-size: 1.5rem;
+	}
+
+	tr:hover {
+		background: #009ef7 !important;
+		color: white !important;
+		font-weight: bolder !important;
 	}
 
 	.tableData {
@@ -307,6 +319,31 @@ const OrdersHistWrapper = styled.div`
 			font-size: 0.5rem;
 			/* margin-right: 5px;
 		margin-left: 5px; */
+		}
+	}
+
+	@media (max-width: 1750px) {
+		background: white;
+
+		.grid-container {
+			display: grid;
+			/* grid-template-columns: 18% 82%; */
+			grid-template-columns: ${(props) => (props.show ? "7% 93%" : "18% 82%")};
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+	}
+
+	@media (max-width: 1400px) {
+		background: white;
+
+		.grid-container {
+			display: grid;
+			grid-template-columns: 12% 88%;
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
 		}
 	}
 `;

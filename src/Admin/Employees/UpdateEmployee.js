@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 
 const UpdateEmployee = () => {
 	const [allUsersAvailable, setAllUsersAvailable] = useState([]);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 
 	const { user, token } = isAuthenticated();
 
@@ -30,10 +31,14 @@ const UpdateEmployee = () => {
 	}, []);
 
 	return (
-		<UpdateEmployeeWrapper>
+		<UpdateEmployeeWrapper show={AdminMenuStatus}>
 			<div className='grid-container'>
 				<div className=''>
-					<AdminMenu fromPage='UpdateEmployee' />
+					<AdminMenu
+						fromPage='UpdateEmployee'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 				<div className='mainContent'>
 					<Navbar fromPage='UpdateEmployee' />

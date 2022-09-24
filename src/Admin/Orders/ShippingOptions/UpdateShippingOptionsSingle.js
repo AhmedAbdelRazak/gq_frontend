@@ -23,6 +23,7 @@ const UpdateShippingOptionsSingle = ({ match }) => {
 	const [carrierStatus, setCarrierStatus] = useState("1");
 	const [allChosenGov, setAllChosenGov] = useState([]);
 	const [loading, setLoading] = useState(true);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 
 	const gettingAllShippingOptions = () => {
 		setLoading(true);
@@ -152,7 +153,11 @@ const UpdateShippingOptionsSingle = ({ match }) => {
 			<ToastContainer />
 			<div className='row'>
 				<div className='col-3 mb-3'>
-					<AdminMenu fromPage='UpdateShippingOption' />
+					<AdminMenu
+						fromPage='UpdateShippingOption'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 				{selectedShippingOption && allShippingOptions && !loading ? (
 					<div className='col-8 contentWrapper'>

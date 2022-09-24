@@ -5,7 +5,12 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import AdminMenu from "../../AdminMenu/AdminMenu";
 import { Select } from "antd";
-import { createOrder, getProducts, getShippingOptions } from "../../apiAdmin";
+import {
+	createOrder,
+	getColors,
+	getProducts,
+	getShippingOptions,
+} from "../../apiAdmin";
 import { ShipToData } from "../ShippingOptions/ShipToData";
 import { isAuthenticated } from "../../../auth";
 import { toast } from "react-toastify";
@@ -38,6 +43,8 @@ const CreateNewOrder = () => {
 	const [allShippingOptions, setAllShippingOptions] = useState({});
 	const [orderTakerDiscount, setOrderTakerDiscount] = useState(0);
 	const [orderSource, setOrderSource] = useState("");
+	const [allColors, setAllColors] = useState([]);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 
 	const [customerDetails, setCustomerDetails] = useState({
 		fullName: "",
@@ -301,6 +308,21 @@ const CreateNewOrder = () => {
 		// eslint-disable-next-line
 	}, [chosenProductVariables]);
 
+	const gettingAllColors = () => {
+		getColors(token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllColors(data);
+			}
+		});
+	};
+
+	useEffect(() => {
+		gettingAllColors();
+		// eslint-disable-next-line
+	}, []);
+
 	const sizesAndColorsOptions = () => {
 		return (
 			<>
@@ -354,7 +376,18 @@ const CreateNewOrder = () => {
 											return (
 												<Option value={att.SubSKU} key={ii}>
 													{att.SubSKU}
-													{" | "} {att.color}
+													{" | "}{" "}
+													<span style={{ color: att.color }}>
+														{allColors[
+															allColors.map((i) => i.hexa).indexOf(att.color)
+														]
+															? allColors[
+																	allColors
+																		.map((i) => i.hexa)
+																		.indexOf(att.color)
+															  ].color
+															: att.color}
+													</span>
 													{" | "}
 													{att.size}
 													{" | "}
@@ -759,7 +792,7 @@ const CreateNewOrder = () => {
 		chosenProductQty &&
 		chosenProductQty.length > 0 &&
 		chosenProductQty.map((ii) =>
-			ii.filter((iii) => iii.OrderedQty <= iii.quantity),
+			ii.filter((iii) => iii.OrderedQty <= iii.quantity || iii.quantity !== 0),
 		);
 
 	let lengthsOfArrays =
@@ -775,18 +808,15 @@ const CreateNewOrder = () => {
 
 	let QuantityValidation_NoVariables =
 		productsWithNoVariables &&
-		productsWithNoVariables.filter((ii) => ii.orderedQuantity <= ii.quantity);
+		productsWithNoVariables.filter(
+			(ii) => ii.orderedQuantity <= ii.quantity || ii.quantity !== 0,
+		);
 
 	console.log(QuantityValidation_NoVariables, "QuantityValidation_NoVariables");
 	console.log(productsWithNoVariables, "productsWithNoVariables");
 
 	let quantityValidationLogic_NoVariables =
 		productsWithNoVariables.length !== QuantityValidation_NoVariables.length;
-
-	console.log(
-		quantityValidationLogic_NoVariables,
-		"quantityValidationLogic_NoVariables",
-	);
 
 	const CreatingOrder = (e) => {
 		e.preventDefault();
@@ -1128,10 +1158,14 @@ const CreateNewOrder = () => {
 	};
 
 	return (
-		<CreateNewOrderWrapper>
+		<CreateNewOrderWrapper show={AdminMenuStatus}>
 			<div className='grid-container'>
 				<div className=''>
-					<AdminMenu fromPage='CreateNewOrder' />
+					<AdminMenu
+						fromPage='CreateNewOrder'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 				<div className='mainContent'>
 					<Navbar fromPage='CreateNewOrder' />
@@ -1272,7 +1306,9 @@ const CreateNewOrderWrapper = styled.div`
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: 15.5% 84.5%;
+		/* grid-template-columns: 15.5% 84.5%; */
+		grid-template-columns: ${(props) =>
+			props.show ? "8% 92%" : "15.2% 84.8%"};
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */
@@ -1316,9 +1352,24 @@ const CreateNewOrderWrapper = styled.div`
 	}
 
 	@media (max-width: 1750px) {
+		background: white;
+
 		.grid-container {
 			display: grid;
-			grid-template-columns: 18% 82%;
+			/* grid-template-columns: 18% 82%; */
+			grid-template-columns: ${(props) => (props.show ? "7% 93%" : "18% 82%")};
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+	}
+
+	@media (max-width: 1400px) {
+		background: white;
+
+		.grid-container {
+			display: grid;
+			grid-template-columns: 10% 95%;
 			margin: auto;
 			/* border: 1px solid red; */
 			/* grid-auto-rows: minmax(60px, auto); */

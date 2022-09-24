@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 const UpdateEmployeeSingle = ({ match }) => {
 	const { user, token } = isAuthenticated();
 	const [addThumbnail, setAddThumbnail] = useState([]);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 
 	const [values, setValues] = useState({
 		name: "",
@@ -354,10 +355,14 @@ const UpdateEmployeeSingle = ({ match }) => {
 	const MisMatchError = "Passwords Don't Match, Please Try Again!!";
 
 	return (
-		<UpdateEmployeeSingleWrapper>
+		<UpdateEmployeeSingleWrapper show={AdminMenuStatus}>
 			<div className='grid-container'>
 				<div className=''>
-					<AdminMenu fromPage='UpdateEmployee' />
+					<AdminMenu
+						fromPage='UpdateEmployee'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 				<div className='mainContent'>
 					<Navbar fromPage='AddEmployee' />

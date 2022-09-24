@@ -551,7 +551,17 @@ const UpdatingProductVariable = ({
 												<label
 													className='text-muted'
 													style={{ fontWeight: "bold", fontSize: "17px" }}>
-													Product Stock Level (Color: {p.color} Size: {p.size})
+													Product Stock Level (Color:{" "}
+													<span style={{ color: p.color }}>
+														{allColors[
+															allColors.map((i) => i.hexa).indexOf(p.color)
+														]
+															? allColors[
+																	allColors.map((i) => i.hexa).indexOf(p.color)
+															  ].color
+															: p.color}
+													</span>{" "}
+													Size: {p.size})
 												</label>
 												<input
 													type='number'
@@ -590,8 +600,19 @@ const UpdatingProductVariable = ({
 													<label
 														className='text-muted'
 														style={{ fontWeight: "bold", fontSize: "13px" }}>
-														Product After Manufacturing (Color: {p.color} Size:{" "}
-														{p.size})
+														Product After Manufacturing (Color:{" "}
+														<span style={{ color: p.color }}>
+															{allColors[
+																allColors.map((i) => i.hexa).indexOf(p.color)
+															]
+																? allColors[
+																		allColors
+																			.map((i) => i.hexa)
+																			.indexOf(p.color)
+																  ].color
+																: p.color}
+														</span>{" "}
+														Size: {p.size})
 													</label>
 													<input
 														type='text'
@@ -605,7 +626,18 @@ const UpdatingProductVariable = ({
 													<label
 														className='text-muted'
 														style={{ fontWeight: "bold", fontSize: "13px" }}>
-														Product Price Before Discount (Color: {p.color}{" "}
+														Product Price Before Discount (Color:{" "}
+														<span style={{ color: p.color }}>
+															{allColors[
+																allColors.map((i) => i.hexa).indexOf(p.color)
+															]
+																? allColors[
+																		allColors
+																			.map((i) => i.hexa)
+																			.indexOf(p.color)
+																  ].color
+																: p.color}
+														</span>{" "}
 														Size: {p.size})
 													</label>
 													<input
@@ -620,8 +652,19 @@ const UpdatingProductVariable = ({
 													<label
 														className='text-muted'
 														style={{ fontWeight: "bold", fontSize: "13px" }}>
-														Product Price After Discount (Color: {p.color} Size:{" "}
-														{p.size})
+														Product Price After Discount (Color:{" "}
+														<span style={{ color: p.color }}>
+															{allColors[
+																allColors.map((i) => i.hexa).indexOf(p.color)
+															]
+																? allColors[
+																		allColors
+																			.map((i) => i.hexa)
+																			.indexOf(p.color)
+																  ].color
+																: p.color}
+														</span>{" "}
+														Size: {p.size})
 													</label>
 													<input
 														type='text'
@@ -660,7 +703,19 @@ const UpdatingProductVariable = ({
 													<label
 														className='text-muted'
 														style={{ fontWeight: "bold", fontSize: "17px" }}>
-														Variable SKU (Color: {p.color} Size: {p.size})
+														Variable SKU (Color:{" "}
+														<span style={{ color: p.color }}>
+															{allColors[
+																allColors.map((i) => i.hexa).indexOf(p.color)
+															]
+																? allColors[
+																		allColors
+																			.map((i) => i.hexa)
+																			.indexOf(p.color)
+																  ].color
+																: p.color}
+														</span>{" "}
+														Size: {p.size})
 													</label>
 													<input
 														type='text'

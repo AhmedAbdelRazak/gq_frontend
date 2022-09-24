@@ -15,6 +15,7 @@ const UpdateCategory = () => {
 	const { user, token } = isAuthenticated();
 	// eslint-disable-next-line
 	const [loading, setLoading] = useState(true);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 
 	const gettingAllCategories = () => {
 		setLoading(true);
@@ -38,10 +39,14 @@ const UpdateCategory = () => {
 	}, []);
 
 	return (
-		<UpdateCategoryWrapper>
+		<UpdateCategoryWrapper show={AdminMenuStatus}>
 			<div className='row'>
 				<div className='col-3 mb-3'>
-					<AdminMenu fromPage='UpdateCategory' />
+					<AdminMenu
+						fromPage='UpdateCategory'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 				<div className='col-8'>
 					<div className='contentWrapper' data-aos='fade-down'>
@@ -106,5 +111,29 @@ const UpdateCategoryWrapper = styled.div`
 		border: 2px solid lightgrey;
 		padding: 20px;
 		border-radius: 20px;
+	}
+
+	@media (max-width: 1750px) {
+		background: white;
+
+		.grid-container {
+			display: grid;
+			grid-template-columns: 18% 82%;
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+	}
+
+	@media (max-width: 1400px) {
+		background: white;
+
+		.grid-container {
+			display: grid;
+			grid-template-columns: 12% 85%;
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
 	}
 `;

@@ -12,6 +12,7 @@ const UpdateProduct = () => {
 	const [allProducts, setAllProducts] = useState([]);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [clickedProduct, setClickedProduct] = useState({});
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [q, setQ] = useState("");
 
 	const gettingAllProducts = () => {
@@ -159,7 +160,7 @@ const UpdateProduct = () => {
 					<thead className='thead-light'>
 						<tr
 							style={{
-								fontSize: "1rem",
+								fontSize: "0.85rem",
 								textTransform: "capitalize",
 								textAlign: "center",
 							}}>
@@ -177,7 +178,7 @@ const UpdateProduct = () => {
 					<tbody
 						className='my-auto'
 						style={{
-							fontSize: "0.9rem",
+							fontSize: "0.8rem",
 							textTransform: "capitalize",
 							fontWeight: "bolder",
 						}}>
@@ -250,15 +251,19 @@ const UpdateProduct = () => {
 	};
 
 	return (
-		<UpdateProductWrapper>
+		<UpdateProductWrapper show={AdminMenuStatus}>
 			<div className='grid-container'>
 				<div className=''>
-					<AdminMenu fromPage='UpdateProduct' />
+					<AdminMenu
+						fromPage='UpdateProduct'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 
-				<div className='mr-3 tableWrapper'>
+				<div className=' tableWrapper container-fluid'>
 					<div className='row'>
-						<div className='col-md-4 text-center mx-auto'>
+						<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
 							<div className='card' style={{ background: "#f1416c" }}>
 								<div className='card-body'>
 									<h5 style={{ fontWeight: "bolder", color: "white" }}>
@@ -283,7 +288,7 @@ const UpdateProduct = () => {
 							</div>
 						</div>
 
-						<div className='col-md-4 text-center mx-auto'>
+						<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
 							<div className='card' style={{ background: "#009ef7" }}>
 								<div className='card-body'>
 									<h5 style={{ fontWeight: "bolder", color: "white" }}>
@@ -308,7 +313,7 @@ const UpdateProduct = () => {
 							</div>
 						</div>
 
-						<div className='col-md-4 text-center mx-auto'>
+						<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
 							<div className='card' style={{ background: "#50cd89" }}>
 								<div className='card-body'>
 									<h5 style={{ fontWeight: "bolder", color: "white" }}>
@@ -349,7 +354,7 @@ const UpdateProductWrapper = styled.div`
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: 20% 80%;
+		grid-template-columns: ${(props) => (props.show ? "8% 92%" : "20% 80%")};
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */
@@ -365,6 +370,19 @@ const UpdateProductWrapper = styled.div`
 		font-weight: bold;
 	}
 
+	tr:nth-child(even) {
+		background: #fafafa !important;
+	}
+	tr:nth-child(odd) {
+		background: #d3d3d3 !important;
+	}
+
+	tr:hover {
+		background: #009ef7 !important;
+		color: white !important;
+		font-weight: bolder !important;
+	}
+
 	@media (max-width: 1550px) {
 		li {
 			font-size: 0.85rem !important;
@@ -376,6 +394,31 @@ const UpdateProductWrapper = styled.div`
 
 		h3 {
 			font-size: 1.2rem !important;
+		}
+	}
+
+	@media (max-width: 1750px) {
+		background: white;
+
+		.grid-container {
+			display: grid;
+			/* grid-template-columns: 18% 82%; */
+			grid-template-columns: ${(props) => (props.show ? "7% 93%" : "18% 82%")};
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+	}
+
+	@media (max-width: 1400px) {
+		background: white;
+
+		.grid-container {
+			display: grid;
+			grid-template-columns: 10% 95%;
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
 		}
 	}
 `;

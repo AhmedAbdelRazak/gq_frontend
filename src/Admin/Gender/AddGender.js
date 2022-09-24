@@ -28,6 +28,7 @@ const AddGender = () => {
 	// eslint-disable-next-line
 	const [success, setSuccess] = useState(false);
 	const [addThumbnail, setAddThumbnail] = useState([]);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 
 	// destructure user and token from localstorage
 	const { user, token } = isAuthenticated();
@@ -225,10 +226,14 @@ const AddGender = () => {
 	}, []);
 
 	return (
-		<AddGenderWrapper>
+		<AddGenderWrapper show={AdminMenuStatus}>
 			<div className='grid-container'>
 				<div className=''>
-					<AdminMenu fromPage='AddGender' />
+					<AdminMenu
+						fromPage='AddGender'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 				<div className='overallWrapper'>
 					<Navbar fromPage='AddGender' />
@@ -305,7 +310,11 @@ const AddGenderWrapper = styled.div`
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: 15.2% 84.8%;
+		/* grid-template-columns: 15.2% 84.8%;
+		 */
+
+		grid-template-columns: ${(props) =>
+			props.show ? "8% 92%" : "15.2% 84.8%"};
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */
@@ -326,10 +335,25 @@ const AddGenderWrapper = styled.div`
 		/* background: linear-gradient(to right, #fafafa, #858585); */
 	}
 
-	@media (max-width: 1500px) {
+	@media (max-width: 1750px) {
+		background: white;
+
 		.grid-container {
 			display: grid;
-			grid-template-columns: 20% 80%;
+			/* grid-template-columns: 18% 82%; */
+			grid-template-columns: ${(props) => (props.show ? "7% 93%" : "18% 82%")};
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+	}
+
+	@media (max-width: 1400px) {
+		background: white;
+
+		.grid-container {
+			display: grid;
+			grid-template-columns: 12% 88%;
 			margin: auto;
 			/* border: 1px solid red; */
 			/* grid-auto-rows: minmax(60px, auto); */

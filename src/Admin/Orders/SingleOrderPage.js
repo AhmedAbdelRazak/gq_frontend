@@ -17,6 +17,7 @@ const SingleOrderPage = (props) => {
 	const [singleOrder, setSingleOrder] = useState({});
 	const [updateSingleOrder, setUpdateSingleOrder] = useState({});
 	const [updateCustomerDetails, setUpdateCustomerDetails] = useState({});
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const { user, token } = isAuthenticated();
 
 	const loadSingleOrder = (orderId) => {
@@ -57,10 +58,14 @@ const SingleOrderPage = (props) => {
 	};
 
 	return (
-		<SingleOrderPageWrapper>
+		<SingleOrderPageWrapper show={AdminMenuStatus}>
 			<div className='grid-container'>
 				<div className=''>
-					<AdminMenu fromPage='OrdersHist' />
+					<AdminMenu
+						fromPage='OrdersHist'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 				<div className='mainContent'>
 					<Navbar fromPage='OrdersHist' />
@@ -464,7 +469,8 @@ const SingleOrderPageWrapper = styled.div`
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: 15.5% 84.5%;
+		grid-template-columns: ${(props) =>
+			props.show ? "8% 92%" : "15.5% 84.5%"};
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */
@@ -491,6 +497,31 @@ const SingleOrderPageWrapper = styled.div`
 			font-size: 0.5rem;
 			/* margin-right: 5px;
 		margin-left: 5px; */
+		}
+	}
+
+	@media (max-width: 1750px) {
+		background: white;
+
+		.grid-container {
+			display: grid;
+			/* grid-template-columns: 18% 82%; */
+			grid-template-columns: ${(props) => (props.show ? "7% 93%" : "18% 82%")};
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+	}
+
+	@media (max-width: 1400px) {
+		background: white;
+
+		.grid-container {
+			display: grid;
+			grid-template-columns: 12% 88%;
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
 		}
 	}
 `;

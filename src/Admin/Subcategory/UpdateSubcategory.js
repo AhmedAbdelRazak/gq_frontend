@@ -15,6 +15,7 @@ const UpdateSubcategory = () => {
 	const { user, token } = isAuthenticated();
 	// eslint-disable-next-line
 	const [loading, setLoading] = useState(true);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 
 	const gettingAllSubcategories = () => {
 		setLoading(true);
@@ -41,7 +42,11 @@ const UpdateSubcategory = () => {
 		<UpdateSubcategoryWrapper>
 			<div className='row'>
 				<div className='col-3 mb-3'>
-					<AdminMenu fromPage='UpdateSubcategory' />
+					<AdminMenu
+						fromPage='UpdateSubcategory'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 				<div className='col-8'>
 					<div className='contentWrapper' data-aos='fade-down'>

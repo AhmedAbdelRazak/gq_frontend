@@ -13,149 +13,172 @@ import {
 	WindowsOutlined,
 	HomeOutlined,
 	LogoutOutlined,
+	MessageOutlined,
+	RocketOutlined,
+	DollarCircleOutlined,
+	CarOutlined,
+	ProjectOutlined,
+	UsergroupAddOutlined,
 } from "@ant-design/icons";
+
 import styled from "styled-components";
 import { CSSTransition } from "react-transition-group";
 // eslint-disable-next-line
 import LetterGPhoto from "../../GeneralImages/LetterG.jpg";
 import { isAuthenticated, signout } from "../../auth";
 
-const Navbar = ({ fromPage }) => {
+const Navbar = ({ fromPage, pageScrolled }) => {
 	const [showAccountMenu, setShowAccountMenu] = useState(false);
 
 	const { employeeImage } = isAuthenticated().user;
 
-	console.log(employeeImage, "employeeImage");
 	return (
-		<NavbarWrapper>
-			<div className='row'>
-				<div className='col-9 itemsLeft'>
-					<Menu
-						mode='horizontal'
-						defaultSelectedKeys={
-							fromPage === "AdminDasboard"
-								? "/admin/dashboard"
-								: fromPage === "AddGender"
-								? "/admin/add-gender"
-								: fromPage === "AddCategory"
-								? "/admin/add-category"
-								: fromPage === "UpdateProduct"
-								? "/admin/update-product"
-								: fromPage === "AddSubcategory"
-								? "/admin/add-subcategory"
-								: fromPage === "CreateNewOrder"
-								? "/admin/create-new-order"
-								: fromPage === "UpdateShippingOption"
-								? "/admin/update-shipping-carrier"
-								: fromPage === "AddShippingOption"
-								? "/admin/add-shipping-carrier"
-								: fromPage === "OrdersHist"
-								? "/admin/orders-hist"
-								: "/admin/dashboard"
-						}>
-						<Menu.Item key='/admin/dashboard' icon={<HomeOutlined />}>
-							<Link to='/admin/dashboard'>Owner Dashboard</Link>
-						</Menu.Item>
-						<Menu.SubMenu
-							key='SubMenu'
-							title='Sales'
-							icon={<SettingOutlined />}>
-							<Menu.Item key='two' icon={<AppstoreOutlined />}>
-								Day Over Day Sales
+		<NavbarWrapper show={pageScrolled}>
+			<div className='container-fluid'>
+				<div className='row'>
+					<div className='col-xl-9 col-lg-8 col-md-7 col-sm-6 mx-auto itemsLeft'>
+						<Menu
+							mode='horizontal'
+							defaultSelectedKeys={
+								fromPage === "AdminDasboard"
+									? "/admin/dashboard"
+									: fromPage === "AddGender"
+									? "/admin/add-gender"
+									: fromPage === "AddCategory"
+									? "/admin/add-category"
+									: fromPage === "UpdateProduct"
+									? "/admin/update-product"
+									: fromPage === "AddSubcategory"
+									? "/admin/add-subcategory"
+									: fromPage === "CreateNewOrder"
+									? "/admin/create-new-order"
+									: fromPage === "UpdateShippingOption"
+									? "/admin/update-shipping-carrier"
+									: fromPage === "AddShippingOption"
+									? "/admin/add-shipping-carrier"
+									: fromPage === "OrdersHist"
+									? "/admin/orders-hist"
+									: "/admin/dashboard"
+							}>
+							<Menu.Item key='/admin/dashboard' icon={<HomeOutlined />}>
+								<Link to='/admin/dashboard'>Owner Dashboard</Link>
 							</Menu.Item>
-							<Menu.Item key='three' icon={<AppstoreOutlined />}>
-								Pending Sales
-							</Menu.Item>
-							<Menu.Item key='/admin/orders-hist' icon={<AppstoreOutlined />}>
-								<Link to='/admin/orders-hist'>Sales History</Link>
-							</Menu.Item>
-							<Menu.ItemGroup title='Top Trending'>
-								<Menu.Item key='four' icon={<AppstoreOutlined />}>
-									Top Sold Items
+							<Menu.SubMenu
+								key='SubMenu'
+								title='Sales'
+								icon={<SettingOutlined />}>
+								<Menu.Item key='two' icon={<AppstoreOutlined />}>
+									Day Over Day Sales
 								</Menu.Item>
-								<Menu.Item key='five' icon={<AppstoreOutlined />}>
-									Top Employee Performance
+								<Menu.Item key='three' icon={<AppstoreOutlined />}>
+									Pending Sales
 								</Menu.Item>
-							</Menu.ItemGroup>
-						</Menu.SubMenu>
+								<Menu.Item key='/admin/orders-hist' icon={<AppstoreOutlined />}>
+									<Link to='/admin/orders-hist'>Sales History</Link>
+								</Menu.Item>
+								<Menu.ItemGroup title='Top Trending'>
+									<Menu.Item key='four' icon={<AppstoreOutlined />}>
+										Top Sold Items
+									</Menu.Item>
+									<Menu.Item key='five' icon={<AppstoreOutlined />}>
+										Top Employee Performance
+									</Menu.Item>
+								</Menu.ItemGroup>
+							</Menu.SubMenu>
 
-						<Menu.SubMenu
-							key='SubMenu2'
-							title='Modules'
-							icon={<DesktopOutlined />}>
-							<Menu.Item key='/admin/add-gender' icon={<AppstoreOutlined />}>
-								<Link to='/admin/add-gender'>Gender Management</Link>
-							</Menu.Item>
-							<Menu.Item key='/admin/add-category' icon={<AppstoreOutlined />}>
-								<Link to='/admin/add-category'>Categories Management</Link>
-							</Menu.Item>
-							<Menu.Item
-								key='/admin/update-product'
-								icon={<AppstoreOutlined />}>
-								<Link to='/admin/update-product'>Products And Inventory</Link>
-							</Menu.Item>
-							<Menu.Item
-								key='/admin/add-shipping-carrier'
-								icon={<AppstoreOutlined />}>
-								<Link to='/admin/add-shipping-carrier'>
-									Shipping / Carriers
-								</Link>
-							</Menu.Item>
-							<Menu.Item key='eleven' icon={<AppstoreOutlined />}>
-								Financial
-							</Menu.Item>
-						</Menu.SubMenu>
-					</Menu>
-				</div>
+							<Menu.SubMenu
+								key='SubMenu2'
+								title='Modules'
+								icon={<DesktopOutlined />}>
+								<Menu.Item
+									key='/admin/update-product'
+									icon={<RocketOutlined />}>
+									<Link to='/admin/update-product'>Products And Inventory</Link>
+								</Menu.Item>
+								<Menu.Item key='eleven' icon={<DollarCircleOutlined />}>
+									Financial
+								</Menu.Item>
+								<Menu.Item
+									key='/admin/add-shipping-carrier'
+									icon={<CarOutlined />}>
+									<Link to='/admin/add-shipping-carrier'>
+										Shipping / Carriers
+									</Link>
+								</Menu.Item>
+								<Menu.Item key='/admin/add-category' icon={<ProjectOutlined />}>
+									<Link to='/admin/add-category'>Categories Management</Link>
+								</Menu.Item>
+								<Menu.Item
+									key='/admin/add-gender'
+									icon={<UsergroupAddOutlined />}>
+									<Link to='/admin/add-gender'>Gender Management</Link>
+								</Menu.Item>
+							</Menu.SubMenu>
+						</Menu>
+					</div>
 
-				<div className='col-3 rightList'>
-					<ul>
-						<li>
-							<SearchOutlined />
-						</li>
-						<li>
-							<BellOutlined />
-						</li>
-						<li>
-							<WindowsOutlined />
-						</li>
-						<li
-							onMouseOver={() => setShowAccountMenu(true)}
-							onMouseLeave={() => setShowAccountMenu(false)}
-							onClick={() => {
-								// window.scrollTo({ top: 0, behavior: "smooth" });
-							}}>
-							<img src={employeeImage} alt='GQShop' />
-							<CSSTransition
-								in={showAccountMenu}
-								timeout={200}
-								classNames='subMenuWrapper'
-								unmountOnExit={showAccountMenu ? false : true}
-								onEnter={() => setShowAccountMenu(showAccountMenu)}
-								// onExited={() => setShowAccountMenu(!showAccountMenu)}
-							>
-								<ul className='subMenuWrapper' style={{ zIndex: "1000" }}>
-									<li
-										className='subMenuList'
-										onClick={() => {
-											setShowAccountMenu(!showAccountMenu);
-											signout(() => {
-												window.location.reload(false);
-											});
-										}}>
-										{isAuthenticated().user.name} Account!
-										<br />
-										<br />
-										<LogoutOutlined />
-										{"   "}{" "}
-										<span style={{ color: "#ffd8d8", zIndex: "100" }}>
-											Logout
-										</span>
-									</li>
-								</ul>
-							</CSSTransition>
-						</li>
-					</ul>
+					<div className='col-xl-3 col-lg-4 col-md-5 col-sm-6 mx-auto rightList'>
+						<ul>
+							<li>
+								<SearchOutlined />
+							</li>
+							<li>
+								<BellOutlined />
+							</li>
+							<li>
+								<WindowsOutlined />
+							</li>
+
+							<li>
+								<div
+									className='blink'
+									style={{
+										fontSize: "3px",
+										padding: "2.5px",
+										position: "fixed",
+										marginLeft: "9px",
+										top: "10px",
+										borderRadius: "50%",
+										// display: "inherit",
+										// background: "#00ff00",
+									}}></div>
+								<MessageOutlined />
+							</li>
+							<li
+								onMouseOver={() => setShowAccountMenu(true)}
+								onMouseLeave={() => setShowAccountMenu(false)}
+								onClick={() => {
+									// window.scrollTo({ top: 0, behavior: "smooth" });
+								}}>
+								<img src={employeeImage} alt='GQShop' />
+								<CSSTransition
+									in={showAccountMenu}
+									timeout={200}
+									classNames='subMenuWrapper'
+									unmountOnExit={showAccountMenu ? false : true}
+									onEnter={() => setShowAccountMenu(showAccountMenu)}
+									// onExited={() => setShowAccountMenu(!showAccountMenu)}
+								>
+									<ul className='subMenuWrapper'>
+										<li
+											className='subMenuList'
+											onClick={() => {
+												setShowAccountMenu(!showAccountMenu);
+												signout(() => {
+													window.location.reload(false);
+												});
+											}}>
+											{isAuthenticated().user.name} Account!
+											<br />
+											<br />
+											<LogoutOutlined />
+											{"   "} <span style={{ color: "#ffd8d8" }}>Logout</span>
+										</li>
+									</ul>
+								</CSSTransition>
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</NavbarWrapper>
@@ -167,15 +190,23 @@ export default Navbar;
 const NavbarWrapper = styled.div`
 	background: white;
 	margin-bottom: 20px;
+	z-index: 1000 !important;
 
 	.rightList > ul {
 		list-style-type: none;
 		background: white;
+		/* position: fixed; */
+		position: ${(props) => (props.show ? "" : "fixed")};
+		z-index: 1000 !important;
+	}
+
+	.blink {
+		background: ${(props) => (props.show ? "white !important" : "#00ff00")};
 	}
 
 	.rightList > ul > li {
 		display: inline-block;
-		margin-left: 25px;
+		margin-left: 15px;
 		font-size: 1.5rem;
 		color: #b6b6b6;
 		font-weight: bold !important;
@@ -207,14 +238,16 @@ const NavbarWrapper = styled.div`
 		background: #00458a;
 		border-radius: 5px;
 		padding: 20px;
-		right: 50px;
-		margin-top: 10px;
+		right: 0px;
+		margin-top: 8px;
+		z-index: 1000;
 	}
 
 	.subMenuList {
 		display: block;
 		color: white !important;
 		font-size: 0.9rem;
+		z-index: 1000;
 	}
 
 	.subMenuList a {
@@ -222,6 +255,7 @@ const NavbarWrapper = styled.div`
 		color: white !important;
 		font-size: 0.9rem;
 		font-weight: bold;
+		z-index: 1000;
 	}
 
 	.subMenuWrapper-enter {
@@ -242,39 +276,14 @@ const NavbarWrapper = styled.div`
 		transition: opacity 200ms, transform 200ms;
 	}
 
-	@media (max-width: 1490px) {
-		.rightList > ul > li {
-			display: inline-block;
-			margin-left: 15px;
-			font-size: 1.5rem;
-			color: #b6b6b6;
-			font-weight: bold !important;
-			transition: 0.3s;
-			margin-top: 5px;
-			padding-right: 5px;
-			padding-left: 5px;
-			padding-bottom: 10px;
-		}
-
-		.rightList > ul > li:hover {
-			background: #d8ebff;
-			transition: 0.3s;
-			border-radius: 3px;
-			padding-right: 5px;
-			padding-left: 5px;
-			padding-bottom: 10px;
-			cursor: pointer;
-		}
-	}
-
-	@media (max-width: 1300px) {
+	@media (max-width: 1580px) {
 		ul {
-			margin-left: 25px !important;
+			right: 50px !important;
 		}
 		.rightList > ul > li {
 			display: inline-block;
 			margin-left: 10px;
-			font-size: 1rem;
+			font-size: 1.6rem;
 			color: #b6b6b6;
 			font-weight: bold !important;
 			transition: 0.3s;
@@ -295,13 +304,21 @@ const NavbarWrapper = styled.div`
 		}
 
 		.rightList > ul > li > img {
-			width: 18px;
+			width: 25px;
 			object-fit: cover;
 			border-radius: 5px;
 		}
 
 		.itemsLeft > ul > li {
 			font-size: 0.8rem;
+			margin: 0px !important;
+			padding-left: 0px !important;
+		}
+	}
+
+	@media (max-width: 875px) {
+		.itemsLeft > ul > li {
+			font-size: 0.7rem;
 			margin: 0px !important;
 			padding-left: 0px !important;
 		}

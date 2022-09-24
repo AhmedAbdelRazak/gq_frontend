@@ -26,6 +26,7 @@ const UpdateGenderSingle = ({ match }) => {
 	// eslint-disable-next-line
 	const [imageDeletedFlag1, setImageDeletedFlag1] = useState(false);
 	const [addThumbnail, setAddThumbnail] = useState([]);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 
 	const gettingAllGenders = () => {
 		setLoading(true);
@@ -244,11 +245,15 @@ const UpdateGenderSingle = ({ match }) => {
 	}, []);
 
 	return (
-		<UpdateGenderSingleWrapper>
+		<UpdateGenderSingleWrapper show={AdminMenuStatus}>
 			<ToastContainer />
 			<div className='row'>
 				<div className='col-3 mb-3'>
-					<AdminMenu fromPage='UpdateGender' />
+					<AdminMenu
+						fromPage='UpdateGender'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 				{selectedGender && allGenders && !loading ? (
 					<div className='col-8 contentWrapper'>

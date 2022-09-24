@@ -27,6 +27,7 @@ const AddShippingOptions = () => {
 	const [error, setError] = useState(false);
 	const [success, setSuccess] = useState(false);
 	const [chosenShippingData, setChosenShippingData] = useState([]);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 
 	// destructure user and token from localstorage
 	const { user, token } = isAuthenticated();
@@ -301,11 +302,15 @@ const AddShippingOptions = () => {
 	};
 
 	return (
-		<AddShippingOptionsWrapper>
+		<AddShippingOptionsWrapper show={AdminMenuStatus}>
 			<ToastContainer />
 			<div className='grid-container'>
 				<div className=''>
-					<AdminMenu fromPage='AddShippingOption' />
+					<AdminMenu
+						fromPage='AddShippingOption'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 				<div className=''>
 					<Navbar fromPage='AddShippingOption' />
@@ -336,7 +341,7 @@ const AddShippingOptionsWrapper = styled.div`
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: 15% 87%;
+		grid-template-columns: ${(props) => (props.show ? "8% 92%" : "15% 87%")};
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */

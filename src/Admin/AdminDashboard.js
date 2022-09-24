@@ -24,6 +24,10 @@ import { Link } from "react-router-dom";
 
 const AdminDashboard = () => {
 	const [allOrders, setAllOrders] = useState([]);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	// eslint-disable-next-line
+	const [offset, setOffset] = useState(0);
+	const [pageScrolled, setPageScrolled] = useState(false);
 
 	const { user, token } = isAuthenticated();
 
@@ -71,7 +75,7 @@ const AdminDashboard = () => {
 	next7Days.setDate(yesterday.getDate() + 8);
 	next30Days.setDate(yesterday.getDate() + 31);
 
-	console.log(yesterday, "yesterday");
+	// console.log(yesterday, "yesterday");
 
 	let todaysOrders = allOrders.filter(
 		(i) =>
@@ -156,7 +160,7 @@ const AdminDashboard = () => {
 			};
 		});
 
-	console.log(last7daysOrders, "last7daysOrders");
+	// console.log(last7daysOrders, "last7daysOrders");
 
 	var OrdersDates_TotalAmount = [];
 	last7daysOrders &&
@@ -245,428 +249,486 @@ const AdminDashboard = () => {
 		],
 	};
 
+	useEffect(() => {
+		const onScroll = () => setOffset(window.pageYOffset);
+		// clean up code
+		window.removeEventListener("scroll", onScroll);
+		window.addEventListener("scroll", onScroll, { passive: true });
+		if (window.pageYOffset > 0) {
+			setPageScrolled(true);
+		} else {
+			setPageScrolled(false);
+		}
+		return () => window.removeEventListener("scroll", onScroll);
+	}, [offset]);
+
 	return (
-		<AdminDashboardWrapper>
+		<AdminDashboardWrapper show={AdminMenuStatus}>
 			<div className='grid-container'>
 				<div>
-					<AdminMenu fromPage='AdminDasboard' />
+					<AdminMenu
+						fromPage='AdminDasboard'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 				<div className='navbarcontent'>
-					<Navbar fromPage='AdminDashboard' />
-					<div className='col-md-10 mx-auto  mt-5'>
-						<div className='row mx-auto'>
-							<div className='col-md-4  mx-auto'>
-								<div className='firstCard mb-3'>
-									<div className='headerIcons'>
-										<ShoppingCartOutlined />
+					<Navbar fromPage='AdminDashboard' pageScrolled={pageScrolled} />
+					<div className='mx-auto  mt-5'>
+						<div className='container-fluid'>
+							<div className='row mx-auto'>
+								<div className='col-xl-4 col-lg-8 col-md-11  mx-auto'>
+									<div className='firstCard mb-3'>
+										<div className='headerIcons'>
+											<ShoppingCartOutlined />
+										</div>
+										<div className='headerText'>Order Takers Summary</div>
 									</div>
-									<div className='headerText'>Order Takers Summary</div>
+
+									<div className='card'>
+										<h5>Orders Overview</h5>
+										<div className='col-md-10 mx-auto'>
+											<hr />
+										</div>
+										<div className='row mt-3'>
+											<div className='col-md-5 mx-auto'>
+												<span className='cardHeader'>Overall Orders</span>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={1}
+														end={allOrders.length}
+														separator=','
+													/>
+												</div>{" "}
+											</div>
+											<div className='col-md-5 mx-auto'>
+												<span className='cardHeader'>Today's Orders </span>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={1}
+														end={todaysOrders.length}
+														separator=','
+													/>
+												</div>{" "}
+											</div>
+											<div className='col-md-5 mt-5 mx-auto'>
+												<span className='cardHeader'>Overall Orders PY</span>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={0}
+														end={0}
+														separator=','
+													/>
+												</div>{" "}
+											</div>
+											<div className='col-md-5 mt-5 mx-auto'>
+												<span className='cardHeader'>Yesterday's Orders</span>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={1}
+														end={yesterdaysOrders.length}
+														separator=','
+													/>
+												</div>{" "}
+											</div>
+											<div className='col-md-5 mt-5 mx-auto'>
+												<span className='cardHeader'>Today's Revenue</span>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={0}
+														end={sumOfTodaysRevenue}
+														separator=','
+													/>{" "}
+													L.E.
+												</div>{" "}
+											</div>
+											<div className='col-md-5 mt-5 mx-auto'>
+												<span className='cardHeader'>Yesterday's Revenue </span>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={0}
+														end={sumOfYesterdaysRevenue}
+														separator=','
+													/>{" "}
+													L.E.
+												</div>{" "}
+											</div>
+										</div>
+									</div>
 								</div>
 
-								<div className='card'>
-									<h5>Orders Overview</h5>
-									<div className='col-md-10 mx-auto'>
-										<hr />
+								<div className='col-xl-4 col-lg-8 col-md-11 mx-auto'>
+									<div className='secondCard mb-3'>
+										<div className='headerIcons'>
+											<FileUnknownOutlined />
+										</div>
+										<div className='headerText'>Orders Status</div>
 									</div>
-									<div className='row mt-3'>
-										<div className='col-md-5 mx-auto'>
-											<span className='cardHeader'>Overall Orders</span>{" "}
-											<div className='metrics'>
-												<CountUp
-													duration='2'
-													delay={1}
-													end={allOrders.length}
-													separator=','
-												/>
-											</div>{" "}
+									<div className='card'>
+										<h5>Actions Needed...</h5>
+										<div className='col-md-10 mx-auto'>
+											<hr />
 										</div>
-										<div className='col-md-5 mx-auto'>
-											<span className='cardHeader'>Today's Orders </span>{" "}
-											<div className='metrics'>
-												<CountUp
-													duration='2'
-													delay={1}
-													end={todaysOrders.length}
-													separator=','
-												/>
-											</div>{" "}
-										</div>
-										<div className='col-md-5 mt-5 mx-auto'>
-											<span className='cardHeader'>Overall Orders PY</span>{" "}
-											<div className='metrics'>
-												<CountUp duration='2' delay={0} end={0} separator=',' />
-											</div>{" "}
-										</div>
-										<div className='col-md-5 mt-5 mx-auto'>
-											<span className='cardHeader'>Yesterday's Orders</span>{" "}
-											<div className='metrics'>
-												<CountUp
-													duration='2'
-													delay={1}
-													end={yesterdaysOrders.length}
-													separator=','
-												/>
-											</div>{" "}
-										</div>
-										<div className='col-md-5 mt-5 mx-auto'>
-											<span className='cardHeader'>Today's Revenue</span>{" "}
-											<div className='metrics'>
-												<CountUp
-													duration='2'
-													delay={0}
-													end={sumOfTodaysRevenue}
-													separator=','
-												/>{" "}
-												L.E.
-											</div>{" "}
-										</div>
-										<div className='col-md-5 mt-5 mx-auto'>
-											<span className='cardHeader'>Yesterday's Revenue </span>{" "}
-											<div className='metrics'>
-												<CountUp
-													duration='2'
-													delay={0}
-													end={sumOfYesterdaysRevenue}
-													separator=','
-												/>{" "}
-												L.E.
-											</div>{" "}
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<div className='col-md-4 mx-auto'>
-								<div className='secondCard mb-3'>
-									<div className='headerIcons'>
-										<FileUnknownOutlined />
-									</div>
-									<div className='headerText'>Orders Status</div>
-								</div>
-								<div className='card'>
-									<h5>Actions Needed...</h5>
-									<div className='col-md-10 mx-auto'>
-										<hr />
-									</div>
-									<div className='row mt-3'>
-										<div className='col-md-5 mx-auto'>
-											<span className='cardHeader'>
-												Overall Unfulfilled Orders
-											</span>{" "}
-											<div className='metrics'>
-												<CountUp
-													duration='2'
-													delay={1}
-													end={overAllUnfulfilledOrders.length}
-													separator=','
-												/>
-											</div>{" "}
-										</div>
-										<div className='col-md-5 mx-auto'>
-											<span className='cardHeader'>
-												Today's Unfulfilled Orders{" "}
-											</span>{" "}
-											<div className='metrics'>
-												<CountUp
-													duration='2'
-													delay={1}
-													end={todaysUnfulfilledOrders.length}
-													separator=','
-												/>
-											</div>{" "}
-										</div>
-
-										<div className='col-md-5 mt-5 mx-auto'>
-											<span className='cardHeader'>
-												Today's Unfulfilled Revenue
-											</span>{" "}
-											<div className='metrics'>
-												<CountUp
-													duration='2'
-													delay={1}
-													end={sumOfTodaysUnfulfilledRevenue}
-													separator=','
-												/>{" "}
-												L.E.
-											</div>{" "}
-										</div>
-										<div className='col-md-5 mt-5 mx-auto'>
-											<span className='cardHeader'>
-												Yesterday's Unfulfilled Revenue{" "}
-											</span>{" "}
-											<div className='metrics'>
-												<CountUp
-													duration='2'
-													delay={1}
-													end={sumOfYesterdaysUnfulfilledRevenue}
-													separator=','
-												/>{" "}
-												L.E.
-											</div>{" "}
-										</div>
-										<div
-											className='col-md-5 mt-3 mx-auto'
-											style={{ fontWeight: "bolder" }}>
-											{" "}
-											<Link to='/admin/orders-hist'>LEARN MORE...</Link>{" "}
-										</div>
-									</div>
-								</div>
-							</div>
-							<div className='col-md-4  mx-auto'>
-								<div className='thirdCard mb-3'>
-									<div className='headerIcons'>
-										<AreaChartOutlined />
-									</div>
-									<div className='headerText'>Sales Stats</div>
-								</div>
-								<div className='card'>
-									<h5>Day Over Day Sales Stats:</h5>
-									<div className='col-md-10 mx-auto'>
-										<hr />
-									</div>
-									<div className='mx-auto text-center w-100 h-100'>
-										<Chart
-											options={chartDataTotalAmount.options}
-											series={chartDataTotalAmount.series}
-											type='bar'
-											style={{
-												width: "100%",
-												height: "100%",
-											}}
-										/>
-									</div>
-								</div>
-							</div>
-							<div className='col-md-4  mx-auto my-5'>
-								<div className='card'>
-									<h5>
-										Today's Top Employees (
-										{new Date().toDateString("en-US", {
-											timeZone: "Africa/Cairo",
-										})}
-										):
-									</h5>
-									<div className='col-md-10 mx-auto'>
-										<hr />
-									</div>
-									<div className='row'>
-										<div className='col-md-8'>
-											<img className='userImage' src={LetterM} alt='name' />
-											<span className='employeeName'>
-												Mamdouh Muhammad{" "}
-												<span className='iconsForEmployee'>
-													<VerticalAlignTopOutlined />
+										<div className='row mt-3'>
+											<div className='col-md-5 mx-auto'>
+												<span className='cardHeader'>
+													Overall Unfulfilled Orders
 												</span>{" "}
-											</span>
-											<div className='topEmployeeOrders'>Taken Orders: 43</div>
-										</div>
-										<div className='col-md-4 mt-2'>
-											<div style={{ fontWeight: "bold" }}>
-												<CountUp
-													duration='2'
-													delay={0}
-													end={4252}
-													separator=','
-												/>{" "}
-												L.E.
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={1}
+														end={overAllUnfulfilledOrders.length}
+														separator=','
+													/>
+												</div>{" "}
+											</div>
+											<div className='col-md-5 mx-auto'>
+												<span className='cardHeader'>
+													Today's Unfulfilled Orders{" "}
+												</span>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={1}
+														end={todaysUnfulfilledOrders.length}
+														separator=','
+													/>
+												</div>{" "}
+											</div>
+
+											<div className='col-md-5 mt-5 mx-auto'>
+												<span className='cardHeader'>
+													Today's Unfulfilled Revenue
+												</span>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={1}
+														end={sumOfTodaysUnfulfilledRevenue}
+														separator=','
+													/>{" "}
+													L.E.
+												</div>{" "}
+											</div>
+											<div className='col-md-5 mt-5 mx-auto'>
+												<span className='cardHeader'>
+													Yesterday's Unfulfilled Revenue{" "}
+												</span>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={1}
+														end={sumOfYesterdaysUnfulfilledRevenue}
+														separator=','
+													/>{" "}
+													L.E.
+												</div>{" "}
 											</div>
 											<div
-												style={{
-													color: "darkgrey",
-													fontWeight: "bold",
-													marginTop: "10px",
-												}}>
-												Total Sales
+												className='col-md-5 mt-3 mx-auto'
+												style={{ fontWeight: "bolder" }}>
+												{" "}
+												<Link to='/admin/orders-hist'>LEARN MORE...</Link>{" "}
 											</div>
 										</div>
 									</div>
-									<hr />
-									<div className='row mt-1'>
-										<div className='col-md-8'>
-											<img
-												className='userImage'
-												src={LetterIbrahim}
-												alt='name'
+								</div>
+								<div className='col-xl-4 col-lg-8 col-md-11 mx-auto'>
+									<div className='thirdCard mb-3'>
+										<div className='headerIcons'>
+											<AreaChartOutlined />
+										</div>
+										<div className='headerText'>Sales Stats</div>
+									</div>
+									<div className='card'>
+										<h5>Day Over Day Sales Stats:</h5>
+										<div className='col-md-10 mx-auto'>
+											<hr />
+										</div>
+										<div className='mx-auto text-center w-100 h-100'>
+											<Chart
+												options={chartDataTotalAmount.options}
+												series={chartDataTotalAmount.series}
+												type='bar'
+												style={{
+													width: "100%",
+													height: "100%",
+												}}
 											/>
-											<span className='employeeName'>Ibrahim Gamal</span>
-											<div className='topEmployeeOrders'>Taken Orders: 37</div>
-										</div>
-										<div className='col-md-4 mt-2'>
-											<div style={{ fontWeight: "bold" }}>
-												<CountUp
-													duration='2'
-													delay={0}
-													end={3920}
-													separator=','
-												/>{" "}
-												L.E.
-											</div>
-											<div
-												style={{
-													color: "darkgrey",
-													fontWeight: "bold",
-													marginTop: "10px",
-												}}>
-												Total Sales
-											</div>
-										</div>
-									</div>
-									<hr />
-
-									<div className='row mt-1'>
-										<div className='col-md-8'>
-											<img className='userImage' src={LetterRasha} alt='name' />
-											<span className='employeeName'>Rasha Elsayed</span>
-											<div className='topEmployeeOrders'>Taken Orders: 33</div>
-										</div>
-										<div className='col-md-4 mt-2'>
-											<div style={{ fontWeight: "bold" }}>
-												<CountUp
-													duration='2'
-													delay={0}
-													end={3745}
-													separator=','
-												/>{" "}
-												L.E.
-											</div>
-											<div
-												style={{
-													color: "darkgrey",
-													fontWeight: "bold",
-													marginTop: "10px",
-												}}>
-												Total Sales
-											</div>
-										</div>
-									</div>
-									<hr />
-								</div>
-							</div>
-							<div className='col-md-8  mx-auto my-5'>
-								<div className='card'>
-									<h5>
-										Today's Sales Summary (
-										{new Date().toDateString("en-US", {
-											timeZone: "Africa/Cairo",
-										})}
-										):
-									</h5>
-									<div className='col-md-10 mx-auto'>
-										<hr />
-									</div>
-									<div className='row mt-3'>
-										<div className='col-1'>Item #</div>
-										<div className='col-2'>Image</div>
-										<div className='col-2'>Product Name</div>
-										<div className='col-2'>Ordered Qty</div>
-										<div className='col-3'>Ordered By</div>
-										<div className='col-2'>Status</div>
-										<div className='col-md-12 mx-auto'>
-											<hr />
-										</div>
-										<div className='col-1'>1</div>
-										<div className='col-2'>
-											<img className='userImage' src={Product1} alt='product' />
-										</div>
-										<div className='col-2'>Jeans</div>
-
-										<div className='col-2'>24</div>
-										<div className='col-3'>Ibrahim Gamal</div>
-										<div
-											className='col-2'
-											style={{ color: "#ebeb00", fontWeight: "bold" }}>
-											In Progress
-										</div>
-
-										<div className='col-md-12 mx-auto'>
-											<hr />
-										</div>
-										<div className='col-1'>2</div>
-										<div className='col-2'>
-											<img className='userImage' src={Product2} alt='product' />
-										</div>
-										<div className='col-2'>Shorts</div>
-
-										<div className='col-2'>25</div>
-										<div className='col-3'>Mamdouh Muhammad</div>
-										<div
-											className='col-2'
-											style={{ color: "#0062c4", fontWeight: "bolder" }}>
-											Ready To Ship
-										</div>
-
-										<div className='col-md-12 mx-auto'>
-											<hr />
-										</div>
-										<div className='col-1'>3</div>
-										<div className='col-2'>
-											<img className='userImage' src={Product3} alt='product' />
-										</div>
-										<div className='col-2'>PJ</div>
-
-										<div className='col-2'>17</div>
-										<div className='col-3'>Rasha Elsayed</div>
-										<div
-											className='col-2'
-											style={{ color: "#0062c4", fontWeight: "bolder" }}>
-											Ready To Ship
 										</div>
 									</div>
 								</div>
-							</div>
+								<div className='col-xl-4 col-lg-8 col-md-11  mx-auto my-5'>
+									<div className='card'>
+										<h5>
+											Today's Top Employees (
+											{new Date().toDateString("en-US", {
+												timeZone: "Africa/Cairo",
+											})}
+											):
+										</h5>
+										<div className='col-md-10 mx-auto'>
+											<hr />
+										</div>
+										<div className='row'>
+											<div className='col-md-8'>
+												<img className='userImage' src={LetterM} alt='name' />
+												<span className='employeeName'>
+													Mamdouh Muhammad{" "}
+													<span className='iconsForEmployee'>
+														<VerticalAlignTopOutlined />
+													</span>{" "}
+												</span>
+												<div className='topEmployeeOrders'>
+													Taken Orders: 43
+												</div>
+											</div>
+											<div className='col-md-4 mt-2'>
+												<div style={{ fontWeight: "bold" }}>
+													<CountUp
+														duration='2'
+														delay={0}
+														end={4252}
+														separator=','
+													/>{" "}
+													L.E.
+												</div>
+												<div
+													style={{
+														color: "darkgrey",
+														fontWeight: "bold",
+														marginTop: "10px",
+													}}>
+													Total Sales
+												</div>
+											</div>
+										</div>
+										<hr />
+										<div className='row mt-1'>
+											<div className='col-md-8'>
+												<img
+													className='userImage'
+													src={LetterIbrahim}
+													alt='name'
+												/>
+												<span className='employeeName'>Ibrahim Gamal</span>
+												<div className='topEmployeeOrders'>
+													Taken Orders: 37
+												</div>
+											</div>
+											<div className='col-md-4 mt-2'>
+												<div style={{ fontWeight: "bold" }}>
+													<CountUp
+														duration='2'
+														delay={0}
+														end={3920}
+														separator=','
+													/>{" "}
+													L.E.
+												</div>
+												<div
+													style={{
+														color: "darkgrey",
+														fontWeight: "bold",
+														marginTop: "10px",
+													}}>
+													Total Sales
+												</div>
+											</div>
+										</div>
+										<hr />
 
-							<div className='col-md-12  mx-auto mb-5'>
-								<div className='card'>
-									<h5>GQ Shop Inventory Report</h5>
-									<div className='col-md-10 mx-auto'>
+										<div className='row mt-1'>
+											<div className='col-md-8'>
+												<img
+													className='userImage'
+													src={LetterRasha}
+													alt='name'
+												/>
+												<span className='employeeName'>Rasha Elsayed</span>
+												<div className='topEmployeeOrders'>
+													Taken Orders: 33
+												</div>
+											</div>
+											<div className='col-md-4 mt-2'>
+												<div style={{ fontWeight: "bold" }}>
+													<CountUp
+														duration='2'
+														delay={0}
+														end={3745}
+														separator=','
+													/>{" "}
+													L.E.
+												</div>
+												<div
+													style={{
+														color: "darkgrey",
+														fontWeight: "bold",
+														marginTop: "10px",
+													}}>
+													Total Sales
+												</div>
+											</div>
+										</div>
 										<hr />
 									</div>
-									<div className='row mt-3'>
-										<div className='col-1'>Item #</div>
-										<div className='col-2'>Image</div>
-										<div className='col-2'>Product Name</div>
-										<div className='col-2'>Inventory Level</div>
-										<div className='col-3'>Added By</div>
-										<div className='col-2'>Status</div>
-										<div className='col-md-12 mx-auto'>
+								</div>
+								<div className='col-xl-8 col-lg-8 col-md-11 mx-auto my-5'>
+									<div className='card'>
+										<h5>
+											Today's Sales Summary (
+											{new Date().toDateString("en-US", {
+												timeZone: "Africa/Cairo",
+											})}
+											):
+										</h5>
+										<div className='col-md-10 mx-auto'>
 											<hr />
 										</div>
-										<div className='col-1'>1</div>
-										<div className='col-2'>
-											<img className='userImage' src={Product1} alt='product' />
+										<div className='row mt-3'>
+											<div className='col-1'>Item #</div>
+											<div className='col-2'>Image</div>
+											<div className='col-2'>Product Name</div>
+											<div className='col-2'>Ordered Qty</div>
+											<div className='col-3'>Ordered By</div>
+											<div className='col-2'>Status</div>
+											<div className='col-md-12 mx-auto'>
+												<hr />
+											</div>
+											<div className='col-1'>1</div>
+											<div className='col-2'>
+												<img
+													className='userImage'
+													src={Product1}
+													alt='product'
+												/>
+											</div>
+											<div className='col-2'>Jeans</div>
+
+											<div className='col-2'>24</div>
+											<div className='col-3'>Ibrahim Gamal</div>
+											<div
+												className='col-2'
+												style={{ color: "#ebeb00", fontWeight: "bold" }}>
+												In Progress
+											</div>
+
+											<div className='col-md-12 mx-auto'>
+												<hr />
+											</div>
+											<div className='col-1'>2</div>
+											<div className='col-2'>
+												<img
+													className='userImage'
+													src={Product2}
+													alt='product'
+												/>
+											</div>
+											<div className='col-2'>Shorts</div>
+
+											<div className='col-2'>25</div>
+											<div className='col-3'>Mamdouh Muhammad</div>
+											<div
+												className='col-2'
+												style={{ color: "#0062c4", fontWeight: "bolder" }}>
+												Ready To Ship
+											</div>
+
+											<div className='col-md-12 mx-auto'>
+												<hr />
+											</div>
+											<div className='col-1'>3</div>
+											<div className='col-2'>
+												<img
+													className='userImage'
+													src={Product3}
+													alt='product'
+												/>
+											</div>
+											<div className='col-2'>PJ</div>
+
+											<div className='col-2'>17</div>
+											<div className='col-3'>Rasha Elsayed</div>
+											<div
+												className='col-2'
+												style={{ color: "#0062c4", fontWeight: "bolder" }}>
+												Ready To Ship
+											</div>
 										</div>
-										<div className='col-2'>Jeans</div>
+									</div>
+								</div>
 
-										<div className='col-2'>24</div>
-										<div className='col-3'>Ibrahim Gamal</div>
-										<div className='col-2'>In Progress</div>
-
-										<div className='col-md-12 mx-auto'>
+								<div className='col-md-12  mx-auto mb-5'>
+									<div className='card'>
+										<h5>GQ Shop Inventory Report</h5>
+										<div className='col-md-10 mx-auto'>
 											<hr />
 										</div>
-										<div className='col-1'>2</div>
-										<div className='col-2'>
-											<img className='userImage' src={Product2} alt='product' />
-										</div>
-										<div className='col-2'>Shorts</div>
+										<div className='row mt-3'>
+											<div className='col-1'>Item #</div>
+											<div className='col-2'>Image</div>
+											<div className='col-2'>Product Name</div>
+											<div className='col-2'>Inventory Level</div>
+											<div className='col-3'>Added By</div>
+											<div className='col-2'>Status</div>
+											<div className='col-md-12 mx-auto'>
+												<hr />
+											</div>
+											<div className='col-1'>1</div>
+											<div className='col-2'>
+												<img
+													className='userImage'
+													src={Product1}
+													alt='product'
+												/>
+											</div>
+											<div className='col-2'>Jeans</div>
 
-										<div className='col-2'>25</div>
-										<div className='col-3'>Mamdouh Muhammad</div>
-										<div className='col-2'>Ready To Ship</div>
+											<div className='col-2'>24</div>
+											<div className='col-3'>Ibrahim Gamal</div>
+											<div className='col-2'>In Progress</div>
 
-										<div className='col-md-12 mx-auto'>
-											<hr />
-										</div>
-										<div className='col-1'>3</div>
-										<div className='col-2'>
-											<img className='userImage' src={Product3} alt='product' />
-										</div>
-										<div className='col-2'>PJ</div>
+											<div className='col-md-12 mx-auto'>
+												<hr />
+											</div>
+											<div className='col-1'>2</div>
+											<div className='col-2'>
+												<img
+													className='userImage'
+													src={Product2}
+													alt='product'
+												/>
+											</div>
+											<div className='col-2'>Shorts</div>
 
-										<div className='col-2'>17</div>
-										<div className='col-3'>Rasha Elsayed</div>
-										<div className='col-2'>Ready To Ship</div>
+											<div className='col-2'>25</div>
+											<div className='col-3'>Mamdouh Muhammad</div>
+											<div className='col-2'>Ready To Ship</div>
+
+											<div className='col-md-12 mx-auto'>
+												<hr />
+											</div>
+											<div className='col-1'>3</div>
+											<div className='col-2'>
+												<img
+													className='userImage'
+													src={Product3}
+													alt='product'
+												/>
+											</div>
+											<div className='col-2'>PJ</div>
+
+											<div className='col-2'>17</div>
+											<div className='col-3'>Rasha Elsayed</div>
+											<div className='col-2'>Ready To Ship</div>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -688,7 +750,9 @@ const AdminDashboardWrapper = styled.div`
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: 16% 84%;
+		/* grid-template-columns: 16% 84%; */
+		grid-template-columns: ${(props) => (props.show ? "8% 92%" : "16% 84%")};
+
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */
@@ -787,7 +851,20 @@ const AdminDashboardWrapper = styled.div`
 
 		.grid-container {
 			display: grid;
-			grid-template-columns: 18% 82%;
+			/* grid-template-columns: 18% 82%; */
+			grid-template-columns: ${(props) => (props.show ? "7% 93%" : "18% 82%")};
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+	}
+
+	@media (max-width: 1400px) {
+		background: white;
+
+		.grid-container {
+			display: grid;
+			grid-template-columns: 12% 88%;
 			margin: auto;
 			/* border: 1px solid red; */
 			/* grid-auto-rows: minmax(60px, auto); */

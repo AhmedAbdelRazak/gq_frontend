@@ -34,6 +34,7 @@ const AddSubcategory = () => {
 	const [error, setError] = useState(false);
 	const [success, setSuccess] = useState(false);
 	const [addThumbnail, setAddThumbnail] = useState([]);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 
 	// destructure user and token from localstorage
 	const { user, token } = isAuthenticated();
@@ -293,7 +294,11 @@ const AddSubcategory = () => {
 		<AddSubcategoryWrapper>
 			<div className='row'>
 				<div className='col-3'>
-					<AdminMenu fromPage='AddSubcategory' />
+					<AdminMenu
+						fromPage='AddSubcategory'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 
 				<div className='col-8'>

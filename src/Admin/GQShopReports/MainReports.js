@@ -1,19 +1,25 @@
 /** @format */
 
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 // import { isAuthenticated } from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import Navbar from "../AdminNavMenu/Navbar";
 
 const MainReports = () => {
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+
 	// const { user, token } = isAuthenticated();
 
 	return (
 		<MainReportsWrapper>
 			<div className='grid-container'>
 				<div className=''>
-					<AdminMenu fromPage='MainReports' />
+					<AdminMenu
+						fromPage='MainReports'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 				<div className='mainContent'>
 					<Navbar fromPage='MainReports' />

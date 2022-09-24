@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Redirect, Link } from "react-router-dom";
 import "antd/dist/antd.css";
@@ -193,14 +193,56 @@ const items = [
 	// ]),
 ];
 
-const AdminMenu = ({ fromPage }) => {
+const AdminMenu = ({ fromPage, AdminMenuStatus, setAdminMenuStatus }) => {
+	const [windowDimensions, setWindowDimensions] = useState(
+		getWindowDimensions(),
+	);
 	const [collapsed, setCollapsed] = useState(false);
 
 	const toggleCollapsed = () => {
 		setCollapsed(!collapsed);
+		setAdminMenuStatus(!collapsed);
 	};
 
-	// console.log(fromPage, "Ahowan");
+	function getWindowDimensions() {
+		const { innerWidth: width, innerHeight: height } = window;
+		return {
+			width,
+			height,
+		};
+	}
+
+	useEffect(() => {
+		if (window.innerWidth <= 1400) {
+			setCollapsed(true);
+			setAdminMenuStatus(true);
+		} else {
+			setCollapsed(false);
+			setAdminMenuStatus(false);
+		}
+		// eslint-disable-next-line
+	}, []);
+
+	useEffect(() => {
+		function handleResize() {
+			setWindowDimensions(getWindowDimensions());
+			if (getWindowDimensions().width <= 1400) {
+				setCollapsed(true);
+				setAdminMenuStatus(true);
+			} else {
+				setCollapsed(false);
+				setAdminMenuStatus(false);
+			}
+		}
+
+		window.addEventListener("resize", handleResize);
+
+		return () => window.removeEventListener("resize", handleResize);
+		// eslint-disable-next-line
+	}, [windowDimensions]);
+
+	console.log(collapsed, "collapsed");
+	console.log(windowDimensions.width, "collapsed");
 
 	return (
 		<AdminMenuWrapper
@@ -214,7 +256,8 @@ const AdminMenu = ({ fromPage }) => {
 				style={{
 					marginBottom: 8,
 					textAlign: "center",
-					// marginLeft: 10,
+					marginLeft: 10,
+					marginTop: 3,
 				}}>
 				{collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
 			</Button>
@@ -310,9 +353,10 @@ export default AdminMenu;
 const AdminMenuWrapper = styled.div`
 	margin-left: 3px;
 	margin-bottom: 15px;
-	background: ${(props) => (props.show ? null : "white")};
+	background: ${(props) => (props.show ? "" : "")};
 	top: 0px !important;
 	position: relative;
+	z-index: 500;
 
 	li {
 		/* margin: 20px auto; */
@@ -320,8 +364,11 @@ const AdminMenuWrapper = styled.div`
 		margin-top: ${(props) => (props.show ? "50px " : "0px")};
 	}
 
+	ul {
+	}
+
 	.ant-menu.ant-menu-inline-collapsed {
-		min-height: 700px;
+		min-height: 1000px;
 	}
 
 	.ant-menu.ant-menu-dark,

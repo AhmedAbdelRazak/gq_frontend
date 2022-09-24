@@ -15,6 +15,7 @@ const DeleteGender = () => {
 	const { user, token } = isAuthenticated();
 	// eslint-disable-next-line
 	const [loading, setLoading] = useState(true);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 
 	const gettingAllGenders = () => {
 		setLoading(true);
@@ -53,10 +54,14 @@ const DeleteGender = () => {
 	}, []);
 
 	return (
-		<DeleteGenderWrapper>
+		<DeleteGenderWrapper show={AdminMenuStatus}>
 			<div className='row'>
 				<div className='col-3 mb-3'>
-					<AdminMenu fromPage='DeleteGender' />
+					<AdminMenu
+						fromPage='DeleteGender'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 				<div className='col-8'>
 					<div className='contentWrapper' data-aos='fade-down'>

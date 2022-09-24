@@ -13,6 +13,7 @@ const DeleteProduct = () => {
 	const { user, token } = isAuthenticated();
 	// eslint-disable-next-line
 	const [loading, setLoading] = useState(true);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 
 	const gettingAllProduct = () => {
 		setLoading(true);
@@ -50,7 +51,11 @@ const DeleteProduct = () => {
 		<DeleteProductWrapper>
 			<div className='row'>
 				<div className='col-3 mb-3'>
-					<AdminMenu fromPage='DeleteProduct' />
+					<AdminMenu
+						fromPage='DeleteProduct'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 				<div className='col-8'>
 					<div className='contentWrapper'>

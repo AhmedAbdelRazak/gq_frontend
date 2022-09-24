@@ -15,6 +15,7 @@ const DeleteCategory = () => {
 	const { user, token } = isAuthenticated();
 	// eslint-disable-next-line
 	const [loading, setLoading] = useState(true);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 
 	const gettingAllCategories = () => {
 		setLoading(true);
@@ -53,10 +54,14 @@ const DeleteCategory = () => {
 	}, []);
 
 	return (
-		<DeleteCategoryWrapper>
+		<DeleteCategoryWrapper show={AdminMenuStatus}>
 			<div className='row'>
 				<div className='col-3 mb-3'>
-					<AdminMenu fromPage='DeleteCategory' />
+					<AdminMenu
+						fromPage='DeleteCategory'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+					/>
 				</div>
 				<div className='col-8'>
 					<div className='contentWrapper' data-aos='fade-down'>
