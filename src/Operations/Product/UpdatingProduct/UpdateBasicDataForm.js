@@ -2,7 +2,7 @@
 
 import React from "react";
 
-const BasicDataForm = ({
+const UpdateBasicDataForm = ({
 	setProductName,
 	productName,
 	setProductName_Arabic,
@@ -20,14 +20,6 @@ const BasicDataForm = ({
 	setClickedLink,
 	chosenSeason,
 	setChosenSeason,
-	parentPrice1,
-	setParentPrice1,
-	parentPrice2,
-	setParentPrice2,
-	parentPrice3,
-	setParentPrice3,
-	inheritPrice,
-	setInheritPrice,
 }) => {
 	const handleChange1 = (e) => {
 		setProductName(e.target.value);
@@ -45,16 +37,6 @@ const BasicDataForm = ({
 
 	const handleChange7 = (e) => {
 		setChosenSeason(e.target.value);
-	};
-
-	const handleChange8 = (e) => {
-		setParentPrice1(e.target.value);
-	};
-	const handleChange9 = (e) => {
-		setParentPrice2(e.target.value);
-	};
-	const handleChange10 = (e) => {
-		setParentPrice3(e.target.value);
 	};
 
 	return (
@@ -106,77 +88,6 @@ const BasicDataForm = ({
 							className='form-control'
 							onChange={handleChange6}
 							value={productSKU}
-							required
-						/>
-					</div>
-				</div>
-
-				<div className='col-md-3 mx-auto'>
-					<div className='form-group'>
-						<label
-							className='text-muted'
-							style={{ fontWeight: "bold", fontSize: "17px" }}>
-							After Manufacturing Price
-						</label>
-						<input
-							type='text'
-							className='form-control'
-							onChange={handleChange8}
-							value={parentPrice1}
-							required
-						/>
-					</div>
-				</div>
-
-				<div className='col-md-3 mx-auto'>
-					<div className='form-group'>
-						<label
-							className='text-muted'
-							style={{ fontWeight: "bold", fontSize: "17px" }}>
-							Retailer Price
-						</label>
-						<input
-							type='text'
-							className='form-control'
-							onChange={handleChange9}
-							value={parentPrice2}
-							required
-						/>
-					</div>
-				</div>
-
-				<div className='col-md-3 mx-auto'>
-					<div className='form-group'>
-						<label
-							className='text-muted'
-							style={{ fontWeight: "bold", fontSize: "17px" }}>
-							Price After Discount
-						</label>
-
-						<input
-							type='text'
-							className='form-control'
-							onChange={handleChange10}
-							value={parentPrice3}
-							required
-						/>
-					</div>
-				</div>
-
-				<div className='col-md-3 mx-auto mt-4'>
-					<div className='form-group'>
-						<label
-							className='text-muted mx-2'
-							style={{ fontWeight: "bold", fontSize: "17px" }}>
-							Inherit
-						</label>
-
-						<input
-							type='checkbox'
-							// className='form-control'
-							onChange={(e) => setInheritPrice(!inheritPrice)}
-							checked={inheritPrice}
-							value={inheritPrice}
 							required
 						/>
 					</div>
@@ -252,7 +163,7 @@ const BasicDataForm = ({
 				</select>
 			</div>
 
-			<div className='form-group'>
+			{/* <div className='form-group'>
 				<label
 					className='text-muted'
 					style={{ fontWeight: "bold", fontSize: "17px" }}>
@@ -264,7 +175,7 @@ const BasicDataForm = ({
 					onChange={() => setAddVariables(!addVariables)}
 					checked={addVariables === true ? true : false}
 				/>
-			</div>
+			</div> */}
 
 			<button
 				className='btn btn-outline-primary mb-3'
@@ -278,4 +189,4 @@ const BasicDataForm = ({
 	);
 };
 
-export default BasicDataForm;
+export default UpdateBasicDataForm;

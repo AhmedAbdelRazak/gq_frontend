@@ -5,12 +5,7 @@ import styled from "styled-components";
 import { Modal } from "antd";
 import "antd/dist/antd.css"; // or 'antd/dist/antd.less'
 
-const AttributesModal = ({
-	product,
-	modalVisible,
-	setModalVisible,
-	setCollapsed,
-}) => {
+const AttributesModal = ({ product, modalVisible, setModalVisible }) => {
 	// const handleModal = () => {
 	// 	setModalVisible(true);
 	// };
@@ -95,10 +90,7 @@ const AttributesModal = ({
 				}}
 				// okButtonProps={{ style: { display: "block" } }}
 				cancelButtonProps={{ style: { display: "none" } }}
-				onCancel={() => {
-					setCollapsed(false);
-					setModalVisible(false);
-				}}>
+				onCancel={() => setModalVisible(false)}>
 				{mainForm()}
 			</Modal>
 		</AttributesModalWrapper>

@@ -131,7 +131,6 @@ const UpdateProduct = () => {
 					product={clickedProduct}
 					modalVisible={modalVisible}
 					setModalVisible={setModalVisible}
-					setCollapsed={setCollapsed}
 				/>
 				<div className=' mb-3 form-group mx-3 text-center'>
 					<label
@@ -198,7 +197,6 @@ const UpdateProduct = () => {
 												onClick={() => {
 													setModalVisible(true);
 													setClickedProduct(s);
-													setCollapsed(true);
 												}}
 												style={{
 													fontWeight: "bold",

@@ -10,7 +10,6 @@ import {
 	cloudinaryUpload1,
 	createProduct,
 	getCategories,
-	getColors,
 	getGenders,
 	getListOfSubs,
 	getSubCategories,
@@ -82,14 +81,8 @@ const AddProduct = () => {
 	const [productAttributesFinal, setProductAttributesFinal] = useState([]);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [offset, setOffset] = useState(0);
-	const [parentPrice1, setParentPrice1] = useState(0);
-	const [parentPrice2, setParentPrice2] = useState(0);
-	const [parentPrice3, setParentPrice3] = useState(0);
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
-	const [inheritPrice, setInheritPrice] = useState(false);
-	const [inheritParentSKU, setInheritParentSKU] = useState(false);
-	const [allColors, setAllColors] = useState([]);
 
 	let productAttributes = [];
 
@@ -115,16 +108,6 @@ const AddProduct = () => {
 				setClickedLink={setClickedLink}
 				chosenSeason={chosenSeason}
 				setChosenSeason={setChosenSeason}
-				parentPrice1={parentPrice1}
-				setParentPrice1={setParentPrice1}
-				parentPrice2={parentPrice2}
-				setParentPrice2={setParentPrice2}
-				parentPrice3={parentPrice3}
-				setParentPrice3={setParentPrice3}
-				inheritPrice={inheritPrice}
-				setInheritPrice={setInheritPrice}
-				inheritParentSKU={inheritParentSKU}
-				setInheritParentSKU={setInheritParentSKU}
 			/>
 		</React.Fragment>
 	);
@@ -159,21 +142,10 @@ const AddProduct = () => {
 		});
 	};
 
-	const gettingAllColors = () => {
-		getColors(token).then((data) => {
-			if (data.error) {
-				console.log(data.error);
-			} else {
-				setAllColors(data);
-			}
-		});
-	};
-
 	useEffect(() => {
 		gettingAllCategories();
 		gettingAllSubcategories();
 		gettingAllGenders();
-		gettingAllColors();
 		// eslint-disable-next-line
 	}, []);
 
@@ -504,16 +476,6 @@ const AddProduct = () => {
 					productAttributes={productAttributes}
 					setAddThumbnail={setAddThumbnail}
 					addThumbnail={addThumbnail}
-					parentPrice1={parentPrice1}
-					setParentPrice1={setParentPrice1}
-					parentPrice2={parentPrice2}
-					setParentPrice2={setParentPrice2}
-					parentPrice3={parentPrice3}
-					setParentPrice3={setParentPrice3}
-					inheritPrice={inheritPrice}
-					setInheritPrice={setInheritPrice}
-					inheritParentSKU={inheritParentSKU}
-					setInheritParentSKU={setInheritParentSKU}
 				/>
 			</React.Fragment>
 		);
@@ -693,23 +655,11 @@ const AddProduct = () => {
 					size: combinationsOfColorSizes[i - 1][ii - 1],
 					color: combinationsOfColorSizes[i - 1][ii],
 					quantity: 0,
-					price: inheritPrice ? parentPrice2 : 0,
-					priceAfterDiscount: inheritPrice ? parentPrice3 : 0,
-					MSRP: inheritPrice ? parentPrice1 : 0,
+					price: 0,
+					priceAfterDiscount: 0,
+					MSRP: 0,
 					productImages: [],
-					SubSKU: inheritParentSKU
-						? productSKU +
-						  "-" +
-						  (allColors &&
-								allColors[0] &&
-								allColors[
-									allColors
-										.map((i) => i.hexa)
-										.indexOf(combinationsOfColorSizes[i - 1][ii])
-								].color.substring(0, 3)) +
-						  "-" +
-						  combinationsOfColorSizes[i - 1][ii - 1].substring(0, 4)
-						: "",
+					SubSKU: "",
 					PK:
 						combinationsOfColorSizes[i - 1][ii - 1] +
 						combinationsOfColorSizes[i - 1][ii],
@@ -721,13 +671,7 @@ const AddProduct = () => {
 	useEffect(() => {
 		setProductAttributesFinal(productAttributes);
 		// eslint-disable-next-line
-	}, [
-		variablesSubmit,
-		chosenSizes,
-		chosenColors,
-		inheritPrice,
-		inheritParentSKU,
-	]);
+	}, [variablesSubmit, chosenSizes, chosenColors]);
 
 	useEffect(() => {
 		Aos.init({ duration: 1500 });

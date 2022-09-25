@@ -252,7 +252,7 @@ export const getListOfSubs = (_id) => {
 
 export const cloudinaryUpload1 = (userId, token, image) => {
 	return fetch(
-		`${process.env.REACT_APP_API_URL}/admin/uploadimages/${userId}`,
+		`${process.env.REACT_APP_API_URL}/admin/uploadimages/operations/${userId}`,
 		{
 			method: "POST",
 			headers: {
@@ -275,15 +275,18 @@ export const cloudinaryUpload1 = (userId, token, image) => {
 /**Start Product */
 
 export const createProduct = (userId, token, product) => {
-	return fetch(`${process.env.REACT_APP_API_URL}/product/create/${userId}`, {
-		method: "POST",
-		headers: {
-			Accept: "application/json",
-			"Content-Type": "application/json",
-			Authorization: `Bearer ${token}`,
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/product/create/operations/${userId}`,
+		{
+			method: "POST",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify(product),
 		},
-		body: JSON.stringify(product),
-	})
+	)
 		.then((response) => {
 			return response.json();
 		})
@@ -304,7 +307,7 @@ export const getProducts = () => {
 
 export const updateProduct = (productId, userId, token, product) => {
 	return fetch(
-		`${process.env.REACT_APP_API_URL}/product/${productId}/${userId}`,
+		`${process.env.REACT_APP_API_URL}/product/operations/${productId}/${userId}`,
 		{
 			method: "PUT",
 			headers: {
@@ -365,7 +368,7 @@ export const createOrder = (userId, token, createOrderData) => {
 
 export const listOrders = (userId, token) => {
 	return fetch(
-		`${process.env.REACT_APP_API_URL}/order/list/order-taker/${userId}`,
+		`${process.env.REACT_APP_API_URL}/order/list/order-taker/operations/${userId}`,
 		{
 			method: "GET",
 			headers: {
@@ -382,7 +385,7 @@ export const listOrders = (userId, token) => {
 
 export const readSingleOrder = (userId, token, orderId) => {
 	return fetch(
-		`${process.env.REACT_APP_API_URL}/order/order-taker/${orderId}/${userId}`,
+		`${process.env.REACT_APP_API_URL}/order/operations/${orderId}/${userId}`,
 		{
 			method: "GET",
 			headers: {
@@ -400,7 +403,7 @@ export const readSingleOrder = (userId, token, orderId) => {
 
 export const updateOrder = (orderId, userId, token, order) => {
 	return fetch(
-		`${process.env.REACT_APP_API_URL}/update/order/order-taker/${orderId}/${userId}`,
+		`${process.env.REACT_APP_API_URL}/update/order/operations/${orderId}/${userId}`,
 		{
 			method: "PUT",
 			headers: {

@@ -4,24 +4,24 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import AdminMenu from "../../AdminMenu/AdminMenu";
 import { Select } from "antd";
+// eslint-disable-next-line
 import Resizer from "react-image-file-resizer";
+// eslint-disable-next-line
 import axios from "axios";
 import {
-	cloudinaryUpload1,
-	createProduct,
+	getProducts,
 	getCategories,
-	getColors,
 	getGenders,
 	getListOfSubs,
 	getSubCategories,
+	cloudinaryUpload1,
+	updateProduct,
 } from "../../apiAdmin";
-import BasicDataForm from "./BasicDataForm";
 import { isAuthenticated } from "../../../auth";
-import AddingProductVariable from "./AddingProductVariable";
+// eslint-disable-next-line
 import { toast } from "react-toastify";
-import Navbar from "../../AdminNavMenu/Navbar";
-import Aos from "aos";
-import "aos/dist/aos.css";
+import UpdateBasicDataForm from "./UpdateBasicDataForm";
+import UpdatingProductVariable from "./UpdateProductVariable";
 import DarkBG from "../../AdminMenu/DarkBG";
 const { Option } = Select;
 
@@ -40,7 +40,7 @@ const isActive = (clickedLink, sureClickedLink) => {
 	}
 };
 
-const AddProduct = () => {
+const UpdateProductSingle = ({ match }) => {
 	const [clickedLink, setClickedLink] = useState("MainData");
 	// eslint-disable-next-line
 	const [loading, setLoading] = useState(true);
@@ -55,7 +55,6 @@ const AddProduct = () => {
 	const [description_Arabic, setDescription_Arabic] = useState("");
 	const [chosenSubcategories, setChosenSubcategories] = useState("");
 	// eslint-disable-next-line
-	const [chosenSeason, setChosenSeason] = useState("");
 	const [chosenCategory, setChosenCategory] = useState("");
 	const [chosenGender, setChosenGender] = useState("");
 	const [allCategories, setAllCategories] = useState([]);
@@ -68,10 +67,11 @@ const AddProduct = () => {
 	const [price, setPrice] = useState("");
 	const [priceAfterDiscount, setPriceAfterDiscount] = useState("");
 	const [MSRPPriceBasic, setMSRPPriceBasic] = useState("");
+	const [chosenSeason, setChosenSeason] = useState("");
 	const [stock, setStock] = useState("");
 	const [chosenSizes, setChosenSizes] = useState([]);
 	const [chosenColors, setChosenColors] = useState([]);
-	const [addVariables, setAddVariables] = useState(true);
+	const [addVariables, setAddVariables] = useState(false);
 	const [clickedVariableLink, setClickedVariableLink] =
 		useState("SizesColorsImages");
 	const [variablesSubmit, setVariablesSubmit] = useState(false);
@@ -81,53 +81,122 @@ const AddProduct = () => {
 	const [featured, setFeatured] = useState(false);
 	const [productAttributesFinal, setProductAttributesFinal] = useState([]);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
-	const [offset, setOffset] = useState(0);
-	const [parentPrice1, setParentPrice1] = useState(0);
-	const [parentPrice2, setParentPrice2] = useState(0);
-	const [parentPrice3, setParentPrice3] = useState(0);
-	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
-	const [inheritPrice, setInheritPrice] = useState(false);
-	const [inheritParentSKU, setInheritParentSKU] = useState(false);
-	const [allColors, setAllColors] = useState([]);
 
 	let productAttributes = [];
 
 	const { user, token } = isAuthenticated();
 
-	const BasicDataFormFunction = () => (
-		<React.Fragment>
-			<BasicDataForm
-				setProductName={setProductName}
-				productName={productName}
-				productName_Arabic={productName_Arabic}
-				setProductName_Arabic={setProductName_Arabic}
-				description={description}
-				setDescription={setDescription}
-				description_Arabic={description_Arabic}
-				setDescription_Arabic={setDescription_Arabic}
-				setSlug={setSlug}
-				setSlug_Arabic={setSlug_Arabic}
-				productSKU={productSKU}
-				setProductSKU={setProductSKU}
-				setAddVariables={setAddVariables}
-				addVariables={addVariables}
-				setClickedLink={setClickedLink}
-				chosenSeason={chosenSeason}
-				setChosenSeason={setChosenSeason}
-				parentPrice1={parentPrice1}
-				setParentPrice1={setParentPrice1}
-				parentPrice2={parentPrice2}
-				setParentPrice2={setParentPrice2}
-				parentPrice3={parentPrice3}
-				setParentPrice3={setParentPrice3}
-				inheritPrice={inheritPrice}
-				setInheritPrice={setInheritPrice}
-				inheritParentSKU={inheritParentSKU}
-				setInheritParentSKU={setInheritParentSKU}
-			/>
-		</React.Fragment>
-	);
+	const gettingAllProducts = () => {
+		getProducts().then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				productAttributes = data.filter(
+					(e) => e._id === match.params.productId,
+				)[0].productAttributes;
+
+				setProductName(
+					data.filter((e) => e._id === match.params.productId)[0].productName,
+				);
+				setProductName_Arabic(
+					data.filter((e) => e._id === match.params.productId)[0]
+						.productName_Arabic,
+				);
+				setSlug(data.filter((e) => e._id === match.params.productId)[0].slug);
+				setSlug_Arabic(
+					data.filter((e) => e._id === match.params.productId)[0].slug_Arabic,
+				);
+				setProductSKU(
+					data.filter((e) => e._id === match.params.productId)[0].productSKU,
+				);
+				setDescription(
+					data.filter((e) => e._id === match.params.productId)[0].description,
+				);
+				setDescription_Arabic(
+					data.filter((e) => e._id === match.params.productId)[0]
+						.description_Arabic,
+				);
+				setChosenSubcategories(
+					data.filter((e) => e._id === match.params.productId)[0].subcategory,
+				);
+				setChosenCategory(
+					data.filter((e) => e._id === match.params.productId)[0].category,
+				);
+				setChosenGender(
+					data.filter((e) => e._id === match.params.productId)[0].gender,
+				);
+				setAddThumbnail(
+					data.filter((e) => e._id === match.params.productId)[0]
+						.thumbnailImage[0].images[0]
+						? data.filter((e) => e._id === match.params.productId)[0]
+								.thumbnailImage[0]
+						: [],
+				);
+
+				setPrice(data.filter((e) => e._id === match.params.productId)[0].price);
+				setPriceAfterDiscount(
+					data.filter((e) => e._id === match.params.productId)[0]
+						.priceAfterDiscount,
+				);
+				setMSRPPriceBasic(
+					data.filter((e) => e._id === match.params.productId)[0]
+						.MSRPPriceBasic,
+				);
+				setStock(
+					data.filter((e) => e._id === match.params.productId)[0].quantity,
+				);
+
+				setChosenSeason(
+					data.filter((e) => e._id === match.params.productId)[0].chosenSeason,
+				);
+
+				setAddVariables(
+					data.filter((e) => e._id === match.params.productId)[0].addVariables,
+				);
+				setClearance(
+					data.filter((e) => e._id === match.params.productId)[0].clearance,
+				);
+				setShipping(
+					data.filter((e) => e._id === match.params.productId)[0].shipping,
+				);
+				setActiveProduct(
+					data.filter((e) => e._id === match.params.productId)[0].activeProduct,
+				);
+				setFeatured(
+					data.filter((e) => e._id === match.params.productId)[0].featured,
+				);
+				setProductAttributesFinal(
+					data.filter((e) => e._id === match.params.productId)[0]
+						.productAttributes,
+				);
+
+				setChosenColors([
+					...new Set(
+						data
+							.filter((e) => e._id === match.params.productId)[0]
+							.productAttributes.map((ii) => ii.color),
+					),
+				]);
+				setChosenSizes([
+					...new Set(
+						data
+							.filter((e) => e._id === match.params.productId)[0]
+							.productAttributes.map((ii) => ii.size),
+					),
+				]);
+				getListOfSubs(
+					data.filter((e) => e._id === match.params.productId)[0].category._id,
+				).then((data) => {
+					if (data.error) {
+						console.log(data.error);
+					} else {
+						setSubsOptions(data);
+					}
+				});
+			}
+		});
+	};
 
 	const gettingAllCategories = () => {
 		getCategories(user._id, token).then((data) => {
@@ -159,23 +228,38 @@ const AddProduct = () => {
 		});
 	};
 
-	const gettingAllColors = () => {
-		getColors(token).then((data) => {
-			if (data.error) {
-				console.log(data.error);
-			} else {
-				setAllColors(data);
-			}
-		});
-	};
-
 	useEffect(() => {
+		gettingAllProducts();
 		gettingAllCategories();
 		gettingAllSubcategories();
 		gettingAllGenders();
-		gettingAllColors();
+
 		// eslint-disable-next-line
-	}, []);
+	}, [match.params.productId, variablesSubmit]);
+
+	const UpdateBasicDataFormFunction = () => (
+		<React.Fragment>
+			<UpdateBasicDataForm
+				setProductName={setProductName}
+				productName={productName}
+				productName_Arabic={productName_Arabic}
+				setProductName_Arabic={setProductName_Arabic}
+				description={description}
+				setDescription={setDescription}
+				description_Arabic={description_Arabic}
+				setDescription_Arabic={setDescription_Arabic}
+				setSlug={setSlug}
+				setSlug_Arabic={setSlug_Arabic}
+				productSKU={productSKU}
+				setProductSKU={setProductSKU}
+				setAddVariables={setAddVariables}
+				addVariables={addVariables}
+				setClickedLink={setClickedLink}
+				chosenSeason={chosenSeason}
+				setChosenSeason={setChosenSeason}
+			/>
+		</React.Fragment>
+	);
 
 	const handleCategoryChange = (e) => {
 		setChosenCategory(e.target.value);
@@ -203,7 +287,10 @@ const AddProduct = () => {
 						name='gender'
 						className='form-control'
 						onChange={handleChangeGender}>
-						<option>Please select</option>
+						<option>
+							{" "}
+							{chosenGender ? chosenGender.genderName : "Please select"}{" "}
+						</option>
 						{allGenders.length > 0 &&
 							allGenders.map((c) => (
 								<option key={c._id} value={c._id}>
@@ -218,7 +305,9 @@ const AddProduct = () => {
 						name='category'
 						className='form-control'
 						onChange={handleCategoryChange}>
-						<option>Please select</option>
+						<option>
+							{chosenCategory ? chosenCategory.categoryName : "Please select"}{" "}
+						</option>
 						{allCategories.length > 0 &&
 							allCategories.map((c) => (
 								<option key={c._id} value={c._id}>
@@ -272,7 +361,6 @@ const AddProduct = () => {
 	const handleChange5 = (e) => {
 		setStock(e.target.value);
 	};
-
 	const handleChange6 = (e) => {
 		setMSRPPriceBasic(e.target.value);
 	};
@@ -361,13 +449,13 @@ const AddProduct = () => {
 	const AddPricesStockBasic = () => {
 		return (
 			<form>
-				<div className='m-3 col-4'>
-					<div className='col-12'>
+				<div className='m-3 col-5'>
+					<div className='col-12 row mb-2'>
 						{addThumbnail &&
 							addThumbnail.images &&
-							addThumbnail.images.map((image) => {
+							addThumbnail.images.map((image, iii) => {
 								return (
-									<div className='m-3 col-6 '>
+									<div className=' mx-2 col-4 ' key={iii}>
 										<button
 											type='button'
 											className='close'
@@ -399,22 +487,6 @@ const AddProduct = () => {
 					</div>
 					{FileUploadThumbnail()}
 				</div>
-				<div className='form-group mt-4'>
-					<label
-						className='text-muted'
-						style={{ fontWeight: "bold", fontSize: "17px" }}>
-						Add Other Variables
-					</label>
-					<input
-						type='checkbox'
-						className='ml-2 mt-2'
-						onChange={() => {
-							setAddVariables(!addVariables);
-							setClickedLink("AddVariables");
-						}}
-						checked={addVariables === true ? true : false}
-					/>
-				</div>
 
 				<div className='form-group'>
 					<label
@@ -441,6 +513,7 @@ const AddProduct = () => {
 						className='form-control'
 						onChange={handleChange3}
 						value={price}
+						required
 					/>
 				</div>
 
@@ -455,6 +528,7 @@ const AddProduct = () => {
 						className='form-control'
 						onChange={handleChange4}
 						value={priceAfterDiscount}
+						required
 					/>
 				</div>
 
@@ -469,6 +543,7 @@ const AddProduct = () => {
 						className='form-control'
 						onChange={handleChange5}
 						value={stock}
+						required
 					/>
 				</div>
 
@@ -478,16 +553,16 @@ const AddProduct = () => {
 						setClickedLink("ExtraOptions");
 						window.scrollTo({ top: 0, behavior: "smooth" });
 					}}>
-					Next: Add Other Features
+					Add Other Features
 				</button>
 			</form>
 		);
 	};
 
-	const AddingProductVariableFunction = () => {
+	const UpdatingProductVariableFunction = () => {
 		return (
 			<React.Fragment>
-				<AddingProductVariable
+				<UpdatingProductVariable
 					clickedVariableLink={clickedVariableLink}
 					setClickedVariableLink={setClickedVariableLink}
 					setAddVariables={setAddVariables}
@@ -504,22 +579,11 @@ const AddProduct = () => {
 					productAttributes={productAttributes}
 					setAddThumbnail={setAddThumbnail}
 					addThumbnail={addThumbnail}
-					parentPrice1={parentPrice1}
-					setParentPrice1={setParentPrice1}
-					parentPrice2={parentPrice2}
-					setParentPrice2={setParentPrice2}
-					parentPrice3={parentPrice3}
-					setParentPrice3={setParentPrice3}
-					inheritPrice={inheritPrice}
-					setInheritPrice={setInheritPrice}
-					inheritParentSKU={inheritParentSKU}
-					setInheritParentSKU={setInheritParentSKU}
 				/>
 			</React.Fragment>
 		);
 	};
-
-	const AddProductToDatabase = (e) => {
+	const UpdateProductToDatabase = (e) => {
 		e.preventDefault();
 		setClickedLink("MainData");
 		window.scrollTo({ top: 0, behavior: "smooth" });
@@ -529,15 +593,10 @@ const AddProduct = () => {
 			!productName_Arabic ||
 			!productSKU ||
 			!description ||
-			!description_Arabic ||
-			!chosenSeason
+			!description_Arabic
 		) {
 			setClickedLink("MainData");
 			return toast.error("Please Add Product Main Data");
-		}
-
-		if (addThumbnail.length === 0) {
-			return toast.error("Please Add Product Main Image");
 		}
 
 		if (!chosenCategory || chosenSubcategories.length < 1 || !chosenGender) {
@@ -595,11 +654,13 @@ const AddProduct = () => {
 			featuredProduct: featured,
 		};
 
-		createProduct(user._id, token, values).then((data) => {
+		updateProduct(match.params.productId, user._id, token, {
+			product: values,
+		}).then((data) => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
-				toast.success("Product Was Successfully Added");
+				toast.success("Product Was Successfully Updated");
 				setTimeout(function () {
 					window.location.reload(false);
 				}, 3000);
@@ -642,7 +703,7 @@ const AddProduct = () => {
 					<label
 						className='text-muted'
 						style={{ fontWeight: "bold", fontSize: "17px" }}>
-						Outlet
+						Clearance
 					</label>
 					<input
 						type='checkbox'
@@ -668,8 +729,8 @@ const AddProduct = () => {
 				<div className='mx-auto text-center'>
 					<button
 						className='btn btn-success mb-3 mx-auto text-center'
-						onClick={AddProductToDatabase}>
-						Add Product To Your Online Store Inventory
+						onClick={UpdateProductToDatabase}>
+						Update Product To Your Online Store Inventory
 					</button>
 				</div>
 			</form>
@@ -681,35 +742,73 @@ const AddProduct = () => {
 
 	let combinationsOfColorSizes = cartesian(chosenSizes, chosenColors);
 
-	console.log(combinationsOfColorSizes, "Main Combination");
+	const allPrimaryKeys = productAttributesFinal.map((i) => i.PK);
 
 	for (let i = 1; i <= combinationsOfColorSizes.length; i++) {
-		// console.log(combinationsOfColorSizes[i - 1], "From first Loop");
-
 		for (let ii = 1; ii < combinationsOfColorSizes[i - 1].length; ii++) {
 			productAttributes = [
 				...productAttributes,
 				{
 					size: combinationsOfColorSizes[i - 1][ii - 1],
 					color: combinationsOfColorSizes[i - 1][ii],
-					quantity: 0,
-					price: inheritPrice ? parentPrice2 : 0,
-					priceAfterDiscount: inheritPrice ? parentPrice3 : 0,
-					MSRP: inheritPrice ? parentPrice1 : 0,
-					productImages: [],
-					SubSKU: inheritParentSKU
-						? productSKU +
-						  "-" +
-						  (allColors &&
-								allColors[0] &&
-								allColors[
-									allColors
-										.map((i) => i.hexa)
-										.indexOf(combinationsOfColorSizes[i - 1][ii])
-								].color.substring(0, 3)) +
-						  "-" +
-						  combinationsOfColorSizes[i - 1][ii - 1].substring(0, 4)
-						: "",
+					quantity:
+						allPrimaryKeys.indexOf(
+							combinationsOfColorSizes[i - 1][ii - 1] +
+								combinationsOfColorSizes[i - 1][ii],
+						) > -1
+							? productAttributesFinal[
+									allPrimaryKeys.indexOf(
+										combinationsOfColorSizes[i - 1][ii - 1] +
+											combinationsOfColorSizes[i - 1][ii],
+									)
+							  ].quantity
+							: 0,
+					price:
+						allPrimaryKeys.indexOf(
+							combinationsOfColorSizes[i - 1][ii - 1] +
+								combinationsOfColorSizes[i - 1][ii],
+						) > -1
+							? productAttributesFinal[
+									allPrimaryKeys.indexOf(
+										combinationsOfColorSizes[i - 1][ii - 1] +
+											combinationsOfColorSizes[i - 1][ii],
+									)
+							  ].price
+							: 0,
+					priceAfterDiscount:
+						allPrimaryKeys.indexOf(
+							combinationsOfColorSizes[i - 1][ii - 1] +
+								combinationsOfColorSizes[i - 1][ii],
+						) > -1
+							? productAttributesFinal[
+									allPrimaryKeys.indexOf(
+										combinationsOfColorSizes[i - 1][ii - 1] +
+											combinationsOfColorSizes[i - 1][ii],
+									)
+							  ].priceAfterDiscount
+							: 0,
+
+					MSRP:
+						allPrimaryKeys.indexOf(
+							combinationsOfColorSizes[i - 1][ii - 1] +
+								combinationsOfColorSizes[i - 1][ii],
+						) > -1
+							? productAttributesFinal[
+									allPrimaryKeys.indexOf(
+										combinationsOfColorSizes[i - 1][ii - 1] +
+											combinationsOfColorSizes[i - 1][ii],
+									)
+							  ].MSRP
+							: 0,
+
+					productImages: productAttributesFinal[i - 1]
+						? productAttributesFinal[i - 1].productImages
+						: [],
+					SubSKU:
+						productAttributesFinal[i - 1] &&
+						productAttributesFinal[i - 1].SubSKU
+							? productAttributesFinal[i - 1].SubSKU
+							: null,
 					PK:
 						combinationsOfColorSizes[i - 1][ii - 1] +
 						combinationsOfColorSizes[i - 1][ii],
@@ -721,40 +820,17 @@ const AddProduct = () => {
 	useEffect(() => {
 		setProductAttributesFinal(productAttributes);
 		// eslint-disable-next-line
-	}, [
-		variablesSubmit,
-		chosenSizes,
-		chosenColors,
-		inheritPrice,
-		inheritParentSKU,
-	]);
-
-	useEffect(() => {
-		Aos.init({ duration: 1500 });
-	}, []);
-
-	useEffect(() => {
-		const onScroll = () => setOffset(window.pageYOffset);
-		// clean up code
-		window.removeEventListener("scroll", onScroll);
-		window.addEventListener("scroll", onScroll, { passive: true });
-		if (window.pageYOffset > 0) {
-			setPageScrolled(true);
-		} else {
-			setPageScrolled(false);
-		}
-		return () => window.removeEventListener("scroll", onScroll);
-	}, [offset]);
+	}, [variablesSubmit, chosenColors, chosenSizes]);
 
 	return (
-		<AddProductWrapper show={AdminMenuStatus}>
+		<UpdateProductSingleWrapper>
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu
-						fromPage='AddProduct'
+						fromPage='UpdateProduct'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
 						collapsed={collapsed}
@@ -762,24 +838,19 @@ const AddProduct = () => {
 					/>
 				</div>
 				<div className='mainContent'>
-					<Navbar fromPage='AddProduct' pageScrolled={pageScrolled} />
-
-					<h3
-						className='mx-auto text-center mb-5'
-						style={{ color: "#009ef7", fontWeight: "bold" }}>
+					<h3 className='mx-auto text-center mb-5 text-capitalize'>
 						{clickedLink === "MainData"
-							? "Add A New Product (Basic Data)"
+							? `Update Product "${productName}" (Basic Data)`
 							: clickedLink === "AddCategorySubcategory"
-							? `Add Category & Subcategory For Product ${productName}`
+							? `Update Category & Subcategory For Product ${productName}`
 							: clickedLink === "AddPrices"
-							? `Add Prices & Inventory For Product ${productName}`
+							? `Update Prices & Inventory For Product ${productName}`
 							: clickedLink === "ExtraOptions"
-							? "Add Product Features & Status"
-							: "Add Suitable Variables and Photos"}
+							? "Update Product Features & Status"
+							: "Update Suitable Variables and Photos"}
 					</h3>
-
 					<div className='row'>
-						<div className='col-md-3' data-aos='fade-up'>
+						<div className='col-md-3'>
 							<ul className='mainUL'>
 								<li
 									className='mb-4 mainLi'
@@ -831,11 +902,10 @@ const AddProduct = () => {
 
 						{clickedLink === "MainData" ? (
 							<div
-								data-aos='fade-down'
 								className='col-md-8 ml-3 rightContentWrapper'
 								// style={{ borderLeft: "darkred 2px solid" }}
 							>
-								{BasicDataFormFunction()}
+								{UpdateBasicDataFormFunction()}
 							</div>
 						) : null}
 
@@ -861,7 +931,7 @@ const AddProduct = () => {
 								className='col-8 ml-3 rightContentWrapper'
 								// style={{ borderLeft: "darkred 2px solid" }}
 							>
-								{AddingProductVariableFunction()}
+								{UpdatingProductVariableFunction()}
 							</div>
 						) : null}
 
@@ -876,27 +946,26 @@ const AddProduct = () => {
 					</div>
 				</div>
 			</div>
-		</AddProductWrapper>
+		</UpdateProductSingleWrapper>
 	);
 };
 
-export default AddProduct;
+export default UpdateProductSingle;
 
-const AddProductWrapper = styled.div`
+const UpdateProductSingleWrapper = styled.div`
 	min-height: 880px;
 	overflow-x: hidden;
 	/* background: #ededed; */
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: ${(props) =>
-			props.show ? "8% 92%" : "15.2% 84.8%"};
+		grid-template-columns: 15.5% 84.5%;
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */
 	}
 	.mainContent {
-		/* margin-top: 50px; */
+		margin-top: 50px;
 	}
 
 	.mainUL {
@@ -936,31 +1005,6 @@ const AddProductWrapper = styled.div`
 		min-height: 550px;
 	}
 
-	@media (max-width: 1750px) {
-		background: white;
-
-		.grid-container {
-			display: grid;
-			/* grid-template-columns: 18% 82%; */
-			grid-template-columns: ${(props) => (props.show ? "7% 93%" : "18% 82%")};
-			margin: auto;
-			/* border: 1px solid red; */
-			/* grid-auto-rows: minmax(60px, auto); */
-		}
-	}
-
-	@media (max-width: 1400px) {
-		background: white;
-
-		.grid-container {
-			display: grid;
-			grid-template-columns: 12% 88%;
-			margin: auto;
-			/* border: 1px solid red; */
-			/* grid-auto-rows: minmax(60px, auto); */
-		}
-	}
-
 	@media (max-width: 1550px) {
 		.mainUL > li {
 			font-size: 0.75rem;
@@ -980,7 +1024,6 @@ const AddProductWrapper = styled.div`
 			margin-left: 30px !important;
 		}
 	}
-
 	@media (max-width: 750px) {
 		.grid-container {
 			display: grid;

@@ -3,13 +3,13 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
-import { isAuthenticated } from "../../../auth";
-import AdminMenu from "../../AdminMenu/AdminMenu";
-import DarkBG from "../../AdminMenu/DarkBG";
-import { getShippingOptions, removeShippingOption } from "../../apiAdmin";
+import { isAuthenticated } from "../../auth";
+import AdminMenu from "../AdminMenu/AdminMenu";
+import DarkBG from "../AdminMenu/DarkBG";
+import { getProducts, removeProduct } from "../apiAdmin";
 
-const DeleteShippOptions = () => {
-	const [allShippingOptions, setAllShippingOptions] = useState([]);
+const DeleteProduct = () => {
+	const [allProducts, setAllProducts] = useState([]);
 	// eslint-disable-next-line
 	const { user, token } = isAuthenticated();
 	// eslint-disable-next-line
@@ -17,30 +17,30 @@ const DeleteShippOptions = () => {
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
 
-	const gettingAllShippingOptions = () => {
+	const gettingAllProduct = () => {
 		setLoading(true);
-		getShippingOptions(token).then((data) => {
+		getProducts(token).then((data) => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
-				setAllShippingOptions(data);
+				setAllProducts(data);
 				setLoading(false);
 			}
 		});
 	};
 
 	useEffect(() => {
-		gettingAllShippingOptions();
+		gettingAllProduct();
 		// eslint-disable-next-line
 	}, []);
 
-	const handleRemove = (shippingId) => {
+	const handleRemove = (productId) => {
 		if (window.confirm("Are You Sure You Want To Delete?")) {
 			setLoading(true);
-			removeShippingOption(shippingId, user._id, token)
+			removeProduct(productId, user._id, token)
 				.then((res) => {
 					setLoading(false);
-					toast.error(`Carrier "${res.data.name}" deleted`);
+					toast.error(`Gender "${res.data.name}" deleted`);
 					setTimeout(function () {
 						window.location.reload(false);
 					}, 2500);
@@ -50,14 +50,14 @@ const DeleteShippOptions = () => {
 	};
 
 	return (
-		<DeleteShippOptionsWrapper>
+		<DeleteProductWrapper>
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}
 			<div className='row'>
 				<div className='col-3 mb-3'>
 					<AdminMenu
-						fromPage='DeleteShippingOption'
+						fromPage='DeleteProduct'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
 						collapsed={collapsed}
@@ -69,24 +69,29 @@ const DeleteShippOptions = () => {
 						<h3
 							style={{ color: "#009ef7", fontWeight: "bold" }}
 							className='mt-1 mb-3 text-center'>
-							Delete Shipping Carrier
+							Delete Product
 						</h3>
 
 						<br />
 						<ul className='list-group text-center'>
-							<h3 className='text-center mt-5'>
-								Total of {allShippingOptions.length} Added Carriers
+							<h3
+								style={{ color: "black", fontWeight: "bold" }}
+								className='text-center mt-5'>
+								Total of {allProducts.length} Added Products
 							</h3>
 							<p className='mt-2 text-center'>
-								Please Select Which Carrier You Would Like To Delete...
+								Please Select Which Product You Would Like To Delete...
 							</p>
-							{allShippingOptions.map((s, i) => (
+							{allProducts.map((s, i) => (
 								<div key={i}>
 									<div className='row text-center mx-auto'>
 										<li
 											className='list-group-item d-flex my-1 py-4 justify-content-between align-items-center col-md-9 mx-auto'
-											style={{ fontSize: "0.95rem" }}>
-											<strong>{s.carrierName}</strong>
+											style={{
+												fontSize: "0.95rem",
+												textTransform: "capitalize",
+											}}>
+											<strong>{s.productName}</strong>
 										</li>
 
 										<li
@@ -115,13 +120,13 @@ const DeleteShippOptions = () => {
 					</div>
 				</div>
 			</div>
-		</DeleteShippOptionsWrapper>
+		</DeleteProductWrapper>
 	);
 };
 
-export default DeleteShippOptions;
+export default DeleteProduct;
 
-const DeleteShippOptionsWrapper = styled.div`
+const DeleteProductWrapper = styled.div`
 	min-height: 880px;
 	overflow-x: hidden;
 	/* background: #ededed; */

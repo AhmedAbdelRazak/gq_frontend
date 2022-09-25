@@ -5,13 +5,13 @@ import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import { isAuthenticated } from "../../auth";
-import AdminMenu from "../OrderTakerMenu/OrderTakerMenu";
-import DarkBG from "../OrderTakerMenu/DarkBG";
-import Navbar from "../OrderTakerNavMenu/Navbar";
-import { readSingleOrder, updateOrder } from "../apiOrderTaker";
+import AdminMenu from "../AdminMenu/AdminMenu";
+import DarkBG from "../AdminMenu/DarkBG";
+import Navbar from "../AdminNavMenu/Navbar";
+import { readSingleOrder, updateOrder } from "../apiAdmin";
 import Trial from "./UpdateModals/Trials";
 
-const SingleOrderPageOrderTaker = (props) => {
+const SingleOrderPage = (props) => {
 	const [loading, setLoading] = useState(true);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [updateElement, setUpdateElement] = useState("");
@@ -76,7 +76,7 @@ const SingleOrderPageOrderTaker = (props) => {
 	}, [offset]);
 
 	return (
-		<SingleOrderPageOrderTakerWrapper show={AdminMenuStatus}>
+		<SingleOrderPageWrapper show={AdminMenuStatus}>
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}
@@ -479,13 +479,13 @@ const SingleOrderPageOrderTaker = (props) => {
 					)}
 				</div>
 			</div>
-		</SingleOrderPageOrderTakerWrapper>
+		</SingleOrderPageWrapper>
 	);
 };
 
-export default SingleOrderPageOrderTaker;
+export default SingleOrderPage;
 
-const SingleOrderPageOrderTakerWrapper = styled.div`
+const SingleOrderPageWrapper = styled.div`
 	min-height: 880px;
 	overflow-x: hidden;
 	/* background: #ededed; */

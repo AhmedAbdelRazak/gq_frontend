@@ -12,6 +12,7 @@ import { Select } from "antd";
 import styled from "styled-components";
 import { ShipToData } from "./ShipToData";
 import Navbar from "../../AdminNavMenu/Navbar";
+import DarkBG from "../../AdminMenu/DarkBG";
 
 const { Option } = Select;
 
@@ -27,6 +28,10 @@ const AddShippingOptions = () => {
 	const [error, setError] = useState(false);
 	const [success, setSuccess] = useState(false);
 	const [chosenShippingData, setChosenShippingData] = useState([]);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [offset, setOffset] = useState(0);
+	const [pageScrolled, setPageScrolled] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	// destructure user and token from localstorage
 	const { user, token } = isAuthenticated();
@@ -300,19 +305,45 @@ const AddShippingOptions = () => {
 		}
 	};
 
+	useEffect(() => {
+		const onScroll = () => setOffset(window.pageYOffset);
+		// clean up code
+		window.removeEventListener("scroll", onScroll);
+		window.addEventListener("scroll", onScroll, { passive: true });
+		if (window.pageYOffset > 0) {
+			setPageScrolled(true);
+		} else {
+			setPageScrolled(false);
+		}
+		return () => window.removeEventListener("scroll", onScroll);
+	}, [offset]);
+
 	return (
-		<AddShippingOptionsWrapper>
+		<AddShippingOptionsWrapper show={AdminMenuStatus}>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<ToastContainer />
 			<div className='grid-container'>
 				<div className=''>
-					<AdminMenu fromPage='AddShippingOption' />
+					<AdminMenu
+						fromPage='AddShippingOption'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
+					/>
 				</div>
 				<div className=''>
-					<Navbar fromPage='AddShippingOption' />
+					<Navbar fromPage='AddShippingOption' pageScrolled={pageScrolled} />
 
 					<div className='container'>
 						<div className=' mt-2 mx-auto p-1'>
-							<h3 className='mt-1 mb-3 text-center'>Add Shipping Carrier</h3>
+							<h3
+								style={{ color: "#009ef7", fontWeight: "bold" }}
+								className='mt-1 mb-3 text-center'>
+								Add Shipping Carrier
+							</h3>
 
 							{newShippingOptionForm()}
 						</div>
@@ -332,7 +363,7 @@ const AddShippingOptionsWrapper = styled.div`
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: 15% 87%;
+		grid-template-columns: ${(props) => (props.show ? "8% 92%" : "15% 87%")};
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */

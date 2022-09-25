@@ -45,6 +45,7 @@ import OrdersHistOrderTaker from "./OrderTaker/Orders/OrdersHistOrderTaker";
 import SingleOrderPageOrderTaker from "./OrderTaker/Orders/SingleOrderPageOrderTaker";
 import CreateColor from "./Admin/Attributes/CreateColor";
 import CreateSize from "./Admin/Attributes/CreateSize";
+import UpdateProductOrderTaker from "./OrderTaker/Orders/ProductsDetails/UpdateProductOrderTaker";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -223,6 +224,12 @@ const App = () => {
 					path='/order-taker/single-order/:orderId'
 					exact
 					component={SingleOrderPageOrderTaker}
+				/>
+
+				<OrderTakerRoute
+					path='/order-taker/update-product'
+					exact
+					component={UpdateProductOrderTaker}
 				/>
 			</Switch>
 			<Footer />

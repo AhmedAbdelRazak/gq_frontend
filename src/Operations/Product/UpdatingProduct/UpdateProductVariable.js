@@ -24,7 +24,7 @@ const isActive2 = (clickedLink, sureClickedLink) => {
 	}
 };
 
-const AddingProductVariable = ({
+const UpdatingProductVariable = ({
 	clickedVariableLink,
 	setClickedVariableLink,
 	setAddVariables,
@@ -41,12 +41,10 @@ const AddingProductVariable = ({
 	productAttributes,
 	addThumbnail,
 	setAddThumbnail,
-	inheritParentSKU,
-	setInheritParentSKU,
 }) => {
-	const { user, token } = isAuthenticated();
 	const [allColors, setAllColors] = useState([]);
 	const [allSizes, setAllSizes] = useState([]);
+	const { user, token } = isAuthenticated();
 
 	//
 	const ColorsImageUpload = (e, c) => {
@@ -141,17 +139,6 @@ const AddingProductVariable = ({
 		}
 	};
 
-	const adjustingVariablesSkus = (e, p) => {
-		const index = productAttributesFinal.findIndex((object) => {
-			return object.PK === p.size + p.color;
-		});
-
-		if (index !== -1) {
-			productAttributesFinal[index].SubSKU = e.target.value;
-			setProductAttributesFinal([...productAttributesFinal]);
-		}
-	};
-
 	const adjustingMSRP = (e, p) => {
 		const index = productAttributesFinal.findIndex((object) => {
 			return object.PK === p.size + p.color;
@@ -159,6 +146,17 @@ const AddingProductVariable = ({
 
 		if (index !== -1) {
 			productAttributesFinal[index].MSRP = e.target.value;
+			setProductAttributesFinal([...productAttributesFinal]);
+		}
+	};
+
+	const adjustingVariablesSkus = (e, p) => {
+		const index = productAttributesFinal.findIndex((object) => {
+			return object.PK === p.size + p.color;
+		});
+
+		if (index !== -1) {
+			productAttributesFinal[index].SubSKU = e.target.value;
 			setProductAttributesFinal([...productAttributesFinal]);
 		}
 	};
@@ -270,7 +268,7 @@ const AddingProductVariable = ({
 		<div className='mb-5'>
 			<div className='row mx-auto text-center variableLinkWrapper'>
 				<div
-					className='col-3 variableLinksItem '
+					className='col-3 variableLinksItem'
 					onClick={() => setClickedVariableLink("SizesColorsImages")}
 					style={isActive2("SizesColorsImages", clickedVariableLink)}>
 					Add Sizes, Colors And Images
@@ -301,41 +299,6 @@ const AddingProductVariable = ({
 				) : null}
 			</div>
 			<hr />
-			<div className='form-group mt-4'>
-				<label
-					className='text-muted'
-					style={{ fontWeight: "bold", fontSize: "13px" }}>
-					Remove Variables
-				</label>
-				<input
-					type='checkbox'
-					className='ml-2 mt-2'
-					onChange={() => {
-						setAddVariables(!addVariables);
-						setClickedLink("AddPrices");
-					}}
-					checked={addVariables === true ? true : false}
-				/>
-			</div>
-
-			{clickedVariableLink === "VariableSkus" ? (
-				<div className='form-group mt-4'>
-					<label
-						className='text-muted'
-						style={{ fontWeight: "bold", fontSize: "13px" }}>
-						Inherit From Parent SKU
-					</label>
-					<input
-						type='checkbox'
-						className='ml-2 mt-2'
-						onChange={() => {
-							setInheritParentSKU(!inheritParentSKU);
-						}}
-						checked={inheritParentSKU === true ? true : false}
-					/>
-				</div>
-			) : null}
-
 			<form>
 				{clickedVariableLink === "SizesColorsImages" ? (
 					<div className='form-group   col-md-8'>
@@ -366,9 +329,7 @@ const AddingProductVariable = ({
 									style={{ width: "100%" }}
 									placeholder='Please Select Colors'
 									value={chosenColors}
-									onChange={(value) => {
-										setChosenColors(value);
-									}}>
+									onChange={(value) => setChosenColors(value)}>
 									{allColors &&
 										allColors.map((c, ii) => {
 											return (
@@ -388,7 +349,7 @@ const AddingProductVariable = ({
 											e.preventDefault();
 											setVariablesSubmit(true);
 										}}>
-										Submit Variables
+										Submit Updated Variables
 									</button>
 								) : null}
 							</div>
@@ -450,6 +411,7 @@ const AddingProductVariable = ({
 								{FileUploadThumbnail()}
 							</div>
 						) : null}
+
 						<div className='row'>
 							{chosenColors &&
 								variablesSubmit &&
@@ -463,12 +425,15 @@ const AddingProductVariable = ({
 													{productAttributesFinal[i].productImages.map(
 														(imag, iiii) => {
 															return (
-																<React.Fragment key={iiii}>
+																<React.Fragment>
 																	<img
 																		alt='nothing'
+																		key={iiii}
 																		width='30%'
+																		className='mb-2'
 																		src={imag.url}
 																	/>
+
 																	<button
 																		type='button'
 																		onClick={() => {
@@ -537,15 +502,15 @@ const AddingProductVariable = ({
 													color: "white",
 													boxShadow: "2px 2px 2px 3px rgba(0,0,0,0.1)",
 												}}>
-												Add Product Images{" "}
+												Update Product Images{" "}
 												<span className='text-capitalize'>
 													{" "}
-													(
-													{allColors &&
-														allColors[0] &&
-														allColors[allColors.map((i) => i.hexa).indexOf(c)]
-															.color}
-													)
+													((
+													{allColors[allColors.map((i) => i.hexa).indexOf(c)]
+														? allColors[allColors.map((i) => i.hexa).indexOf(c)]
+																.color
+														: ""}
+													))
 												</span>
 												<input
 													type='file'
@@ -588,11 +553,13 @@ const AddingProductVariable = ({
 													style={{ fontWeight: "bold", fontSize: "17px" }}>
 													Product Stock Level (Color:{" "}
 													<span style={{ color: p.color }}>
-														{allColors &&
-															allColors[0] &&
-															allColors[
-																allColors.map((i) => i.hexa).indexOf(p.color)
-															].color}
+														{allColors[
+															allColors.map((i) => i.hexa).indexOf(p.color)
+														]
+															? allColors[
+																	allColors.map((i) => i.hexa).indexOf(p.color)
+															  ].color
+															: p.color}
 													</span>{" "}
 													Size: {p.size})
 												</label>
@@ -635,11 +602,15 @@ const AddingProductVariable = ({
 														style={{ fontWeight: "bold", fontSize: "13px" }}>
 														Product After Manufacturing (Color:{" "}
 														<span style={{ color: p.color }}>
-															{allColors &&
-																allColors[0] &&
-																allColors[
-																	allColors.map((i) => i.hexa).indexOf(p.color)
-																].color}
+															{allColors[
+																allColors.map((i) => i.hexa).indexOf(p.color)
+															]
+																? allColors[
+																		allColors
+																			.map((i) => i.hexa)
+																			.indexOf(p.color)
+																  ].color
+																: p.color}
 														</span>{" "}
 														Size: {p.size})
 													</label>
@@ -657,11 +628,15 @@ const AddingProductVariable = ({
 														style={{ fontWeight: "bold", fontSize: "13px" }}>
 														Product Price Before Discount (Color:{" "}
 														<span style={{ color: p.color }}>
-															{allColors &&
-																allColors[0] &&
-																allColors[
-																	allColors.map((i) => i.hexa).indexOf(p.color)
-																].color}
+															{allColors[
+																allColors.map((i) => i.hexa).indexOf(p.color)
+															]
+																? allColors[
+																		allColors
+																			.map((i) => i.hexa)
+																			.indexOf(p.color)
+																  ].color
+																: p.color}
 														</span>{" "}
 														Size: {p.size})
 													</label>
@@ -679,11 +654,15 @@ const AddingProductVariable = ({
 														style={{ fontWeight: "bold", fontSize: "13px" }}>
 														Product Price After Discount (Color:{" "}
 														<span style={{ color: p.color }}>
-															{allColors &&
-																allColors[0] &&
-																allColors[
-																	allColors.map((i) => i.hexa).indexOf(p.color)
-																].color}
+															{allColors[
+																allColors.map((i) => i.hexa).indexOf(p.color)
+															]
+																? allColors[
+																		allColors
+																			.map((i) => i.hexa)
+																			.indexOf(p.color)
+																  ].color
+																: p.color}
 														</span>{" "}
 														Size: {p.size})
 													</label>
@@ -726,11 +705,15 @@ const AddingProductVariable = ({
 														style={{ fontWeight: "bold", fontSize: "17px" }}>
 														Variable SKU (Color:{" "}
 														<span style={{ color: p.color }}>
-															{allColors &&
-																allColors[0] &&
-																allColors[
-																	allColors.map((i) => i.hexa).indexOf(p.color)
-																].color}
+															{allColors[
+																allColors.map((i) => i.hexa).indexOf(p.color)
+															]
+																? allColors[
+																		allColors
+																			.map((i) => i.hexa)
+																			.indexOf(p.color)
+																  ].color
+																: p.color}
 														</span>{" "}
 														Size: {p.size})
 													</label>
@@ -763,4 +746,4 @@ const AddingProductVariable = ({
 	);
 };
 
-export default AddingProductVariable;
+export default UpdatingProductVariable;

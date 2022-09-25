@@ -61,7 +61,7 @@ const Navbar = ({ fromPage, pageScrolled }) => {
 									: "/admin/dashboard"
 							}>
 							<Menu.Item key='/admin/dashboard' icon={<HomeOutlined />}>
-								Owner Dashboard
+								<Link to='/admin/dashboard'>Owner Dashboard</Link>
 							</Menu.Item>
 							<Menu.SubMenu
 								key='SubMenu'
@@ -73,10 +73,8 @@ const Navbar = ({ fromPage, pageScrolled }) => {
 								<Menu.Item key='three' icon={<AppstoreOutlined />}>
 									Pending Sales
 								</Menu.Item>
-								<Menu.Item
-									key='/order-taker/orders-hist'
-									icon={<AppstoreOutlined />}>
-									<Link to='/order-taker/orders-hist'>Sales History</Link>
+								<Menu.Item key='/admin/orders-hist' icon={<AppstoreOutlined />}>
+									<Link to='/admin/orders-hist'>Sales History</Link>
 								</Menu.Item>
 								<Menu.ItemGroup title='Top Trending'>
 									<Menu.Item key='four' icon={<AppstoreOutlined />}>
@@ -95,9 +93,7 @@ const Navbar = ({ fromPage, pageScrolled }) => {
 								<Menu.Item
 									key='/admin/update-product'
 									icon={<RocketOutlined />}>
-									<Link to='/order-taker/update-product'>
-										Products And Inventory
-									</Link>
+									<Link to='/admin/update-product'>Products And Inventory</Link>
 								</Menu.Item>
 								<Menu.Item key='eleven' icon={<DollarCircleOutlined />}>
 									Financial
@@ -105,15 +101,17 @@ const Navbar = ({ fromPage, pageScrolled }) => {
 								<Menu.Item
 									key='/admin/add-shipping-carrier'
 									icon={<CarOutlined />}>
-									Shipping / Carriers
+									<Link to='/admin/add-shipping-carrier'>
+										Shipping / Carriers
+									</Link>
 								</Menu.Item>
 								<Menu.Item key='/admin/add-category' icon={<ProjectOutlined />}>
-									Categories Management
+									<Link to='/admin/add-category'>Categories Management</Link>
 								</Menu.Item>
 								<Menu.Item
 									key='/admin/add-gender'
 									icon={<UsergroupAddOutlined />}>
-									Gender Management
+									<Link to='/admin/add-gender'>Gender Management</Link>
 								</Menu.Item>
 							</Menu.SubMenu>
 						</Menu>

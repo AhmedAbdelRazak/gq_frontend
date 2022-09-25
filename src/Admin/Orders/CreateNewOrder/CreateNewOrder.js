@@ -48,6 +48,7 @@ const CreateNewOrder = () => {
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [offset, setOffset] = useState(0);
 	const [pageScrolled, setPageScrolled] = useState(false);
+	const [sendSMS, setSendSMS] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
 	const [customerDetails, setCustomerDetails] = useState({
 		fullName: "",
@@ -380,7 +381,7 @@ const CreateNewOrder = () => {
 												<Option value={att.SubSKU} key={ii}>
 													{att.SubSKU}
 													{" | "}{" "}
-													<span style={{ color: att.color }}>
+													<span style={{ color: "black" }}>
 														{allColors[
 															allColors.map((i) => i.hexa).indexOf(att.color)
 														]
@@ -889,6 +890,7 @@ const CreateNewOrder = () => {
 			employeeData: user,
 			chosenShippingOption: chosenShippingOption,
 			orderSource: orderSource,
+			sendSMS: sendSMS,
 			trackingNumber: "Not Added",
 		};
 
@@ -1097,6 +1099,26 @@ const CreateNewOrder = () => {
 						placeholder='Required - e.g. Zirga Instagram, Next Day Instagram, etc...'
 					/>
 				</div>
+
+				<div className='form-group col-md-6 mx-auto my-4 text-center'>
+					<div className='form-group'>
+						<label
+							className=' mx-2'
+							style={{ fontWeight: "bold", fontSize: "17px" }}>
+							Send SMS
+						</label>
+
+						<input
+							type='checkbox'
+							// className='form-control'
+							onChange={() => setSendSMS(!sendSMS)}
+							checked={sendSMS}
+							value={sendSMS}
+							required
+						/>
+					</div>
+				</div>
+
 				<div className='mt-3'>
 					Total Amount Basic Products:{" "}
 					<strong style={{ color: "darkblue" }}>

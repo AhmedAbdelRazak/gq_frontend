@@ -41,8 +41,6 @@ const AddingProductVariable = ({
 	productAttributes,
 	addThumbnail,
 	setAddThumbnail,
-	inheritParentSKU,
-	setInheritParentSKU,
 }) => {
 	const { user, token } = isAuthenticated();
 	const [allColors, setAllColors] = useState([]);
@@ -304,7 +302,7 @@ const AddingProductVariable = ({
 			<div className='form-group mt-4'>
 				<label
 					className='text-muted'
-					style={{ fontWeight: "bold", fontSize: "13px" }}>
+					style={{ fontWeight: "bold", fontSize: "17px" }}>
 					Remove Variables
 				</label>
 				<input
@@ -317,25 +315,6 @@ const AddingProductVariable = ({
 					checked={addVariables === true ? true : false}
 				/>
 			</div>
-
-			{clickedVariableLink === "VariableSkus" ? (
-				<div className='form-group mt-4'>
-					<label
-						className='text-muted'
-						style={{ fontWeight: "bold", fontSize: "13px" }}>
-						Inherit From Parent SKU
-					</label>
-					<input
-						type='checkbox'
-						className='ml-2 mt-2'
-						onChange={() => {
-							setInheritParentSKU(!inheritParentSKU);
-						}}
-						checked={inheritParentSKU === true ? true : false}
-					/>
-				</div>
-			) : null}
-
 			<form>
 				{clickedVariableLink === "SizesColorsImages" ? (
 					<div className='form-group   col-md-8'>
@@ -541,10 +520,10 @@ const AddingProductVariable = ({
 												<span className='text-capitalize'>
 													{" "}
 													(
-													{allColors &&
-														allColors[0] &&
+													{
 														allColors[allColors.map((i) => i.hexa).indexOf(c)]
-															.color}
+															.color
+													}
 													)
 												</span>
 												<input
@@ -588,11 +567,11 @@ const AddingProductVariable = ({
 													style={{ fontWeight: "bold", fontSize: "17px" }}>
 													Product Stock Level (Color:{" "}
 													<span style={{ color: p.color }}>
-														{allColors &&
-															allColors[0] &&
+														{
 															allColors[
 																allColors.map((i) => i.hexa).indexOf(p.color)
-															].color}
+															].color
+														}
 													</span>{" "}
 													Size: {p.size})
 												</label>
@@ -635,11 +614,11 @@ const AddingProductVariable = ({
 														style={{ fontWeight: "bold", fontSize: "13px" }}>
 														Product After Manufacturing (Color:{" "}
 														<span style={{ color: p.color }}>
-															{allColors &&
-																allColors[0] &&
+															{
 																allColors[
 																	allColors.map((i) => i.hexa).indexOf(p.color)
-																].color}
+																].color
+															}
 														</span>{" "}
 														Size: {p.size})
 													</label>
@@ -657,11 +636,11 @@ const AddingProductVariable = ({
 														style={{ fontWeight: "bold", fontSize: "13px" }}>
 														Product Price Before Discount (Color:{" "}
 														<span style={{ color: p.color }}>
-															{allColors &&
-																allColors[0] &&
+															{
 																allColors[
 																	allColors.map((i) => i.hexa).indexOf(p.color)
-																].color}
+																].color
+															}
 														</span>{" "}
 														Size: {p.size})
 													</label>
@@ -679,11 +658,11 @@ const AddingProductVariable = ({
 														style={{ fontWeight: "bold", fontSize: "13px" }}>
 														Product Price After Discount (Color:{" "}
 														<span style={{ color: p.color }}>
-															{allColors &&
-																allColors[0] &&
+															{
 																allColors[
 																	allColors.map((i) => i.hexa).indexOf(p.color)
-																].color}
+																].color
+															}
 														</span>{" "}
 														Size: {p.size})
 													</label>
@@ -726,11 +705,11 @@ const AddingProductVariable = ({
 														style={{ fontWeight: "bold", fontSize: "17px" }}>
 														Variable SKU (Color:{" "}
 														<span style={{ color: p.color }}>
-															{allColors &&
-																allColors[0] &&
+															{
 																allColors[
 																	allColors.map((i) => i.hexa).indexOf(p.color)
-																].color}
+																].color
+															}
 														</span>{" "}
 														Size: {p.size})
 													</label>

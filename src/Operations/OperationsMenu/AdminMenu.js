@@ -44,68 +44,153 @@ const items = [
 
 	getItem("Products Management", "sub4", <ShoppingCartOutlined />, [
 		getItem("Categories Management", "sub3", <AppstoreOutlined />, [
-			getItem("Add Category", "/admin/add-category"),
+			getItem(
+				<Link to='/admin/add-category'>Add Category</Link>,
+				"/admin/add-category",
+			),
 			getItem(
 				<Link to='/admin/update-category'>Update Category</Link>,
 				"/admin/update-category",
 			),
-			getItem("Delete Category", "/admin/delete-category"),
+			getItem(
+				<Link to='/admin/delete-category'>Delete Category</Link>,
+				"/admin/delete-category",
+			),
 		]),
 		getItem("Subcategories Management", "sub7", <AppstoreOutlined />, [
-			getItem("Add Subcategory", "/admin/add-subcategory"),
-			getItem("Update Subcategory", "/admin/update-subcategory"),
-			getItem("Delete Subcategory", "/admin/delete-subcategory"),
+			getItem(
+				<Link to='/admin/add-subcategory'>Add Subcategory</Link>,
+				"/admin/add-subcategory",
+			),
+			getItem(
+				<Link to='/admin/update-subcategory'>Update Subcategory</Link>,
+				"/admin/update-subcategory",
+			),
+			getItem(
+				<Link to='/admin/delete-subcategory'>Delete Subcategory</Link>,
+				"/admin/delete-subcategory",
+			),
 		]),
 		getItem("Attributes", "sub17", <AppstoreOutlined />, [
-			getItem("Add Colors", "/admin/add-color"),
-			getItem("Add Sizes", "/admin/add-size"),
+			getItem(
+				<Link to='/admin/add-color'>Add Colors</Link>,
+				"/admin/add-color",
+			),
+			getItem(<Link to='/admin/add-size'>Add Sizes</Link>, "/admin/add-size"),
 		]),
-		getItem("Add New Product", "/admin/add-product"),
 		getItem(
 			<Link
-				to='/order-taker/update-product'
+				to='/admin/add-product'
+				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+				Add New Product
+			</Link>,
+			"/admin/add-product",
+		),
+		getItem(
+			<Link
+				to='/admin/update-product'
 				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
 				Inventory Report
 			</Link>,
-			"/order-taker/update-product",
+			"/admin/update-product",
 		),
-		getItem("Delete Product", "/admin/delete-product"),
+		getItem(
+			<Link
+				to='/admin/delete-product'
+				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+				Delete Product
+			</Link>,
+			"/admin/delete-product",
+		),
 	]),
 
 	getItem("Shipping Options", "sub30", <CopyOutlined />, [
-		getItem("Add Shipping Carrier", "/admin/add-shipping-carrier"),
-		getItem("Update Shipping Carrier", "/admin/update-shipping-carrier"),
-		getItem("Delete Shipping Carrier", "/admin/delete-shipping-carrier"),
+		getItem(
+			<Link
+				to='/admin/add-shipping-carrier'
+				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+				Add Shipping Carrier
+			</Link>,
+			"/admin/add-shipping-carrier",
+		),
+		getItem(
+			<Link
+				to='/admin/update-shipping-carrier'
+				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+				Update Shipping Carrier
+			</Link>,
+			"/admin/update-shipping-carrier",
+		),
+		getItem(
+			<Link
+				to='/admin/delete-shipping-carrier'
+				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+				Delete Shipping Carrier
+			</Link>,
+			"/admin/delete-shipping-carrier",
+		),
 	]),
 
 	getItem("Orders Management", "sub6", <DesktopOutlined />, [
 		getItem(
 			<Link
-				to='/order-taker/create-new-order'
+				to='/admin/create-new-order'
 				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
 				Create A New Order
 			</Link>,
-			"/order-taker/create-new-order",
+			"/admin/create-new-order",
 		),
 		getItem(
 			<Link
-				to='/order-taker/orders-hist'
+				to='/admin/orders-hist'
 				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
 				Sales History
 			</Link>,
-			"/order-taker/orders-hist",
+			"/admin/orders-hist",
 		),
 	]),
 	getItem("Employees Management", "sub5", <ContainerOutlined />, [
-		getItem("Add A New Employee", "/admin/add-employee"),
-		getItem("Update Employee Profile", "/admin/update-employee"),
+		getItem(
+			<Link
+				to='/admin/add-employee'
+				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+				Add A New Employee
+			</Link>,
+			"/admin/add-employee",
+		),
+		getItem(
+			<Link
+				to='/admin/update-employee'
+				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+				Update Employee Profile
+			</Link>,
+			"/admin/update-employee",
+		),
 	]),
 
 	getItem("Gender Management", "sub2", <MailOutlined />, [
-		getItem("Add Gender", "/admin/add-gender"),
-		getItem("Update Gender", "/admin/update-gender"),
-		getItem("Delete Gender", "/admin/delete-gender"),
+		getItem(
+			<Link to='/admin/add-gender'>Add Gender</Link>,
+			"/admin/add-gender",
+		),
+		getItem(
+			<Link to='/admin/update-gender'>Update Gender</Link>,
+			"/admin/update-gender",
+		),
+		getItem(
+			<Link to='/admin/delete-gender'>Delete Gender</Link>,
+			"/admin/delete-gender",
+		),
 	]),
+
+	// getItem("Navigation Two", "sub3", <AppstoreOutlined />, [
+	// 	getItem("Option 9", "9"),
+	// 	getItem("Option 10", "10"),
+	// 	getItem("Submenu", "sub3", null, [
+	// 		getItem("Option 11", "11"),
+	// 		getItem("Option 12", "12"),
+	// 	]),
+	// ]),
 ];
 
 const AdminMenu = ({
@@ -198,8 +283,8 @@ const AdminMenu = ({
 						? "/admin/delete-category"
 						: fromPage === "AddProduct"
 						? "/admin/add-product"
-						: fromPage === "UpdateProductOrderTaker"
-						? "/order-taker/update-product"
+						: fromPage === "UpdateProduct"
+						? "/admin/update-product"
 						: fromPage === "DeleteProduct"
 						? "/admin/delete-product"
 						: fromPage === "AddSubcategory"
@@ -208,16 +293,16 @@ const AdminMenu = ({
 						? "/admin/update-subcategory"
 						: fromPage === "DeleteSubcategory"
 						? "/admin/delete-subcategory"
-						: fromPage === "CreateNewOrderOrderTaker"
-						? "/order-taker/create-new-order"
+						: fromPage === "CreateNewOrder"
+						? "/admin/create-new-order"
 						: fromPage === "UpdateShippingOption"
 						? "/admin/update-shipping-carrier"
 						: fromPage === "AddShippingOption"
 						? "/admin/add-shipping-carrier"
 						: fromPage === "DeleteShippingOption"
 						? "/admin/delete-shipping-carrier"
-						: fromPage === "OrdersHistOrderTaker"
-						? "/order-taker/orders-hist"
+						: fromPage === "OrdersHist"
+						? "/admin/orders-hist"
 						: fromPage === "AddEmployee"
 						? "/admin/add-employee"
 						: fromPage === "MainReports"

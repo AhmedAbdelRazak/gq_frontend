@@ -3,14 +3,14 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { isAuthenticated } from "../../auth";
-import AdminMenu from "../OrderTakerMenu/OrderTakerMenu";
-import Navbar from "../OrderTakerNavMenu/Navbar";
+import AdminMenu from "../OperationsMenu/AdminMenu";
+import Navbar from "../OperationsNavMenu/Navbar";
 import CountUp from "react-countup";
-import { listOrders } from "../apiOrderTaker";
+import { listOrders } from "../apiAdmin";
 import { Link } from "react-router-dom";
-import DarkBG from "../OrderTakerMenu/DarkBG";
+import DarkBG from "../OperationsMenu/DarkBG";
 
-const OrdersHistOrderTaker = () => {
+const OrdersHist = () => {
 	const [allOrders, setAllOrders] = useState([]);
 	const [q, setQ] = useState("");
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
@@ -179,7 +179,7 @@ const OrdersHistOrderTaker = () => {
 								<td>{s.totalAmountAfterDiscount.toFixed(2)} L.E.</td>
 								<td>{s.totalOrderQty}</td>
 								<td>Display Invoice</td>
-								<Link to={`/order-taker/single-order/${s._id}`}>
+								<Link to={`/admin/single-order/${s._id}`}>
 									<td
 										style={{
 											color: "blue",
@@ -213,14 +213,14 @@ const OrdersHistOrderTaker = () => {
 	}, [offset]);
 
 	return (
-		<OrdersHistOrderTakerWrapper show={AdminMenuStatus}>
+		<OrdersHistWrapper show={AdminMenuStatus}>
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu
-						fromPage='OrdersHistOrderTaker'
+						fromPage='OrdersHist'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
 						collapsed={collapsed}
@@ -228,7 +228,7 @@ const OrdersHistOrderTaker = () => {
 					/>
 				</div>
 				<div className='mainContent'>
-					<Navbar fromPage='OrdersHistOrderTaker' pageScrolled={pageScrolled} />
+					<Navbar fromPage='OrdersHist' pageScrolled={pageScrolled} />
 					<h3
 						style={{ color: "#009ef7", fontWeight: "bold" }}
 						className='mx-auto text-center mb-5'>
@@ -292,13 +292,13 @@ const OrdersHistOrderTaker = () => {
 					{dataTable()}
 				</div>
 			</div>
-		</OrdersHistOrderTakerWrapper>
+		</OrdersHistWrapper>
 	);
 };
 
-export default OrdersHistOrderTaker;
+export default OrdersHist;
 
-const OrdersHistOrderTakerWrapper = styled.div`
+const OrdersHistWrapper = styled.div`
 	min-height: 880px;
 	/* overflow-x: hidden; */
 	/* background: #ededed; */

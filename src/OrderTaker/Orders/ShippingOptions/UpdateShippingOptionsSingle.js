@@ -9,6 +9,7 @@ import "antd/dist/antd.min.css";
 import { isAuthenticated } from "../../../auth";
 import { getShippingOptions, updateShippingOptions } from "../../apiAdmin";
 import { ShipToData } from "./ShipToData";
+import DarkBG from "../../AdminMenu/DarkBG";
 
 const { Option } = Select;
 
@@ -23,6 +24,8 @@ const UpdateShippingOptionsSingle = ({ match }) => {
 	const [carrierStatus, setCarrierStatus] = useState("1");
 	const [allChosenGov, setAllChosenGov] = useState([]);
 	const [loading, setLoading] = useState(true);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	const gettingAllShippingOptions = () => {
 		setLoading(true);
@@ -149,10 +152,19 @@ const UpdateShippingOptionsSingle = ({ match }) => {
 
 	return (
 		<UpdateShippingOptionsSingleWrapper>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<ToastContainer />
 			<div className='row'>
 				<div className='col-3 mb-3'>
-					<AdminMenu fromPage='UpdateShippingOption' />
+					<AdminMenu
+						fromPage='UpdateShippingOption'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
+					/>
 				</div>
 				{selectedShippingOption && allShippingOptions && !loading ? (
 					<div className='col-8 contentWrapper'>
@@ -162,7 +174,11 @@ const UpdateShippingOptionsSingle = ({ match }) => {
 							// style={{ borderLeft: "1px solid brown" }}
 						>
 							<h3
-								style={{ fontSize: "1.15rem", fontWeight: "bold" }}
+								style={{
+									color: "#009ef7",
+									fontSize: "1.15rem",
+									fontWeight: "bold",
+								}}
 								className='text-center mt-1'>
 								The Selected Carrier is "
 								{selectedShippingOption &&

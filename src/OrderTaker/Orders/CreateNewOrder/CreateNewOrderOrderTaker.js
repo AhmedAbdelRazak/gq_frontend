@@ -3,10 +3,11 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import OrderTakerMenu from "../../OrderTakerMenu/OrderTakerMenu";
+import AdminMenu from "../../OrderTakerMenu/OrderTakerMenu";
 import { Select } from "antd";
 import {
 	createOrder,
+	getColors,
 	getProducts,
 	getShippingOptions,
 } from "../../apiOrderTaker";
@@ -14,6 +15,7 @@ import { ShipToData } from "../ShippingOptions/ShipToData";
 import { isAuthenticated } from "../../../auth";
 import { toast } from "react-toastify";
 import Navbar from "../../OrderTakerNavMenu/Navbar";
+import DarkBG from "../../OrderTakerMenu/DarkBG";
 const { Option } = Select;
 
 const isActive = (clickedLink, sureClickedLink) => {
@@ -42,7 +44,11 @@ const CreateNewOrderOrderTaker = () => {
 	const [allShippingOptions, setAllShippingOptions] = useState({});
 	const [orderTakerDiscount, setOrderTakerDiscount] = useState(0);
 	const [orderSource, setOrderSource] = useState("");
-
+	const [allColors, setAllColors] = useState([]);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [offset, setOffset] = useState(0);
+	const [pageScrolled, setPageScrolled] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 	const [customerDetails, setCustomerDetails] = useState({
 		fullName: "",
 		phone: "",
@@ -305,6 +311,21 @@ const CreateNewOrderOrderTaker = () => {
 		// eslint-disable-next-line
 	}, [chosenProductVariables]);
 
+	const gettingAllColors = () => {
+		getColors(token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllColors(data);
+			}
+		});
+	};
+
+	useEffect(() => {
+		gettingAllColors();
+		// eslint-disable-next-line
+	}, []);
+
 	const sizesAndColorsOptions = () => {
 		return (
 			<>
@@ -358,7 +379,18 @@ const CreateNewOrderOrderTaker = () => {
 											return (
 												<Option value={att.SubSKU} key={ii}>
 													{att.SubSKU}
-													{" | "} {att.color}
+													{" | "}{" "}
+													<span style={{ color: att.color }}>
+														{allColors[
+															allColors.map((i) => i.hexa).indexOf(att.color)
+														]
+															? allColors[
+																	allColors
+																		.map((i) => i.hexa)
+																		.indexOf(att.color)
+															  ].color
+															: att.color}
+													</span>
 													{" | "}
 													{att.size}
 													{" | "}
@@ -763,7 +795,7 @@ const CreateNewOrderOrderTaker = () => {
 		chosenProductQty &&
 		chosenProductQty.length > 0 &&
 		chosenProductQty.map((ii) =>
-			ii.filter((iii) => iii.OrderedQty <= iii.quantity),
+			ii.filter((iii) => iii.OrderedQty <= iii.quantity || iii.quantity !== 0),
 		);
 
 	let lengthsOfArrays =
@@ -779,18 +811,15 @@ const CreateNewOrderOrderTaker = () => {
 
 	let QuantityValidation_NoVariables =
 		productsWithNoVariables &&
-		productsWithNoVariables.filter((ii) => ii.orderedQuantity <= ii.quantity);
+		productsWithNoVariables.filter(
+			(ii) => ii.orderedQuantity <= ii.quantity || ii.quantity !== 0,
+		);
 
 	console.log(QuantityValidation_NoVariables, "QuantityValidation_NoVariables");
 	console.log(productsWithNoVariables, "productsWithNoVariables");
 
 	let quantityValidationLogic_NoVariables =
 		productsWithNoVariables.length !== QuantityValidation_NoVariables.length;
-
-	console.log(
-		quantityValidationLogic_NoVariables,
-		"quantityValidationLogic_NoVariables",
-	);
 
 	const CreatingOrder = (e) => {
 		e.preventDefault();
@@ -1131,22 +1160,47 @@ const CreateNewOrderOrderTaker = () => {
 		);
 	};
 
+	useEffect(() => {
+		const onScroll = () => setOffset(window.pageYOffset);
+		// clean up code
+		window.removeEventListener("scroll", onScroll);
+		window.addEventListener("scroll", onScroll, { passive: true });
+		if (window.pageYOffset > 0) {
+			setPageScrolled(true);
+		} else {
+			setPageScrolled(false);
+		}
+		return () => window.removeEventListener("scroll", onScroll);
+	}, [offset]);
+
 	return (
-		<CreateNewOrderOrderTakerWrapper>
+		<CreateNewOrderOrderTakerWrapper show={AdminMenuStatus}>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<div className='grid-container'>
 				<div className=''>
-					<OrderTakerMenu fromPage='CreateNewOrderOrderTaker' />
+					<AdminMenu
+						fromPage='CreateNewOrderOrderTaker'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
+					/>
 				</div>
 				<div className='mainContent'>
-					<Navbar fromPage='CreateNewOrderOrderTaker' />
+					<Navbar
+						fromPage='CreateNewOrderOrderTaker'
+						pageScrolled={pageScrolled}
+					/>
 					<h3
-						style={{ color: "#009ef7", fontWeight: "bold" }}
-						className='mx-auto text-center mb-5'>
+						className='mx-auto text-center mb-5'
+						style={{ color: "#009ef7", fontWeight: "bold" }}>
 						Create A New Order
 					</h3>
 
 					<div className='row'>
-						<div className='col-3'>
+						<div className='col-md-3'>
 							<ul className='mainUL'>
 								<li
 									className='mb-4 mainLi'
@@ -1220,10 +1274,29 @@ const CreateNewOrderOrderTaker = () => {
 
 						{clickedLink === "ChooseProducts" ? (
 							<div
-								className='col-8 ml-3 rightContentWrapper'
+								className='col-md-8 ml-3 rightContentWrapper'
 								// style={{ borderLeft: "darkred 2px solid" }}
 							>
 								{PickingUpProducts()}
+								{availableVariables() ? (
+									<button
+										className='btn btn-outline-primary my-4'
+										onClick={() => {
+											window.scrollTo({ top: 0, behavior: "smooth" });
+											setClickedLink("ProductFeatures");
+										}}>
+										Next: Adjust Product Features{" "}
+									</button>
+								) : (
+									<button
+										className='btn btn-outline-primary my-4'
+										onClick={() => {
+											window.scrollTo({ top: 0, behavior: "smooth" });
+											setClickedLink("AdjustQuantity");
+										}}>
+										Next: Adjust Quantity{" "}
+									</button>
+								)}
 							</div>
 						) : null}
 
@@ -1233,6 +1306,14 @@ const CreateNewOrderOrderTaker = () => {
 								// style={{ borderLeft: "darkred 2px solid" }}
 							>
 								{sizesAndColorsOptions()}
+								<button
+									className='btn btn-outline-primary my-4'
+									onClick={() => {
+										window.scrollTo({ top: 0, behavior: "smooth" });
+										setClickedLink("AdjustQuantity");
+									}}>
+									Next: Adjust Quantity{" "}
+								</button>
 							</div>
 						) : null}
 
@@ -1242,6 +1323,14 @@ const CreateNewOrderOrderTaker = () => {
 								// style={{ borderLeft: "darkred 2px solid" }}
 							>
 								{addingOrderQuantity()}
+								<button
+									className='btn btn-outline-primary my-4'
+									onClick={() => {
+										window.scrollTo({ top: 0, behavior: "smooth" });
+										setClickedLink("CustomerDetails");
+									}}>
+									Next: Fill In Customer Data{" "}
+								</button>
 							</div>
 						) : null}
 						{clickedLink === "CustomerDetails" ? (
@@ -1250,6 +1339,14 @@ const CreateNewOrderOrderTaker = () => {
 								// style={{ borderLeft: "darkred 2px solid" }}
 							>
 								{customerDetailsForm()}
+								<button
+									className='btn btn-outline-primary my-4'
+									onClick={() => {
+										window.scrollTo({ top: 0, behavior: "smooth" });
+										setClickedLink("ReviewOrder");
+									}}>
+									Next: Review Your Order{" "}
+								</button>
 							</div>
 						) : null}
 						{clickedLink === "ReviewOrder" ? (
@@ -1276,7 +1373,9 @@ const CreateNewOrderOrderTakerWrapper = styled.div`
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: 15.5% 84.5%;
+		/* grid-template-columns: 15.5% 84.5%; */
+		grid-template-columns: ${(props) =>
+			props.show ? "8% 92%" : "15.2% 84.8%"};
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */
@@ -1317,5 +1416,61 @@ const CreateNewOrderOrderTakerWrapper = styled.div`
 	.rightContentWrapper {
 		border-left: 1px lightgrey solid;
 		min-height: 550px;
+	}
+
+	@media (max-width: 1750px) {
+		background: white;
+
+		.grid-container {
+			display: grid;
+			/* grid-template-columns: 18% 82%; */
+			grid-template-columns: ${(props) => (props.show ? "7% 93%" : "18% 82%")};
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+	}
+
+	@media (max-width: 1400px) {
+		background: white;
+
+		.grid-container {
+			display: grid;
+			grid-template-columns: 10% 95%;
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+	}
+
+	@media (max-width: 1550px) {
+		.mainUL > li {
+			font-size: 0.75rem;
+			margin-left: 20px;
+		}
+	}
+
+	@media (max-width: 750px) {
+		.grid-container {
+			display: grid;
+			/* grid-template-columns: 16% 84%; */
+			grid-template-columns: ${(props) => (props.show ? "0% 99%" : "0% 100%")};
+			margin: auto;
+			/* border: 1px solid red; */
+			/* grid-auto-rows: minmax(60px, auto); */
+		}
+		h3 {
+			margin-top: 60px !important;
+		}
+		margin: auto 10px;
+
+		.mainUL {
+			display: none;
+		}
+
+		.rightContentWrapper {
+			border-left: 1px white solid;
+			margin-top: 20px;
+		}
 	}
 `;

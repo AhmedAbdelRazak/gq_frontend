@@ -6,6 +6,7 @@ import { getShippingOptions } from "../../apiAdmin";
 import { isAuthenticated } from "../../../auth/index";
 import { Link } from "react-router-dom";
 import AdminMenu from "../../AdminMenu/AdminMenu";
+import DarkBG from "../../AdminMenu/DarkBG";
 
 const UpdateShippingOptions = () => {
 	const [allShippingOptions, setAllShippingOptions] = useState([]);
@@ -13,6 +14,8 @@ const UpdateShippingOptions = () => {
 	const { user, token } = isAuthenticated();
 	// eslint-disable-next-line
 	const [loading, setLoading] = useState(true);
+	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
 
 	const gettingAllShippingOptions = () => {
 		setLoading(true);
@@ -33,9 +36,18 @@ const UpdateShippingOptions = () => {
 
 	return (
 		<UpdateShippingOptionsWrapper>
+			{!collapsed ? (
+				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+			) : null}
 			<div className='row'>
 				<div className='col-3 mb-3'>
-					<AdminMenu fromPage='UpdateShippingOption' />
+					<AdminMenu
+						fromPage='UpdateShippingOption'
+						AdminMenuStatus={AdminMenuStatus}
+						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
+					/>
 				</div>
 				<div className='col-8'>
 					<div className='contentWrapper'>

@@ -1,15 +1,16 @@
 /** @format */
 
 import React, { useEffect, useState } from "react";
+// eslint-disable-next-line
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import AdminMenu from "../../AdminMenu/AdminMenu";
-import { getProducts } from "../../apiAdmin";
+import AdminMenu from "../../OrderTakerMenu/OrderTakerMenu";
+import { getProducts } from "../../apiOrderTaker";
 import CountUp from "react-countup";
 import AttributesModal from "./AttributesModal";
-import DarkBG from "../../AdminMenu/DarkBG";
+import DarkBG from "../../OrderTakerMenu/DarkBG";
 
-const UpdateProduct = () => {
+const UpdateProductOrderTaker = () => {
 	const [allProducts, setAllProducts] = useState([]);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [clickedProduct, setClickedProduct] = useState({});
@@ -175,7 +176,6 @@ const UpdateProduct = () => {
 							<th scope='col'>Product Creation Date</th>
 							<th scope='col'>Product Created By</th>
 							<th scope='col'>Product Image</th>
-							<th scope='col'>Update Product</th>
 						</tr>
 					</thead>
 					<tbody
@@ -233,18 +233,6 @@ const UpdateProduct = () => {
 											alt={s.productName}
 										/>
 									</td>
-									<Link to={`/admin/update-product/${s.productId}`}>
-										<td
-											style={{
-												color: "blue",
-												fontWeight: "bold",
-												cursor: "pointer",
-											}}>
-											Update Product...
-										</td>
-									</Link>
-
-									{/* <td>{Invoice(s)}</td> */}
 								</tr>
 							);
 						})}
@@ -255,14 +243,14 @@ const UpdateProduct = () => {
 	};
 
 	return (
-		<UpdateProductWrapper show={AdminMenuStatus}>
+		<UpdateProductOrderTakerWrapper show={AdminMenuStatus}>
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu
-						fromPage='UpdateProduct'
+						fromPage='UpdateProductOrderTaker'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
 						collapsed={collapsed}
@@ -322,7 +310,7 @@ const UpdateProduct = () => {
 							</div>
 						</div>
 
-						<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+						{/* <div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
 							<div className='card' style={{ background: "#50cd89" }}>
 								<div className='card-body'>
 									<h5 style={{ fontWeight: "bolder", color: "white" }}>
@@ -345,18 +333,18 @@ const UpdateProduct = () => {
 									</span>
 								</div>
 							</div>
-						</div>
+						</div> */}
 					</div>
 					{dataTable()}
 				</div>
 			</div>
-		</UpdateProductWrapper>
+		</UpdateProductOrderTakerWrapper>
 	);
 };
 
-export default UpdateProduct;
+export default UpdateProductOrderTaker;
 
-const UpdateProductWrapper = styled.div`
+const UpdateProductOrderTakerWrapper = styled.div`
 	min-height: 980px;
 	/* overflow-x: hidden; */
 	/* background: #ededed; */
