@@ -1,9 +1,11 @@
 /** @format */
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Modal } from "antd";
 import "antd/dist/antd.css"; // or 'antd/dist/antd.less'
+import { getColors } from "../../apiAdmin";
+import { isAuthenticated } from "../../../auth";
 
 const AttributesModal = ({
 	product,
@@ -11,11 +13,25 @@ const AttributesModal = ({
 	setModalVisible,
 	setCollapsed,
 }) => {
-	// const handleModal = () => {
-	// 	setModalVisible(true);
-	// };
+	const [allColors, setAllColors] = useState([]);
 
-	// console.log(product, "product From Modal");
+	// eslint-disable-next-line
+	const { user, token } = isAuthenticated();
+
+	const gettingAllColors = () => {
+		getColors(token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllColors(data);
+			}
+		});
+	};
+
+	useEffect(() => {
+		gettingAllColors();
+		// eslint-disable-next-line
+	}, []);
 
 	const mainForm = () => {
 		return (
@@ -56,7 +72,12 @@ const AttributesModal = ({
 										<td>{product.productName}</td>
 										<td>{s.SubSKU}</td>
 										<td>{s.priceAfterDiscount}</td>
-										<td>{s.color}</td>
+										<td>
+											{allColors &&
+												allColors[0] &&
+												allColors[allColors.map((i) => i.hexa).indexOf(s.color)]
+													.color}
+										</td>
 										<td>{s.size}</td>
 										<td
 											style={{

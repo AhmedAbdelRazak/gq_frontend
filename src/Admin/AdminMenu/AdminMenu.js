@@ -389,10 +389,10 @@ const AdminMenuWrapper = styled.div`
 		background: #1e1e2d !important;
 	}
 
-	.ant-menu.ant-menu-dark,
+	/* .ant-menu.ant-menu-dark,
 	.ant-menu-dark {
 		position: ${(props) => (props.show ? "fixed" : "")};
-	}
+	} */
 
 	@media (max-width: 1650px) {
 		ul {

@@ -16,6 +16,7 @@ import { isAuthenticated } from "../../../auth";
 import { toast } from "react-toastify";
 import Navbar from "../../OrderTakerNavMenu/Navbar";
 import DarkBG from "../../OrderTakerMenu/DarkBG";
+import AttributesModal from "../../../Admin/Product/UpdatingProduct/AttributesModal";
 const { Option } = Select;
 
 const isActive = (clickedLink, sureClickedLink) => {
@@ -61,6 +62,8 @@ const CreateNewOrderOrderTaker = () => {
 		orderComment: "",
 	});
 
+	const [modalVisible, setModalVisible] = useState(false);
+	const [clickedProduct, setClickedProduct] = useState({});
 	// eslint-disable-next-line
 	const [allOrderData, setAllOrderData] = useState({});
 
@@ -118,6 +121,12 @@ const CreateNewOrderOrderTaker = () => {
 	const PickingUpProducts = () => {
 		return (
 			<React.Fragment>
+				<AttributesModal
+					product={clickedProduct}
+					modalVisible={modalVisible}
+					setModalVisible={setModalVisible}
+					setCollapsed={setCollapsed}
+				/>
 				<div className=' mb-3 form-group mx-3 text-center'>
 					<label
 						className='mt-3 mx-3'
@@ -129,6 +138,7 @@ const CreateNewOrderOrderTaker = () => {
 						}}>
 						Search
 					</label>
+
 					<input
 						className='p-2 my-5 '
 						type='text'
@@ -142,104 +152,211 @@ const CreateNewOrderOrderTaker = () => {
 						}}
 					/>
 				</div>
-				<ul className='list-group col-md-10 mx-auto'>
-					{allProducts &&
-						allProducts[0] &&
-						search(allProducts).map((e, i) => (
-							<>
-								{addedProductsToCart.map((i) => i._id).indexOf(e._id) === -1 ? (
-									<Link
-										key={i}
-										to='#'
-										onClick={() => {
-											setAddedProductToCart([...addedProductsToCart, e]);
-										}}>
-										<div className='row mb-2'>
-											<li
-												className='list-group-item d-flex justify-content-between align-items-center col-md-9 text-capitalize'
-												style={{ fontSize: "0.85rem" }}>
-												<strong>
-													{e.productName} (SKU: {e.productSKU}){" "}
-												</strong>{" "}
-											</li>
-											<li
-												className='list-group-item d-flex justify-content-between align-items-center col-md-3'
-												style={{
-													fontSize: "0.7rem",
-													color: "darkgreen",
-													fontWeight: "bold",
-												}}>
-												<span>
-													<strong>Add To Order</strong>
-													<img
-														width='30%'
-														height='20%'
-														style={{ marginLeft: "10px" }}
-														src={
-															e.thumbnailImage[0].images[0]
-																? e.thumbnailImage[0].images[0].url
-																: null
-														}
-														alt={e.productName}
-													/>
-												</span>
-											</li>
-										</div>
-									</Link>
-								) : (
-									<Link
-										key={i}
-										to='#'
-										onClick={() => {
-											const index = addedProductsToCart
-												.map((i) => i._id)
-												.indexOf(e._id);
+				<table
+					className='table table-bordered table-md-responsive table-hover table-striped text-center mx-auto'
+					style={{ fontSize: "0.75rem", overflowX: "auto" }}>
+					<thead className='thead-light'>
+						<tr
+							style={{
+								fontSize: "0.85rem",
+								textTransform: "capitalize",
+								textAlign: "center",
+							}}>
+							<th scope='col' style={{ width: "12%" }}>
+								Add To Order
+							</th>
+							<th scope='col'>Image</th>
+							<th
+								scope='col'
+								style={{
+									width: "12%",
+									background: "#006200",
+									color: "white",
+								}}>
+								Stock Onhand
+							</th>
+							<th scope='col'>Product Price</th>
+							<th scope='col'>Product Name</th>
+							<th scope='col' style={{ width: "14%" }}>
+								Product Main SKU
+							</th>
+						</tr>
+					</thead>
 
-											if (index > -1) {
-												// only splice array when item is found
-												setAddedProductToCart(
-													addedProductsToCart.filter(
-														(ppp) => ppp._id !== addedProductsToCart[index]._id,
-													),
-												);
-											}
-										}}>
-										<div className='row mb-2'>
-											<li
-												className='list-group-item d-flex justify-content-between align-items-center col-md-9 text-capitalize'
-												style={{ fontSize: "0.85rem" }}>
-												<strong>
-													{e.productName} (SKU: {e.productSKU}){" "}
-												</strong>{" "}
-											</li>
-											<li
-												className='list-group-item d-flex justify-content-between align-items-center col-md-3'
-												style={{
-													fontSize: "0.7rem",
-													color: "darkred",
-													fontWeight: "bold",
+					<tbody
+						className='my-auto'
+						style={{
+							fontSize: "0.8rem",
+							textTransform: "capitalize",
+							fontWeight: "bolder",
+						}}>
+						{search(allProducts).map((s, i) => {
+							return (
+								<>
+									{addedProductsToCart.map((i) => i._id).indexOf(s._id) ===
+									-1 ? (
+										<tr key={i} className=''>
+											<Link
+												to='#'
+												onClick={() => {
+													setAddedProductToCart([...addedProductsToCart, s]);
 												}}>
-												<span>
-													<strong>Remove From Order</strong>
-													<img
-														width='30%'
-														height='20%'
-														style={{ marginLeft: "10px" }}
-														src={
-															e.thumbnailImage[0].images[0]
-																? e.thumbnailImage[0].images[0].url
-																: null
-														}
-														alt={e.productName}
-													/>
-												</span>
-											</li>
-										</div>
-									</Link>
-								)}
-							</>
-						))}
-				</ul>
+												<td
+													style={{
+														color: "blue",
+														fontWeight: "bold",
+														cursor: "pointer",
+													}}>
+													Add To Order
+												</td>
+											</Link>
+
+											<td style={{ width: "20%" }}>
+												<img
+													width='60%'
+													height='60%'
+													style={{ marginLeft: "20px" }}
+													src={
+														s.thumbnailImage[0].images[0]
+															? s.thumbnailImage[0].images[0].url
+															: null
+													}
+													alt={s.productName}
+												/>
+											</td>
+											<td
+												style={{
+													background: s.productQty <= 0 ? "#fdd0d0" : "",
+												}}>
+												{s.addVariables
+													? s.productAttributes
+															.map((iii) => iii.quantity)
+															.reduce((a, b) => a + b, 0)
+													: s.quantity}
+											</td>
+											<td>
+												{s.addVariables ? (
+													<span
+														onClick={() => {
+															setModalVisible(true);
+															setClickedProduct(s);
+															setCollapsed(true);
+														}}
+														style={{
+															fontWeight: "bold",
+															textDecoration: "underline",
+															color: "darkblue",
+															cursor: "pointer",
+														}}>
+														Check Product Attributes
+													</span>
+												) : (
+													s.productPrice
+												)}
+											</td>
+
+											<td>{s.productName}</td>
+											<td>{s.productSKU}</td>
+
+											{/* <td>{new Date(s.createdAt).toLocaleDateString()}</td>
+											<td>{s.addedByEmployee.name}</td> */}
+
+											{/* <td>{Invoice(s)}</td> */}
+										</tr>
+									) : (
+										<tr key={i} className=''>
+											<Link
+												to='#'
+												style={{ color: "red" }}
+												onClick={() => {
+													const index = addedProductsToCart
+														.map((i) => i._id)
+														.indexOf(s._id);
+
+													if (index > -1) {
+														// only splice array when item is found
+														setAddedProductToCart(
+															addedProductsToCart.filter(
+																(ppp) =>
+																	ppp._id !== addedProductsToCart[index]._id,
+															),
+														);
+													}
+												}}>
+												<td
+													style={{
+														color: "red",
+														fontWeight: "bold",
+														cursor: "pointer",
+													}}>
+													Remove From Order
+												</td>
+											</Link>
+
+											<td style={{ width: "20%" }}>
+												<img
+													width='60%'
+													height='60%'
+													style={{ marginLeft: "20px" }}
+													src={
+														s.thumbnailImage[0].images[0]
+															? s.thumbnailImage[0].images[0].url
+															: null
+													}
+													alt={s.productName}
+												/>
+											</td>
+											<td
+												style={{
+													background: s.addVariables
+														? s.productAttributes
+																.map((iii) => iii.quantity)
+																.reduce((a, b) => a + b, 0)
+														: s.quantity <= 0
+														? "#fdd0d0"
+														: "",
+												}}>
+												{s.addVariables
+													? s.productAttributes
+															.map((iii) => iii.quantity)
+															.reduce((a, b) => a + b, 0)
+													: s.quantity}
+											</td>
+											<td>
+												{s.addVariables ? (
+													<span
+														onClick={() => {
+															setModalVisible(true);
+															setClickedProduct(s);
+															setCollapsed(true);
+														}}
+														style={{
+															fontWeight: "bold",
+															textDecoration: "underline",
+															color: "darkblue",
+															cursor: "pointer",
+														}}>
+														Check Product Attributes
+													</span>
+												) : (
+													s.productPrice
+												)}
+											</td>
+
+											<td>{s.productName}</td>
+											<td>{s.productSKU}</td>
+
+											{/* <td>{new Date(s.createdAt).toLocaleDateString()}</td>
+											<td>{s.addedByEmployee.name}</td> */}
+
+											{/* <td>{Invoice(s)}</td> */}
+										</tr>
+									)}
+								</>
+							);
+						})}
+					</tbody>
+				</table>
 			</React.Fragment>
 		);
 	};

@@ -171,7 +171,7 @@ const UpdateProduct = () => {
 							<th scope='col'>Product Name</th>
 							<th scope='col'>Product Main SKU</th>
 							<th scope='col'>Product Price</th>
-							<th scope='col'>Available Stock</th>
+							<th scope='col'>Stock Onhand</th>
 							<th scope='col'>Product Creation Date</th>
 							<th scope='col'>Product Created By</th>
 							<th scope='col'>Product Image</th>

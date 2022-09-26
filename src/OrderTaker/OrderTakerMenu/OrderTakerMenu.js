@@ -306,7 +306,7 @@ const AdminMenuWrapper = styled.div`
 
 	.ant-menu.ant-menu-dark,
 	.ant-menu-dark {
-		position: ${(props) => (props.show ? "fixed" : "")};
+		position: ${(props) => (props.show ? "" : "")};
 	}
 
 	@media (max-width: 1650px) {
