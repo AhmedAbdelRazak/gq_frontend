@@ -49,6 +49,7 @@ const CreateNewOrderOrderTaker = () => {
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [offset, setOffset] = useState(0);
 	const [pageScrolled, setPageScrolled] = useState(false);
+	const [sendSMS, setSendSMS] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
 	const [customerDetails, setCustomerDetails] = useState({
 		fullName: "",
@@ -153,12 +154,12 @@ const CreateNewOrderOrderTaker = () => {
 					/>
 				</div>
 				<table
-					className='table table-bordered table-md-responsive table-hover table-striped text-center mx-auto'
+					className='table table-bordered table-md-responsive table-hover text-center mx-auto'
 					style={{ fontSize: "0.75rem", overflowX: "auto" }}>
 					<thead className='thead-light'>
 						<tr
 							style={{
-								fontSize: "0.85rem",
+								fontSize: "0.78rem",
 								textTransform: "capitalize",
 								textAlign: "center",
 							}}>
@@ -186,7 +187,7 @@ const CreateNewOrderOrderTaker = () => {
 					<tbody
 						className='my-auto'
 						style={{
-							fontSize: "0.8rem",
+							fontSize: "0.75rem",
 							textTransform: "capitalize",
 							fontWeight: "bolder",
 						}}>
@@ -497,7 +498,7 @@ const CreateNewOrderOrderTaker = () => {
 												<Option value={att.SubSKU} key={ii}>
 													{att.SubSKU}
 													{" | "}{" "}
-													<span style={{ color: att.color }}>
+													<span style={{ color: "black" }}>
 														{allColors[
 															allColors.map((i) => i.hexa).indexOf(att.color)
 														]
@@ -681,11 +682,10 @@ const CreateNewOrderOrderTaker = () => {
 		? ShipToData.filter((i) => i.GovernorateEn === customerDetails.state)
 		: [];
 
+	// eslint-disable-next-line
 	let chosenCityCode = customerDetails.cityName
 		? ShipToData.filter((i) => i.City.AreaEn === customerDetails.cityName)[0]
 		: [];
-
-	console.log(chosenCityCode, "chosenCity");
 
 	const handleChangeCity = (e) => {
 		setCustomerDetails({
@@ -932,8 +932,8 @@ const CreateNewOrderOrderTaker = () => {
 			(ii) => ii.orderedQuantity <= ii.quantity || ii.quantity !== 0,
 		);
 
-	console.log(QuantityValidation_NoVariables, "QuantityValidation_NoVariables");
-	console.log(productsWithNoVariables, "productsWithNoVariables");
+	// console.log(QuantityValidation_NoVariables, "QuantityValidation_NoVariables");
+	// console.log(productsWithNoVariables, "productsWithNoVariables");
 
 	let quantityValidationLogic_NoVariables =
 		productsWithNoVariables.length !== QuantityValidation_NoVariables.length;
@@ -1006,6 +1006,7 @@ const CreateNewOrderOrderTaker = () => {
 			employeeData: user,
 			chosenShippingOption: chosenShippingOption,
 			orderSource: orderSource,
+			sendSMS: sendSMS,
 			trackingNumber: "Not Added",
 		};
 
@@ -1213,6 +1214,24 @@ const CreateNewOrderOrderTaker = () => {
 						value={orderSource}
 						placeholder='Required - e.g. Zirga Instagram, Next Day Instagram, etc...'
 					/>
+				</div>
+				<div className='form-group col-md-6 mx-auto my-4 text-center'>
+					<div className='form-group'>
+						<label
+							className=' mx-2'
+							style={{ fontWeight: "bold", fontSize: "17px" }}>
+							Send SMS
+						</label>
+
+						<input
+							type='checkbox'
+							// className='form-control'
+							onChange={() => setSendSMS(!sendSMS)}
+							checked={sendSMS}
+							value={sendSMS}
+							required
+						/>
+					</div>
 				</div>
 				<div className='mt-3'>
 					Total Amount Basic Products:{" "}

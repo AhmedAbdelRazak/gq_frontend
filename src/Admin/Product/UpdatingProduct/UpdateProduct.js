@@ -71,7 +71,7 @@ const UpdateProduct = () => {
 		return Number(QtyNoVariables) + Number(sum_array(QtyWithVariables));
 	};
 
-	console.log(overallStockLevel(), "Qty");
+	// console.log(overallStockLevel(), "Qty");
 
 	const overallStockWorth = () => {
 		var QtyNoVariables =
@@ -89,7 +89,7 @@ const UpdateProduct = () => {
 		return Number(QtyNoVariables) + Number(sum_array(QtyWithVariables));
 	};
 
-	console.log(overallStockWorth(), "overallStockWorth");
+	// console.log(overallStockWorth(), "overallStockWorth");
 
 	function search(orders) {
 		return orders.filter((row) => {
@@ -158,12 +158,12 @@ const UpdateProduct = () => {
 					/>
 				</div>
 				<table
-					className='table table-bordered table-md-responsive table-hover table-striped'
+					className='table table-bordered table-md-responsive table-hover'
 					style={{ fontSize: "0.75rem", overflowX: "auto" }}>
 					<thead className='thead-light'>
 						<tr
 							style={{
-								fontSize: "0.85rem",
+								fontSize: "0.8rem",
 								textTransform: "capitalize",
 								textAlign: "center",
 							}}>
@@ -181,7 +181,7 @@ const UpdateProduct = () => {
 					<tbody
 						className='my-auto'
 						style={{
-							fontSize: "0.8rem",
+							fontSize: "0.75rem",
 							textTransform: "capitalize",
 							fontWeight: "bolder",
 						}}>
@@ -379,12 +379,12 @@ const UpdateProductWrapper = styled.div`
 		font-weight: bold;
 	}
 
-	tr:nth-child(even) {
+	/* tr:nth-child(even) {
 		background: #fafafa !important;
 	}
 	tr:nth-child(odd) {
 		background: #d3d3d3 !important;
-	}
+	} */
 
 	tr:hover {
 		background: #009ef7 !important;

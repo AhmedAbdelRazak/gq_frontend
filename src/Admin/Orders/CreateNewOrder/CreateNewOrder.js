@@ -155,12 +155,12 @@ const CreateNewOrder = () => {
 					/>
 				</div>
 				<table
-					className='table table-bordered table-md-responsive table-hover table-striped text-center mx-auto'
+					className='table table-bordered table-md-responsive table-hover text-center mx-auto'
 					style={{ fontSize: "0.75rem", overflowX: "auto" }}>
 					<thead className='thead-light'>
 						<tr
 							style={{
-								fontSize: "0.85rem",
+								fontSize: "0.78rem",
 								textTransform: "capitalize",
 								textAlign: "center",
 							}}>
@@ -188,7 +188,7 @@ const CreateNewOrder = () => {
 					<tbody
 						className='my-auto'
 						style={{
-							fontSize: "0.8rem",
+							fontSize: "0.75rem",
 							textTransform: "capitalize",
 							fontWeight: "bolder",
 						}}>
@@ -683,11 +683,10 @@ const CreateNewOrder = () => {
 		? ShipToData.filter((i) => i.GovernorateEn === customerDetails.state)
 		: [];
 
+	// eslint-disable-next-line
 	let chosenCityCode = customerDetails.cityName
 		? ShipToData.filter((i) => i.City.AreaEn === customerDetails.cityName)[0]
 		: [];
-
-	console.log(chosenCityCode, "chosenCity");
 
 	const handleChangeCity = (e) => {
 		setCustomerDetails({
@@ -934,8 +933,8 @@ const CreateNewOrder = () => {
 			(ii) => ii.orderedQuantity <= ii.quantity || ii.quantity !== 0,
 		);
 
-	console.log(QuantityValidation_NoVariables, "QuantityValidation_NoVariables");
-	console.log(productsWithNoVariables, "productsWithNoVariables");
+	// console.log(QuantityValidation_NoVariables, "QuantityValidation_NoVariables");
+	// console.log(productsWithNoVariables, "productsWithNoVariables");
 
 	let quantityValidationLogic_NoVariables =
 		productsWithNoVariables.length !== QuantityValidation_NoVariables.length;

@@ -6,9 +6,10 @@ import { isAuthenticated } from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import Navbar from "../AdminNavMenu/Navbar";
 import CountUp from "react-countup";
-import { listOrders } from "../apiAdmin";
+import { listOrders, removeOrder } from "../apiAdmin";
 import { Link } from "react-router-dom";
 import DarkBG from "../AdminMenu/DarkBG";
+import { toast } from "react-toastify";
 
 const OrdersHist = () => {
 	const [allOrders, setAllOrders] = useState([]);
@@ -80,6 +81,19 @@ const OrdersHist = () => {
 		});
 	}
 
+	const handleRemove = (orderId) => {
+		if (window.confirm("Are You Sure You Want To Delete?")) {
+			removeOrder(orderId, user._id, token)
+				.then((res) => {
+					toast.error(`Order "${res.data.name}" deleted`);
+					setTimeout(function () {
+						window.location.reload(false);
+					}, 2500);
+				})
+				.catch((err) => console.log(err));
+		}
+	};
+
 	const dataTable = () => {
 		return (
 			<div className='tableData'>
@@ -104,7 +118,7 @@ const OrdersHist = () => {
 					/>
 				</div>
 				<table
-					className='table table-bordered table-md-responsive table-hover table-striped text-center'
+					className='table table-bordered table-md-responsive table-hover text-center'
 					style={{ fontSize: "0.75rem" }}>
 					<thead className='thead-light'>
 						<tr>
@@ -123,6 +137,7 @@ const OrdersHist = () => {
 							<th scope='col'>Ordered Qty</th>
 							<th scope='col'>Invoice</th>
 							<th scope='col'>More Details</th>
+							<th scope='col'>Delete Order?</th>
 						</tr>
 					</thead>
 
@@ -189,6 +204,21 @@ const OrdersHist = () => {
 										More Details...
 									</td>
 								</Link>
+
+								<td
+									onClick={() => {
+										handleRemove(s._id);
+										setTimeout(function () {
+											window.location.reload(false);
+										}, 1000);
+									}}
+									style={{
+										color: "red",
+										fontWeight: "bold",
+										cursor: "pointer",
+									}}>
+									Delete?
+								</td>
 
 								{/* <td>{Invoice(s)}</td> */}
 							</tr>

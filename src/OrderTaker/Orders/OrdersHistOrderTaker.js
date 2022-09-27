@@ -104,7 +104,7 @@ const OrdersHistOrderTaker = () => {
 					/>
 				</div>
 				<table
-					className='table table-bordered table-md-responsive table-hover table-striped text-center'
+					className='table table-bordered table-md-responsive table-hover text-center'
 					style={{ fontSize: "0.75rem" }}>
 					<thead className='thead-light'>
 						<tr>

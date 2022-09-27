@@ -2,6 +2,7 @@
 
 import {
 	AreaChartOutlined,
+	EditOutlined,
 	FileUnknownOutlined,
 	ShoppingCartOutlined,
 	VerticalAlignTopOutlined,
@@ -12,17 +13,14 @@ import AdminMenu from "./AdminMenu/AdminMenu";
 import Navbar from "./AdminNavMenu/Navbar";
 import Chart from "react-apexcharts";
 import CountUp from "react-countup";
-import LetterM from "../GeneralImages/LetterM.jpg";
-import LetterIbrahim from "../GeneralImages/LetterIbrahim.jpg";
-import LetterRasha from "../GeneralImages/LetterRasha.jpg";
-import Product1 from "../GeneralImages/CategoryPants.jpg";
-import Product2 from "../GeneralImages/ProductImg2.jpg";
-import Product3 from "../GeneralImages/ProductImg3.jpg";
 
-import { listOrders } from "./apiAdmin";
+import { getProducts, listOrders } from "./apiAdmin";
 import { isAuthenticated } from "../auth";
 import { Link } from "react-router-dom";
 import DarkBG from "./AdminMenu/DarkBG";
+import EditDateModal from "./Modals/EditDateModal";
+import ShowOrdersHistory from "./Modals/ShowOrdersHistory";
+import AttributesModal from "./Product/UpdatingProduct/AttributesModal";
 
 const AdminDashboard = () => {
 	const [allOrders, setAllOrders] = useState([]);
@@ -31,6 +29,18 @@ const AdminDashboard = () => {
 	const [offset, setOffset] = useState(0);
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
+	const [selectedDate, setSelectedDate] = useState(
+		new Date().toLocaleDateString("en-US", {
+			timeZone: "Africa/Cairo",
+		}),
+	);
+
+	const [modalVisible, setModalVisible] = useState(false);
+	const [modalVisible2, setModalVisible2] = useState(false);
+
+	const [allProducts, setAllProducts] = useState([]);
+	const [modalVisible3, setModalVisible3] = useState(false);
+	const [clickedProduct, setClickedProduct] = useState({});
 
 	const { user, token } = isAuthenticated();
 
@@ -55,8 +65,20 @@ const AdminDashboard = () => {
 		});
 	};
 
+	const gettingAllProducts = () => {
+		getProducts().then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllProducts(data);
+			}
+		});
+	};
+
 	useEffect(() => {
 		loadOrders();
+		gettingAllProducts();
+
 		// eslint-disable-next-line
 	}, []);
 
@@ -72,7 +94,7 @@ const AdminDashboard = () => {
 	var next30Days = new Date(today);
 
 	yesterday.setDate(yesterday.getDate() - 1);
-	last7Days.setDate(yesterday.getDate() - 7);
+	last7Days.setDate(yesterday.getDate() - 9);
 	last30Days.setDate(yesterday.getDate() - 30);
 	tomorrow.setDate(yesterday.getDate() + 2);
 	next7Days.setDate(yesterday.getDate() + 8);
@@ -82,15 +104,31 @@ const AdminDashboard = () => {
 
 	let todaysOrders = allOrders.filter(
 		(i) =>
-			new Date(i.createdAt).toLocaleDateString("en-US", {
-				timeZone: "Africa/Cairo",
-			}) === today,
+			new Date(i.createdAt).setHours(0, 0, 0, 0) ===
+				new Date(today).setHours(0, 0, 0, 0) &&
+			i.status !== "Cancelled" &&
+			i.status !== "Returned",
 	);
 
 	let yesterdaysOrders = allOrders.filter(
 		(i) =>
 			new Date(i.createdAt).setHours(0, 0, 0, 0) ===
-			new Date(yesterday).setHours(0, 0, 0, 0),
+				new Date(yesterday).setHours(0, 0, 0, 0) &&
+			i.status !== "Cancelled" &&
+			i.status !== "Returned",
+	);
+
+	let overallUncancelledOrders = allOrders.filter(
+		(i) => i.status !== "Cancelled" && i.status !== "Returned",
+	);
+
+	let overallUncancelledOrders2 =
+		overallUncancelledOrders &&
+		overallUncancelledOrders.map((i) => i.totalAmountAfterDiscount);
+
+	const SumoverallUncancelledOrders2 = overallUncancelledOrders2.reduce(
+		(a, b) => a + b,
+		0,
 	);
 
 	const todaysRevenue =
@@ -107,18 +145,19 @@ const AdminDashboard = () => {
 		allOrders &&
 		allOrders.filter(
 			(i) =>
-				i.status !== "Cancelled" ||
-				i.status !== "Shipped" ||
-				i.status !== "Delivered" ||
+				i.status !== "Cancelled" &&
+				i.status !== "Shipped" &&
+				i.status !== "Delivered" &&
 				i.status !== "Returned",
 		);
+
 	const todaysUnfulfilledOrders =
 		todaysOrders &&
 		todaysOrders.filter(
 			(i) =>
-				i.status !== "Cancelled" ||
-				i.status !== "Shipped" ||
-				i.status !== "Delivered" ||
+				i.status !== "Cancelled" &&
+				i.status !== "Shipped" &&
+				i.status !== "Delivered" &&
 				i.status !== "Returned",
 		);
 
@@ -126,9 +165,9 @@ const AdminDashboard = () => {
 		yesterdaysOrders &&
 		yesterdaysOrders.filter(
 			(i) =>
-				i.status !== "Cancelled" ||
-				i.status !== "Shipped" ||
-				i.status !== "Delivered" ||
+				i.status !== "Cancelled" &&
+				i.status !== "Shipped" &&
+				i.status !== "Delivered" &&
 				i.status !== "Returned",
 		);
 
@@ -154,7 +193,9 @@ const AdminDashboard = () => {
 		.filter(
 			(i) =>
 				new Date(i.createdAt).setHours(0, 0, 0, 0) >=
-				new Date(last7Days).setHours(0, 0, 0, 0),
+					new Date(last7Days).setHours(0, 0, 0, 0) &&
+				i.status !== "Cancelled" &&
+				i.status !== "Returned",
 		)
 		.map((ii) => {
 			return {
@@ -265,6 +306,102 @@ const AdminDashboard = () => {
 		return () => window.removeEventListener("scroll", onScroll);
 	}, [offset]);
 
+	let selectedDateOrders = allOrders.filter(
+		(i) =>
+			new Date(i.createdAt).setHours(0, 0, 0, 0) ===
+				new Date(selectedDate).setHours(0, 0, 0, 0) &&
+			i.status !== "Cancelled" &&
+			i.status !== "Returned",
+	);
+
+	function sortByTopEmployee(a, b) {
+		const TotalAppointmentsA = a.totalAmountAfterDiscount;
+		const TotalAppointmentsB = b.totalAmountAfterDiscount;
+		let comparison = 0;
+		if (TotalAppointmentsA < TotalAppointmentsB) {
+			comparison = 1;
+		} else if (TotalAppointmentsA > TotalAppointmentsB) {
+			comparison = -1;
+		}
+		return comparison;
+	}
+
+	var Employees_TotalOrders_Revenue = [];
+	selectedDateOrders &&
+		selectedDateOrders.reduce(function (res, value) {
+			if (!res[value.employeeData.name]) {
+				res[value.employeeData.name] = {
+					EmployeeName: value.employeeData.name,
+					EmployeeImage: value.employeeData.employeeImage,
+					totalAmountAfterDiscount: 0,
+					totalOrders: 0,
+				};
+				Employees_TotalOrders_Revenue.push(res[value.employeeData.name]);
+			}
+			res[value.employeeData.name].totalAmountAfterDiscount += Number(
+				value.totalAmountAfterDiscount,
+			);
+
+			res[value.employeeData.name].totalOrders += 1;
+
+			return res;
+		}, {});
+
+	const selectedDateOrdersModified = () => {
+		const modifiedArray =
+			selectedDateOrders &&
+			selectedDateOrders.map((i) =>
+				i.chosenProductQtyWithVariables.map((ii) =>
+					ii.map((iii) => {
+						return {
+							employeeName: i.employeeData.name,
+							status: i.status,
+							productName: iii.productName,
+							OrderedQty: iii.OrderedQty,
+							productMainImage: iii.productMainImage,
+						};
+					}),
+				),
+			);
+
+		return modifiedArray;
+	};
+
+	const modifyingInventoryTable = () => {
+		function sortTopProducts(a, b) {
+			const TotalAppointmentsA = a.productQty;
+			const TotalAppointmentsB = b.productQty;
+			let comparison = 0;
+			if (TotalAppointmentsA < TotalAppointmentsB) {
+				comparison = 1;
+			} else if (TotalAppointmentsA > TotalAppointmentsB) {
+				comparison = -1;
+			}
+			return comparison;
+		}
+
+		let modifiedArray = allProducts.map((i) => {
+			return {
+				productId: i._id,
+				productName: i.productName,
+				productPrice: i.priceAfterDiscount,
+				productQty: i.addVariables
+					? i.productAttributes
+							.map((iii) => iii.quantity)
+							.reduce((a, b) => a + b, 0)
+					: i.quantity,
+				productImage: i.thumbnailImage,
+				productSKU: i.productSKU,
+				addedBy: i.addedByEmployee,
+				createdAt: i.createdAt,
+				addVariables: i.addVariables,
+				productAttributes: i.productAttributes,
+			};
+		});
+
+		return modifiedArray.sort(sortTopProducts);
+	};
+
 	return (
 		<AdminDashboardWrapper show={collapsed}>
 			{!collapsed ? (
@@ -292,7 +429,13 @@ const AdminDashboard = () => {
 										</div>
 										<div className='headerText'>Order Takers Summary</div>
 									</div>
-
+									<ShowOrdersHistory
+										Orders={selectedDateOrdersModified()}
+										modalVisible2={modalVisible2}
+										setModalVisible2={setModalVisible2}
+										setCollapsed={setCollapsed}
+										selectedDate={selectedDate}
+									/>
 									<div className='card'>
 										<h5>Orders Overview</h5>
 										<div className='col-md-10 mx-auto'>
@@ -310,7 +453,22 @@ const AdminDashboard = () => {
 													/>
 												</div>{" "}
 											</div>
+
 											<div className='col-5 mx-auto'>
+												<span className='cardHeader'>
+													Overall Uncancelled Revenue{" "}
+												</span>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={1}
+														end={SumoverallUncancelledOrders2}
+														separator=','
+													/>
+												</div>{" "}
+											</div>
+
+											<div className='col-5 mt-5 mx-auto'>
 												<span className='cardHeader'>Today's Orders </span>{" "}
 												<div className='metrics'>
 													<CountUp
@@ -321,17 +479,7 @@ const AdminDashboard = () => {
 													/>
 												</div>{" "}
 											</div>
-											<div className='col-5 mt-5 mx-auto'>
-												<span className='cardHeader'>Overall Orders PY</span>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={0}
-														end={0}
-														separator=','
-													/>
-												</div>{" "}
-											</div>
+
 											<div className='col-5 mt-5 mx-auto'>
 												<span className='cardHeader'>Yesterday's Orders</span>{" "}
 												<div className='metrics'>
@@ -473,133 +621,108 @@ const AdminDashboard = () => {
 										</div>
 									</div>
 								</div>
+
 								<div className='col-xl-4 col-lg-8 col-md-11  mx-auto my-5'>
+									<EditDateModal
+										selectedDate={selectedDate}
+										setSelectedDate={setSelectedDate}
+										modalVisible={modalVisible}
+										setModalVisible={setModalVisible}
+										setCollapsed={setCollapsed}
+									/>
+
 									<div className='card'>
 										<h5>
-											Today's Top Employees (
-											{new Date().toDateString("en-US", {
+											Top Employees (
+											{new Date(selectedDate).toDateString("en-US", {
 												timeZone: "Africa/Cairo",
 											})}
+											<span
+												onClick={() => {
+													setModalVisible(true);
+													setCollapsed(true);
+												}}
+												style={{ cursor: "pointer" }}>
+												<EditOutlined />
+											</span>{" "}
 											):
 										</h5>
 										<div className='col-md-10 mx-auto'>
 											<hr />
 										</div>
-										<div className='row'>
-											<div className='col-md-8'>
-												<img className='userImage' src={LetterM} alt='name' />
-												<span className='employeeName'>
-													Mamdouh Muhammad{" "}
-													<span className='iconsForEmployee'>
-														<VerticalAlignTopOutlined />
-													</span>{" "}
-												</span>
-												<div className='topEmployeeOrders'>
-													Taken Orders: 43
-												</div>
-											</div>
-											<div className='col-md-4 mt-2'>
-												<div style={{ fontWeight: "bold" }}>
-													<CountUp
-														duration='2'
-														delay={0}
-														end={4252}
-														separator=','
-													/>{" "}
-													L.E.
-												</div>
-												<div
-													style={{
-														color: "darkgrey",
-														fontWeight: "bold",
-														marginTop: "10px",
-													}}>
-													Total Sales
-												</div>
-											</div>
-										</div>
-										<hr />
-										<div className='row mt-1'>
-											<div className='col-md-8'>
-												<img
-													className='userImage'
-													src={LetterIbrahim}
-													alt='name'
-												/>
-												<span className='employeeName'>Ibrahim Gamal</span>
-												<div className='topEmployeeOrders'>
-													Taken Orders: 37
-												</div>
-											</div>
-											<div className='col-md-4 mt-2'>
-												<div style={{ fontWeight: "bold" }}>
-													<CountUp
-														duration='2'
-														delay={0}
-														end={3920}
-														separator=','
-													/>{" "}
-													L.E.
-												</div>
-												<div
-													style={{
-														color: "darkgrey",
-														fontWeight: "bold",
-														marginTop: "10px",
-													}}>
-													Total Sales
-												</div>
-											</div>
-										</div>
-										<hr />
-
-										<div className='row mt-1'>
-											<div className='col-md-8'>
-												<img
-													className='userImage'
-													src={LetterRasha}
-													alt='name'
-												/>
-												<span className='employeeName'>Rasha Elsayed</span>
-												<div className='topEmployeeOrders'>
-													Taken Orders: 33
-												</div>
-											</div>
-											<div className='col-md-4 mt-2'>
-												<div style={{ fontWeight: "bold" }}>
-													<CountUp
-														duration='2'
-														delay={0}
-														end={3745}
-														separator=','
-													/>{" "}
-													L.E.
-												</div>
-												<div
-													style={{
-														color: "darkgrey",
-														fontWeight: "bold",
-														marginTop: "10px",
-													}}>
-													Total Sales
-												</div>
-											</div>
-										</div>
-										<hr />
+										{Employees_TotalOrders_Revenue &&
+											Employees_TotalOrders_Revenue.sort(sortByTopEmployee).map(
+												(o, i) => {
+													return (
+														<>
+															<div className='row' key={i}>
+																<div className='col-md-8'>
+																	<img
+																		className='userImage'
+																		src={o.EmployeeImage}
+																		alt={o.EmployeeName}
+																	/>
+																	<span className='employeeName'>
+																		{o.EmployeeName}{" "}
+																		{i === 0 ? (
+																			<span className='iconsForEmployee'>
+																				<VerticalAlignTopOutlined />
+																			</span>
+																		) : null}
+																	</span>
+																	<div className='topEmployeeOrders'>
+																		Taken Orders: {o.totalOrders}
+																	</div>
+																</div>
+																<div className='col-md-4 mt-2'>
+																	<div style={{ fontWeight: "bold" }}>
+																		<CountUp
+																			duration='2'
+																			delay={0}
+																			end={o.totalAmountAfterDiscount}
+																			separator=','
+																		/>{" "}
+																		L.E.
+																	</div>
+																	<div
+																		style={{
+																			color: "darkgrey",
+																			fontWeight: "bold",
+																			marginTop: "10px",
+																		}}>
+																		Total Sales
+																	</div>
+																</div>
+															</div>
+															<hr />
+														</>
+													);
+												},
+											)}
 									</div>
 								</div>
+
 								<div className='col-xl-8 col-lg-8 col-md-11 mx-auto my-5'>
 									<div className='card'>
 										<h5>
-											Today's Sales Summary (
-											{new Date().toDateString("en-US", {
+											Sales Summary (
+											{new Date(selectedDate).toDateString("en-US", {
 												timeZone: "Africa/Cairo",
 											})}
+											<span
+												onClick={() => {
+													setModalVisible(true);
+													setCollapsed(true);
+												}}
+												style={{ cursor: "pointer" }}>
+												<EditOutlined />
+											</span>{" "}
 											):
 										</h5>
 										<div className='col-md-10 mx-auto'>
 											<hr />
 										</div>
+
 										<div className='row mt-3'>
 											<div className='col-1'>Item #</div>
 											<div className='col-2'>Image</div>
@@ -610,65 +733,91 @@ const AdminDashboard = () => {
 											<div className='col-md-12 mx-auto'>
 												<hr />
 											</div>
-											<div className='col-1'>1</div>
-											<div className='col-2'>
-												<img
-													className='userImage'
-													src={Product1}
-													alt='product'
-												/>
-											</div>
-											<div className='col-2'>Jeans</div>
+											<>
+												{selectedDateOrdersModified() &&
+													selectedDateOrdersModified().map((o, i) =>
+														o.map((oo) =>
+															oo.map((ooo, iii) => {
+																return (
+																	<React.Fragment key={iii}>
+																		{i <= 3 ? (
+																			<>
+																				<div className='col-1'> {i + 1} </div>
 
-											<div className='col-2'>24</div>
-											<div className='col-3'>Ibrahim Gamal</div>
-											<div
-												className='col-2'
-												style={{ color: "#ebeb00", fontWeight: "bold" }}>
-												In Progress
-											</div>
+																				<div className='col-2'>
+																					<img
+																						className='userImage'
+																						src={ooo.productMainImage}
+																						alt='product'
+																					/>
+																				</div>
+																				<div className='col-2 text-capitalize'>
+																					{ooo.productName}
+																				</div>
 
-											<div className='col-md-12 mx-auto'>
-												<hr />
-											</div>
-											<div className='col-1'>2</div>
-											<div className='col-2'>
-												<img
-													className='userImage'
-													src={Product2}
-													alt='product'
-												/>
-											</div>
-											<div className='col-2'>Shorts</div>
+																				<div className='col-2'>
+																					{ooo.OrderedQty}
+																				</div>
+																				<div className='col-3'>
+																					{ooo.employeeName}
+																				</div>
+																				{ooo.status === "Cancelled" ? (
+																					<div
+																						className='col-2'
+																						style={{
+																							color: "darkred",
+																							fontWeight: "bold",
+																						}}>
+																						{ooo.status}
+																					</div>
+																				) : ooo.status === "Shipped" ||
+																				  ooo.status === "Delivered" ? (
+																					<div
+																						className='col-2'
+																						style={{
+																							color: "darkgreen",
+																							fontWeight: "bold",
+																						}}>
+																						{ooo.status}
+																					</div>
+																				) : (
+																					<div
+																						className='col-2'
+																						style={{
+																							color: "black",
+																							fontWeight: "bold",
+																						}}>
+																						{ooo.status}
+																					</div>
+																				)}
 
-											<div className='col-2'>25</div>
-											<div className='col-3'>Mamdouh Muhammad</div>
-											<div
-												className='col-2'
-												style={{ color: "#0062c4", fontWeight: "bolder" }}>
-												Ready To Ship
-											</div>
-
-											<div className='col-md-12 mx-auto'>
-												<hr />
-											</div>
-											<div className='col-1'>3</div>
-											<div className='col-2'>
-												<img
-													className='userImage'
-													src={Product3}
-													alt='product'
-												/>
-											</div>
-											<div className='col-2'>PJ</div>
-
-											<div className='col-2'>17</div>
-											<div className='col-3'>Rasha Elsayed</div>
-											<div
-												className='col-2'
-												style={{ color: "#0062c4", fontWeight: "bolder" }}>
-												Ready To Ship
-											</div>
+																				<div className='col-md-12 mx-auto'>
+																					<hr />
+																				</div>
+																			</>
+																		) : null}
+																	</React.Fragment>
+																);
+															}),
+														),
+													)}
+												{selectedDateOrdersModified() &&
+													selectedDateOrdersModified().length > 4 && (
+														<div
+															className='text-center my-4 mx-auto'
+															style={{ fontWeight: "bolder" }}>
+															{" "}
+															<Link
+																to='#'
+																onClick={() => {
+																	setModalVisible2(true);
+																	setCollapsed(true);
+																}}>
+																SHOW MORE...
+															</Link>{" "}
+														</div>
+													)}
+											</>
 										</div>
 									</div>
 								</div>
@@ -679,63 +828,100 @@ const AdminDashboard = () => {
 										<div className='col-md-10 mx-auto'>
 											<hr />
 										</div>
-										<div className='row mt-3'>
-											<div className='col-1'>Item #</div>
-											<div className='col-2'>Image</div>
-											<div className='col-2'>Product Name</div>
-											<div className='col-2'>Inventory Level</div>
-											<div className='col-3'>Added By</div>
-											<div className='col-2'>Status</div>
-											<div className='col-md-12 mx-auto'>
-												<hr />
-											</div>
-											<div className='col-1'>1</div>
-											<div className='col-2'>
-												<img
-													className='userImage'
-													src={Product1}
-													alt='product'
-												/>
-											</div>
-											<div className='col-2'>Jeans</div>
 
-											<div className='col-2'>24</div>
-											<div className='col-3'>Ibrahim Gamal</div>
-											<div className='col-2'>In Progress</div>
+										<div className='tableData'>
+											<AttributesModal
+												product={clickedProduct}
+												modalVisible={modalVisible3}
+												setModalVisible={setModalVisible3}
+												setCollapsed={setCollapsed}
+											/>
 
-											<div className='col-md-12 mx-auto'>
-												<hr />
-											</div>
-											<div className='col-1'>2</div>
-											<div className='col-2'>
-												<img
-													className='userImage'
-													src={Product2}
-													alt='product'
-												/>
-											</div>
-											<div className='col-2'>Shorts</div>
+											<table
+												className='table table-bordered table-md-responsive table-hover '
+												style={{ fontSize: "0.75rem", overflowX: "auto" }}>
+												<thead className=''>
+													<tr
+														style={{
+															fontSize: "0.75rem",
+															textTransform: "capitalize",
+															textAlign: "center",
+														}}>
+														<th scope='col'>Item #</th>
+														<th scope='col'>Product Name</th>
+														<th scope='col'>Product Main SKU</th>
+														<th scope='col'>Product Price</th>
+														<th scope='col'>Stock Onhand</th>
+														<th scope='col'>Product Creation Date</th>
+														<th scope='col'>Product Created By</th>
+														<th scope='col'>Product Image</th>
+													</tr>
+												</thead>
+												<tbody
+													className='my-auto'
+													style={{
+														fontSize: "0.75rem",
+														textTransform: "capitalize",
+														fontWeight: "bolder",
+													}}>
+													{modifyingInventoryTable().map((s, i) => {
+														return (
+															<tr key={i} className=''>
+																<td className='my-auto'>{i + 1}</td>
 
-											<div className='col-2'>25</div>
-											<div className='col-3'>Mamdouh Muhammad</div>
-											<div className='col-2'>Ready To Ship</div>
+																<td>{s.productName}</td>
+																<td>{s.productSKU}</td>
+																<td>
+																	{s.addVariables ? (
+																		<span
+																			onClick={() => {
+																				setModalVisible3(true);
+																				setClickedProduct(s);
+																				setCollapsed(true);
+																			}}
+																			style={{
+																				fontWeight: "bold",
+																				textDecoration: "underline",
+																				color: "darkblue",
+																				cursor: "pointer",
+																			}}>
+																			Check Product Attributes
+																		</span>
+																	) : (
+																		s.productPrice
+																	)}
+																</td>
+																<td
+																	style={{
+																		background:
+																			s.productQty <= 0 ? "#fdd0d0" : "",
+																	}}>
+																	{s.productQty}
+																</td>
+																<td>
+																	{new Date(s.createdAt).toLocaleDateString()}
+																</td>
+																<td>{s.addedBy.name}</td>
+																<td style={{ width: "20%" }}>
+																	<img
+																		width='40%'
+																		height='40%'
+																		style={{ marginLeft: "20px" }}
+																		src={
+																			s.productImage[0].images[0]
+																				? s.productImage[0].images[0].url
+																				: null
+																		}
+																		alt={s.productName}
+																	/>
+																</td>
 
-											<div className='col-md-12 mx-auto'>
-												<hr />
-											</div>
-											<div className='col-1'>3</div>
-											<div className='col-2'>
-												<img
-													className='userImage'
-													src={Product3}
-													alt='product'
-												/>
-											</div>
-											<div className='col-2'>PJ</div>
-
-											<div className='col-2'>17</div>
-											<div className='col-3'>Rasha Elsayed</div>
-											<div className='col-2'>Ready To Ship</div>
+																{/* <td>{Invoice(s)}</td> */}
+															</tr>
+														);
+													})}
+												</tbody>
+											</table>
 										</div>
 									</div>
 								</div>

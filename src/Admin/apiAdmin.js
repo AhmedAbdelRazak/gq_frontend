@@ -524,6 +524,21 @@ export const updateUserByAdmin = (updatedUserId, userId, token, user) => {
 		.catch((err) => console.log(err));
 };
 
+export const removeOrder = (orderId, userId, token) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/order/${orderId}/${userId}`, {
+		method: "DELETE",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
 /**
  * Attributes Management
  * */

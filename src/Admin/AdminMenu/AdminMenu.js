@@ -245,8 +245,8 @@ const AdminMenu = ({
 		// eslint-disable-next-line
 	}, [windowDimensions]);
 
-	console.log(collapsed, "collapsed");
-	console.log(windowDimensions.width, "collapsed");
+	// console.log(collapsed, "collapsed");
+	// console.log(windowDimensions.width, "collapsed");
 
 	return (
 		<AdminMenuWrapper
