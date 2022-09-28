@@ -43,6 +43,7 @@ const AddingProductVariable = ({
 	setAddThumbnail,
 	inheritParentSKU,
 	setInheritParentSKU,
+	productSKU,
 }) => {
 	const { user, token } = isAuthenticated();
 	const [allColors, setAllColors] = useState([]);
@@ -105,9 +106,6 @@ const AddingProductVariable = ({
 	};
 
 	const adjustingQuantity = (e, p) => {
-		// if (productAttributesFinal.length > 0) {
-		// 	setProductAttributesFinal([]);
-		// }
 		const index = productAttributesFinal.findIndex((object) => {
 			return object.PK === p.size + p.color;
 		});
@@ -116,7 +114,6 @@ const AddingProductVariable = ({
 			productAttributesFinal[index].quantity = e.target.value;
 			setProductAttributesFinal([...productAttributesFinal]);
 		}
-		// console.log(productAttributesFinal, "From OnChange Stock Level");
 	};
 
 	const adjustingPrice = (e, p) => {
@@ -159,6 +156,28 @@ const AddingProductVariable = ({
 
 		if (index !== -1) {
 			productAttributesFinal[index].MSRP = e.target.value;
+			setProductAttributesFinal([...productAttributesFinal]);
+		}
+	};
+
+	const adjustingWholeSalePrice = (e, p) => {
+		const index = productAttributesFinal.findIndex((object) => {
+			return object.PK === p.size + p.color;
+		});
+
+		if (index !== -1) {
+			productAttributesFinal[index].WholeSalePrice = e.target.value;
+			setProductAttributesFinal([...productAttributesFinal]);
+		}
+	};
+
+	const adjustingDropShippingPrice = (e, p) => {
+		const index = productAttributesFinal.findIndex((object) => {
+			return object.PK === p.size + p.color;
+		});
+
+		if (index !== -1) {
+			productAttributesFinal[index].DropShippingPrice = e.target.value;
 			setProductAttributesFinal([...productAttributesFinal]);
 		}
 	};
@@ -279,6 +298,12 @@ const AddingProductVariable = ({
 					<>
 						<div
 							className='col-3 variableLinksItem '
+							onClick={() => setClickedVariableLink("VariableSkus")}
+							style={isActive2("VariableSkus", clickedVariableLink)}>
+							Add Variables SKUs
+						</div>
+						<div
+							className='col-3 variableLinksItem '
 							onClick={() => {
 								setClickedVariableLink("StockLevel");
 							}}
@@ -290,12 +315,6 @@ const AddingProductVariable = ({
 							onClick={() => setClickedVariableLink("ProductPrices")}
 							style={isActive2("ProductPrices", clickedVariableLink)}>
 							Add Product Prices
-						</div>
-						<div
-							className='col-3 variableLinksItem '
-							onClick={() => setClickedVariableLink("VariableSkus")}
-							style={isActive2("VariableSkus", clickedVariableLink)}>
-							Add Variables SKUs
 						</div>
 					</>
 				) : null}
@@ -560,18 +579,19 @@ const AddingProductVariable = ({
 									);
 								})}
 						</div>
-						<div>
-							{variablesSubmit ? (
+						{variablesSubmit ? (
+							<div>
 								<button
 									className='btn btn-outline-primary my-5 ml-3'
 									onClick={(e) => {
 										e.preventDefault();
-										setClickedVariableLink("StockLevel");
+										setClickedVariableLink("VariableSkus");
+										window.scrollTo({ top: 0, behavior: "smooth" });
 									}}>
-									Next: Add Stock Level
+									Next: Add Variables SKU's
 								</button>
-							) : null}
-						</div>
+							</div>
+						) : null}
 					</div>
 				) : null}
 
@@ -587,7 +607,7 @@ const AddingProductVariable = ({
 													className='text-muted'
 													style={{ fontWeight: "bold", fontSize: "17px" }}>
 													Product Stock Level (Color:{" "}
-													<span style={{ color: p.color }}>
+													<span style={{ color: "black" }}>
 														{allColors &&
 															allColors[0] &&
 															allColors[
@@ -633,8 +653,8 @@ const AddingProductVariable = ({
 													<label
 														className='text-muted'
 														style={{ fontWeight: "bold", fontSize: "13px" }}>
-														Product After Manufacturing (Color:{" "}
-														<span style={{ color: p.color }}>
+														Product Manufacturing Price (Color:{" "}
+														<span style={{ color: "black" }}>
 															{allColors &&
 																allColors[0] &&
 																allColors[
@@ -655,8 +675,8 @@ const AddingProductVariable = ({
 													<label
 														className='text-muted'
 														style={{ fontWeight: "bold", fontSize: "13px" }}>
-														Product Price Before Discount (Color:{" "}
-														<span style={{ color: p.color }}>
+														Product Retailer Price (Color:{" "}
+														<span style={{ color: "black" }}>
 															{allColors &&
 																allColors[0] &&
 																allColors[
@@ -678,7 +698,7 @@ const AddingProductVariable = ({
 														className='text-muted'
 														style={{ fontWeight: "bold", fontSize: "13px" }}>
 														Product Price After Discount (Color:{" "}
-														<span style={{ color: p.color }}>
+														<span style={{ color: "black" }}>
 															{allColors &&
 																allColors[0] &&
 																allColors[
@@ -695,6 +715,52 @@ const AddingProductVariable = ({
 														required
 													/>
 												</div>
+
+												<div className='form-group col-md-5 mx-auto'>
+													<label
+														className='text-muted'
+														style={{ fontWeight: "bold", fontSize: "13px" }}>
+														Whole Sale Price (Color:{" "}
+														<span style={{ color: "black" }}>
+															{allColors &&
+																allColors[0] &&
+																allColors[
+																	allColors.map((i) => i.hexa).indexOf(p.color)
+																].color}
+														</span>{" "}
+														Size: {p.size})
+													</label>
+													<input
+														type='text'
+														className='form-control'
+														onChange={(e) => adjustingWholeSalePrice(e, p)}
+														value={productAttributesFinal[i].WholeSalePrice}
+														required
+													/>
+												</div>
+
+												<div className='form-group col-md-5 mx-auto'>
+													<label
+														className='text-muted'
+														style={{ fontWeight: "bold", fontSize: "13px" }}>
+														Dropshipping Price (Color:{" "}
+														<span style={{ color: "black" }}>
+															{allColors &&
+																allColors[0] &&
+																allColors[
+																	allColors.map((i) => i.hexa).indexOf(p.color)
+																].color}
+														</span>{" "}
+														Size: {p.size})
+													</label>
+													<input
+														type='text'
+														className='form-control'
+														onChange={(e) => adjustingDropShippingPrice(e, p)}
+														value={productAttributesFinal[i].DropShippingPrice}
+														required
+													/>
+												</div>
 											</React.Fragment>
 										);
 									})}
@@ -704,10 +770,10 @@ const AddingProductVariable = ({
 							className='btn btn-outline-primary my-5 ml-3'
 							onClick={(e) => {
 								e.preventDefault();
-								setClickedVariableLink("VariableSkus");
+								setClickedLink("ExtraOptions");
 								window.scrollTo({ top: 0, behavior: "smooth" });
 							}}>
-							Next: Add Variables SKU's
+							Next: Add Product Extra Options
 						</button>
 					</>
 				) : null}
@@ -725,7 +791,7 @@ const AddingProductVariable = ({
 														className='text-muted'
 														style={{ fontWeight: "bold", fontSize: "17px" }}>
 														Variable SKU (Color:{" "}
-														<span style={{ color: p.color }}>
+														<span style={{ color: "black" }}>
 															{allColors &&
 																allColors[0] &&
 																allColors[
@@ -747,15 +813,18 @@ const AddingProductVariable = ({
 									})}
 							</div>
 						) : null}
-						<button
-							className='btn btn-outline-primary my-5 ml-3'
-							onClick={(e) => {
-								e.preventDefault();
-								setClickedLink("ExtraOptions");
-								window.scrollTo({ top: 0, behavior: "smooth" });
-							}}>
-							Next: Add Product Extra Options
-						</button>
+						<div>
+							{variablesSubmit ? (
+								<button
+									className='btn btn-outline-primary my-5 ml-3'
+									onClick={(e) => {
+										e.preventDefault();
+										setClickedVariableLink("StockLevel");
+									}}>
+									Next: Add Stock Level
+								</button>
+							) : null}
+						</div>
 					</>
 				) : null}
 			</form>

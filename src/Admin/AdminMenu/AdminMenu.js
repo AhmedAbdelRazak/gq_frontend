@@ -245,9 +245,6 @@ const AdminMenu = ({
 		// eslint-disable-next-line
 	}, [windowDimensions]);
 
-	// console.log(collapsed, "collapsed");
-	// console.log(windowDimensions.width, "collapsed");
-
 	return (
 		<AdminMenuWrapper
 			show={collapsed}
@@ -366,7 +363,7 @@ const AdminMenuWrapper = styled.div`
 	margin-bottom: 15px;
 	background: ${(props) => (props.show ? "" : "")};
 	top: 0px !important;
-	position: relative;
+	/* position: relative; */
 	z-index: 11000;
 
 	li {

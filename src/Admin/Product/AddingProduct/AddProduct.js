@@ -85,6 +85,12 @@ const AddProduct = () => {
 	const [parentPrice1, setParentPrice1] = useState(0);
 	const [parentPrice2, setParentPrice2] = useState(0);
 	const [parentPrice3, setParentPrice3] = useState(0);
+	const [parentPrice4, setParentPrice4] = useState(0);
+	const [parentPrice5, setParentPrice5] = useState(0);
+
+	const [WholeSalePriceBasic, setWholePriceBasic] = useState(0);
+	const [DropShippingPriceBasic, setDropShippingBasic] = useState(0);
+
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
 	const [inheritPrice, setInheritPrice] = useState(false);
@@ -121,6 +127,10 @@ const AddProduct = () => {
 				setParentPrice2={setParentPrice2}
 				parentPrice3={parentPrice3}
 				setParentPrice3={setParentPrice3}
+				parentPrice4={parentPrice4}
+				setParentPrice4={setParentPrice4}
+				parentPrice5={parentPrice5}
+				setParentPrice5={setParentPrice5}
 				inheritPrice={inheritPrice}
 				setInheritPrice={setInheritPrice}
 				inheritParentSKU={inheritParentSKU}
@@ -277,6 +287,14 @@ const AddProduct = () => {
 		setMSRPPriceBasic(e.target.value);
 	};
 
+	const handleChangeWholeSaleBasic = (e) => {
+		setWholePriceBasic(e.target.value);
+	};
+
+	const handleChangeDropShippingBasic = (e) => {
+		setDropShippingBasic(e.target.value);
+	};
+
 	const fileUploadAndResizeThumbNail = (e) => {
 		// console.log(e.target.files);
 		let files = e.target.files;
@@ -402,7 +420,7 @@ const AddProduct = () => {
 				<div className='form-group mt-4'>
 					<label
 						className='text-muted'
-						style={{ fontWeight: "bold", fontSize: "17px" }}>
+						style={{ fontWeight: "bold", fontSize: "13px" }}>
 						Add Other Variables
 					</label>
 					<input
@@ -419,7 +437,7 @@ const AddProduct = () => {
 				<div className='form-group'>
 					<label
 						className='text-muted'
-						style={{ fontWeight: "bold", fontSize: "17px" }}>
+						style={{ fontWeight: "bold", fontSize: "13px" }}>
 						Manufacturing Price
 					</label>
 					<input
@@ -433,8 +451,8 @@ const AddProduct = () => {
 				<div className='form-group'>
 					<label
 						className='text-muted'
-						style={{ fontWeight: "bold", fontSize: "17px" }}>
-						Product Price
+						style={{ fontWeight: "bold", fontSize: "13px" }}>
+						Product Retail Price
 					</label>
 					<input
 						type='text'
@@ -447,7 +465,7 @@ const AddProduct = () => {
 				<div className='form-group'>
 					<label
 						className='text-muted'
-						style={{ fontWeight: "bold", fontSize: "17px" }}>
+						style={{ fontWeight: "bold", fontSize: "13px" }}>
 						Product Price After Discount
 					</label>
 					<input
@@ -461,7 +479,35 @@ const AddProduct = () => {
 				<div className='form-group'>
 					<label
 						className='text-muted'
-						style={{ fontWeight: "bold", fontSize: "17px" }}>
+						style={{ fontWeight: "bold", fontSize: "13px" }}>
+						Whole Sale Price
+					</label>
+					<input
+						type='text'
+						className='form-control'
+						onChange={handleChangeWholeSaleBasic}
+						value={WholeSalePriceBasic}
+					/>
+				</div>
+
+				<div className='form-group'>
+					<label
+						className='text-muted'
+						style={{ fontWeight: "bold", fontSize: "13px" }}>
+						Dropshipping Price
+					</label>
+					<input
+						type='text'
+						className='form-control'
+						onChange={handleChangeDropShippingBasic}
+						value={DropShippingPriceBasic}
+					/>
+				</div>
+
+				<div className='form-group'>
+					<label
+						className='text-muted'
+						style={{ fontWeight: "bold", fontSize: "13px" }}>
 						Product Stock Level
 					</label>
 					<input
@@ -510,10 +556,15 @@ const AddProduct = () => {
 					setParentPrice2={setParentPrice2}
 					parentPrice3={parentPrice3}
 					setParentPrice3={setParentPrice3}
+					parentPrice4={parentPrice4}
+					setParentPrice4={setParentPrice4}
+					parentPrice5={parentPrice5}
+					setParentPrice5={setParentPrice5}
 					inheritPrice={inheritPrice}
 					setInheritPrice={setInheritPrice}
 					inheritParentSKU={inheritParentSKU}
 					setInheritParentSKU={setInheritParentSKU}
+					productSKU={productSKU}
 				/>
 			</React.Fragment>
 		);
@@ -576,6 +627,8 @@ const AddProduct = () => {
 			price: addVariables ? 0 : price,
 			priceAfterDiscount: addVariables ? 0 : priceAfterDiscount,
 			MSRPPriceBasic: addVariables ? 0 : Number(MSRPPriceBasic),
+			DropShippingPriceBasic: addVariables ? 0 : DropShippingPriceBasic,
+			WholeSalePriceBasic: addVariables ? 0 : WholeSalePriceBasic,
 			price_unit: "LE",
 			loyaltyPoints: 10,
 			category: chosenCategory,
@@ -696,6 +749,8 @@ const AddProduct = () => {
 					price: inheritPrice ? parentPrice2 : 0,
 					priceAfterDiscount: inheritPrice ? parentPrice3 : 0,
 					MSRP: inheritPrice ? parentPrice1 : 0,
+					WholeSalePrice: inheritPrice ? parentPrice4 : 0,
+					DropShippingPrice: inheritPrice ? parentPrice5 : 0,
 					productImages: [],
 					SubSKU: inheritParentSKU
 						? productSKU +

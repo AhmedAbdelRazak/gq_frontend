@@ -801,6 +801,32 @@ const UpdateProductSingle = ({ match }) => {
 							  ].MSRP
 							: 0,
 
+					WholeSalePrice:
+						allPrimaryKeys.indexOf(
+							combinationsOfColorSizes[i - 1][ii - 1] +
+								combinationsOfColorSizes[i - 1][ii],
+						) > -1
+							? productAttributesFinal[
+									allPrimaryKeys.indexOf(
+										combinationsOfColorSizes[i - 1][ii - 1] +
+											combinationsOfColorSizes[i - 1][ii],
+									)
+							  ].WholeSalePrice
+							: 0,
+
+					DropShippingPrice:
+						allPrimaryKeys.indexOf(
+							combinationsOfColorSizes[i - 1][ii - 1] +
+								combinationsOfColorSizes[i - 1][ii],
+						) > -1
+							? productAttributesFinal[
+									allPrimaryKeys.indexOf(
+										combinationsOfColorSizes[i - 1][ii - 1] +
+											combinationsOfColorSizes[i - 1][ii],
+									)
+							  ].DropShippingPrice
+							: 0,
+
 					productImages: productAttributesFinal[i - 1]
 						? productAttributesFinal[i - 1].productImages
 						: [],

@@ -26,6 +26,10 @@ const BasicDataForm = ({
 	setParentPrice2,
 	parentPrice3,
 	setParentPrice3,
+	parentPrice4,
+	setParentPrice4,
+	parentPrice5,
+	setParentPrice5,
 	inheritPrice,
 	setInheritPrice,
 }) => {
@@ -57,6 +61,14 @@ const BasicDataForm = ({
 		setParentPrice3(e.target.value);
 	};
 
+	const handleChange11 = (e) => {
+		setParentPrice4(e.target.value);
+	};
+
+	const handleChange12 = (e) => {
+		setParentPrice5(e.target.value);
+	};
+
 	return (
 		<form>
 			<div className='row'>
@@ -64,7 +76,7 @@ const BasicDataForm = ({
 					<div className='form-group'>
 						<label
 							className='text-muted'
-							style={{ fontWeight: "bold", fontSize: "17px" }}>
+							style={{ fontWeight: "bold", fontSize: "13px" }}>
 							Product Name
 						</label>
 						<input
@@ -81,7 +93,7 @@ const BasicDataForm = ({
 					<div className='form-group'>
 						<label
 							className='text-muted'
-							style={{ fontWeight: "bold", fontSize: "17px" }}>
+							style={{ fontWeight: "bold", fontSize: "13px" }}>
 							اسم المنتج{" "}
 						</label>
 						<input
@@ -98,7 +110,7 @@ const BasicDataForm = ({
 					<div className='form-group'>
 						<label
 							className='text-muted'
-							style={{ fontWeight: "bold", fontSize: "17px" }}>
+							style={{ fontWeight: "bold", fontSize: "13px" }}>
 							Product Main SKU
 						</label>
 						<input
@@ -111,12 +123,12 @@ const BasicDataForm = ({
 					</div>
 				</div>
 
-				<div className='col-md-3 mx-auto'>
+				<div className='col-md-2 mx-auto'>
 					<div className='form-group'>
 						<label
 							className='text-muted'
-							style={{ fontWeight: "bold", fontSize: "17px" }}>
-							After Manufacturing Price
+							style={{ fontWeight: "bold", fontSize: "13px" }}>
+							Manufacturing Price
 						</label>
 						<input
 							type='text'
@@ -128,11 +140,11 @@ const BasicDataForm = ({
 					</div>
 				</div>
 
-				<div className='col-md-3 mx-auto'>
+				<div className='col-md-2 mx-auto'>
 					<div className='form-group'>
 						<label
 							className='text-muted'
-							style={{ fontWeight: "bold", fontSize: "17px" }}>
+							style={{ fontWeight: "bold", fontSize: "13px" }}>
 							Retailer Price
 						</label>
 						<input
@@ -145,11 +157,47 @@ const BasicDataForm = ({
 					</div>
 				</div>
 
-				<div className='col-md-3 mx-auto'>
+				<div className='col-md-2 mx-auto'>
 					<div className='form-group'>
 						<label
 							className='text-muted'
-							style={{ fontWeight: "bold", fontSize: "17px" }}>
+							style={{ fontWeight: "bold", fontSize: "13px" }}>
+							WholeSale Price
+						</label>
+
+						<input
+							type='text'
+							className='form-control'
+							onChange={handleChange11}
+							value={parentPrice4}
+							required
+						/>
+					</div>
+				</div>
+
+				<div className='col-md-2 mx-auto'>
+					<div className='form-group'>
+						<label
+							className='text-muted'
+							style={{ fontWeight: "bold", fontSize: "13px" }}>
+							Drop Shipping Price
+						</label>
+
+						<input
+							type='text'
+							className='form-control'
+							onChange={handleChange12}
+							value={parentPrice5}
+							required
+						/>
+					</div>
+				</div>
+
+				<div className='col-md-2 mx-auto'>
+					<div className='form-group'>
+						<label
+							className='text-muted'
+							style={{ fontWeight: "bold", fontSize: "13px" }}>
 							Price After Discount
 						</label>
 
@@ -167,8 +215,8 @@ const BasicDataForm = ({
 					<div className='form-group'>
 						<label
 							className='text-muted mx-2'
-							style={{ fontWeight: "bold", fontSize: "17px" }}>
-							Inherit
+							style={{ fontWeight: "bold", fontSize: "15px" }}>
+							Inherit All Prices
 						</label>
 
 						<input
@@ -186,7 +234,7 @@ const BasicDataForm = ({
 			<div className='form-group'>
 				<label
 					className='text-muted'
-					style={{ fontWeight: "bold", fontSize: "17px" }}>
+					style={{ fontWeight: "bold", fontSize: "13px" }}>
 					Add Description (Required)
 				</label>
 				<textarea
@@ -201,7 +249,7 @@ const BasicDataForm = ({
 			<div className='form-group'>
 				<label
 					className='text-muted'
-					style={{ fontWeight: "bold", fontSize: "17px" }}>
+					style={{ fontWeight: "bold", fontSize: "13px" }}>
 					Add Description (Arabic)
 				</label>
 				<textarea
@@ -255,7 +303,7 @@ const BasicDataForm = ({
 			<div className='form-group'>
 				<label
 					className='text-muted'
-					style={{ fontWeight: "bold", fontSize: "17px" }}>
+					style={{ fontWeight: "bold", fontSize: "13px" }}>
 					Add Variables
 				</label>
 				<input

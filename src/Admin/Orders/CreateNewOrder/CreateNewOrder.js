@@ -17,6 +17,8 @@ import { toast } from "react-toastify";
 import Navbar from "../../AdminNavMenu/Navbar";
 import DarkBG from "../../AdminMenu/DarkBG";
 import AttributesModal from "../../Product/UpdatingProduct/AttributesModal";
+import { EditOutlined } from "@ant-design/icons";
+import EditPrice from "../../Modals/EditPrice";
 const { Option } = Select;
 
 const isActive = (clickedLink, sureClickedLink) => {
@@ -64,7 +66,9 @@ const CreateNewOrder = () => {
 	});
 
 	const [modalVisible, setModalVisible] = useState(false);
+	const [modalVisible2, setModalVisible2] = useState(false);
 	const [clickedProduct, setClickedProduct] = useState({});
+	const [clickedChosenProductQty, setClickedChosenProductQty] = useState({});
 
 	// eslint-disable-next-line
 	const [allOrderData, setAllOrderData] = useState({});
@@ -129,6 +133,7 @@ const CreateNewOrder = () => {
 					setModalVisible={setModalVisible}
 					setCollapsed={setCollapsed}
 				/>
+
 				<div className=' mb-3 form-group mx-3 text-center'>
 					<label
 						className='mt-3 mx-3'
@@ -408,6 +413,33 @@ const CreateNewOrder = () => {
 							.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
 							.priceAfterDiscount,
 
+						SubSKURetailerPrice: addedProductsToCart
+							.filter((s) => s._id === i.productId)[0]
+							.productAttributes.filter((ss) => ss.SubSKU === ii)[0].price,
+
+						SubSKUWholeSalePrice: addedProductsToCart
+							.filter((s) => s._id === i.productId)[0]
+							.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+							? addedProductsToCart
+									.filter((s) => s._id === i.productId)[0]
+									.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+									.WholeSalePrice
+							: 0,
+
+						SubSKUDropshippingPrice: addedProductsToCart
+							.filter((s) => s._id === i.productId)[0]
+							.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+							? addedProductsToCart
+									.filter((s) => s._id === i.productId)[0]
+									.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+									.DropShippingPrice
+							: 0,
+
+						pickedPrice: addedProductsToCart
+							.filter((s) => s._id === i.productId)[0]
+							.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+							.priceAfterDiscount,
+
 						quantity: addedProductsToCart
 							.filter((s) => s._id === i.productId)[0]
 							.productAttributes.filter((ss) => ss.SubSKU === ii)[0].quantity,
@@ -530,6 +562,14 @@ const CreateNewOrder = () => {
 	const addingOrderQuantity = () => {
 		return (
 			<>
+				<EditPrice
+					setChosenProductQty={setChosenProductQty}
+					chosenProductQty={chosenProductQty}
+					clickedChosenProductQty={clickedChosenProductQty}
+					modalVisible2={modalVisible2}
+					setModalVisible2={setModalVisible2}
+					setCollapsed={setCollapsed}
+				/>
 				{chosenProductQty &&
 					chosenProductVariables &&
 					chosenProductQty.map((p, i) => {
@@ -549,10 +589,22 @@ const CreateNewOrder = () => {
 												className='text-muted'
 												style={{ fontWeight: "bold", fontSize: "15px" }}>
 												{pp.productName} | {pp.SubSKU} | Available Stock:{" "}
-												{AvailableStock.quantity} Units | Price:{" "}
-												{pp.SubSKUPriceAfterDiscount} | Total Amount:{" "}
-												{Number(pp.OrderedQty) *
-													Number(pp.SubSKUPriceAfterDiscount)}
+												{AvailableStock.quantity} Units |<br />{" "}
+												<div
+													onClick={() => {
+														setModalVisible2(true);
+														setClickedChosenProductQty(pp);
+													}}
+													className='my-2'
+													style={{
+														color: "black",
+														fontWeight: "bolder",
+														cursor: "pointer",
+													}}>
+													Price: {pp.pickedPrice} L.E. <EditOutlined />
+												</div>{" "}
+												Total Amount:{" "}
+												{Number(pp.OrderedQty) * Number(pp.pickedPrice)} L.E.
 												<br />
 												<input
 													value={pp.OrderedQty}
@@ -601,8 +653,8 @@ const CreateNewOrder = () => {
 											width: "100%",
 										}}>
 										{p.productName} | {p.productSKU} | Available Stock:{" "}
-										{p.quantity} | Price: {p.priceAfterDiscount} | Total Amount:{" "}
-										{Number(p.orderedQuantity) * Number(p.priceAfterDiscount)}
+										{p.quantity} | Price: {p.pickedPrice} | Total Amount:{" "}
+										{Number(p.orderedQuantity) * Number(p.pickedPrice)}
 										<br />
 										<input
 											value={p.orderedQuantity}
@@ -867,13 +919,11 @@ const CreateNewOrder = () => {
 			: 0;
 
 	let basicProductTotalAmount = productsWithNoVariables
-		.map((i) => Number(i.orderedQuantity) * Number(i.priceAfterDiscount))
+		.map((i) => Number(i.orderedQuantity) * Number(i.pickedPrice))
 		.reduce((a, b) => a + b, 0);
 
 	var PriceWithVariables = chosenProductQty.map((iii) =>
-		iii.map(
-			(iiii) => Number(iiii.SubSKUPriceAfterDiscount) * Number(iiii.OrderedQty),
-		),
+		iii.map((iiii) => Number(iiii.pickedPrice) * Number(iiii.OrderedQty)),
 	);
 
 	let variableProductTotalAmount = Number(sum_array(PriceWithVariables));

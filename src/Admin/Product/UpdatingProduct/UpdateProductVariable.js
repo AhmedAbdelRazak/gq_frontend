@@ -150,6 +150,28 @@ const UpdatingProductVariable = ({
 		}
 	};
 
+	const adjustingWholeSalePrice = (e, p) => {
+		const index = productAttributesFinal.findIndex((object) => {
+			return object.PK === p.size + p.color;
+		});
+
+		if (index !== -1) {
+			productAttributesFinal[index].WholeSalePrice = e.target.value;
+			setProductAttributesFinal([...productAttributesFinal]);
+		}
+	};
+
+	const adjustingDropShippingPrice = (e, p) => {
+		const index = productAttributesFinal.findIndex((object) => {
+			return object.PK === p.size + p.color;
+		});
+
+		if (index !== -1) {
+			productAttributesFinal[index].DropShippingPrice = e.target.value;
+			setProductAttributesFinal([...productAttributesFinal]);
+		}
+	};
+
 	const adjustingVariablesSkus = (e, p) => {
 		const index = productAttributesFinal.findIndex((object) => {
 			return object.PK === p.size + p.color;
@@ -552,7 +574,7 @@ const UpdatingProductVariable = ({
 													className='text-muted'
 													style={{ fontWeight: "bold", fontSize: "17px" }}>
 													Product Stock Level (Color:{" "}
-													<span style={{ color: p.color }}>
+													<span style={{ color: "black" }}>
 														{allColors[
 															allColors.map((i) => i.hexa).indexOf(p.color)
 														]
@@ -600,8 +622,8 @@ const UpdatingProductVariable = ({
 													<label
 														className='text-muted'
 														style={{ fontWeight: "bold", fontSize: "13px" }}>
-														Product After Manufacturing (Color:{" "}
-														<span style={{ color: p.color }}>
+														Manufacturing Price (Color:{" "}
+														<span style={{ color: "black" }}>
 															{allColors[
 																allColors.map((i) => i.hexa).indexOf(p.color)
 															]
@@ -626,8 +648,8 @@ const UpdatingProductVariable = ({
 													<label
 														className='text-muted'
 														style={{ fontWeight: "bold", fontSize: "13px" }}>
-														Product Price Before Discount (Color:{" "}
-														<span style={{ color: p.color }}>
+														Retailer Price (Color:{" "}
+														<span style={{ color: "black" }}>
 															{allColors[
 																allColors.map((i) => i.hexa).indexOf(p.color)
 															]
@@ -652,8 +674,8 @@ const UpdatingProductVariable = ({
 													<label
 														className='text-muted'
 														style={{ fontWeight: "bold", fontSize: "13px" }}>
-														Product Price After Discount (Color:{" "}
-														<span style={{ color: p.color }}>
+														Price After Discount (Color:{" "}
+														<span style={{ color: "black" }}>
 															{allColors[
 																allColors.map((i) => i.hexa).indexOf(p.color)
 															]
@@ -671,6 +693,52 @@ const UpdatingProductVariable = ({
 														className='form-control'
 														onChange={(e) => adjustingPriceAfterDiscount(e, p)}
 														value={productAttributesFinal[i].priceAfterDiscount}
+														required
+													/>
+												</div>
+
+												<div className='form-group col-md-5 mx-auto'>
+													<label
+														className='text-muted'
+														style={{ fontWeight: "bold", fontSize: "13px" }}>
+														Whole Sale Price (Color:{" "}
+														<span style={{ color: "black" }}>
+															{allColors &&
+																allColors[0] &&
+																allColors[
+																	allColors.map((i) => i.hexa).indexOf(p.color)
+																].color}
+														</span>{" "}
+														Size: {p.size})
+													</label>
+													<input
+														type='text'
+														className='form-control'
+														onChange={(e) => adjustingWholeSalePrice(e, p)}
+														value={productAttributesFinal[i].WholeSalePrice}
+														required
+													/>
+												</div>
+
+												<div className='form-group col-md-5 mx-auto'>
+													<label
+														className='text-muted'
+														style={{ fontWeight: "bold", fontSize: "13px" }}>
+														Dropshipping Price (Color:{" "}
+														<span style={{ color: "black" }}>
+															{allColors &&
+																allColors[0] &&
+																allColors[
+																	allColors.map((i) => i.hexa).indexOf(p.color)
+																].color}
+														</span>{" "}
+														Size: {p.size})
+													</label>
+													<input
+														type='text'
+														className='form-control'
+														onChange={(e) => adjustingDropShippingPrice(e, p)}
+														value={productAttributesFinal[i].DropShippingPrice}
 														required
 													/>
 												</div>
@@ -704,7 +772,7 @@ const UpdatingProductVariable = ({
 														className='text-muted'
 														style={{ fontWeight: "bold", fontSize: "17px" }}>
 														Variable SKU (Color:{" "}
-														<span style={{ color: p.color }}>
+														<span style={{ color: "black" }}>
 															{allColors[
 																allColors.map((i) => i.hexa).indexOf(p.color)
 															]
