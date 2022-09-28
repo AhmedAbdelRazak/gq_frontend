@@ -93,7 +93,7 @@ const UpdateEmployeeSingle = ({ match }) => {
 				userId: match.params.userId,
 				name: values.name,
 				role: values.role,
-				// password: values.password,
+				password: values.password,
 				activeUser: values.activeUser,
 				employeeImage: employeeImage,
 				email: values.email,
@@ -124,7 +124,7 @@ const UpdateEmployeeSingle = ({ match }) => {
 							boxShadow: "2px 2px 2px 2px rgba(0, 0, 0, 0.2)",
 						}}>
 						<h1 className='mb-3'>
-							Account <span className='text-primary'>Register</span>
+							Account <span className='text-primary'>Update</span>
 						</h1>
 						<div className='mt-5 col-10'>
 							<div className='col-12'>
@@ -254,7 +254,7 @@ const UpdateEmployeeSingle = ({ match }) => {
 
 							<input
 								type='submit'
-								value='Register'
+								value='Update Employee'
 								className='btn btn-primary w-75 btn-block mx-auto mt-4'
 								//onClick={sendEmail}
 							/>
