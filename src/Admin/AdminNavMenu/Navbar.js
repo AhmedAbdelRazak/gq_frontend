@@ -137,7 +137,7 @@ const Navbar = ({ fromPage, pageScrolled }) => {
 										padding: "2.5px",
 										position: "fixed",
 										marginLeft: "9px",
-										top: "10px",
+										top: "14px",
 										borderRadius: "50%",
 										// display: "inherit",
 										// background: "#00ff00",
@@ -189,12 +189,18 @@ export default Navbar;
 
 const NavbarWrapper = styled.div`
 	background: white;
-	margin-bottom: 20px;
+	margin-bottom: 5px;
 	z-index: 1000 !important;
+	padding-top: 5px;
+	padding-bottom: 5px;
+
+	.ant-menu-horizontal {
+		border-bottom: 1px white solid;
+	}
 
 	.rightList > ul {
 		list-style-type: none;
-		background: white;
+		/* background: white; */
 		/* position: fixed; */
 		position: ${(props) => (props.show ? "" : "fixed")};
 		z-index: 1000 !important;

@@ -29,7 +29,7 @@ const MainReports = () => {
 	}, [offset]);
 
 	return (
-		<MainReportsWrapper>
+		<MainReportsWrapper show={collapsed}>
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}
@@ -66,7 +66,10 @@ const MainReportsWrapper = styled.div`
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: 15.5% 84.5%;
+		/* grid-template-columns: 16% 84%; */
+		grid-template-columns: ${(props) =>
+			props.show ? "4.5% 95.5%" : "15.2% 84.8%"};
+
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */

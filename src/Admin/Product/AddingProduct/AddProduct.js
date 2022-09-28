@@ -36,7 +36,7 @@ const isActive = (clickedLink, sureClickedLink) => {
 			// textDecoration: "underline",
 		};
 	} else {
-		return { color: "black", fontWeight: "bold" };
+		return { color: "#a1a5b7", fontWeight: "bold" };
 	}
 };
 
@@ -206,7 +206,7 @@ const AddProduct = () => {
 
 	const CategorySubcategoryEntry = () => {
 		return (
-			<form>
+			<form className='formwrapper'>
 				<div className='form-group  col-md-5 '>
 					<label>Gender</label>
 					<select
@@ -820,8 +820,12 @@ const AddProduct = () => {
 					<Navbar fromPage='AddProduct' pageScrolled={pageScrolled} />
 
 					<h3
-						className='mx-auto text-center mb-5'
-						style={{ color: "#009ef7", fontWeight: "bold" }}>
+						className='mx-auto text-center py-4 col-md-6 mx-auto'
+						style={{
+							color: "#009ef7",
+							fontWeight: "bold",
+							background: "white",
+						}}>
 						{clickedLink === "MainData"
 							? "Add A New Product (Basic Data)"
 							: clickedLink === "AddCategorySubcategory"
@@ -945,7 +949,7 @@ const AddProductWrapper = styled.div`
 	.grid-container {
 		display: grid;
 		grid-template-columns: ${(props) =>
-			props.show ? "8% 92%" : "15.2% 84.8%"};
+			props.show ? "4.5% 95.5%" : "15.2% 84.8%"};
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */
@@ -989,6 +993,12 @@ const AddProductWrapper = styled.div`
 	.rightContentWrapper {
 		border-left: 1px lightgrey solid;
 		min-height: 550px;
+	}
+
+	.formwrapper {
+		background: white !important;
+		padding: 10px 20px;
+		border-radius: 5px;
 	}
 
 	@media (max-width: 1750px) {

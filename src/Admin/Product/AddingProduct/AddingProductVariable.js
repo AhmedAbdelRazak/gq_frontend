@@ -6,6 +6,8 @@ import Resizer from "react-image-file-resizer";
 import { cloudinaryUpload1, getColors, getSizes } from "../../apiAdmin";
 import { isAuthenticated } from "../../../auth";
 import axios from "axios";
+import ImageCard from "./ImageCard";
+import MultipleImageCard from "./MultipleImageCard";
 
 const { Option } = Select;
 
@@ -20,7 +22,7 @@ const isActive2 = (clickedLink, sureClickedLink) => {
 			// textDecoration: "underline",
 		};
 	} else {
-		return { color: "black", fontWeight: "bold" };
+		return { color: "#a1a5b7", fontWeight: "bold" };
 	}
 };
 
@@ -215,18 +217,12 @@ const AddingProductVariable = ({
 	const FileUploadThumbnail = () => {
 		return (
 			<>
-				<label
-					className='btn btn-info btn-raised'
-					style={{ cursor: "pointer", fontSize: "0.95rem" }}>
-					Add Product Thumbnail (Main Image)
-					<input
-						type='file'
-						hidden
-						accept='images/*'
-						onChange={fileUploadAndResizeThumbNail}
-						required
-					/>
-				</label>
+				<ImageCard
+					addThumbnail={addThumbnail}
+					handleImageRemove={handleImageRemove}
+					setAddThumbnail={setAddThumbnail}
+					fileUploadAndResizeThumbNail={fileUploadAndResizeThumbNail}
+				/>
 			</>
 		);
 	};
@@ -286,8 +282,8 @@ const AddingProductVariable = ({
 	}, []);
 
 	return (
-		<div className='mb-5'>
-			<div className='row mx-auto text-center variableLinkWrapper'>
+		<div className='mb-5 '>
+			<div className='row mx-auto text-center variableLinkWrapper '>
 				<div
 					className='col-3 variableLinksItem '
 					onClick={() => setClickedVariableLink("SizesColorsImages")}
@@ -320,7 +316,7 @@ const AddingProductVariable = ({
 				) : null}
 			</div>
 			<hr />
-			<div className='form-group mt-4'>
+			<div className='form-group mt-4 '>
 				<label
 					className='text-muted'
 					style={{ fontWeight: "bold", fontSize: "13px" }}>
@@ -355,9 +351,9 @@ const AddingProductVariable = ({
 				</div>
 			) : null}
 
-			<form>
+			<form className=''>
 				{clickedVariableLink === "SizesColorsImages" ? (
-					<div className='form-group   col-md-8'>
+					<div className='form-group formwrapper   col-md-8'>
 						<label>Product Available Sizes</label>
 						<Select
 							mode='multiple'
@@ -430,151 +426,23 @@ const AddingProductVariable = ({
 				{clickedVariableLink === "SizesColorsImages" ? (
 					<div className='mt-5'>
 						{variablesSubmit ? (
-							<div className='m-3 col-4'>
-								<div className='col-10'>
-									{addThumbnail &&
-										addThumbnail.images &&
-										addThumbnail.images.map((image) => {
-											return (
-												<div className='m-3 col-6 '>
-													<button
-														type='button'
-														className='close'
-														onClick={() => {
-															handleImageRemove(image.public_id);
-															setAddThumbnail([]);
-														}}
-														style={{
-															color: "white",
-															background: "black",
-															fontSize: "20px",
-														}}
-														aria-label='Close'>
-														<span aria-hidden='true'>&times;</span>
-													</button>
-													<img
-														src={image.url}
-														alt='Img Not Found'
-														style={{
-															width: "90px",
-															height: "90px",
-															boxShadow: "1px 1px 1px 1px rgba(0,0,0,0.2)",
-														}}
-														key={image.public_id}
-													/>
-												</div>
-											);
-										})}
-								</div>
-								{FileUploadThumbnail()}
-							</div>
+							<div className='m-3 col-4'>{FileUploadThumbnail()}</div>
 						) : null}
 						<div className='row'>
 							{chosenColors &&
 								variablesSubmit &&
 								chosenColors.map((c, i) => {
 									return (
-										<div key={i} className='mx-auto col-md-3 text-center mt-4'>
-											{productAttributesFinal[i] &&
-											productAttributesFinal[i].productImages &&
-											productAttributesFinal[i].productImages.length > 0 ? (
-												<>
-													{productAttributesFinal[i].productImages.map(
-														(imag, iiii) => {
-															return (
-																<React.Fragment key={iiii}>
-																	<img
-																		alt='nothing'
-																		width='30%'
-																		src={imag.url}
-																	/>
-																	<button
-																		type='button'
-																		onClick={() => {
-																			handleImageRemove(imag.public_id);
-
-																			var array = productAttributesFinal[
-																				i
-																			].productImages.filter(function (s) {
-																				return s !== imag;
-																			});
-
-																			const index =
-																				productAttributesFinal.findIndex(
-																					(object) => {
-																						return (
-																							object.PK ===
-																							productAttributesFinal[i].PK
-																						);
-																					},
-																				);
-
-																			if (index !== -1) {
-																				const newArr =
-																					productAttributesFinal.map((obj) => {
-																						if (
-																							obj.PK ===
-																							productAttributesFinal[i].PK
-																						) {
-																							return {
-																								...obj,
-																								productImages: array,
-																							};
-																						}
-
-																						return obj;
-																					});
-
-																				setProductAttributesFinal(newArr);
-																			}
-																		}}
-																		style={{
-																			transform: "translate(-100%, -100%)",
-																			color: "white",
-																			background: "black",
-																			fontSize: "15px",
-																			padding: "0px",
-																			borderRadius: "50%",
-																		}}
-																		aria-label='Close'>
-																		<span aria-hidden='true'>&times;</span>
-																	</button>
-																</React.Fragment>
-															);
-														},
-													)}
-												</>
-											) : null}
-											<br />
-											<br />
-											<label
-												className='btn btn-raised'
-												style={{
-													cursor: "pointer",
-													fontSize: "0.95rem",
-													backgroundColor: c,
-													color: "white",
-													boxShadow: "2px 2px 2px 3px rgba(0,0,0,0.1)",
-												}}>
-												Add Product Images{" "}
-												<span className='text-capitalize'>
-													{" "}
-													(
-													{allColors &&
-														allColors[0] &&
-														allColors[allColors.map((i) => i.hexa).indexOf(c)]
-															.color}
-													)
-												</span>
-												<input
-													type='file'
-													hidden
-													multiple
-													accept='images/*'
-													onChange={(e) => ColorsImageUpload(e, c)}
-													required
-												/>
-											</label>
+										<div key={i} className='mx-auto col-md-6 text-center mt-4'>
+											<MultipleImageCard
+												productAttributesFinal={productAttributesFinal}
+												handleImageRemove={handleImageRemove}
+												allColors={allColors}
+												ColorsImageUpload={ColorsImageUpload}
+												setProductAttributesFinal={setProductAttributesFinal}
+												c={c}
+												i={i}
+											/>
 										</div>
 									);
 								})}

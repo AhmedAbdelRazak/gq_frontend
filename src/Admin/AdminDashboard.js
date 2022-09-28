@@ -13,7 +13,6 @@ import AdminMenu from "./AdminMenu/AdminMenu";
 import Navbar from "./AdminNavMenu/Navbar";
 import Chart from "react-apexcharts";
 import CountUp from "react-countup";
-
 import { getProducts, listOrders } from "./apiAdmin";
 import { isAuthenticated } from "../auth";
 import { Link } from "react-router-dom";
@@ -284,11 +283,22 @@ const AdminDashboard = () => {
 					new Date(i.createdAt).toLocaleDateString(),
 				),
 			},
+
+			yaxis: {
+				tickAmount: 5,
+				labels: {
+					formatter: function (val) {
+						return val.toFixed(0);
+					},
+				},
+			},
 		},
 		series: [
 			{
 				name: "Total Paid Amount",
-				data: OrdersDates_TotalAmount.map((i) => i.totalAmountAfterDiscount),
+				data: OrdersDates_TotalAmount.map((i) =>
+					i.totalAmountAfterDiscount.toFixed(2),
+				),
 			},
 		],
 	};
@@ -945,7 +955,8 @@ const AdminDashboardWrapper = styled.div`
 	.grid-container {
 		display: grid;
 		/* grid-template-columns: 16% 84%; */
-		grid-template-columns: ${(props) => (props.show ? "8% 92%" : "16% 84%")};
+		grid-template-columns: ${(props) =>
+			props.show ? "4.5% 95.5%" : "15.2% 84.8%"};
 
 		margin: auto;
 		/* border: 1px solid red; */

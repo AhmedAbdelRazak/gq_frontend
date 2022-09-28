@@ -15,6 +15,7 @@ import Navbar from "../AdminNavMenu/Navbar";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import DarkBG from "../AdminMenu/DarkBG";
+import ImageCard from "./ImageCard";
 
 const AddCategory = () => {
 	const [categoryName, setCategoryName] = useState("");
@@ -156,18 +157,12 @@ const AddCategory = () => {
 	const FileUploadThumbnail = () => {
 		return (
 			<>
-				<label
-					className='btn btn-info btn-raised'
-					style={{ cursor: "pointer", fontSize: "0.95rem" }}>
-					Add a Category Thumbnail
-					<input
-						type='file'
-						hidden
-						accept='images/*'
-						onChange={fileUploadAndResizeThumbNail}
-						required
-					/>
-				</label>
+				<ImageCard
+					addThumbnail={addThumbnail}
+					handleImageRemove={handleImageRemove}
+					setAddThumbnail={setAddThumbnail}
+					fileUploadAndResizeThumbNail={fileUploadAndResizeThumbNail}
+				/>
 			</>
 		);
 	};
@@ -211,7 +206,7 @@ const AddCategory = () => {
 			<div className='form-group'>
 				<label
 					className='text-muted'
-					style={{ fontWeight: "bold", fontSize: "20px" }}>
+					style={{ fontWeight: "bold", fontSize: "15px" }}>
 					Category Name
 				</label>
 				<input
@@ -226,7 +221,7 @@ const AddCategory = () => {
 			<div className='form-group'>
 				<label
 					className='text-muted'
-					style={{ fontWeight: "bold", fontSize: "20px" }}>
+					style={{ fontWeight: "bold", fontSize: "15px" }}>
 					اسم الفئة{" "}
 				</label>
 				<input
@@ -291,45 +286,15 @@ const AddCategory = () => {
 							className='mt-1 mb-3 text-center'>
 							Add A New Category
 						</h3>
-						<div className='m-3 col-4'>
-							<div className='col-12'>
-								{addThumbnail &&
-									addThumbnail.images &&
-									addThumbnail.images.map((image) => {
-										return (
-											<div className='m-3 col-6 '>
-												<button
-													type='button'
-													className='close'
-													onClick={() => {
-														handleImageRemove(image.public_id);
-														setAddThumbnail([]);
-													}}
-													style={{
-														color: "white",
-														background: "black",
-														fontSize: "20px",
-													}}
-													aria-label='Close'>
-													<span aria-hidden='true'>&times;</span>
-												</button>
-												<img
-													src={image.url}
-													alt='Img Not Found'
-													style={{
-														width: "90px",
-														height: "90px",
-														boxShadow: "1px 1px 1px 1px rgba(0,0,0,0.2)",
-													}}
-													key={image.public_id}
-												/>
-											</div>
-										);
-									})}
+						<div className='row'>
+							<div className='col-md-4 mx-auto'>
+								<div className=''>{FileUploadThumbnail()}</div>
 							</div>
-							{FileUploadThumbnail()}
+
+							<div className='col-md-8 mx-auto my-auto'>
+								{newCategoryForm()}
+							</div>
 						</div>
-						{newCategoryForm()}
 					</div>
 				</div>
 			</div>
@@ -346,19 +311,19 @@ const AddCategoryWrapper = styled.div`
 
 	.grid-container {
 		display: grid;
-		/* grid-template-columns: 15.2% 84.8%; */
 		grid-template-columns: ${(props) =>
-			props.show ? "8% 92%" : "15.2% 84.8%"};
+			props.show ? "4.5% 95.5%" : "15.2% 84.8%"};
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */
 	}
 
 	.container {
-		margin-top: 100px;
+		margin-top: 70px;
 		border: 2px solid lightgrey;
 		padding: 20px;
 		border-radius: 20px;
+		background: white;
 	}
 
 	@media (max-width: 1750px) {

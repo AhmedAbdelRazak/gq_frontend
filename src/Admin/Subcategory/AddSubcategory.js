@@ -19,6 +19,8 @@ import AdminMenu from "../AdminMenu/AdminMenu";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import DarkBG from "../AdminMenu/DarkBG";
+import Navbar from "../AdminNavMenu/Navbar";
+import ImageCard from "./ImageCard";
 
 const AddSubcategory = () => {
 	const [SubcategoryName, setSubCategoryName] = useState("");
@@ -37,6 +39,8 @@ const AddSubcategory = () => {
 	const [addThumbnail, setAddThumbnail] = useState([]);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
+	const [pageScrolled, setPageScrolled] = useState(false);
+	const [offset, setOffset] = useState(0);
 
 	// destructure user and token from localstorage
 	const { user, token } = isAuthenticated();
@@ -186,18 +190,12 @@ const AddSubcategory = () => {
 	const FileUploadThumbnail = () => {
 		return (
 			<>
-				<label
-					className='btn btn-info btn-raised'
-					style={{ cursor: "pointer", fontSize: "0.95rem" }}>
-					Add a Subcategory Thumbnail
-					<input
-						type='file'
-						hidden
-						accept='images/*'
-						onChange={fileUploadAndResizeThumbNail}
-						required
-					/>
-				</label>
+				<ImageCard
+					addThumbnail={addThumbnail}
+					handleImageRemove={handleImageRemove}
+					setAddThumbnail={setAddThumbnail}
+					fileUploadAndResizeThumbNail={fileUploadAndResizeThumbNail}
+				/>
 			</>
 		);
 	};
@@ -292,13 +290,28 @@ const AddSubcategory = () => {
 		Aos.init({ duration: 1500 });
 	}, []);
 
+	useEffect(() => {
+		const onScroll = () => setOffset(window.pageYOffset);
+		// clean up code
+		window.removeEventListener("scroll", onScroll);
+		window.addEventListener("scroll", onScroll, { passive: true });
+		if (window.pageYOffset > 0) {
+			setPageScrolled(true);
+		} else {
+			setPageScrolled(false);
+		}
+		return () => window.removeEventListener("scroll", onScroll);
+	}, [offset]);
+
 	return (
-		<AddSubcategoryWrapper>
+		<AddSubcategoryWrapper show={AdminMenuStatus}>
+			<ToastContainer />
+
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}
-			<div className='row'>
-				<div className='col-3'>
+			<div className='grid-container'>
+				<div className=''>
 					<AdminMenu
 						fromPage='AddSubcategory'
 						AdminMenuStatus={AdminMenuStatus}
@@ -307,54 +320,24 @@ const AddSubcategory = () => {
 						setCollapsed={setCollapsed}
 					/>
 				</div>
+				<div className=''>
+					<Navbar fromPage='AddSubcategory' pageScrolled={pageScrolled} />
 
-				<div className='col-8'>
 					<div className='container' data-aos='fade-down'>
 						<h3
 							style={{ color: "#009ef7", fontWeight: "bold" }}
 							className='mt-1 mb-3 text-center'>
-							Add Subcategory
+							Add A New Subcategory
 						</h3>
-						<ToastContainer />
-						<div className='m-3 col-4'>
-							<div className='col-12'>
-								{addThumbnail &&
-									addThumbnail.images &&
-									addThumbnail.images.map((image) => {
-										return (
-											<div className='m-3 col-6 '>
-												<button
-													type='button'
-													className='close'
-													onClick={() => {
-														handleImageRemove(image.public_id);
-														setAddThumbnail([]);
-													}}
-													style={{
-														color: "white",
-														background: "black",
-														fontSize: "20px",
-													}}
-													aria-label='Close'>
-													<span aria-hidden='true'>&times;</span>
-												</button>
-												<img
-													src={image.url}
-													alt='Img Not Found'
-													style={{
-														width: "90px",
-														height: "90px",
-														boxShadow: "1px 1px 1px 1px rgba(0,0,0,0.2)",
-													}}
-													key={image.public_id}
-												/>
-											</div>
-										);
-									})}
+						<div className='row'>
+							<div className='col-md-4 mx-auto'>
+								<div className=''>{FileUploadThumbnail()}</div>
 							</div>
-							{FileUploadThumbnail()}
+
+							<div className='col-md-8 mx-auto my-auto'>
+								{newSubcategoryForm()}
+							</div>
 						</div>
-						{newSubcategoryForm()}
 					</div>
 				</div>
 			</div>
@@ -369,10 +352,20 @@ const AddSubcategoryWrapper = styled.div`
 	overflow-x: hidden;
 	/* background: #ededed; */
 
+	.grid-container {
+		display: grid;
+		grid-template-columns: ${(props) =>
+			props.show ? "4.5% 95.5%" : "15.2% 84.8%"};
+		margin: auto;
+		/* border: 1px solid red; */
+		/* grid-auto-rows: minmax(60px, auto); */
+	}
+
 	.container {
-		margin-top: 100px;
+		margin-top: 70px;
 		border: 2px solid lightgrey;
 		padding: 20px;
 		border-radius: 20px;
+		background: white;
 	}
 `;

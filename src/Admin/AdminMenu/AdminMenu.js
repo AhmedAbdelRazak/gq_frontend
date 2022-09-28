@@ -361,7 +361,7 @@ export default AdminMenu;
 const AdminMenuWrapper = styled.div`
 	margin-left: 3px;
 	margin-bottom: 15px;
-	background: ${(props) => (props.show ? "" : "")};
+	background: ${(props) => (props.show ? "" : "white")};
 	top: 0px !important;
 	/* position: relative; */
 	z-index: 11000;
@@ -377,6 +377,9 @@ const AdminMenuWrapper = styled.div`
 
 	.ant-menu.ant-menu-inline-collapsed {
 		min-height: 1000px;
+	}
+
+	button {
 	}
 
 	.ant-menu.ant-menu-dark,

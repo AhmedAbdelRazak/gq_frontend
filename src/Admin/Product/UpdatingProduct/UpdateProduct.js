@@ -8,6 +8,7 @@ import { getProducts } from "../../apiAdmin";
 import CountUp from "react-countup";
 import AttributesModal from "./AttributesModal";
 import DarkBG from "../../AdminMenu/DarkBG";
+import Navbar from "../../AdminNavMenu/Navbar";
 
 const UpdateProduct = () => {
 	const [allProducts, setAllProducts] = useState([]);
@@ -16,6 +17,8 @@ const UpdateProduct = () => {
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [q, setQ] = useState("");
 	const [collapsed, setCollapsed] = useState(false);
+	const [pageScrolled, setPageScrolled] = useState(false);
+	const [offset, setOffset] = useState(0);
 
 	const gettingAllProducts = () => {
 		getProducts().then((data) => {
@@ -123,6 +126,19 @@ const UpdateProduct = () => {
 
 		return modifiedArray;
 	};
+
+	useEffect(() => {
+		const onScroll = () => setOffset(window.pageYOffset);
+		// clean up code
+		window.removeEventListener("scroll", onScroll);
+		window.addEventListener("scroll", onScroll, { passive: true });
+		if (window.pageYOffset > 0) {
+			setPageScrolled(true);
+		} else {
+			setPageScrolled(false);
+		}
+		return () => window.removeEventListener("scroll", onScroll);
+	}, [offset]);
 
 	const dataTable = () => {
 		return (
@@ -262,92 +278,95 @@ const UpdateProduct = () => {
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu
-						fromPage='UpdateProduct'
+						fromPage='AddProduct'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
 						collapsed={collapsed}
 						setCollapsed={setCollapsed}
 					/>
 				</div>
+				<div className='mainContent'>
+					<Navbar fromPage='AddProduct' pageScrolled={pageScrolled} />
 
-				<div className=' tableWrapper container-fluid'>
-					<div className='row'>
-						<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-							<div className='card' style={{ background: "#f1416c" }}>
-								<div className='card-body'>
-									<h5 style={{ fontWeight: "bolder", color: "white" }}>
-										Overall Products Count
-									</h5>
-									<CountUp
-										style={{ color: "white" }}
-										duration='3'
-										delay={1}
-										end={allProducts.length}
-										separator=','
-									/>
-									<span
-										style={{
-											color: "white",
-											marginLeft: "5px",
-											fontSize: "1.2rem",
-										}}>
-										Products
-									</span>
+					<div className=' tableWrapper container-fluid'>
+						<div className='row'>
+							<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+								<div className='card' style={{ background: "#f1416c" }}>
+									<div className='card-body'>
+										<h5 style={{ fontWeight: "bolder", color: "white" }}>
+											Overall Products Count
+										</h5>
+										<CountUp
+											style={{ color: "white" }}
+											duration='3'
+											delay={1}
+											end={allProducts.length}
+											separator=','
+										/>
+										<span
+											style={{
+												color: "white",
+												marginLeft: "5px",
+												fontSize: "1.2rem",
+											}}>
+											Products
+										</span>
+									</div>
+								</div>
+							</div>
+
+							<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+								<div className='card' style={{ background: "#009ef7" }}>
+									<div className='card-body'>
+										<h5 style={{ fontWeight: "bolder", color: "white" }}>
+											Overall Inventory Level
+										</h5>
+										<CountUp
+											style={{ color: "white" }}
+											duration='3'
+											delay={1}
+											end={overallStockLevel()}
+											separator=','
+										/>
+										<span
+											style={{
+												color: "white",
+												marginLeft: "5px",
+												fontSize: "1.2rem",
+											}}>
+											Items
+										</span>
+									</div>
+								</div>
+							</div>
+
+							<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+								<div className='card' style={{ background: "#50cd89" }}>
+									<div className='card-body'>
+										<h5 style={{ fontWeight: "bolder", color: "white" }}>
+											Stock Worth (L.E.)
+										</h5>
+										<CountUp
+											style={{ color: "white" }}
+											duration='3'
+											delay={1}
+											end={overallStockWorth()}
+											separator=','
+										/>
+										<span
+											style={{
+												color: "white",
+												marginLeft: "5px",
+												fontSize: "1.2rem",
+											}}>
+											EGY Pounds
+										</span>
+									</div>
 								</div>
 							</div>
 						</div>
-
-						<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-							<div className='card' style={{ background: "#009ef7" }}>
-								<div className='card-body'>
-									<h5 style={{ fontWeight: "bolder", color: "white" }}>
-										Overall Inventory Level
-									</h5>
-									<CountUp
-										style={{ color: "white" }}
-										duration='3'
-										delay={1}
-										end={overallStockLevel()}
-										separator=','
-									/>
-									<span
-										style={{
-											color: "white",
-											marginLeft: "5px",
-											fontSize: "1.2rem",
-										}}>
-										Items
-									</span>
-								</div>
-							</div>
-						</div>
-
-						<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-							<div className='card' style={{ background: "#50cd89" }}>
-								<div className='card-body'>
-									<h5 style={{ fontWeight: "bolder", color: "white" }}>
-										Stock Worth (L.E.)
-									</h5>
-									<CountUp
-										style={{ color: "white" }}
-										duration='3'
-										delay={1}
-										end={overallStockWorth()}
-										separator=','
-									/>
-									<span
-										style={{
-											color: "white",
-											marginLeft: "5px",
-											fontSize: "1.2rem",
-										}}>
-										EGY Pounds
-									</span>
-								</div>
-							</div>
-						</div>
+						{dataTable()}
 					</div>
-					{dataTable()}
 				</div>
 			</div>
 		</UpdateProductWrapper>
@@ -361,9 +380,14 @@ const UpdateProductWrapper = styled.div`
 	/* overflow-x: hidden; */
 	/* background: #ededed; */
 
+	.tableData {
+		background: white;
+		padding: 10px;
+	}
 	.grid-container {
 		display: grid;
-		grid-template-columns: ${(props) => (props.show ? "8% 92%" : "20% 80%")};
+		grid-template-columns: ${(props) =>
+			props.show ? "4.5% 95.5%" : "15.2% 84.8%"};
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */
@@ -389,7 +413,6 @@ const UpdateProductWrapper = styled.div`
 	tr:hover {
 		background: #009ef7 !important;
 		color: white !important;
-		font-weight: bolder !important;
 	}
 
 	@media (max-width: 1550px) {

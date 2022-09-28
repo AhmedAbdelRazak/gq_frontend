@@ -70,7 +70,7 @@ const BasicDataForm = ({
 	};
 
 	return (
-		<form>
+		<form className='formwrapper'>
 			<div className='row'>
 				<div className='col-md-4 mx-auto'>
 					<div className='form-group'>
@@ -230,36 +230,42 @@ const BasicDataForm = ({
 					</div>
 				</div>
 			</div>
+			<div className='row'>
+				<div className='col-md-6 mx-auto'>
+					<div className='form-group'>
+						<label
+							className='text-muted'
+							style={{ fontWeight: "bold", fontSize: "13px" }}>
+							Add Description (Required)
+						</label>
+						<textarea
+							rows='11'
+							onChange={(e) => setDescription(e.target.value)}
+							className='form-control'
+							value={description}
+							placeholder='Required*  write a little bit about the product'
+							required
+						/>
+					</div>
+				</div>
 
-			<div className='form-group'>
-				<label
-					className='text-muted'
-					style={{ fontWeight: "bold", fontSize: "13px" }}>
-					Add Description (Required)
-				</label>
-				<textarea
-					rows='7'
-					onChange={(e) => setDescription(e.target.value)}
-					className='form-control'
-					value={description}
-					placeholder='Required*  write a little bit about the product'
-					required
-				/>
-			</div>
-			<div className='form-group'>
-				<label
-					className='text-muted'
-					style={{ fontWeight: "bold", fontSize: "13px" }}>
-					Add Description (Arabic)
-				</label>
-				<textarea
-					rows='7'
-					onChange={(e) => setDescription_Arabic(e.target.value)}
-					className='form-control'
-					value={description_Arabic}
-					placeholder='Required*  write a little bit about the product in Arabic'
-					required
-				/>
+				<div className='col-md-6 mx-auto'>
+					<div className='form-group'>
+						<label
+							className='text-muted'
+							style={{ fontWeight: "bold", fontSize: "13px" }}>
+							Add Description (Arabic)
+						</label>
+						<textarea
+							rows='11'
+							onChange={(e) => setDescription_Arabic(e.target.value)}
+							className='form-control'
+							value={description_Arabic}
+							placeholder='Required*  write a little bit about the product in Arabic'
+							required
+						/>
+					</div>
+				</div>
 			</div>
 
 			<div>

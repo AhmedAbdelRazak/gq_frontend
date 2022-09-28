@@ -32,7 +32,7 @@ const isActive = (clickedLink, sureClickedLink) => {
 			// textDecoration: "underline",
 		};
 	} else {
-		return { color: "black", fontWeight: "bold" };
+		return { color: "#a1a5b7", fontWeight: "bold" };
 	}
 };
 
@@ -161,7 +161,11 @@ const CreateNewOrder = () => {
 				</div>
 				<table
 					className='table table-bordered table-md-responsive table-hover text-center mx-auto'
-					style={{ fontSize: "0.75rem", overflowX: "auto" }}>
+					style={{
+						fontSize: "0.75rem",
+						overflowX: "auto",
+						background: "white",
+					}}>
 					<thead className='thead-light'>
 						<tr
 							style={{
@@ -479,7 +483,14 @@ const CreateNewOrder = () => {
 
 	const sizesAndColorsOptions = () => {
 		return (
-			<>
+			<div
+				className='ml-3'
+				style={{
+					background: "white",
+					padding: "20px 5px",
+					borderRadius: "10px",
+					minHeight: "250px",
+				}}>
 				{productNameWithAttributes ? (
 					<React.Fragment>
 						{productNameWithAttributes.map((p, i) => {
@@ -555,13 +566,19 @@ const CreateNewOrder = () => {
 						})}
 					</React.Fragment>
 				) : null}
-			</>
+			</div>
 		);
 	};
 
 	const addingOrderQuantity = () => {
 		return (
-			<>
+			<div
+				className='ml-3'
+				style={{
+					background: "white",
+					padding: "20px 15px",
+					borderRadius: "10px",
+				}}>
 				<EditPrice
 					setChosenProductQty={setChosenProductQty}
 					chosenProductQty={chosenProductQty}
@@ -587,7 +604,7 @@ const CreateNewOrder = () => {
 										<div key={{ ii }} className='my-3 text-capitalize'>
 											<label
 												className='text-muted'
-												style={{ fontWeight: "bold", fontSize: "15px" }}>
+												style={{ fontWeight: "bold", fontSize: "14px" }}>
 												{pp.productName} | {pp.SubSKU} | Available Stock:{" "}
 												{AvailableStock.quantity} Units |<br />{" "}
 												<div
@@ -681,7 +698,7 @@ const CreateNewOrder = () => {
 							</React.Fragment>
 						);
 					})}
-			</>
+			</div>
 		);
 	};
 
@@ -759,7 +776,13 @@ const CreateNewOrder = () => {
 
 	const customerDetailsForm = () => {
 		return (
-			<React.Fragment>
+			<div
+				className='ml-3'
+				style={{
+					background: "white",
+					padding: "20px 15px",
+					borderRadius: "10px",
+				}}>
 				<h5 className='mb-4'>Customer Details</h5>
 				<div className='row'>
 					<div className='form-group col-md-6 '>
@@ -904,7 +927,7 @@ const CreateNewOrder = () => {
 						) : null}
 					</div>
 				)}
-			</React.Fragment>
+			</div>
 		);
 	};
 
@@ -1076,7 +1099,12 @@ const CreateNewOrder = () => {
 
 	const ReviewYourOrder = () => {
 		return (
-			<React.Fragment>
+			<div
+				style={{
+					background: "white",
+					padding: "20px 15px",
+					borderRadius: "10px",
+				}}>
 				<div style={{ fontSize: "1.25rem", fontWeight: "bolder" }}>
 					Customer Details
 				</div>
@@ -1117,57 +1145,84 @@ const CreateNewOrder = () => {
 				<div style={{ fontSize: "1.25rem", fontWeight: "bolder" }}>
 					Shipping Details:
 				</div>
-				<div className='mt-3'>
-					Carrier Name:{" "}
-					<strong style={{ color: "darkblue" }}>
-						{chosenShippingOption &&
-							chosenShippingOption[0] &&
-							chosenShippingOption[0].carrierName}
-					</strong>
-				</div>
-				<div className='mt-1'>
-					Customer Address:{" "}
-					<strong style={{ color: "darkblue" }}>
-						{customerDetails.address}
-					</strong>
-				</div>
-				<div className='mt-1'>
-					Ship To Governorate:{" "}
-					<strong style={{ color: "darkblue" }}>{customerDetails.state}</strong>
-				</div>
-				<div className='mt-1'>
-					Ship To City:{" "}
-					<strong style={{ color: "darkblue" }}>
-						{customerDetails.cityName}
-					</strong>
-				</div>
-				<div className='mt-1'>
-					Ship To City Code:{" "}
-					<strong style={{ color: "darkblue" }}>{customerDetails.city}</strong>
-				</div>
-				<div className='mt-1'>
-					Shipping Price:{" "}
-					<strong style={{ color: "darkblue" }}>
-						{chosenShippingOption.length > 0 &&
-							customerDetails.carrierName &&
-							chosenShippingOption
-								.map((i) => i.chosenShippingData)[0]
-								.filter((ii) => ii.governorate === customerDetails.state)[0]
-								.shippingPrice_Client}{" "}
-						L.E.
-					</strong>
-				</div>
-				<div className='mt-1'>
-					Estimated Time For Arrival:{" "}
-					<strong style={{ color: "darkblue" }}>
-						{chosenShippingOption.length > 0 &&
-							customerDetails.carrierName &&
-							chosenShippingOption
-								.map((i) => i.chosenShippingData)[0]
-								.filter((ii) => ii.governorate === customerDetails.state)[0]
-								.estimatedTimeForArrival}{" "}
-						Day
-					</strong>
+
+				<div className='row mt-3'>
+					<div className='col-md-5 mx-auto'>
+						<div className=''>
+							Carrier Name:{" "}
+							<strong style={{ color: "darkblue" }}>
+								{chosenShippingOption &&
+									chosenShippingOption[0] &&
+									chosenShippingOption[0].carrierName}
+							</strong>
+						</div>
+					</div>
+
+					<div className='col-md-5 mx-auto'>
+						<div className=''>
+							Customer Address:{" "}
+							<strong style={{ color: "darkblue" }}>
+								{customerDetails.address}
+							</strong>
+						</div>
+					</div>
+
+					<div className='col-md-5 mx-auto'>
+						<div className='mt-1'>
+							Ship To Governorate:{" "}
+							<strong style={{ color: "darkblue" }}>
+								{customerDetails.state}
+							</strong>
+						</div>
+					</div>
+
+					<div className='col-md-5 mx-auto'>
+						<div className='mt-1'>
+							Ship To City:{" "}
+							<strong style={{ color: "darkblue" }}>
+								{customerDetails.cityName}
+							</strong>
+						</div>
+					</div>
+
+					<div className='col-md-5 mx-auto'>
+						<div className='mt-1'>
+							Ship To City Code:{" "}
+							<strong style={{ color: "darkblue" }}>
+								{customerDetails.city}
+							</strong>
+						</div>
+					</div>
+
+					<div className='col-md-5 mx-auto'>
+						<div className='mt-1'>
+							Shipping Price:{" "}
+							<strong style={{ color: "darkblue" }}>
+								{chosenShippingOption.length > 0 &&
+									customerDetails.carrierName &&
+									chosenShippingOption
+										.map((i) => i.chosenShippingData)[0]
+										.filter((ii) => ii.governorate === customerDetails.state)[0]
+										.shippingPrice_Client}{" "}
+								L.E.
+							</strong>
+						</div>
+					</div>
+
+					<div className='col-md-5 mx-auto'>
+						<div className='mt-1'>
+							Estimated Time For Arrival:{" "}
+							<strong style={{ color: "darkblue" }}>
+								{chosenShippingOption.length > 0 &&
+									customerDetails.carrierName &&
+									chosenShippingOption
+										.map((i) => i.chosenShippingData)[0]
+										.filter((ii) => ii.governorate === customerDetails.state)[0]
+										.estimatedTimeForArrival}{" "}
+								Day
+							</strong>
+						</div>
+					</div>
 				</div>
 
 				<div className='col-md-4 mx-auto text-center'>
@@ -1222,7 +1277,18 @@ const CreateNewOrder = () => {
 															color: "darkblue",
 															textTransform: "capitalize",
 														}}>
-														{pp.productName} | {pp.SubSKU} | {pp.SubSKUColor}
+														{pp.productName} | {pp.SubSKU} |{" "}
+														{allColors[
+															allColors
+																.map((i) => i.hexa)
+																.indexOf(pp.SubSKUColor)
+														]
+															? allColors[
+																	allColors
+																		.map((i) => i.hexa)
+																		.indexOf(pp.SubSKUColor)
+															  ].color
+															: pp.SubSKUColor}
 													</strong>
 													<br />
 													Quantity:{" "}
@@ -1345,7 +1411,7 @@ const CreateNewOrder = () => {
 						Create A New Order
 					</button>
 				</div>
-			</React.Fragment>
+			</div>
 		);
 	};
 
