@@ -14,7 +14,7 @@ const ImageCard = ({
 		<ImageCardWrapper>
 			<div className='card card-flush py-4'>
 				<div className=''>
-					<div className=' p-3'>
+					<div className=' p-2'>
 						<h5 style={{ fontWeight: "bold", fontSize: "1.05rem" }}>
 							Thumbnail (Product Main Image)
 						</h5>
@@ -24,7 +24,7 @@ const ImageCard = ({
 					<div
 						className='image-input image-input-empty image-input-outline image-input-placeholder mb-3'
 						data-kt-image-input='true'>
-						<div className='image-input-wrapper w-180px h-180px'></div>
+						<div className='image-input-wrapper'></div>
 						<div className='col-10'>
 							{addThumbnail &&
 								addThumbnail.images &&
@@ -64,7 +64,14 @@ const ImageCard = ({
 							<label
 								className=''
 								style={{ cursor: "pointer", fontSize: "0.95rem" }}>
-								<img src={imageImage} alt='imageUpload' />
+								<img
+									src={imageImage}
+									alt='imageUpload'
+									style={{
+										width: "200px",
+										height: "200px",
+									}}
+								/>
 								<input
 									type='file'
 									hidden
@@ -90,5 +97,6 @@ export default ImageCard;
 const ImageCardWrapper = styled.div`
 	.card {
 		border: 1px white solid !important;
+		max-width: 90%;
 	}
 `;

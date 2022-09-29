@@ -364,7 +364,7 @@ const AdminMenuWrapper = styled.div`
 	background: ${(props) => (props.show ? "" : "white")};
 	top: 0px !important;
 	/* position: relative; */
-	z-index: 11000;
+	/* z-index: 15000; */
 
 	li {
 		/* margin: 20px auto; */
@@ -373,6 +373,7 @@ const AdminMenuWrapper = styled.div`
 	}
 
 	ul {
+		z-index: 15000;
 	}
 
 	.ant-menu.ant-menu-inline-collapsed {

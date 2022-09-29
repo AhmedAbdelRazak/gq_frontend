@@ -6,7 +6,6 @@ import Resizer from "react-image-file-resizer";
 import { cloudinaryUpload1, getColors, getSizes } from "../../apiAdmin";
 import { isAuthenticated } from "../../../auth";
 import axios from "axios";
-import ImageCard from "./ImageCard";
 import MultipleImageCard from "./MultipleImageCard";
 
 const { Option } = Select;
@@ -184,48 +183,31 @@ const AddingProductVariable = ({
 		}
 	};
 
-	const fileUploadAndResizeThumbNail = (e) => {
-		// console.log(e.target.files);
-		let files = e.target.files;
-		let allUploadedFiles = addThumbnail;
-		if (files) {
-			for (let i = 0; i < files.length; i++) {
-				Resizer.imageFileResizer(
-					files[i],
-					720,
-					720,
-					"JPEG",
-					100,
-					0,
-					(uri) => {
-						cloudinaryUpload1(user._id, token, { image: uri })
-							.then((data) => {
-								allUploadedFiles.push(data);
-
-								setAddThumbnail({ ...addThumbnail, images: allUploadedFiles });
-							})
-							.catch((err) => {
-								console.log("CLOUDINARY UPLOAD ERR", err);
-							});
-					},
-					"base64",
-				);
+	const gettingAllColors = () => {
+		getColors(token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllColors(data);
 			}
-		}
+		});
 	};
 
-	const FileUploadThumbnail = () => {
-		return (
-			<>
-				<ImageCard
-					addThumbnail={addThumbnail}
-					handleImageRemove={handleImageRemove}
-					setAddThumbnail={setAddThumbnail}
-					fileUploadAndResizeThumbNail={fileUploadAndResizeThumbNail}
-				/>
-			</>
-		);
+	const gettingAllSizes = () => {
+		getSizes(token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllSizes(data);
+			}
+		});
 	};
+
+	useEffect(() => {
+		gettingAllColors();
+		gettingAllSizes();
+		// eslint-disable-next-line
+	}, []);
 
 	const handleImageRemove = (public_id) => {
 		// console.log("remove image", public_id);
@@ -254,32 +236,6 @@ const AddingProductVariable = ({
 				// }, 1000);
 			});
 	};
-
-	const gettingAllColors = () => {
-		getColors(token).then((data) => {
-			if (data.error) {
-				console.log(data.error);
-			} else {
-				setAllColors(data);
-			}
-		});
-	};
-
-	const gettingAllSizes = () => {
-		getSizes(token).then((data) => {
-			if (data.error) {
-				console.log(data.error);
-			} else {
-				setAllSizes(data);
-			}
-		});
-	};
-
-	useEffect(() => {
-		gettingAllColors();
-		gettingAllSizes();
-		// eslint-disable-next-line
-	}, []);
 
 	return (
 		<div className='mb-5 '>
@@ -425,9 +381,6 @@ const AddingProductVariable = ({
 
 				{clickedVariableLink === "SizesColorsImages" ? (
 					<div className='mt-5'>
-						{variablesSubmit ? (
-							<div className='m-3 col-4'>{FileUploadThumbnail()}</div>
-						) : null}
 						<div className='row'>
 							{chosenColors &&
 								variablesSubmit &&

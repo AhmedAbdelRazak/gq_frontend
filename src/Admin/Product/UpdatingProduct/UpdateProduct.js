@@ -278,7 +278,7 @@ const UpdateProduct = () => {
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu
-						fromPage='AddProduct'
+						fromPage='UpdateProduct'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
 						collapsed={collapsed}
@@ -286,7 +286,7 @@ const UpdateProduct = () => {
 					/>
 				</div>
 				<div className='mainContent'>
-					<Navbar fromPage='AddProduct' pageScrolled={pageScrolled} />
+					<Navbar fromPage='UpdateProduct' pageScrolled={pageScrolled} />
 
 					<div className=' tableWrapper container-fluid'>
 						<div className='row'>
