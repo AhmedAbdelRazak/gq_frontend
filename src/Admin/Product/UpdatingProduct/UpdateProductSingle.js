@@ -23,6 +23,7 @@ import { toast } from "react-toastify";
 import UpdateBasicDataForm from "./UpdateBasicDataForm";
 import UpdatingProductVariable from "./UpdateProductVariable";
 import DarkBG from "../../AdminMenu/DarkBG";
+import ImageCard from "../AddingProduct/ImageCard";
 const { Option } = Select;
 
 const isActive = (clickedLink, sureClickedLink) => {
@@ -31,12 +32,12 @@ const isActive = (clickedLink, sureClickedLink) => {
 			// color: "white !important",
 			background: "#dbeeff",
 			fontWeight: "bold",
-			padding: "10px 2px",
+			padding: "3px 2px",
 			borderRadius: "5px",
 			// textDecoration: "underline",
 		};
 	} else {
-		return { color: "black", fontWeight: "bold" };
+		return { color: "#a1a5b7", fontWeight: "bold" };
 	}
 };
 
@@ -280,9 +281,14 @@ const UpdateProductSingle = ({ match }) => {
 
 	const CategorySubcategoryEntry = () => {
 		return (
-			<form>
-				<div className='form-group  col-md-5 '>
-					<label>Gender</label>
+			<form className='formwrapper ml-5 py-4 mt-4' style={{ maxWidth: "80%" }}>
+				<div className='form-group '>
+					<div className=''>
+						<h5 style={{ fontWeight: "bold", fontSize: "1.05rem" }}>
+							Add Category/ Subcategory
+						</h5>
+					</div>
+					<label className='mt-3'>Gender</label>
 					<select
 						name='gender'
 						className='form-control'
@@ -299,7 +305,7 @@ const UpdateProductSingle = ({ match }) => {
 							))}
 					</select>
 				</div>
-				<div className='form-group  col-md-5 '>
+				<div className='form-group  '>
 					<label>Category</label>
 					<select
 						name='category'
@@ -317,7 +323,7 @@ const UpdateProductSingle = ({ match }) => {
 					</select>
 				</div>
 				{subsOptions && subsOptions.length > 0 && (
-					<div className='form-group   col-md-5'>
+					<div className='form-group  '>
 						<label>Sub Category</label>
 						<Select
 							mode='multiple'
@@ -336,16 +342,6 @@ const UpdateProductSingle = ({ match }) => {
 						</Select>
 					</div>
 				)}
-				<button
-					className='btn btn-outline-primary my-3 ml-3'
-					onClick={() => {
-						setClickedLink(addVariables ? "AddVariables" : "AddPrices");
-						window.scrollTo({ top: 0, behavior: "smooth" });
-					}}>
-					{addVariables
-						? "Next: Add Product Variables (Product Images, Sizes, Colors, etc..)"
-						: "Next: Add Product Prices & Stock"}
-				</button>
 			</form>
 		);
 	};
@@ -848,8 +844,141 @@ const UpdateProductSingle = ({ match }) => {
 		// eslint-disable-next-line
 	}, [variablesSubmit, chosenColors, chosenSizes]);
 
+	const fileUploadAndResizeThumbNail2 = (e) => {
+		// console.log(e.target.files);
+		let files = e.target.files;
+		let allUploadedFiles = addThumbnail;
+		if (files) {
+			for (let i = 0; i < files.length; i++) {
+				Resizer.imageFileResizer(
+					files[i],
+					720,
+					720,
+					"JPEG",
+					100,
+					0,
+					(uri) => {
+						cloudinaryUpload1(user._id, token, { image: uri })
+							.then((data) => {
+								allUploadedFiles.push(data);
+
+								setAddThumbnail({ ...addThumbnail, images: allUploadedFiles });
+							})
+							.catch((err) => {
+								console.log("CLOUDINARY UPLOAD ERR", err);
+							});
+					},
+					"base64",
+				);
+			}
+		}
+	};
+
+	const FileUploadThumbnail2 = () => {
+		return (
+			<>
+				<ImageCard
+					addThumbnail={addThumbnail}
+					handleImageRemove={handleImageRemove2}
+					setAddThumbnail={setAddThumbnail}
+					fileUploadAndResizeThumbNail={fileUploadAndResizeThumbNail2}
+				/>
+			</>
+		);
+	};
+
+	const upperMainMenu = () => {
+		return (
+			<ul className='mainUL'>
+				<div className='row'>
+					<div className='col-3 mx-auto'>
+						<li
+							className='my-2 mainLi'
+							onClick={() => setClickedLink("MainData")}
+							style={isActive("MainData", clickedLink)}>
+							Basic/ Main Data
+						</li>
+					</div>
+
+					{/* <div className='col-3 mx-auto'>
+					<li
+						className='my-2 mainLi'
+						onClick={() => setClickedLink("AddCategorySubcategory")}
+						style={isActive("AddCategorySubcategory", clickedLink)}>
+						Add Category/ Subcategory
+					</li>
+				</div> */}
+
+					<div className='col-3 mx-auto'>
+						{!addVariables ? (
+							<>
+								<li
+									className='my-2 mainLi'
+									onClick={() => setClickedLink("AddPrices")}
+									style={isActive("AddPrices", clickedLink)}>
+									Product Prices And Stock
+								</li>
+							</>
+						) : (
+							<>
+								<li
+									className='my-2 mainLi'
+									onClick={() => setClickedLink("AddVariables")}
+									style={isActive("AddVariables", clickedLink)}>
+									Product Attributes
+								</li>
+							</>
+						)}
+					</div>
+
+					<div className='col-3 mx-auto'>
+						<li
+							className='my-2 mainLi'
+							onClick={() => setClickedLink("ExtraOptions")}
+							style={isActive("ExtraOptions", clickedLink)}>
+							Product Extra Options
+						</li>
+					</div>
+				</div>
+				<div className='col-md-9 mx-auto'>
+					<hr />
+				</div>
+			</ul>
+		);
+	};
+
+	const handleImageRemove2 = (public_id) => {
+		// console.log("remove image", public_id);
+		axios
+			.post(
+				`${process.env.REACT_APP_API_URL}/admin/removeimage/${user._id}`,
+				{ public_id },
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				},
+			)
+			.then((res) => {
+				// eslint-disable-next-line
+				const { images } = addThumbnail;
+				// eslint-disable-next-line
+				let filteredImages = images.filter((item) => {
+					return item.public_id !== public_id;
+				});
+				// setAddThumbnail({ ...addThumbnail, images: filteredImages });
+				setAddThumbnail([]);
+			})
+			.catch((err) => {
+				console.log(err);
+				// setTimeout(function () {
+				// 	window.location.reload(false);
+				// }, 1000);
+			});
+	};
+
 	return (
-		<UpdateProductSingleWrapper>
+		<UpdateProductSingleWrapper show={AdminMenuStatus}>
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}
@@ -863,84 +992,37 @@ const UpdateProductSingle = ({ match }) => {
 						setCollapsed={setCollapsed}
 					/>
 				</div>
+
 				<div className='mainContent'>
-					<h3 className='mx-auto text-center mb-5 text-capitalize'>
-						{clickedLink === "MainData"
-							? `Update Product "${productName}" (Basic Data)`
-							: clickedLink === "AddCategorySubcategory"
-							? `Update Category & Subcategory For Product ${productName}`
-							: clickedLink === "AddPrices"
-							? `Update Prices & Inventory For Product ${productName}`
-							: clickedLink === "ExtraOptions"
-							? "Update Product Features & Status"
-							: "Update Suitable Variables and Photos"}
-					</h3>
-					<div className='row'>
+					<div className='row mt-4'>
 						<div className='col-md-3'>
-							<ul className='mainUL'>
-								<li
-									className='mb-4 mainLi'
-									onClick={() => setClickedLink("MainData")}
-									style={isActive("MainData", clickedLink)}>
-									Add Product (Main Data)
-								</li>
-								<hr />
-								<li
-									className='my-4 mainLi'
-									onClick={() => setClickedLink("AddCategorySubcategory")}
-									style={isActive("AddCategorySubcategory", clickedLink)}>
-									Add Product Category/ Subcategory
-								</li>
-								<hr />
-								{!addVariables ? (
-									<>
-										<li
-											className='my-4 mainLi'
-											onClick={() => setClickedLink("AddPrices")}
-											style={isActive("AddPrices", clickedLink)}>
-											Add Product Prices And Stock
-										</li>
-										<hr />
-									</>
-								) : null}
+							<h3
+								className='ml-5'
+								style={{
+									color: "black",
+									fontWeight: "bold",
+									// background: "white",
+									fontSize: "1.2rem",
+									padding: "4px 2px",
+									maxWidth: "80%",
+								}}>
+								Product Update Form
+							</h3>
+							{addVariables ? (
+								<div className='ml-5 '>{FileUploadThumbnail2()}</div>
+							) : (
+								<div className='ml-5 '>{FileUploadThumbnail()}</div>
+							)}
 
-								{addVariables ? (
-									<>
-										<li
-											className='my-4 mainLi'
-											onClick={() => setClickedLink("AddVariables")}
-											style={isActive("AddVariables", clickedLink)}>
-											Miscellaneous (Product Images, Sizes, Colors, etc..)
-										</li>
-										<hr />
-									</>
-								) : null}
-
-								<li
-									className='my-4 mainLi'
-									onClick={() => setClickedLink("ExtraOptions")}
-									style={isActive("ExtraOptions", clickedLink)}>
-									Add Product Extra Options
-								</li>
-								<hr />
-							</ul>
+							{CategorySubcategoryEntry()}
 						</div>
-
 						{clickedLink === "MainData" ? (
 							<div
 								className='col-md-8 ml-3 rightContentWrapper'
 								// style={{ borderLeft: "darkred 2px solid" }}
 							>
+								{upperMainMenu()}
 								{UpdateBasicDataFormFunction()}
-							</div>
-						) : null}
-
-						{clickedLink === "AddCategorySubcategory" ? (
-							<div
-								className='col-8 ml-3 rightContentWrapper'
-								// style={{ borderLeft: "darkred 2px solid" }}
-							>
-								{CategorySubcategoryEntry()}
 							</div>
 						) : null}
 						{clickedLink === "AddPrices" ? (
@@ -948,24 +1030,28 @@ const UpdateProductSingle = ({ match }) => {
 								className='col-8 ml-3 rightContentWrapper'
 								// style={{ borderLeft: "darkred 2px solid" }}
 							>
+								{upperMainMenu()}
+
 								{AddPricesStockBasic()}
 							</div>
 						) : null}
-
 						{clickedLink === "AddVariables" ? (
 							<div
 								className='col-8 ml-3 rightContentWrapper'
 								// style={{ borderLeft: "darkred 2px solid" }}
 							>
+								{upperMainMenu()}
+
 								{UpdatingProductVariableFunction()}
 							</div>
 						) : null}
-
 						{clickedLink === "ExtraOptions" ? (
 							<div
 								className='col-8 ml-3 rightContentWrapper'
 								// style={{ borderLeft: "darkred 2px solid" }}
 							>
+								{upperMainMenu()}
+
 								{extraFeatures()}
 							</div>
 						) : null}
@@ -985,11 +1071,13 @@ const UpdateProductSingleWrapper = styled.div`
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: 15.5% 84.5%;
+		grid-template-columns: ${(props) =>
+			props.show ? "4.5% 95.5%" : "15.2% 84.8%"};
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */
 	}
+
 	.mainContent {
 		margin-top: 50px;
 	}
@@ -1029,6 +1117,12 @@ const UpdateProductSingleWrapper = styled.div`
 	.rightContentWrapper {
 		border-left: 1px lightgrey solid;
 		min-height: 550px;
+	}
+
+	.formwrapper {
+		background: white !important;
+		padding: 10px 20px;
+		border-radius: 5px;
 	}
 
 	@media (max-width: 1550px) {

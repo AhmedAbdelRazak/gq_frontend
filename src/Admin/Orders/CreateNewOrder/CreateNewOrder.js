@@ -222,10 +222,10 @@ const CreateNewOrder = () => {
 												</td>
 											</Link>
 
-											<td style={{ width: "20%" }}>
+											<td style={{ width: "15%", textAlign: "center" }}>
 												<img
-													width='60%'
-													height='60%'
+													width='40%'
+													height='40%'
 													style={{ marginLeft: "20px" }}
 													src={
 														s.thumbnailImage[0].images[0]

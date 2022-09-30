@@ -9,6 +9,7 @@ const ImageCard = ({
 	handleImageRemove,
 	addThumbnail,
 	fileUploadAndResizeThumbNail,
+	uploadFrom,
 }) => {
 	return (
 		<ImageCardWrapper>
@@ -60,7 +61,7 @@ const ImageCard = ({
 									);
 								})}
 						</div>
-						{!addThumbnail.images ? (
+						{!addThumbnail.images || addThumbnail.images.length <= 0 ? (
 							<label
 								className=''
 								style={{ cursor: "pointer", fontSize: "0.95rem" }}>
@@ -72,13 +73,24 @@ const ImageCard = ({
 										height: "200px",
 									}}
 								/>
-								<input
-									type='file'
-									hidden
-									accept='images/*'
-									onChange={fileUploadAndResizeThumbNail}
-									required
-								/>
+								{uploadFrom === "BasicProduct" ? (
+									<input
+										type='file'
+										multiple
+										hidden
+										accept='images/*'
+										onChange={fileUploadAndResizeThumbNail}
+										required
+									/>
+								) : (
+									<input
+										type='file'
+										hidden
+										accept='images/*'
+										onChange={fileUploadAndResizeThumbNail}
+										required
+									/>
+								)}
 							</label>
 						) : null}
 					</div>

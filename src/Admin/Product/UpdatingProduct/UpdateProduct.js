@@ -236,10 +236,10 @@ const UpdateProduct = () => {
 									</td>
 									<td>{new Date(s.createdAt).toLocaleDateString()}</td>
 									<td>{s.addedBy.name}</td>
-									<td style={{ width: "20%" }}>
+									<td style={{ width: "15%", textAlign: "center" }}>
 										<img
-											width='60%'
-											height='60%'
+											width='30%'
+											height='30%'
 											style={{ marginLeft: "20px" }}
 											src={
 												s.productImage[0].images[0]

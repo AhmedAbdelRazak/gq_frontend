@@ -912,7 +912,8 @@ const AdminDashboard = () => {
 																	{new Date(s.createdAt).toLocaleDateString()}
 																</td>
 																<td>{s.addedBy.name}</td>
-																<td style={{ width: "20%" }}>
+																<td
+																	style={{ width: "15%", textAlign: "center" }}>
 																	<img
 																		width='40%'
 																		height='40%'

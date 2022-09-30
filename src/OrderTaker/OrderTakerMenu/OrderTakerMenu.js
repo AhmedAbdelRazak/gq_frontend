@@ -30,14 +30,8 @@ function getItem(label, key, icon, children, type) {
 
 const items = [
 	getItem("Admin Dashboard", "sub1", <PieChartOutlined />, [
-		getItem(
-			<Link to='/admin/dashboard'>Admin Dashboard</Link>,
-			"/admin/dashboard",
-		),
-		getItem(
-			<Link to='/admin/gq-reports'>GQ Shop Reports</Link>,
-			"/admin/gq-reports",
-		),
+		getItem("Admin Dashboard", "/admin/dashboard"),
+		getItem("GQ Shop Reports", "/admin/gq-reports"),
 	]),
 	// getItem("Option 2", "3", <DesktopOutlined />),
 	// getItem("Option 3", "4", <ContainerOutlined />),
@@ -45,10 +39,7 @@ const items = [
 	getItem("Products Management", "sub4", <ShoppingCartOutlined />, [
 		getItem("Categories Management", "sub3", <AppstoreOutlined />, [
 			getItem("Add Category", "/admin/add-category"),
-			getItem(
-				<Link to='/admin/update-category'>Update Category</Link>,
-				"/admin/update-category",
-			),
+			getItem("Update Category", "/admin/update-category"),
 			getItem("Delete Category", "/admin/delete-category"),
 		]),
 		getItem("Subcategories Management", "sub7", <AppstoreOutlined />, [
@@ -279,10 +270,10 @@ export default AdminMenu;
 const AdminMenuWrapper = styled.div`
 	margin-left: 3px;
 	margin-bottom: 15px;
-	background: ${(props) => (props.show ? "" : "")};
+	background: ${(props) => (props.show ? "" : "white")};
 	top: 0px !important;
-	position: relative;
-	z-index: 11000;
+	/* position: relative; */
+	/* z-index: 15000; */
 
 	li {
 		/* margin: 20px auto; */
@@ -291,10 +282,14 @@ const AdminMenuWrapper = styled.div`
 	}
 
 	ul {
+		z-index: 15000;
 	}
 
 	.ant-menu.ant-menu-inline-collapsed {
 		min-height: 1000px;
+	}
+
+	button {
 	}
 
 	.ant-menu.ant-menu-dark,
@@ -304,10 +299,10 @@ const AdminMenuWrapper = styled.div`
 		background: #1e1e2d !important;
 	}
 
-	.ant-menu.ant-menu-dark,
+	/* .ant-menu.ant-menu-dark,
 	.ant-menu-dark {
-		position: ${(props) => (props.show ? "" : "")};
-	}
+		position: ${(props) => (props.show ? "fixed" : "")};
+	} */
 
 	@media (max-width: 1650px) {
 		ul {

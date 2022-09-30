@@ -17,6 +17,8 @@ import { toast } from "react-toastify";
 import Navbar from "../../OrderTakerNavMenu/Navbar";
 import DarkBG from "../../OrderTakerMenu/DarkBG";
 import AttributesModal from "../../../Admin/Product/UpdatingProduct/AttributesModal";
+import { EditOutlined } from "@ant-design/icons";
+import EditPrice from "../../../Admin/Modals/EditPrice";
 const { Option } = Select;
 
 const isActive = (clickedLink, sureClickedLink) => {
@@ -30,7 +32,7 @@ const isActive = (clickedLink, sureClickedLink) => {
 			// textDecoration: "underline",
 		};
 	} else {
-		return { color: "black", fontWeight: "bold" };
+		return { color: "#a1a5b7", fontWeight: "bold" };
 	}
 };
 
@@ -64,7 +66,10 @@ const CreateNewOrderOrderTaker = () => {
 	});
 
 	const [modalVisible, setModalVisible] = useState(false);
+	const [modalVisible2, setModalVisible2] = useState(false);
 	const [clickedProduct, setClickedProduct] = useState({});
+	const [clickedChosenProductQty, setClickedChosenProductQty] = useState({});
+
 	// eslint-disable-next-line
 	const [allOrderData, setAllOrderData] = useState({});
 
@@ -128,6 +133,7 @@ const CreateNewOrderOrderTaker = () => {
 					setModalVisible={setModalVisible}
 					setCollapsed={setCollapsed}
 				/>
+
 				<div className=' mb-3 form-group mx-3 text-center'>
 					<label
 						className='mt-3 mx-3'
@@ -155,7 +161,11 @@ const CreateNewOrderOrderTaker = () => {
 				</div>
 				<table
 					className='table table-bordered table-md-responsive table-hover text-center mx-auto'
-					style={{ fontSize: "0.75rem", overflowX: "auto" }}>
+					style={{
+						fontSize: "0.75rem",
+						overflowX: "auto",
+						background: "white",
+					}}>
 					<thead className='thead-light'>
 						<tr
 							style={{
@@ -212,10 +222,10 @@ const CreateNewOrderOrderTaker = () => {
 												</td>
 											</Link>
 
-											<td style={{ width: "20%" }}>
+											<td style={{ width: "15%", textAlign: "center" }}>
 												<img
-													width='60%'
-													height='60%'
+													width='40%'
+													height='40%'
 													style={{ marginLeft: "20px" }}
 													src={
 														s.thumbnailImage[0].images[0]
@@ -407,6 +417,33 @@ const CreateNewOrderOrderTaker = () => {
 							.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
 							.priceAfterDiscount,
 
+						SubSKURetailerPrice: addedProductsToCart
+							.filter((s) => s._id === i.productId)[0]
+							.productAttributes.filter((ss) => ss.SubSKU === ii)[0].price,
+
+						SubSKUWholeSalePrice: addedProductsToCart
+							.filter((s) => s._id === i.productId)[0]
+							.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+							? addedProductsToCart
+									.filter((s) => s._id === i.productId)[0]
+									.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+									.WholeSalePrice
+							: 0,
+
+						SubSKUDropshippingPrice: addedProductsToCart
+							.filter((s) => s._id === i.productId)[0]
+							.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+							? addedProductsToCart
+									.filter((s) => s._id === i.productId)[0]
+									.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+									.DropShippingPrice
+							: 0,
+
+						pickedPrice: addedProductsToCart
+							.filter((s) => s._id === i.productId)[0]
+							.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+							.priceAfterDiscount,
+
 						quantity: addedProductsToCart
 							.filter((s) => s._id === i.productId)[0]
 							.productAttributes.filter((ss) => ss.SubSKU === ii)[0].quantity,
@@ -446,7 +483,14 @@ const CreateNewOrderOrderTaker = () => {
 
 	const sizesAndColorsOptions = () => {
 		return (
-			<>
+			<div
+				className='ml-3'
+				style={{
+					background: "white",
+					padding: "20px 5px",
+					borderRadius: "10px",
+					minHeight: "250px",
+				}}>
 				{productNameWithAttributes ? (
 					<React.Fragment>
 						{productNameWithAttributes.map((p, i) => {
@@ -512,7 +556,7 @@ const CreateNewOrderOrderTaker = () => {
 													{" | "}
 													{att.size}
 													{" | "}
-													<strong>Available Stock: {att.quantity}</strong>
+													<strong>Stock Onhand: {att.quantity}</strong>
 												</Option>
 											);
 										})}
@@ -522,13 +566,27 @@ const CreateNewOrderOrderTaker = () => {
 						})}
 					</React.Fragment>
 				) : null}
-			</>
+			</div>
 		);
 	};
 
 	const addingOrderQuantity = () => {
 		return (
-			<>
+			<div
+				className='ml-3'
+				style={{
+					background: "white",
+					padding: "20px 15px",
+					borderRadius: "10px",
+				}}>
+				<EditPrice
+					setChosenProductQty={setChosenProductQty}
+					chosenProductQty={chosenProductQty}
+					clickedChosenProductQty={clickedChosenProductQty}
+					modalVisible2={modalVisible2}
+					setModalVisible2={setModalVisible2}
+					setCollapsed={setCollapsed}
+				/>
 				{chosenProductQty &&
 					chosenProductVariables &&
 					chosenProductQty.map((p, i) => {
@@ -546,12 +604,24 @@ const CreateNewOrderOrderTaker = () => {
 										<div key={{ ii }} className='my-3 text-capitalize'>
 											<label
 												className='text-muted'
-												style={{ fontWeight: "bold", fontSize: "15px" }}>
+												style={{ fontWeight: "bold", fontSize: "14px" }}>
 												{pp.productName} | {pp.SubSKU} | Available Stock:{" "}
-												{AvailableStock.quantity} Units | Price:{" "}
-												{pp.SubSKUPriceAfterDiscount} | Total Amount:{" "}
-												{Number(pp.OrderedQty) *
-													Number(pp.SubSKUPriceAfterDiscount)}
+												{AvailableStock.quantity} Units |<br />{" "}
+												<div
+													onClick={() => {
+														setModalVisible2(true);
+														setClickedChosenProductQty(pp);
+													}}
+													className='my-2'
+													style={{
+														color: "black",
+														fontWeight: "bolder",
+														cursor: "pointer",
+													}}>
+													Price: {pp.pickedPrice} L.E. <EditOutlined />
+												</div>{" "}
+												Total Amount:{" "}
+												{Number(pp.OrderedQty) * Number(pp.pickedPrice)} L.E.
 												<br />
 												<input
 													value={pp.OrderedQty}
@@ -600,8 +670,8 @@ const CreateNewOrderOrderTaker = () => {
 											width: "100%",
 										}}>
 										{p.productName} | {p.productSKU} | Available Stock:{" "}
-										{p.quantity} | Price: {p.priceAfterDiscount} | Total Amount:{" "}
-										{Number(p.orderedQuantity) * Number(p.priceAfterDiscount)}
+										{p.quantity} | Price: {p.pickedPrice} | Total Amount:{" "}
+										{Number(p.orderedQuantity) * Number(p.pickedPrice)}
 										<br />
 										<input
 											value={p.orderedQuantity}
@@ -628,7 +698,7 @@ const CreateNewOrderOrderTaker = () => {
 							</React.Fragment>
 						);
 					})}
-			</>
+			</div>
 		);
 	};
 
@@ -706,7 +776,13 @@ const CreateNewOrderOrderTaker = () => {
 
 	const customerDetailsForm = () => {
 		return (
-			<React.Fragment>
+			<div
+				className='ml-3'
+				style={{
+					background: "white",
+					padding: "20px 15px",
+					borderRadius: "10px",
+				}}>
 				<h5 className='mb-4'>Customer Details</h5>
 				<div className='row'>
 					<div className='form-group col-md-6 '>
@@ -851,7 +927,7 @@ const CreateNewOrderOrderTaker = () => {
 						) : null}
 					</div>
 				)}
-			</React.Fragment>
+			</div>
 		);
 	};
 
@@ -866,13 +942,11 @@ const CreateNewOrderOrderTaker = () => {
 			: 0;
 
 	let basicProductTotalAmount = productsWithNoVariables
-		.map((i) => Number(i.orderedQuantity) * Number(i.priceAfterDiscount))
+		.map((i) => Number(i.orderedQuantity) * Number(i.pickedPrice))
 		.reduce((a, b) => a + b, 0);
 
 	var PriceWithVariables = chosenProductQty.map((iii) =>
-		iii.map(
-			(iiii) => Number(iiii.SubSKUPriceAfterDiscount) * Number(iiii.OrderedQty),
-		),
+		iii.map((iiii) => Number(iiii.pickedPrice) * Number(iiii.OrderedQty)),
 	);
 
 	let variableProductTotalAmount = Number(sum_array(PriceWithVariables));
@@ -1025,7 +1099,12 @@ const CreateNewOrderOrderTaker = () => {
 
 	const ReviewYourOrder = () => {
 		return (
-			<React.Fragment>
+			<div
+				style={{
+					background: "white",
+					padding: "20px 15px",
+					borderRadius: "10px",
+				}}>
 				<div style={{ fontSize: "1.25rem", fontWeight: "bolder" }}>
 					Customer Details
 				</div>
@@ -1066,57 +1145,84 @@ const CreateNewOrderOrderTaker = () => {
 				<div style={{ fontSize: "1.25rem", fontWeight: "bolder" }}>
 					Shipping Details:
 				</div>
-				<div className='mt-3'>
-					Carrier Name:{" "}
-					<strong style={{ color: "darkblue" }}>
-						{chosenShippingOption &&
-							chosenShippingOption[0] &&
-							chosenShippingOption[0].carrierName}
-					</strong>
-				</div>
-				<div className='mt-1'>
-					Customer Address:{" "}
-					<strong style={{ color: "darkblue" }}>
-						{customerDetails.address}
-					</strong>
-				</div>
-				<div className='mt-1'>
-					Ship To Governorate:{" "}
-					<strong style={{ color: "darkblue" }}>{customerDetails.state}</strong>
-				</div>
-				<div className='mt-1'>
-					Ship To City:{" "}
-					<strong style={{ color: "darkblue" }}>
-						{customerDetails.cityName}
-					</strong>
-				</div>
-				<div className='mt-1'>
-					Ship To City Code:{" "}
-					<strong style={{ color: "darkblue" }}>{customerDetails.city}</strong>
-				</div>
-				<div className='mt-1'>
-					Shipping Price:{" "}
-					<strong style={{ color: "darkblue" }}>
-						{chosenShippingOption.length > 0 &&
-							customerDetails.carrierName &&
-							chosenShippingOption
-								.map((i) => i.chosenShippingData)[0]
-								.filter((ii) => ii.governorate === customerDetails.state)[0]
-								.shippingPrice_Client}{" "}
-						L.E.
-					</strong>
-				</div>
-				<div className='mt-1'>
-					Estimated Time For Arrival:{" "}
-					<strong style={{ color: "darkblue" }}>
-						{chosenShippingOption.length > 0 &&
-							customerDetails.carrierName &&
-							chosenShippingOption
-								.map((i) => i.chosenShippingData)[0]
-								.filter((ii) => ii.governorate === customerDetails.state)[0]
-								.estimatedTimeForArrival}{" "}
-						Day
-					</strong>
+
+				<div className='row mt-3'>
+					<div className='col-md-5 mx-auto'>
+						<div className=''>
+							Carrier Name:{" "}
+							<strong style={{ color: "darkblue" }}>
+								{chosenShippingOption &&
+									chosenShippingOption[0] &&
+									chosenShippingOption[0].carrierName}
+							</strong>
+						</div>
+					</div>
+
+					<div className='col-md-5 mx-auto'>
+						<div className=''>
+							Customer Address:{" "}
+							<strong style={{ color: "darkblue" }}>
+								{customerDetails.address}
+							</strong>
+						</div>
+					</div>
+
+					<div className='col-md-5 mx-auto'>
+						<div className='mt-1'>
+							Ship To Governorate:{" "}
+							<strong style={{ color: "darkblue" }}>
+								{customerDetails.state}
+							</strong>
+						</div>
+					</div>
+
+					<div className='col-md-5 mx-auto'>
+						<div className='mt-1'>
+							Ship To City:{" "}
+							<strong style={{ color: "darkblue" }}>
+								{customerDetails.cityName}
+							</strong>
+						</div>
+					</div>
+
+					<div className='col-md-5 mx-auto'>
+						<div className='mt-1'>
+							Ship To City Code:{" "}
+							<strong style={{ color: "darkblue" }}>
+								{customerDetails.city}
+							</strong>
+						</div>
+					</div>
+
+					<div className='col-md-5 mx-auto'>
+						<div className='mt-1'>
+							Shipping Price:{" "}
+							<strong style={{ color: "darkblue" }}>
+								{chosenShippingOption.length > 0 &&
+									customerDetails.carrierName &&
+									chosenShippingOption
+										.map((i) => i.chosenShippingData)[0]
+										.filter((ii) => ii.governorate === customerDetails.state)[0]
+										.shippingPrice_Client}{" "}
+								L.E.
+							</strong>
+						</div>
+					</div>
+
+					<div className='col-md-5 mx-auto'>
+						<div className='mt-1'>
+							Estimated Time For Arrival:{" "}
+							<strong style={{ color: "darkblue" }}>
+								{chosenShippingOption.length > 0 &&
+									customerDetails.carrierName &&
+									chosenShippingOption
+										.map((i) => i.chosenShippingData)[0]
+										.filter((ii) => ii.governorate === customerDetails.state)[0]
+										.estimatedTimeForArrival}{" "}
+								Day
+							</strong>
+						</div>
+					</div>
 				</div>
 
 				<div className='col-md-4 mx-auto text-center'>
@@ -1171,7 +1277,18 @@ const CreateNewOrderOrderTaker = () => {
 															color: "darkblue",
 															textTransform: "capitalize",
 														}}>
-														{pp.productName} | {pp.SubSKU} | {pp.SubSKUColor}
+														{pp.productName} | {pp.SubSKU} |{" "}
+														{allColors[
+															allColors
+																.map((i) => i.hexa)
+																.indexOf(pp.SubSKUColor)
+														]
+															? allColors[
+																	allColors
+																		.map((i) => i.hexa)
+																		.indexOf(pp.SubSKUColor)
+															  ].color
+															: pp.SubSKUColor}
 													</strong>
 													<br />
 													Quantity:{" "}
@@ -1215,6 +1332,7 @@ const CreateNewOrderOrderTaker = () => {
 						placeholder='Required - e.g. Zirga Instagram, Next Day Instagram, etc...'
 					/>
 				</div>
+
 				<div className='form-group col-md-6 mx-auto my-4 text-center'>
 					<div className='form-group'>
 						<label
@@ -1233,6 +1351,7 @@ const CreateNewOrderOrderTaker = () => {
 						/>
 					</div>
 				</div>
+
 				<div className='mt-3'>
 					Total Amount Basic Products:{" "}
 					<strong style={{ color: "darkblue" }}>
@@ -1292,7 +1411,7 @@ const CreateNewOrderOrderTaker = () => {
 						Create A New Order
 					</button>
 				</div>
-			</React.Fragment>
+			</div>
 		);
 	};
 

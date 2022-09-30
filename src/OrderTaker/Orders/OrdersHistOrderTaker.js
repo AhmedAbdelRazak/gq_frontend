@@ -58,6 +58,7 @@ const OrdersHistOrderTaker = () => {
 		nonCancelledOrders &&
 		nonCancelledOrders.map((i) => i.totalAmountAfterDiscount);
 
+	// eslint-disable-next-line
 	const ArrayOfAmount = overallAmountArray.reduce((a, b) => a + b, 0);
 
 	function search(orders) {
@@ -264,23 +265,6 @@ const OrdersHistOrderTaker = () => {
 											duration='3'
 											delay={1}
 											end={ArrayOfQty}
-											separator=','
-										/>
-									</div>
-								</div>
-							</div>
-
-							<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-								<div className='card' style={{ background: "#50cd89" }}>
-									<div className='card-body'>
-										<h5 style={{ fontWeight: "bolder", color: "white" }}>
-											Total Amount (L.E.)
-										</h5>
-										<CountUp
-											style={{ color: "white" }}
-											duration='3'
-											delay={1}
-											end={ArrayOfAmount}
 											separator=','
 										/>
 									</div>

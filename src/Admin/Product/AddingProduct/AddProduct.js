@@ -325,19 +325,13 @@ const AddProduct = () => {
 	const FileUploadThumbnail = () => {
 		return (
 			<>
-				<label
-					className='btn btn-info btn-raised'
-					style={{ cursor: "pointer", fontSize: "0.95rem" }}>
-					Add Product Images
-					<input
-						type='file'
-						hidden
-						multiple
-						accept='images/*'
-						onChange={fileUploadAndResizeThumbNail}
-						required
-					/>
-				</label>
+				<ImageCard
+					uploadFrom='BasicProduct'
+					addThumbnail={addThumbnail}
+					handleImageRemove={handleImageRemove}
+					setAddThumbnail={setAddThumbnail}
+					fileUploadAndResizeThumbNail={fileUploadAndResizeThumbNail}
+				/>
 			</>
 		);
 	};
@@ -376,44 +370,6 @@ const AddProduct = () => {
 	const AddPricesStockBasic = () => {
 		return (
 			<form>
-				<div className='m-3 col-4'>
-					<div className='col-12'>
-						{addThumbnail &&
-							addThumbnail.images &&
-							addThumbnail.images.map((image) => {
-								return (
-									<div className='m-3 col-6 '>
-										<button
-											type='button'
-											className='close'
-											onClick={() => {
-												handleImageRemove(image.public_id);
-												setAddThumbnail([]);
-											}}
-											style={{
-												color: "white",
-												background: "black",
-												fontSize: "20px",
-											}}
-											aria-label='Close'>
-											<span aria-hidden='true'>&times;</span>
-										</button>
-										<img
-											src={image.url}
-											alt='Img Not Found'
-											style={{
-												width: "90px",
-												height: "90px",
-												boxShadow: "1px 1px 1px 1px rgba(0,0,0,0.2)",
-											}}
-											key={image.public_id}
-										/>
-									</div>
-								);
-							})}
-					</div>
-					{FileUploadThumbnail()}
-				</div>
 				<div className='form-group mt-4'>
 					<label
 						className='text-muted'
@@ -625,10 +581,12 @@ const AddProduct = () => {
 			.then((res) => {
 				// eslint-disable-next-line
 				const { images } = addThumbnail;
+				// eslint-disable-next-line
 				let filteredImages = images.filter((item) => {
 					return item.public_id !== public_id;
 				});
-				setAddThumbnail({ ...addThumbnail, images: filteredImages });
+				// setAddThumbnail({ ...addThumbnail, images: filteredImages });
+				setAddThumbnail([]);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -660,7 +618,6 @@ const AddProduct = () => {
 		}
 
 		if (!chosenCategory || chosenSubcategories.length < 1 || !chosenGender) {
-			setClickedLink("AddCategorySubcategory");
 			return toast.error("Please Add Product Categories & Subcategories");
 		}
 
@@ -982,7 +939,9 @@ const AddProduct = () => {
 							</h3>
 							{addVariables ? (
 								<div className='ml-5 '>{FileUploadThumbnail2()}</div>
-							) : null}
+							) : (
+								<div className='ml-5 '>{FileUploadThumbnail()}</div>
+							)}
 
 							{CategorySubcategoryEntry()}
 						</div>
