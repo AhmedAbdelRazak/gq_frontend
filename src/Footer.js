@@ -24,6 +24,7 @@ const Wrapper = styled.footer`
 	align-items: center;
 	background: var(--clr-black);
 	text-align: center;
+	/* margin-top: 100px; */
 
 	span {
 		color: var(--clr-primary-5);

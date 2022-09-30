@@ -564,3 +564,19 @@ export const getSizes = (token) => {
 		})
 		.catch((err) => console.log(err));
 };
+
+export const getStores = (token) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/stores`, {
+		method: "GET",
+		headers: {
+			// content type?
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};

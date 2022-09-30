@@ -15,6 +15,7 @@ import {
 	MenuUnfoldOutlined,
 	PieChartOutlined,
 	CopyOutlined,
+	AppstoreAddOutlined,
 } from "@ant-design/icons";
 import { Button, Menu } from "antd";
 
@@ -101,6 +102,33 @@ const items = [
 				Delete Product
 			</Link>,
 			"/admin/delete-product",
+		),
+	]),
+
+	getItem("Stores Management", "sub31", <AppstoreAddOutlined />, [
+		getItem(
+			<Link
+				to='/admin/add-new-store'
+				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+				Add New Store
+			</Link>,
+			"/admin/add-new-store",
+		),
+		getItem(
+			<Link
+				to='/admin/update-store'
+				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+				Update Store
+			</Link>,
+			"/admin/update-store",
+		),
+		getItem(
+			<Link
+				to='/admin/delete-store'
+				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+				Delete Store
+			</Link>,
+			"/admin/delete-store",
 		),
 	]),
 
@@ -310,6 +338,12 @@ const AdminMenu = ({
 						? "/admin/add-color"
 						: fromPage === "AddSize"
 						? "/admin/add-size"
+						: fromPage === "AddStore"
+						? "/admin/add-new-store"
+						: fromPage === "UpdateStore"
+						? "/admin/update-store"
+						: fromPage === "DeleteStore"
+						? "/admin/delete-store"
 						: "/admin/dashboard"
 				}
 				defaultOpenKeys={[
@@ -339,6 +373,12 @@ const AdminMenu = ({
 					fromPage === "UpdateShippingOption" ||
 					fromPage === "DeleteShippingOption"
 						? "sub30"
+						: null,
+
+					fromPage === "AddStore" ||
+					fromPage === "UpdateStore" ||
+					fromPage === "DeleteStore"
+						? "sub31"
 						: null,
 
 					"sub4",

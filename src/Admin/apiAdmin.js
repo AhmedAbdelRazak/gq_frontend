@@ -612,3 +612,75 @@ export const getSizes = (token) => {
 };
 
 /**End Attributes Management */
+
+/**
+ * Store Management
+ * */
+
+export const createStore = (userId, token, store) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/store/create/${userId}`, {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify(store),
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+};
+
+export const updateStore = (storeId, userId, token, store) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/store/${storeId}/${userId}`, {
+		method: "PUT",
+		headers: {
+			// content type?
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify(store),
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const removeStore = (storeId, userId, token) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/store/${storeId}/${userId}`, {
+		method: "DELETE",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const getStores = (token) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/stores`, {
+		method: "GET",
+		headers: {
+			// content type?
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+/**End Store Management */

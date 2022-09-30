@@ -10,6 +10,7 @@ import {
 	getColors,
 	getProducts,
 	getShippingOptions,
+	getStores,
 } from "../../apiOrderTaker";
 import { ShipToData } from "../ShippingOptions/ShipToData";
 import { isAuthenticated } from "../../../auth";
@@ -42,6 +43,7 @@ const CreateNewOrderOrderTaker = () => {
 	const [q, setQ] = useState("");
 	const [addedProductsToCart, setAddedProductToCart] = useState([]);
 	const [chosenProductVariables, setChosenProductVariables] = useState([]);
+	const [allStores, setAllStores] = useState([]);
 	const [chosenProductQty, setChosenProductQty] = useState([]);
 	const [chosenShippingOption, setChosenShippingOption] = useState({});
 	const [allShippingOptions, setAllShippingOptions] = useState({});
@@ -108,9 +110,20 @@ const CreateNewOrderOrderTaker = () => {
 		});
 	};
 
+	const gettingAllStores = () => {
+		getStores(token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllStores(data);
+			}
+		});
+	};
+
 	useEffect(() => {
 		gettingAllProducts();
 		gettingAllShippingOptions();
+		gettingAllStores();
 		// eslint-disable-next-line
 	}, []);
 
@@ -1324,13 +1337,25 @@ const CreateNewOrderOrderTaker = () => {
 				</div>
 				<div className='form-group col-md-6 mx-auto my-4 '>
 					<label className=''>Order Source</label>
-					<input
+					<select
 						onChange={(e) => setOrderSource(e.target.value)}
-						type='text'
-						className='form-control'
-						value={orderSource}
-						placeholder='Required - e.g. Zirga Instagram, Next Day Instagram, etc...'
-					/>
+						style={{
+							paddingTop: "7px",
+							paddingBottom: "7px",
+							// paddingRight: "50px",
+							// textAlign: "center",
+							border: "#cfcfcf solid 1px",
+							borderRadius: "10px",
+							fontSize: "0.9rem",
+							width: "100%",
+							// boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
+							textTransform: "capitalize",
+						}}>
+						<option value='SelectSource'>Select Order Source</option>
+						{allStores.map((g, ii) => {
+							return <option key={ii}>{g.storeName}</option>;
+						})}
+					</select>
 				</div>
 
 				<div className='form-group col-md-6 mx-auto my-4 text-center'>
