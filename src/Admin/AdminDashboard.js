@@ -28,11 +28,7 @@ const AdminDashboard = () => {
 	const [offset, setOffset] = useState(0);
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
-	const [selectedDate, setSelectedDate] = useState(
-		new Date().toLocaleDateString("en-US", {
-			timeZone: "Africa/Cairo",
-		}),
-	);
+	const [selectedDate, setSelectedDate] = useState(new Date());
 
 	const [modalVisible, setModalVisible] = useState(false);
 	const [modalVisible2, setModalVisible2] = useState(false);
@@ -81,23 +77,23 @@ const AdminDashboard = () => {
 		// eslint-disable-next-line
 	}, []);
 
-	var today = new Date().toLocaleDateString("en-US", {
+	var today = new Date().toDateString("en-US", {
 		timeZone: "Africa/Cairo",
 	});
 
-	var yesterday = new Date(today);
-	var last7Days = new Date(today);
-	var last30Days = new Date(today);
-	var tomorrow = new Date(today);
-	var next7Days = new Date(today);
-	var next30Days = new Date(today);
+	var yesterday = new Date();
+	var last7Days = new Date();
+	var last30Days = new Date();
+	var tomorrow = new Date();
+	var next7Days = new Date();
+	var next30Days = new Date();
 
 	yesterday.setDate(yesterday.getDate() - 1);
-	last7Days.setDate(yesterday.getDate() - 9);
-	last30Days.setDate(yesterday.getDate() - 30);
-	tomorrow.setDate(yesterday.getDate() + 2);
-	next7Days.setDate(yesterday.getDate() + 8);
-	next30Days.setDate(yesterday.getDate() + 31);
+	last7Days.setDate(last7Days.getDate() - 10);
+	last30Days.setDate(last30Days.getDate() - 30);
+	tomorrow.setDate(tomorrow.getDate() + 2);
+	next7Days.setDate(next7Days.getDate() + 8);
+	next30Days.setDate(next30Days.getDate() + 31);
 
 	// console.log(yesterday, "yesterday");
 
@@ -188,13 +184,14 @@ const AdminDashboard = () => {
 		0,
 	);
 
+	console.log(last7Days, "Date");
+
 	let last7daysOrders = allOrders
 		.filter(
 			(i) =>
 				new Date(i.createdAt).setHours(0, 0, 0, 0) >=
 					new Date(last7Days).setHours(0, 0, 0, 0) &&
-				i.status !== "Cancelled" &&
-				i.status !== "Returned",
+				(i.status !== "Cancelled" || i.status !== "Returned"),
 		)
 		.map((ii) => {
 			return {
