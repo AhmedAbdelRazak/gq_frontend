@@ -36,7 +36,12 @@ const Navbar = ({ fromPage, pageScrolled }) => {
 		<NavbarWrapper show={pageScrolled}>
 			<div className='container-fluid'>
 				<div className='row'>
-					<div className='col-xl-9 col-lg-8 col-md-7 col-sm-6 mx-auto itemsLeft'>
+					<div
+						className={`${
+							pageScrolled
+								? "col-xl-8 col-lg-7 col-md-7 col-sm-6 mx-auto itemsLeft"
+								: "col-xl-9 col-lg-8 col-md-7 col-sm-6 mx-auto itemsLeft"
+						} `}>
 						<Menu
 							mode='horizontal'
 							defaultSelectedKeys={
@@ -117,7 +122,12 @@ const Navbar = ({ fromPage, pageScrolled }) => {
 						</Menu>
 					</div>
 
-					<div className='col-xl-3 col-lg-4 col-md-5 col-sm-6 mx-auto rightList'>
+					<div
+						className={`${
+							pageScrolled
+								? "col-xl-4 col-lg-5 col-md-5 col-sm-6 mx-auto rightList"
+								: "col-xl-3 col-lg-4 col-md-5 col-sm-6 mx-auto rightList"
+						}`}>
 						<ul>
 							<li>
 								<SearchOutlined />
@@ -188,11 +198,13 @@ const Navbar = ({ fromPage, pageScrolled }) => {
 export default Navbar;
 
 const NavbarWrapper = styled.div`
-	background: white;
-	margin-bottom: 5px;
+	background: white !important;
+	margin-bottom: 20px;
 	z-index: 1000 !important;
 	padding-top: 5px;
 	padding-bottom: 5px;
+	position: ${(props) => (props.show ? "fixed" : "")};
+	width: ${(props) => (props.show ? "100%" : "100%")};
 
 	.ant-menu-horizontal {
 		border-bottom: 1px white solid;
@@ -207,7 +219,7 @@ const NavbarWrapper = styled.div`
 	}
 
 	.blink {
-		background: ${(props) => (props.show ? "white !important" : "#00ff00")};
+		background: ${(props) => (props.show ? "#00ff00 !important" : "#00ff00")};
 	}
 
 	.rightList > ul > li {
@@ -282,10 +294,7 @@ const NavbarWrapper = styled.div`
 		transition: opacity 200ms, transform 200ms;
 	}
 
-	@media (max-width: 1580px) {
-		ul {
-			right: 50px !important;
-		}
+	@media (max-width: 1830px) {
 		.rightList > ul > li {
 			display: inline-block;
 			margin-left: 10px;
@@ -333,6 +342,14 @@ const NavbarWrapper = styled.div`
 	@media (max-width: 750px) {
 		.itemsLeft {
 			display: none !important;
+		}
+
+		.rightList {
+			margin-left: ${(props) =>
+				props.show ? "35% !important" : "35% !important"};
+			background: white;
+			padding-bottom: ${(props) =>
+				props.show ? "0px !important" : "20px !important"};
 		}
 	}
 `;

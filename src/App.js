@@ -50,6 +50,8 @@ import AddStore from "./Admin/StoreManagement/AddStore";
 import UpdateStore from "./Admin/StoreManagement/UpdateStore";
 import DeleteStore from "./Admin/StoreManagement/DeleteStore";
 import UpdateStoreSingle from "./Admin/StoreManagement/UpdateStoreSingle";
+import OrderReturn from "./Admin/Orders/OrderReturn";
+import OrdersList from "./Admin/Orders/OrdersList";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -214,6 +216,8 @@ const App = () => {
 				<AdminRoute path='/admin/add-size' exact component={CreateSize} />
 
 				<AdminRoute path='/admin/add-new-store' exact component={AddStore} />
+				<AdminRoute path='/admin/order-return' exact component={OrderReturn} />
+				<AdminRoute path='/admin/orders-list' exact component={OrdersList} />
 
 				<AdminRoute path='/admin/update-store' exact component={UpdateStore} />
 

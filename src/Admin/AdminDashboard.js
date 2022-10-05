@@ -184,8 +184,6 @@ const AdminDashboard = () => {
 		0,
 	);
 
-	console.log(last7Days, "Date");
-
 	let last7daysOrders = allOrders
 		.filter(
 			(i) =>
@@ -409,6 +407,67 @@ const AdminDashboard = () => {
 		return modifiedArray.sort(sortTopProducts);
 	};
 
+	var OrderStatusSummary = [];
+	allOrders &&
+		allOrders.reduce(function (res, value) {
+			if (!res[value.status]) {
+				res[value.status] = {
+					status: value.status,
+					totalAmountAfterDiscount: 0,
+					ordersCount: 0,
+					totalOrderQty: 0,
+				};
+				OrderStatusSummary.push(res[value.status]);
+			}
+			res[value.status].totalAmountAfterDiscount += Number(
+				value.totalAmountAfterDiscount,
+			);
+
+			res[value.status].ordersCount += 1;
+
+			res[value.status].totalOrderQty += Number(value.totalOrderQty);
+
+			return res;
+		}, {});
+
+	var orderSourceModified = allOrders.map((i) => {
+		return {
+			...i,
+			orderSource:
+				i.orderSource === "ZITRGA"
+					? "ZIRGA"
+					: i.orderSource === "zirga"
+					? "ZIRGA"
+					: i.orderSource,
+		};
+	});
+
+	var OrderSourceSummary = [];
+	orderSourceModified &&
+		orderSourceModified.reduce(function (res, value) {
+			if (!res[value.orderSource]) {
+				res[value.orderSource] = {
+					orderSource: value.orderSource,
+					totalAmountAfterDiscount: 0,
+					ordersCount: 0,
+					totalOrderQty: 0,
+				};
+				OrderSourceSummary.push(res[value.orderSource]);
+			}
+			res[value.orderSource].totalAmountAfterDiscount += Number(
+				value.totalAmountAfterDiscount,
+			);
+
+			res[value.orderSource].ordersCount += 1;
+
+			res[value.orderSource].totalOrderQty += Number(value.totalOrderQty);
+
+			return res;
+		}, {});
+
+	console.log(OrderStatusSummary, "OrderStatusSummary");
+	console.log(OrderSourceSummary, "OrderSourceSummary");
+
 	return (
 		<AdminDashboardWrapper show={collapsed}>
 			{!collapsed ? (
@@ -425,8 +484,12 @@ const AdminDashboard = () => {
 					/>
 				</div>
 				<div className='navbarcontent'>
-					<Navbar fromPage='AdminDashboard' pageScrolled={pageScrolled} />
-					<div className='mx-auto  mt-5'>
+					<Navbar
+						fromPage='AdminDashboard'
+						pageScrolled={pageScrolled}
+						collapsed={collapsed}
+					/>
+					<div className='mx-auto'>
 						<div className='container-fluid'>
 							<div className='row mx-auto'>
 								<div className='col-xl-4 col-lg-8 col-md-11  mx-auto'>
@@ -627,6 +690,107 @@ const AdminDashboard = () => {
 											/>
 										</div>
 									</div>
+								</div>
+
+								<div className='col-xl-6 col-lg-8 col-md-11  mx-auto my-auto'>
+									<table
+										className='table table-bordered table-md-responsive table-hover '
+										style={{
+											fontSize: "0.75rem",
+											overflowX: "auto",
+											background: "white",
+										}}>
+										<thead style={{ background: "#f1416c", color: "white" }}>
+											<tr
+												style={{
+													fontSize: "0.75rem",
+													textTransform: "capitalize",
+													textAlign: "center",
+												}}>
+												<th scope='col'>#</th>
+												<th scope='col'>Status</th>
+												<th scope='col'>Total Amount (L.E.)</th>
+												<th scope='col'>Orders Count</th>
+												<th scope='col'>Ordered Quantity</th>
+											</tr>
+										</thead>
+										<tbody
+											className='my-auto'
+											style={{
+												fontSize: "0.75rem",
+												textTransform: "capitalize",
+												fontWeight: "bolder",
+											}}>
+											{OrderStatusSummary &&
+												OrderStatusSummary.map((s, i) => {
+													return (
+														<tr key={i} className=''>
+															<td className='my-auto'>{i + 1}</td>
+
+															<td>{s.status}</td>
+															<td>
+																{Number(s.totalAmountAfterDiscount).toFixed(2)}
+															</td>
+															<td>{Number(s.ordersCount)}</td>
+															<td>{Number(s.totalOrderQty)}</td>
+
+															{/* <td>{Invoice(s)}</td> */}
+														</tr>
+													);
+												})}
+										</tbody>
+									</table>
+								</div>
+								<div className='col-xl-6 col-lg-8 col-md-11  mx-auto my-5'>
+									<table
+										className='table table-bordered table-md-responsive table-hover '
+										style={{
+											fontSize: "0.75rem",
+											overflowX: "auto",
+											background: "white",
+										}}>
+										<thead
+											className=''
+											style={{ background: "#009ef7", color: "white" }}>
+											<tr
+												style={{
+													fontSize: "0.75rem",
+													textTransform: "capitalize",
+													textAlign: "center",
+												}}>
+												<th scope='col'>#</th>
+												<th scope='col'>Order Source</th>
+												<th scope='col'>Total Amount (L.E.)</th>
+												<th scope='col'>Orders Count</th>
+												<th scope='col'>Ordered Quantity</th>
+											</tr>
+										</thead>
+										<tbody
+											className='my-auto'
+											style={{
+												fontSize: "0.75rem",
+												textTransform: "capitalize",
+												fontWeight: "bolder",
+											}}>
+											{OrderSourceSummary &&
+												OrderSourceSummary.map((s, i) => {
+													return (
+														<tr key={i} className=''>
+															<td className='my-auto'>{i + 1}</td>
+
+															<td>{s.orderSource}</td>
+															<td>
+																{Number(s.totalAmountAfterDiscount).toFixed(2)}
+															</td>
+															<td>{Number(s.ordersCount)}</td>
+															<td>{Number(s.totalOrderQty)}</td>
+
+															{/* <td>{Invoice(s)}</td> */}
+														</tr>
+													);
+												})}
+										</tbody>
+									</table>
 								</div>
 
 								<div className='col-xl-4 col-lg-8 col-md-11  mx-auto my-5'>
@@ -983,17 +1147,20 @@ const AdminDashboardWrapper = styled.div`
 		background: #f1416c;
 		border-radius: 5px;
 		padding: 10px;
+		margin-top: 18px;
 	}
 
 	.secondCard {
 		background: #009ef7;
 		padding: 10px;
 		border-radius: 5px;
+		margin-top: 18px;
 	}
 	.thirdCard {
 		background: #50cd89;
 		padding: 10px;
 		border-radius: 5px;
+		margin-top: 18px;
 	}
 
 	.headerText {

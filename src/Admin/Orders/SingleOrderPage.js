@@ -49,17 +49,37 @@ const SingleOrderPage = (props) => {
 		e.preventDefault();
 		window.scrollTo({ top: 0, behavior: "smooth" });
 
-		updateOrder(updateSingleOrder._id, user._id, token, updateSingleOrder)
-			.then((response) => {
-				toast.success("Payment on delivery order was successfully updated");
-				setTimeout(function () {
-					window.location.reload(false);
-				}, 2500);
-			})
+		if (updateSingleOrder.status === "Cancelled") {
+			if (
+				window.confirm(
+					"Once Order is cancelled, The Ordered Quantity will be added BACK to your active stock, Are you sure you want to cancel?",
+				)
+			) {
+				updateOrder(updateSingleOrder._id, user._id, token, updateSingleOrder)
+					.then((response) => {
+						toast.success("Payment on delivery order was successfully updated");
+						setTimeout(function () {
+							window.location.reload(false);
+						}, 2500);
+					})
 
-			.catch((error) => {
-				console.log(error);
-			});
+					.catch((error) => {
+						console.log(error);
+					});
+			}
+		} else {
+			updateOrder(updateSingleOrder._id, user._id, token, updateSingleOrder)
+				.then((response) => {
+					toast.success("Payment on delivery order was successfully updated");
+					setTimeout(function () {
+						window.location.reload(false);
+					}, 2500);
+				})
+
+				.catch((error) => {
+					console.log(error);
+				});
+		}
 	};
 
 	useEffect(() => {

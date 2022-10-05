@@ -11,6 +11,7 @@ import {
 	getProducts,
 	getShippingOptions,
 	getStores,
+	listOrders,
 } from "../../apiOrderTaker";
 import { ShipToData } from "../ShippingOptions/ShipToData";
 import { isAuthenticated } from "../../../auth";
@@ -71,6 +72,7 @@ const CreateNewOrderOrderTaker = () => {
 	const [modalVisible2, setModalVisible2] = useState(false);
 	const [clickedProduct, setClickedProduct] = useState({});
 	const [clickedChosenProductQty, setClickedChosenProductQty] = useState({});
+	const [allOrders, setAllOrders] = useState([]);
 
 	// eslint-disable-next-line
 	const [allOrderData, setAllOrderData] = useState({});
@@ -120,10 +122,21 @@ const CreateNewOrderOrderTaker = () => {
 		});
 	};
 
+	const loadOrders = () => {
+		listOrders(user._id, token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllOrders(data);
+			}
+		});
+	};
+
 	useEffect(() => {
 		gettingAllProducts();
 		gettingAllShippingOptions();
 		gettingAllStores();
+		loadOrders();
 		// eslint-disable-next-line
 	}, []);
 
@@ -1069,6 +1082,10 @@ const CreateNewOrderOrderTaker = () => {
 			return toast.error("No Enough Stock Available 'No Variable Products'");
 		}
 
+		var today = new Date().toDateString("en-US", {
+			timeZone: "Africa/Cairo",
+		});
+
 		//In Processing, Ready To Ship, Shipped, Delivered
 		const createOrderData = {
 			productsNoVariable: productsWithNoVariables,
@@ -1094,7 +1111,14 @@ const CreateNewOrderOrderTaker = () => {
 			chosenShippingOption: chosenShippingOption,
 			orderSource: orderSource,
 			sendSMS: sendSMS,
+			invoiceNumber: "Not Added",
+			OTNumber: `OT${new Date().getFullYear()}${
+				new Date().getMonth() + 1
+			}${new Date().getDate()}000${allOrders.length + 1}`,
 			trackingNumber: "Not Added",
+			returnStatus: "Not Returned",
+			shipDate: today,
+			returnDate: today,
 		};
 
 		createOrder(user._id, token, createOrderData)

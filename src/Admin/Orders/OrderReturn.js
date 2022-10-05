@@ -1,23 +1,31 @@
 /** @format */
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { isAuthenticated } from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
-import Navbar from "../AdminNavMenu/Navbar";
-import CountUp from "react-countup";
-import { listOrders, removeOrder } from "../apiAdmin";
-import { Link } from "react-router-dom";
 import DarkBG from "../AdminMenu/DarkBG";
-import { toast } from "react-toastify";
+import Navbar from "../AdminNavMenu/Navbar";
+import { listOrders } from "../apiAdmin";
+import Pagination from "./Pagination";
+import ReturnModal from "./UpdateModals/ReturnModal";
 
-const OrdersHist = () => {
+const OrderReturn = () => {
 	const [allOrders, setAllOrders] = useState([]);
 	const [q, setQ] = useState("");
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [offset, setOffset] = useState(0);
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
+	const [modalVisible, setModalVisible] = useState(false);
+	const [returnDate, setReturnDate] = useState(new Date());
+	const [selectedOrder, setSelectedOrder] = useState({});
+	const [returnStatus, setReturnStatus] = useState("");
+
+	//pagination
+	const [currentPage, setCurrentPage] = useState(1);
+	const [postsPerPage, setPostsPerPage] = useState(90);
 
 	const { user, token } = isAuthenticated();
 
@@ -42,35 +50,23 @@ const OrdersHist = () => {
 		});
 	};
 
-	// "Cancelled to returned to stock"
-	// "INV # INVYEARMONTHDAYSERIES AS Invoice #"
-	// "Add OT to Order # should be in another page"
-	// "If OT into INV and only show INV #"
-	// "Hover to side menu"
-	// "Return Exchange"
-	// "Main Dashboard last 7 days, 30 days, ...."
-	// "Time zone difference"
-	// "Summary of order status chart in a table format"
-	// "Status color code changing and only code the status column"
-
 	useEffect(() => {
 		loadOrders();
 		// eslint-disable-next-line
 	}, []);
 
-	const nonCancelledOrders =
-		allOrders && allOrders.filter((i) => i.status !== "Cancelled");
-
-	const overallQtyArray =
-		nonCancelledOrders && nonCancelledOrders.map((i) => i.totalOrderQty);
-
-	const ArrayOfQty = overallQtyArray.reduce((a, b) => a + b, 0);
-
-	const overallAmountArray =
-		nonCancelledOrders &&
-		nonCancelledOrders.map((i) => i.totalAmountAfterDiscount);
-
-	const ArrayOfAmount = overallAmountArray.reduce((a, b) => a + b, 0);
+	useEffect(() => {
+		const onScroll = () => setOffset(window.pageYOffset);
+		// clean up code
+		window.removeEventListener("scroll", onScroll);
+		window.addEventListener("scroll", onScroll, { passive: true });
+		if (window.pageYOffset > 0) {
+			setPageScrolled(true);
+		} else {
+			setPageScrolled(false);
+		}
+		return () => window.removeEventListener("scroll", onScroll);
+	}, [offset]);
 
 	function search(orders) {
 		return orders.filter((row) => {
@@ -92,22 +88,27 @@ const OrdersHist = () => {
 		});
 	}
 
-	const handleRemove = (orderId) => {
-		if (window.confirm("Are You Sure You Want To Delete?")) {
-			removeOrder(orderId, user._id, token)
-				.then((res) => {
-					toast.error(`Order "${res.data.name}" deleted`);
-					setTimeout(function () {
-						window.location.reload(false);
-					}, 2500);
-				})
-				.catch((err) => console.log(err));
-		}
-	};
+	const indexOfLastPost = currentPage * postsPerPage;
+	const indexOfFirstPost = indexOfLastPost - postsPerPage;
+	const currentPosts =
+		allOrders && allOrders.slice(indexOfFirstPost, indexOfLastPost);
+
+	const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
 	const dataTable = () => {
 		return (
 			<div className='tableData'>
+				<ReturnModal
+					selectedOrder={selectedOrder}
+					setSelectedOrder={setSelectedOrder}
+					modalVisible={modalVisible}
+					setModalVisible={setModalVisible}
+					setCollapsed={setCollapsed}
+					returnDate={returnDate}
+					setReturnDate={setReturnDate}
+					returnStatus={returnStatus}
+					setReturnStatus={setReturnStatus}
+				/>
 				<div className=' mb-3 form-group mx-3 text-center'>
 					<label
 						className='mt-3 mx-3'
@@ -123,18 +124,31 @@ const OrdersHist = () => {
 						className='p-2 my-5 '
 						type='text'
 						value={q}
-						onChange={(e) => setQ(e.target.value.toLowerCase())}
+						onChange={(e) => {
+							setQ(e.target.value.toLowerCase());
+
+							if (e.target.value.length > 0) {
+								setPostsPerPage(allOrders.length + 2);
+							} else {
+								setPostsPerPage(90);
+							}
+						}}
 						placeholder='Search By Client Phone, Client Name, Status Or Carrier'
 						style={{ borderRadius: "20px", width: "50%" }}
 					/>
 				</div>
+				<Pagination
+					postsPerPage={postsPerPage}
+					totalPosts={allOrders.length}
+					paginate={paginate}
+					currentPage={currentPage}
+				/>
 				<table
 					className='table table-bordered table-md-responsive table-hover text-center'
 					style={{ fontSize: "0.75rem" }}>
 					<thead className='thead-light'>
 						<tr>
 							<th scope='col'>Order #</th>
-							<th scope='col'>INV #</th>
 							<th scope='col'>Customer Name</th>
 							<th scope='col'>Customer Phone</th>
 							<th scope='col'>Purchase Date</th>
@@ -146,13 +160,12 @@ const OrdersHist = () => {
 							<th scope='col'>Ordered By</th>
 							<th scope='col'>Amount</th>
 							<th scope='col'>Ordered Qty</th>
-							<th scope='col'>More Details</th>
-							<th scope='col'>Delete Order?</th>
+							<th scope='col'>Return Order..?</th>
 						</tr>
 					</thead>
 
 					<tbody className='my-auto'>
-						{search(allOrders).map((s, i) => (
+						{search(currentPosts).map((s, i) => (
 							<tr key={i} className=''>
 								{s.OTNumber && s.OTNumber !== "Not Added" ? (
 									<td className='my-auto'>{s.OTNumber}</td>
@@ -165,15 +178,6 @@ const OrdersHist = () => {
 										allOrders.length - i
 									}`}</td>
 								)}
-
-								<td
-									style={{
-										width: "10%",
-										background:
-											s.invoiceNumber === "Not Added" ? "#f4e4e4" : "",
-									}}>
-									{s.invoiceNumber}
-								</td>
 
 								<td>{s.customerDetails.fullName}</td>
 								<td>{s.customerDetails.phone}</td>
@@ -205,31 +209,22 @@ const OrdersHist = () => {
 								<td>{s.employeeData.name}</td>
 								<td>{s.totalAmountAfterDiscount.toFixed(2)} L.E.</td>
 								<td>{s.totalOrderQty}</td>
-								<Link to={`/admin/single-order/${s._id}`}>
+								<Link
+									to={`#`}
+									onClick={() => {
+										setModalVisible(true);
+										setSelectedOrder(s);
+										setCollapsed(true);
+									}}>
 									<td
 										style={{
 											color: "blue",
 											fontWeight: "bold",
 											cursor: "pointer",
 										}}>
-										More Details...
+										Return This Order
 									</td>
 								</Link>
-
-								<td
-									onClick={() => {
-										handleRemove(s._id);
-										setTimeout(function () {
-											window.location.reload(false);
-										}, 1000);
-									}}
-									style={{
-										color: "red",
-										fontWeight: "bold",
-										cursor: "pointer",
-									}}>
-									Delete?
-								</td>
 
 								{/* <td>{Invoice(s)}</td> */}
 							</tr>
@@ -240,28 +235,15 @@ const OrdersHist = () => {
 		);
 	};
 
-	useEffect(() => {
-		const onScroll = () => setOffset(window.pageYOffset);
-		// clean up code
-		window.removeEventListener("scroll", onScroll);
-		window.addEventListener("scroll", onScroll, { passive: true });
-		if (window.pageYOffset > 0) {
-			setPageScrolled(true);
-		} else {
-			setPageScrolled(false);
-		}
-		return () => window.removeEventListener("scroll", onScroll);
-	}, [offset]);
-
 	return (
-		<OrdersHistWrapper show={AdminMenuStatus}>
+		<OrderReturnWrapper show={AdminMenuStatus}>
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu
-						fromPage='OrdersHist'
+						fromPage='OrderReturn'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
 						collapsed={collapsed}
@@ -269,84 +251,25 @@ const OrdersHist = () => {
 					/>
 				</div>
 				<div className='mainContent'>
-					<Navbar fromPage='OrdersHist' pageScrolled={pageScrolled} />
-					<h3
-						style={{ color: "#009ef7", fontWeight: "bold" }}
-						className='mx-auto text-center mb-5'>
-						Sales History
-					</h3>
-					<div className='container-fluid'>
-						<div className='row'>
-							<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-								<div className='card' style={{ background: "#f1416c" }}>
-									<div className='card-body'>
-										<h5 style={{ fontWeight: "bolder", color: "white" }}>
-											Overall Orders Count
-										</h5>
-										<CountUp
-											style={{ color: "white" }}
-											duration='3'
-											delay={1}
-											end={allOrders.length}
-											separator=','
-										/>
-									</div>
-								</div>
-							</div>
+					<Navbar fromPage='OrderReturn' pageScrolled={pageScrolled} />
 
-							<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-								<div className='card' style={{ background: "#009ef7" }}>
-									<div className='card-body'>
-										<h5 style={{ fontWeight: "bolder", color: "white" }}>
-											Overall Ordered Items
-										</h5>
-										<CountUp
-											style={{ color: "white" }}
-											duration='3'
-											delay={1}
-											end={ArrayOfQty}
-											separator=','
-										/>
-									</div>
-								</div>
-							</div>
-
-							<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-								<div className='card' style={{ background: "#50cd89" }}>
-									<div className='card-body'>
-										<h5 style={{ fontWeight: "bolder", color: "white" }}>
-											Total Amount (L.E.)
-										</h5>
-										<CountUp
-											style={{ color: "white" }}
-											duration='3'
-											delay={1}
-											end={ArrayOfAmount}
-											separator=','
-										/>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					{dataTable()}
+					<div className='mt-5 mx-3'> {dataTable()}</div>
 				</div>
 			</div>
-		</OrdersHistWrapper>
+		</OrderReturnWrapper>
 	);
 };
 
-export default OrdersHist;
+export default OrderReturn;
 
-const OrdersHistWrapper = styled.div`
+const OrderReturnWrapper = styled.div`
 	min-height: 880px;
 	/* overflow-x: hidden; */
 	/* background: #ededed; */
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: ${(props) => (props.show ? "8% 92%" : "15% 84.5%")};
+		grid-template-columns: ${(props) => (props.show ? "8% 92%" : "15% 84.8%")};
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */

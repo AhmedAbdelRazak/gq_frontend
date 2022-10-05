@@ -168,6 +168,24 @@ const items = [
 			</Link>,
 			"/admin/create-new-order",
 		),
+
+		getItem(
+			<Link
+				to='/admin/orders-list'
+				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+				Orders List
+			</Link>,
+			"/admin/orders-list",
+		),
+
+		getItem(
+			<Link
+				to='/admin/order-return'
+				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+				Order Return
+			</Link>,
+			"/admin/order-return",
+		),
 		getItem(
 			<Link
 				to='/admin/orders-hist'
@@ -344,6 +362,10 @@ const AdminMenu = ({
 						? "/admin/update-store"
 						: fromPage === "DeleteStore"
 						? "/admin/delete-store"
+						: fromPage === "OrderReturn"
+						? "/admin/order-return"
+						: fromPage === "OrdersList"
+						? "/admin/orders-list"
 						: "/admin/dashboard"
 				}
 				defaultOpenKeys={[
@@ -383,7 +405,6 @@ const AdminMenu = ({
 
 					"sub4",
 
-					"sub5",
 					"sub6",
 				]}
 				mode='inline'
@@ -402,9 +423,8 @@ const AdminMenuWrapper = styled.div`
 	margin-left: 3px;
 	margin-bottom: 15px;
 	background: ${(props) => (props.show ? "" : "white")};
+	position: fixed;
 	top: 0px !important;
-	/* position: relative; */
-	/* z-index: 15000; */
 
 	li {
 		/* margin: 20px auto; */
@@ -448,6 +468,7 @@ const AdminMenuWrapper = styled.div`
 	}
 
 	@media (max-width: 750px) {
+		z-index: 10000;
 		ul {
 			display: ${(props) => (props.show ? "none" : "")};
 			margin-top: 0px !important;
@@ -460,8 +481,6 @@ const AdminMenuWrapper = styled.div`
 
 		button {
 			margin-top: 15px !important;
-			position: ${(props) => (props.show ? "" : "")};
-			display: ${(props) => (props.show ? "" : "none")};
 		}
 	}
 `;

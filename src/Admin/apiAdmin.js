@@ -539,6 +539,25 @@ export const removeOrder = (orderId, userId, token) => {
 		.catch((err) => console.log(err));
 };
 
+export const updateOrderInvoice = (userId, token, orderId, invoiceNumber) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/order/${orderId}/invoice/${userId}`,
+		{
+			method: "PUT",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify({ invoiceNumber, orderId }),
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
 /**
  * Attributes Management
  * */
