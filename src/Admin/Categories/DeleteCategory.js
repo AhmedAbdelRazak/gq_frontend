@@ -5,13 +5,20 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import { isAuthenticated } from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
-import { getCategories, removeCategory } from "../apiAdmin";
+import {
+	getCategories,
+	getProducts,
+	getSubCategories,
+	removeCategory,
+} from "../apiAdmin";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import DarkBG from "../AdminMenu/DarkBG";
 
 const DeleteCategory = () => {
 	const [allCategories, setAllCategories] = useState([]);
+	const [allSubCategories, setAllSubCategories] = useState([]);
+	const [allProducts, setAllProducts] = useState([]);
 	// eslint-disable-next-line
 	const { user, token } = isAuthenticated();
 	// eslint-disable-next-line
@@ -26,6 +33,20 @@ const DeleteCategory = () => {
 				console.log(data.error);
 			} else {
 				setAllCategories(data);
+				getProducts().then((data2) => {
+					if (data2.error) {
+						console.log(data2.error);
+					} else {
+						setAllProducts(data2);
+					}
+				});
+				getSubCategories(token).then((data3) => {
+					if (data3.error) {
+						console.log(data3.error);
+					} else {
+						setAllSubCategories(data3);
+					}
+				});
 				setLoading(false);
 			}
 		});
@@ -37,6 +58,28 @@ const DeleteCategory = () => {
 	}, []);
 
 	const handleRemove = (categoryId) => {
+		var productCheck =
+			allProducts && allProducts.filter((i) => i.category._id === categoryId);
+
+		if (productCheck.length > 0) {
+			return toast.error(
+				`Product (${productCheck[0].productName}) is connected to this category, Please delete/update product first`,
+			);
+		}
+
+		var subcategoryCheck =
+			allSubCategories &&
+			allSubCategories.filter(
+				(i) =>
+					i.categoryId && i.categoryId._id && i.categoryId._id === categoryId,
+			);
+
+		if (subcategoryCheck.length > 0) {
+			return toast.error(
+				`Subcategory (${subcategoryCheck[0].SubcategoryName}) is connected to this category, Please delete/update Subcategory first`,
+			);
+		}
+
 		if (window.confirm("Are You Sure You Want To Delete?")) {
 			setLoading(true);
 			removeCategory(categoryId, user._id, token)
@@ -103,7 +146,7 @@ const DeleteCategory = () => {
 												handleRemove(s._id);
 												setTimeout(function () {
 													window.location.reload(false);
-												}, 1000);
+												}, 4000);
 											}}
 											className='list-group-item d-flex my-1 py-4 justify-content-between align-items-center  col-md-3 mx-auto'
 											style={{

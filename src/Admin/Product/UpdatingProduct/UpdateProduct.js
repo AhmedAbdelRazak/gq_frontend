@@ -109,6 +109,7 @@ const UpdateProduct = () => {
 			return {
 				productId: i._id,
 				productName: i.productName,
+				productName_Arabic: i.productName_Arabic,
 				productPrice: i.priceAfterDiscount,
 				productQty: i.addVariables
 					? i.productAttributes

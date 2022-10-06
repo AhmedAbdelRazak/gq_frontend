@@ -5,14 +5,14 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import { isAuthenticated } from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
-import { getSubCategories, removeSubcategory } from "../apiAdmin";
+import { getProducts, getSubCategories, removeSubcategory } from "../apiAdmin";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import DarkBG from "../AdminMenu/DarkBG";
 
 const DeleteSubcategory = () => {
 	const [allSubCategories, setAllSubCategories] = useState([]);
-	// eslint-disable-next-line
+	const [allProducts, setAllProducts] = useState([]);
 	const { user, token } = isAuthenticated();
 	// eslint-disable-next-line
 	const [loading, setLoading] = useState(true);
@@ -26,6 +26,15 @@ const DeleteSubcategory = () => {
 				console.log(data.error);
 			} else {
 				setAllSubCategories(data);
+
+				getProducts().then((data2) => {
+					if (data2.error) {
+						console.log(data2.error);
+					} else {
+						setAllProducts(data2);
+					}
+				});
+
 				setLoading(false);
 			}
 		});
@@ -37,6 +46,18 @@ const DeleteSubcategory = () => {
 	}, []);
 
 	const handleRemove = (subcategoryId) => {
+		var productCheck =
+			allProducts &&
+			allProducts.filter((i) => i.subcategory.indexOf(subcategoryId) > -1);
+
+		console.log(productCheck, subcategoryId, "productCheck");
+
+		if (productCheck.length > 0) {
+			return toast.error(
+				`Product (${productCheck[0].productName}) is connected to this category, Please delete/update product first`,
+			);
+		}
+
 		if (window.confirm("Are You Sure You Want To Delete?")) {
 			setLoading(true);
 			removeSubcategory(subcategoryId, user._id, token)
@@ -103,7 +124,7 @@ const DeleteSubcategory = () => {
 												handleRemove(s._id);
 												setTimeout(function () {
 													window.location.reload(false);
-												}, 1000);
+												}, 4000);
 											}}
 											className='list-group-item d-flex my-1 py-4 justify-content-between align-items-center  col-md-3 mx-auto'
 											style={{

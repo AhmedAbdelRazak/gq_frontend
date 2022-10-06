@@ -180,10 +180,10 @@ const UpdateBasicDataForm = ({
 			<button
 				className='btn btn-outline-primary mb-3'
 				onClick={() => {
-					setClickedLink("AddCategorySubcategory");
+					setClickedLink("AddVariables");
 					window.scrollTo({ top: 0, behavior: "smooth" });
 				}}>
-				Next: Add Product Category
+				Next: Update Product Attributes
 			</button>
 		</form>
 	);

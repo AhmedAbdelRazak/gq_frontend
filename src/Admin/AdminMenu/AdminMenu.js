@@ -425,6 +425,7 @@ const AdminMenuWrapper = styled.div`
 	background: ${(props) => (props.show ? "" : "white")};
 	position: fixed;
 	top: 0px !important;
+	z-index: 12000;
 
 	li {
 		/* margin: 20px auto; */
@@ -456,6 +457,8 @@ const AdminMenuWrapper = styled.div`
 	} */
 
 	@media (max-width: 1650px) {
+		background: ${(props) => (props.show ? "" : "transparent")};
+
 		ul {
 			width: 250px;
 			padding: 0px !important;
