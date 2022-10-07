@@ -63,6 +63,8 @@ const Navbar = ({ fromPage, pageScrolled }) => {
 									? "/admin/add-shipping-carrier"
 									: fromPage === "OrdersHist"
 									? "/admin/orders-hist"
+									: fromPage === "OrdersList"
+									? "/admin/orders-list"
 									: "/admin/dashboard"
 							}>
 							<Menu.Item key='/admin/dashboard' icon={<HomeOutlined />}>
@@ -75,8 +77,8 @@ const Navbar = ({ fromPage, pageScrolled }) => {
 								<Menu.Item key='two' icon={<AppstoreOutlined />}>
 									Day Over Day Sales
 								</Menu.Item>
-								<Menu.Item key='three' icon={<AppstoreOutlined />}>
-									Pending Sales
+								<Menu.Item key='/admin/orders-list' icon={<AppstoreOutlined />}>
+									<Link to='/admin/orders-list'>Pending Sales</Link>
 								</Menu.Item>
 								<Menu.Item key='/admin/orders-hist' icon={<AppstoreOutlined />}>
 									<Link to='/admin/orders-hist'>Sales History</Link>

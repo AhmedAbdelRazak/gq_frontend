@@ -41,7 +41,17 @@ const OrdersList = () => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
-				setAllOrders(data.sort(sortOrdersAscendingly));
+				setAllOrders(
+					data
+						.filter(
+							(i) =>
+								i.status !== "Delivered" &&
+								i.status !== "Shipped" &&
+								i.status !== "Cancelled" &&
+								i.invoiceNumber === "Not Added",
+						)
+						.sort(sortOrdersAscendingly),
+				);
 			}
 		});
 	};
@@ -107,152 +117,166 @@ const OrdersList = () => {
 	const dataTable = () => {
 		return (
 			<div className='tableData'>
-				<div className=' mb-3 form-group mx-3 text-center'>
-					<label
-						className='mt-3 mx-3'
-						style={{
-							fontWeight: "bold",
-							fontSize: "1.05rem",
-							color: "black",
-							borderRadius: "20px",
-						}}>
-						Search
-					</label>
-					<input
-						className='p-2 my-5 '
-						type='text'
-						value={q}
-						onChange={(e) => {
-							setQ(e.target.value.toLowerCase());
+				{allOrders && allOrders.length === 0 ? (
+					<div
+						className='text-center mt-5'
+						style={{ fontSize: "1.2rem", fontWeight: "bold" }}>
+						No Un-invoiced Orders Available
+					</div>
+				) : (
+					<>
+						<div className=' mb-3 form-group mx-3 text-center'>
+							<label
+								className='mt-3 mx-3'
+								style={{
+									fontWeight: "bold",
+									fontSize: "1.05rem",
+									color: "black",
+									borderRadius: "20px",
+								}}>
+								Search
+							</label>
+							<input
+								className='p-2 my-5 '
+								type='text'
+								value={q}
+								onChange={(e) => {
+									setQ(e.target.value.toLowerCase());
 
-							if (e.target.value.length > 0) {
-								setPostsPerPage(allOrders.length + 2);
-							} else {
-								setPostsPerPage(100);
-							}
-						}}
-						placeholder='Search By Client Phone, Client Name, Status Or Carrier'
-						style={{ borderRadius: "20px", width: "50%" }}
-					/>
-				</div>
-				{/* <Pagination
+									if (e.target.value.length > 0) {
+										setPostsPerPage(allOrders.length + 2);
+									} else {
+										setPostsPerPage(100);
+									}
+								}}
+								placeholder='Search By Client Phone, Client Name, Status Or Carrier'
+								style={{ borderRadius: "20px", width: "50%" }}
+							/>
+						</div>
+						{/* <Pagination
 					postsPerPage={postsPerPage}
 					totalPosts={allOrders.length}
 					paginate={paginate}
 					currentPage={currentPage}
 				/> */}
-				<table
-					className='table table-bordered table-md-responsive table-hover text-center'
-					style={{ fontSize: "0.75rem" }}>
-					<thead className='thead-light'>
-						<tr>
-							<th scope='col'>Order #</th>
-							<th scope='col'>INV #</th>
-							<th scope='col'>Customer Name</th>
-							<th scope='col'>Customer Phone</th>
-							<th scope='col'>Purchase Date</th>
-							<th scope='col'>Status</th>
-							<th scope='col'>Governorate</th>
-							<th scope='col'>City</th>
-							<th scope='col'>Shipping Carrier</th>
-							<th scope='col'>Tracking #</th>
-							<th scope='col'>Ordered By</th>
-							<th scope='col'>Amount</th>
-							<th scope='col'>Ordered Qty</th>
-							<th scope='col'>Return Order..?</th>
-						</tr>
-					</thead>
+						<table
+							className='table table-bordered table-md-responsive table-hover text-center'
+							style={{ fontSize: "0.75rem" }}>
+							<thead className='thead-light'>
+								<tr>
+									<th scope='col'>Order #</th>
+									<th scope='col'>INV #</th>
+									<th scope='col'>Customer Name</th>
+									<th scope='col'>Customer Phone</th>
+									<th scope='col'>Purchase Date</th>
+									<th scope='col'>Status</th>
+									<th scope='col'>Governorate</th>
+									<th scope='col'>City</th>
+									<th scope='col'>Shipping Carrier</th>
+									<th scope='col'>Tracking #</th>
+									<th scope='col'>Ordered By</th>
+									<th scope='col'>Amount</th>
+									<th scope='col'>Ordered Qty</th>
+									<th scope='col'>Return Order..?</th>
+								</tr>
+							</thead>
 
-					<tbody className='my-auto'>
-						{search(allOrders).map((s, i) => (
-							<tr key={i} className=''>
-								{s.OTNumber && s.OTNumber !== "Not Added" ? (
-									<td className='my-auto'>{s.OTNumber}</td>
-								) : (
-									<td className='my-auto'>{`OT${new Date(
-										s.createdAt,
-									).getFullYear()}${
-										new Date(s.createdAt).getMonth() + 1
-									}${new Date(s.createdAt).getDate()}000${
-										allOrders.length - i
-									}`}</td>
-								)}
-								<td
-									style={{
-										width: "10%",
-										background:
-											s.invoiceNumber === "Not Added" ? "#f4e4e4" : "",
-									}}>
-									{s.invoiceNumber}
-								</td>
-
-								<td>{s.customerDetails.fullName}</td>
-								<td>{s.customerDetails.phone}</td>
-								<td>{new Date(s.createdAt).toLocaleDateString()} </td>
-								<td
-									style={{
-										fontWeight: "bold",
-										fontSize: "0.9rem",
-										width: "8.5%",
-										background:
-											s.status === "Delivered" || s.status === "Shipped"
-												? "#004b00"
-												: s.status === "Cancelled"
-												? "darkred"
-												: "#003264",
-										color:
-											s.status === "Delivered" || s.status === "Shipped"
-												? "white"
-												: s.status === "Cancelled"
-												? "white"
-												: "white",
-									}}>
-									{s.status}
-								</td>
-								<td>{s.customerDetails.state}</td>
-								<td>{s.customerDetails.cityName}</td>
-								<td>{s.chosenShippingOption[0].carrierName}</td>
-								<td>{s.trackingNumber ? s.trackingNumber : "Not Added"}</td>
-								<td>{s.employeeData.name}</td>
-								<td>{s.totalAmountAfterDiscount.toFixed(2)} L.E.</td>
-								<td>{s.totalOrderQty}</td>
-								{s.invoiceNumber === "Not Added" ? (
-									<Link
-										to={`#`}
-										onClick={() => {
-											var today = new Date().toDateString("en-US", {
-												timeZone: "Africa/Cairo",
-											});
-
-											var invoiceNumber = `INV${new Date(today).getFullYear()}${
-												new Date(today).getMonth() + 1
-											}${new Date(today).getDate()}000${allOrders.length - i}`;
-											handleInvoiceStatus(invoiceNumber, s._id);
-										}}>
+							<tbody className='my-auto'>
+								{search(allOrders).map((s, i) => (
+									<tr key={i} className=''>
+										{s.OTNumber && s.OTNumber !== "Not Added" ? (
+											<td className='my-auto'>{s.OTNumber}</td>
+										) : (
+											<td className='my-auto'>{`OT${new Date(
+												s.createdAt,
+											).getFullYear()}${
+												new Date(s.createdAt).getMonth() + 1
+											}${new Date(s.createdAt).getDate()}000${
+												allOrders.length - i
+											}`}</td>
+										)}
 										<td
 											style={{
-												color: "darkred",
-												fontWeight: "bold",
-												cursor: "pointer",
+												width: "10%",
+												background:
+													s.invoiceNumber === "Not Added" ? "#f4e4e4" : "",
 											}}>
-											Invoice This Order
+											{s.invoiceNumber}
 										</td>
-									</Link>
-								) : (
-									<td
-										style={{
-											color: "darkgreen",
-											fontWeight: "bold",
-										}}>
-										Order Already Invoiced
-									</td>
-								)}
 
-								{/* <td>{Invoice(s)}</td> */}
-							</tr>
-						))}
-					</tbody>
-				</table>
+										<td>{s.customerDetails.fullName}</td>
+										<td>{s.customerDetails.phone}</td>
+										<td>{new Date(s.createdAt).toLocaleDateString()} </td>
+										<td
+											style={{
+												fontWeight: "bold",
+												fontSize: "0.9rem",
+												width: "8.5%",
+												background:
+													s.status === "Delivered" || s.status === "Shipped"
+														? "#004b00"
+														: s.status === "Cancelled"
+														? "darkred"
+														: "#003264",
+												color:
+													s.status === "Delivered" || s.status === "Shipped"
+														? "white"
+														: s.status === "Cancelled"
+														? "white"
+														: "white",
+											}}>
+											{s.status}
+										</td>
+										<td>{s.customerDetails.state}</td>
+										<td>{s.customerDetails.cityName}</td>
+										<td>{s.chosenShippingOption[0].carrierName}</td>
+										<td>{s.trackingNumber ? s.trackingNumber : "Not Added"}</td>
+										<td>{s.employeeData.name}</td>
+										<td>{s.totalAmountAfterDiscount.toFixed(2)} L.E.</td>
+										<td>{s.totalOrderQty}</td>
+										{s.invoiceNumber === "Not Added" ? (
+											<Link
+												to={`#`}
+												onClick={() => {
+													var today = new Date().toDateString("en-US", {
+														timeZone: "Africa/Cairo",
+													});
+
+													var invoiceNumber = `INV${new Date(
+														today,
+													).getFullYear()}${
+														new Date(today).getMonth() + 1
+													}${new Date(today).getDate()}000${
+														allOrders.length - i
+													}`;
+													handleInvoiceStatus(invoiceNumber, s._id);
+												}}>
+												<td
+													style={{
+														color: "darkred",
+														fontWeight: "bold",
+														cursor: "pointer",
+													}}>
+													Invoice This Order
+												</td>
+											</Link>
+										) : (
+											<td
+												style={{
+													color: "darkgreen",
+													fontWeight: "bold",
+												}}>
+												Order Already Invoiced
+											</td>
+										)}
+
+										{/* <td>{Invoice(s)}</td> */}
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</>
+				)}
 			</div>
 		);
 	};

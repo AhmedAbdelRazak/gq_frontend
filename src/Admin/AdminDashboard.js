@@ -811,7 +811,7 @@ const AdminDashboard = () => {
 											<span
 												onClick={() => {
 													setModalVisible(true);
-													setCollapsed(true);
+													// setCollapsed(true);
 												}}
 												style={{ cursor: "pointer" }}>
 												<EditOutlined />
@@ -883,7 +883,7 @@ const AdminDashboard = () => {
 											<span
 												onClick={() => {
 													setModalVisible(true);
-													setCollapsed(true);
+													// setCollapsed(true);
 												}}
 												style={{ cursor: "pointer" }}>
 												<EditOutlined />

@@ -512,8 +512,7 @@ const SingleOrderPageWrapper = styled.div`
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: ${(props) =>
-			props.show ? "8% 92%" : "15.5% 84.5%"};
+		grid-template-columns: ${(props) => (props.show ? "8% 92%" : "15% 85%")};
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */

@@ -1119,6 +1119,8 @@ const CreateNewOrderOrderTaker = () => {
 			returnStatus: "Not Returned",
 			shipDate: today,
 			returnDate: today,
+			exchangedProductQtyWithVariables: [],
+			exhchangedProductsNoVariable: [],
 		};
 
 		createOrder(user._id, token, createOrderData)

@@ -173,7 +173,7 @@ const items = [
 			<Link
 				to='/admin/orders-list'
 				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-				Orders List
+				Orders List (Pending Orders)
 			</Link>,
 			"/admin/orders-list",
 		),
@@ -186,6 +186,16 @@ const items = [
 			</Link>,
 			"/admin/order-return",
 		),
+
+		getItem(
+			<Link
+				to='/admin/order-exchange'
+				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+				Order Exchange
+			</Link>,
+			"/admin/order-exchange",
+		),
+
 		getItem(
 			<Link
 				to='/admin/orders-hist'
@@ -366,6 +376,8 @@ const AdminMenu = ({
 						? "/admin/order-return"
 						: fromPage === "OrdersList"
 						? "/admin/orders-list"
+						: fromPage === "OrderExchange"
+						? "/admin/order-exchange"
 						: "/admin/dashboard"
 				}
 				defaultOpenKeys={[
@@ -423,9 +435,9 @@ const AdminMenuWrapper = styled.div`
 	margin-left: 3px;
 	margin-bottom: 15px;
 	background: ${(props) => (props.show ? "" : "white")};
-	position: fixed;
 	top: 0px !important;
-	z-index: 12000;
+	position: fixed;
+	z-index: 20000;
 
 	li {
 		/* margin: 20px auto; */
@@ -434,11 +446,11 @@ const AdminMenuWrapper = styled.div`
 	}
 
 	ul {
-		z-index: 15000;
 	}
 
 	.ant-menu.ant-menu-inline-collapsed {
 		min-height: 1000px;
+		position: fixed;
 	}
 
 	button {
@@ -471,7 +483,6 @@ const AdminMenuWrapper = styled.div`
 	}
 
 	@media (max-width: 750px) {
-		z-index: 10000;
 		ul {
 			display: ${(props) => (props.show ? "none" : "")};
 			margin-top: 0px !important;
@@ -479,7 +490,7 @@ const AdminMenuWrapper = styled.div`
 		}
 
 		.ant-menu.ant-menu-dark {
-			position: fixed;
+			/* position: fixed; */
 		}
 
 		button {

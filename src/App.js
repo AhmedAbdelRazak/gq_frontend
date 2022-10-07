@@ -52,6 +52,8 @@ import DeleteStore from "./Admin/StoreManagement/DeleteStore";
 import UpdateStoreSingle from "./Admin/StoreManagement/UpdateStoreSingle";
 import OrderReturn from "./Admin/Orders/OrderReturn";
 import OrdersList from "./Admin/Orders/OrdersList";
+import OrderExchange from "./Admin/Orders/OrderExchange";
+import OrderExchangeSingle from "./Admin/Orders/OrderExchangeSingle";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -200,6 +202,11 @@ const App = () => {
 					exact
 					component={SingleOrderPage}
 				/>
+				<AdminRoute
+					path='/admin/exchange-order/:orderId'
+					exact
+					component={OrderExchangeSingle}
+				/>
 				<AdminRoute path='/admin/add-employee' exact component={AddEmployee} />
 				<AdminRoute path='/admin/gq-reports' exact component={MainReports} />
 				<AdminRoute
@@ -218,6 +225,11 @@ const App = () => {
 				<AdminRoute path='/admin/add-new-store' exact component={AddStore} />
 				<AdminRoute path='/admin/order-return' exact component={OrderReturn} />
 				<AdminRoute path='/admin/orders-list' exact component={OrdersList} />
+				<AdminRoute
+					path='/admin/order-exchange'
+					exact
+					component={OrderExchange}
+				/>
 
 				<AdminRoute path='/admin/update-store' exact component={UpdateStore} />
 

@@ -9,19 +9,18 @@ import DarkBG from "../AdminMenu/DarkBG";
 import Navbar from "../AdminNavMenu/Navbar";
 import { listOrders } from "../apiAdmin";
 import Pagination from "./Pagination";
-import ReturnModal from "./UpdateModals/ReturnModal";
 
-const OrderReturn = () => {
+const OrderExchange = () => {
 	const [allOrders, setAllOrders] = useState([]);
 	const [q, setQ] = useState("");
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [offset, setOffset] = useState(0);
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
+	// eslint-disable-next-line
 	const [modalVisible, setModalVisible] = useState(false);
-	const [returnDate, setReturnDate] = useState(new Date());
+	// eslint-disable-next-line
 	const [selectedOrder, setSelectedOrder] = useState({});
-	const [returnStatus, setReturnStatus] = useState("");
 
 	//pagination
 	const [currentPage, setCurrentPage] = useState(1);
@@ -102,17 +101,6 @@ const OrderReturn = () => {
 	const dataTable = () => {
 		return (
 			<div className='tableData'>
-				<ReturnModal
-					selectedOrder={selectedOrder}
-					setSelectedOrder={setSelectedOrder}
-					modalVisible={modalVisible}
-					setModalVisible={setModalVisible}
-					setCollapsed={setCollapsed}
-					returnDate={returnDate}
-					setReturnDate={setReturnDate}
-					returnStatus={returnStatus}
-					setReturnStatus={setReturnStatus}
-				/>
 				<div className=' mb-3 form-group mx-3 text-center'>
 					<label
 						className='mt-3 mx-3'
@@ -164,14 +152,16 @@ const OrderReturn = () => {
 							<th scope='col'>Ordered By</th>
 							<th scope='col'>Amount</th>
 							<th scope='col'>Ordered Qty</th>
-							<th scope='col'>Return Order..?</th>
+							<th scope='col'>Exchange Order..?</th>
 						</tr>
 					</thead>
 
 					<tbody className='my-auto'>
 						{search(currentPosts).map((s, i) => (
 							<tr key={i} className=''>
-								{s.OTNumber && s.OTNumber !== "Not Added" ? (
+								{s.invoiceNumber && s.invoiceNumber !== "Not Added" ? (
+									<td className='my-auto'>{s.invoiceNumber}</td>
+								) : s.OTNumber && s.OTNumber !== "Not Added" ? (
 									<td className='my-auto'>{s.OTNumber}</td>
 								) : (
 									<td className='my-auto'>{`OT${new Date(
@@ -214,7 +204,7 @@ const OrderReturn = () => {
 								<td>{s.totalAmountAfterDiscount.toFixed(2)} L.E.</td>
 								<td>{s.totalOrderQty}</td>
 								<Link
-									to={`#`}
+									to={`/admin/exchange-order/${s._id}`}
 									onClick={() => {
 										setModalVisible(true);
 										setSelectedOrder(s);
@@ -226,7 +216,7 @@ const OrderReturn = () => {
 											fontWeight: "bold",
 											cursor: "pointer",
 										}}>
-										Return This Order
+										Exchange This Order
 									</td>
 								</Link>
 
@@ -240,14 +230,14 @@ const OrderReturn = () => {
 	};
 
 	return (
-		<OrderReturnWrapper show={AdminMenuStatus}>
+		<OrderExchangeWrapper show={AdminMenuStatus}>
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu
-						fromPage='OrderReturn'
+						fromPage='OrderExchange'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
 						collapsed={collapsed}
@@ -255,18 +245,18 @@ const OrderReturn = () => {
 					/>
 				</div>
 				<div className='mainContent'>
-					<Navbar fromPage='OrderReturn' pageScrolled={pageScrolled} />
+					<Navbar fromPage='OrderExchange' pageScrolled={pageScrolled} />
 
 					<div className='mt-5 mx-3'> {dataTable()}</div>
 				</div>
 			</div>
-		</OrderReturnWrapper>
+		</OrderExchangeWrapper>
 	);
 };
 
-export default OrderReturn;
+export default OrderExchange;
 
-const OrderReturnWrapper = styled.div`
+const OrderExchangeWrapper = styled.div`
 	min-height: 880px;
 	/* overflow-x: hidden; */
 	/* background: #ededed; */
@@ -290,7 +280,7 @@ const OrderReturnWrapper = styled.div`
 	tr:hover {
 		background: #009ef7 !important;
 		color: white !important;
-		font-weight: bolder !important;
+		/* font-weight: bolder !important; */
 	}
 
 	.tableData {

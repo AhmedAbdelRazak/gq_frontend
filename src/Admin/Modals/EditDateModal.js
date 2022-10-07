@@ -61,12 +61,10 @@ const EditDateModal = ({
 				visible={modalVisible}
 				onOk={() => {
 					setModalVisible(false);
-					setCollapsed(false);
 				}}
 				// okButtonProps={{ style: { display: "none" } }}
 				cancelButtonProps={{ style: { display: "none" } }}
 				onCancel={() => {
-					setCollapsed(false);
 					setModalVisible(false);
 				}}>
 				{mainForm()}
@@ -77,4 +75,6 @@ const EditDateModal = ({
 
 export default EditDateModal;
 
-const EditDateModalWrapper = styled.div``;
+const EditDateModalWrapper = styled.div`
+	z-index: 18000 !important;
+`;

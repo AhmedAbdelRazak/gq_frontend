@@ -54,7 +54,7 @@ const DeleteSubcategory = () => {
 
 		if (productCheck.length > 0) {
 			return toast.error(
-				`Product (${productCheck[0].productName}) is connected to this category, Please delete/update product first`,
+				`Product (${productCheck[0].productName}) is connected to this subcategory, Please delete/update product first`,
 			);
 		}
 

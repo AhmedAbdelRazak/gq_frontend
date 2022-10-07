@@ -83,16 +83,6 @@ body {
 	padding: 1000px;
 }
 
-.DarkbackgroundForSidebar2 {
-	background-color: rgba(0, 0, 0, 0.3);
-	height: 100%;
-	top: 90px;
-	left: 0;
-	position: fixed;
-	z-index: 100;
-	padding: 1000px;
-}
-
 .detailsAboutAppointment {
 	font-weight: bold;
 	font-size: 0.95rem;
