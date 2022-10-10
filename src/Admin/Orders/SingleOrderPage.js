@@ -459,6 +459,71 @@ const SingleOrderPage = (props) => {
 									</div>
 								</>
 							) : null}
+							<div className='col-md-8 mx-auto text-center'>
+								<hr />
+							</div>
+							{singleOrder.exchangedProductQtyWithVariables &&
+							singleOrder.exchangedProductQtyWithVariables.length > 0 ? (
+								<>
+									<div
+										className='my-3'
+										style={{ fontSize: "1rem", fontWeight: "bolder" }}>
+										Exchanged Products:
+									</div>
+									<div className='row'>
+										{singleOrder.exchangedProductQtyWithVariables.map(
+											(ep, iii) => {
+												return (
+													<div className='col-md-4 text-capitalize' key={iii}>
+														<div className='row'>
+															<div className='col-md-6 my-4'>
+																Product Name:{" "}
+																<strong
+																	style={{
+																		color: "darkblue",
+																		textTransform: "capitalize",
+																	}}>
+																	{ep.exchangedProduct.productName} |{" "}
+																	{ep.exchangedProduct.SubSKU} |{" "}
+																	{ep.exchangedProduct.SubSKUColor}
+																</strong>{" "}
+																<br />
+																<strong>EXCHANGED WITH: </strong>
+																<br />
+																<strong
+																	style={{
+																		color: "darkblue",
+																		textTransform: "capitalize",
+																	}}>
+																	{ep.productName} | {ep.SubSKU} |{" "}
+																	{ep.SubSKUColor}
+																</strong>
+																Quantity:{" "}
+																<strong style={{ color: "darkblue" }}>
+																	{ep.OrderedQty}{" "}
+																</strong>
+																{Number(ep.OrderedQty) > 1 ? "Units" : "Unit"}
+															</div>
+
+															<div className='col-md-6 my-4'>
+																<img
+																	style={{ width: "100px" }}
+																	src={
+																		ep.productMainImage
+																			? ep.productMainImage
+																			: ""
+																	}
+																	alt=''
+																/>
+															</div>
+														</div>
+													</div>
+												);
+											},
+										)}
+									</div>
+								</>
+							) : null}
 
 							<div className='col-md-4 mx-auto text-center'>
 								<hr />

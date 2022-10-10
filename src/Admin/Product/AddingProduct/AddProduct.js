@@ -78,6 +78,7 @@ const AddProduct = () => {
 		useState("SizesColorsImages");
 	const [variablesSubmit, setVariablesSubmit] = useState(false);
 	const [clearance, setClearance] = useState(false);
+	const [activeBackorder, setActiveBackorder] = useState(false);
 	const [shipping, setShipping] = useState(true);
 	const [activeProduct, setActiveProduct] = useState(true);
 	const [featured, setFeatured] = useState(false);
@@ -667,6 +668,7 @@ const AddProduct = () => {
 			shipping: shipping,
 			addVariables: addVariables,
 			clearance: clearance,
+			activeBackorder: activeBackorder,
 			productAttributes: addVariables ? productAttributesFinal : [],
 			activeProduct: activeProduct,
 			chosenSeason: chosenSeason,
@@ -727,6 +729,20 @@ const AddProduct = () => {
 						className='ml-2 mt-2'
 						onChange={() => setClearance(!clearance)}
 						checked={clearance === true ? true : false}
+					/>
+				</div>
+
+				<div className='form-group mt-5'>
+					<label
+						className='text-muted'
+						style={{ fontWeight: "bold", fontSize: "17px" }}>
+						Allow Backorder
+					</label>
+					<input
+						type='checkbox'
+						className='ml-2 mt-2'
+						onChange={() => setActiveBackorder(!activeBackorder)}
+						checked={activeBackorder === true ? true : false}
 					/>
 				</div>
 

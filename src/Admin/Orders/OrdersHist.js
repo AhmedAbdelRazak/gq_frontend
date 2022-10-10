@@ -108,6 +108,11 @@ const OrdersHist = () => {
 	const dataTable = () => {
 		return (
 			<div className='tableData'>
+				<div className='mt-4'>
+					<Link className='btn btn-info' to='/admin/create-new-order'>
+						Create New Order
+					</Link>
+				</div>
 				<div className=' mb-3 form-group mx-3 text-center'>
 					<label
 						className='mt-3 mx-3'
@@ -133,28 +138,35 @@ const OrdersHist = () => {
 					style={{ fontSize: "0.75rem" }}>
 					<thead className='thead-light'>
 						<tr>
-							<th scope='col'>Order #</th>
-							<th scope='col'>INV #</th>
-							<th scope='col'>Customer Name</th>
-							<th scope='col'>Customer Phone</th>
+							{/* <th scope='col'>Order #</th> */}
 							<th scope='col'>Purchase Date</th>
+							{/* <th scope='col'>Order #</th> */}
+							<th scope='col'>INV #</th>
 							<th scope='col'>Status</th>
-							<th scope='col'>Governorate</th>
-							<th scope='col'>City</th>
-							<th scope='col'>Shipping Carrier</th>
-							<th scope='col'>Tracking #</th>
-							<th scope='col'>Ordered By</th>
+							<th scope='col'>Name</th>
+							<th scope='col'>Phone</th>
 							<th scope='col'>Amount</th>
-							<th scope='col'>Ordered Qty</th>
-							<th scope='col'>More Details</th>
-							<th scope='col'>Delete Order?</th>
+							<th scope='col'>Store</th>
+							<th scope='col' style={{ width: "6%" }}>
+								Taker
+							</th>
+							<th scope='col'>Governorate</th>
+							{/* <th scope='col'>City</th> */}
+							<th scope='col'>Carrier</th>
+							<th scope='col'>Tracking #</th>
+							<th scope='col'>Quantity</th>
+							<th scope='col' style={{ width: "8%" }}>
+								More Details
+							</th>
+							<th scope='col'>Shipping?</th>
+							<th scope='col'>Delete?</th>
 						</tr>
 					</thead>
 
 					<tbody className='my-auto'>
 						{search(allOrders).map((s, i) => (
 							<tr key={i} className=''>
-								{s.OTNumber && s.OTNumber !== "Not Added" ? (
+								{/* {s.OTNumber && s.OTNumber !== "Not Added" ? (
 									<td className='my-auto'>{s.OTNumber}</td>
 								) : (
 									<td className='my-auto'>{`OT${new Date(
@@ -164,8 +176,22 @@ const OrdersHist = () => {
 									}${new Date(s.createdAt).getDate()}000${
 										allOrders.length - i
 									}`}</td>
-								)}
+								)} */}
 
+								<td style={{ width: "8%" }}>
+									{new Date(s.createdAt).toDateString()}{" "}
+								</td>
+								{/* {s.OTNumber && s.OTNumber !== "Not Added" ? (
+									<td className='my-auto'>{s.OTNumber}</td>
+								) : (
+									<td className='my-auto'>{`OT${new Date(
+										s.createdAt,
+									).getFullYear()}${
+										new Date(s.createdAt).getMonth() + 1
+									}${new Date(s.createdAt).getDate()}000${
+										allOrders.length - i
+									}`}</td>
+								)} */}
 								<td
 									style={{
 										width: "10%",
@@ -174,47 +200,62 @@ const OrdersHist = () => {
 									}}>
 									{s.invoiceNumber}
 								</td>
-
-								<td>{s.customerDetails.fullName}</td>
-								<td>{s.customerDetails.phone}</td>
-								<td>{new Date(s.createdAt).toLocaleDateString()} </td>
 								<td
 									style={{
 										fontWeight: "bold",
-										fontSize: "0.9rem",
+										fontSize: "0.77rem",
 										width: "8.5%",
 										background:
-											s.status === "Delivered" || s.status === "Shipped"
+											s.status.includes("Delivered") ||
+											s.status.includes("Shipped")
 												? "#004b00"
 												: s.status === "Cancelled"
 												? "darkred"
-												: "#003264",
+												: s.status.includes("Ready To Ship")
+												? "#bbffbb"
+												: "#e2e2e2",
 										color:
-											s.status === "Delivered" || s.status === "Shipped"
+											s.status.includes("Delivered") ||
+											s.status.includes("Shipped")
 												? "white"
-												: s.status === "Cancelled"
+												: s.status.includes("Cancelled")
 												? "white"
-												: "white",
+												: "black",
 									}}>
 									{s.status}
 								</td>
-								<td>{s.customerDetails.state}</td>
-								<td>{s.customerDetails.cityName}</td>
-								<td>{s.chosenShippingOption[0].carrierName}</td>
-								<td>{s.trackingNumber ? s.trackingNumber : "Not Added"}</td>
+
+								<td style={{ width: "11%" }}>{s.customerDetails.fullName}</td>
+								<td>{s.customerDetails.phone}</td>
+								<td>{s.totalAmountAfterDiscount.toFixed(0)} L.E.</td>
+								<td style={{ textTransform: "uppercase" }}>{s.orderSource}</td>
 								<td>{s.employeeData.name}</td>
-								<td>{s.totalAmountAfterDiscount.toFixed(2)} L.E.</td>
+								<td>{s.customerDetails.state}</td>
+								{/* <td>{s.customerDetails.cityName}</td> */}
+								<td style={{ width: "8%" }}>
+									{s.chosenShippingOption[0].carrierName}
+								</td>
+								<td style={{ width: "8%" }}>
+									{s.trackingNumber ? s.trackingNumber : "Not Added"}
+								</td>
 								<td>{s.totalOrderQty}</td>
-								<Link to={`/admin/single-order/${s._id}`}>
-									<td
-										style={{
-											color: "blue",
-											fontWeight: "bold",
-											cursor: "pointer",
-										}}>
-										More Details...
-									</td>
-								</Link>
+								<td
+									style={{
+										color: "blue",
+										fontWeight: "bold",
+										cursor: "pointer",
+									}}>
+									<Link to={`/admin/single-order/${s._id}`}>Show More....</Link>
+								</td>
+
+								<td
+									style={{
+										cursor: "pointer",
+										fontSize: "10px,",
+										width: "8%",
+									}}>
+									<Link to={`#`}>Create Shipping</Link>
+								</td>
 
 								<td
 									onClick={() => {
@@ -363,7 +404,7 @@ const OrdersHistWrapper = styled.div`
 	tr:hover {
 		background: #009ef7 !important;
 		color: white !important;
-		font-weight: bolder !important;
+		/* font-weight: bolder !important; */
 	}
 
 	.tableData {

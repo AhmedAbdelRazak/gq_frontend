@@ -12,7 +12,7 @@ import { listOrders, updateOrderInvoice } from "../apiAdmin";
 // eslint-disable-next-line
 import Pagination from "./Pagination";
 
-const OrdersList = () => {
+const ReturnList = () => {
 	const [allOrders, setAllOrders] = useState([]);
 	const [q, setQ] = useState("");
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
@@ -64,7 +64,9 @@ const OrdersList = () => {
 									i.status !== "Delivered" &&
 									i.status !== "Shipped" &&
 									i.status !== "Cancelled" &&
-									i.invoiceNumber === "Not Added",
+									i.status !== "In Processing" &&
+									i.status !== "Ready To Ship" &&
+									i.status.includes("Return"),
 							)
 							.sort(sortOrdersAscendingly),
 					);
@@ -76,7 +78,9 @@ const OrdersList = () => {
 									i.status !== "Delivered" &&
 									i.status !== "Shipped" &&
 									i.status !== "Cancelled" &&
-									i.invoiceNumber === "Not Added" &&
+									i.status !== "In Processing" &&
+									i.status !== "Ready To Ship" &&
+									i.status.includes("Return") &&
 									new Date(i.createdAt).setHours(0, 0, 0, 0) ===
 										new Date(today).setHours(0, 0, 0, 0),
 							)
@@ -90,7 +94,9 @@ const OrdersList = () => {
 									i.status !== "Delivered" &&
 									i.status !== "Shipped" &&
 									i.status !== "Cancelled" &&
-									i.invoiceNumber === "Not Added" &&
+									i.status !== "In Processing" &&
+									i.status !== "Ready To Ship" &&
+									i.status.includes("Return") &&
 									new Date(i.createdAt).setHours(0, 0, 0, 0) ===
 										new Date(yesterday).setHours(0, 0, 0, 0),
 							)
@@ -104,7 +110,9 @@ const OrdersList = () => {
 									i.status !== "Delivered" &&
 									i.status !== "Shipped" &&
 									i.status !== "Cancelled" &&
-									i.invoiceNumber === "Not Added" &&
+									i.status !== "In Processing" &&
+									i.status !== "Ready To Ship" &&
+									i.status.includes("Return") &&
 									new Date(i.createdAt).setHours(0, 0, 0, 0) >=
 										new Date(last7Days).setHours(0, 0, 0, 0),
 							)
@@ -118,7 +126,9 @@ const OrdersList = () => {
 									i.status !== "Delivered" &&
 									i.status !== "Shipped" &&
 									i.status !== "Cancelled" &&
-									i.invoiceNumber === "Not Added",
+									i.status !== "In Processing" &&
+									i.status !== "Ready To Ship" &&
+									i.status.includes("Return"),
 							)
 							.sort(sortOrdersAscendingly),
 					);
@@ -175,6 +185,7 @@ const OrdersList = () => {
 	// eslint-disable-next-line
 	const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+	// eslint-disable-next-line
 	const handleInvoiceStatus = (invoiceNumber, orderId) => {
 		updateOrderInvoice(user._id, token, orderId, invoiceNumber).then((data) => {
 			if (data.error) {
@@ -185,6 +196,17 @@ const OrdersList = () => {
 		});
 	};
 
+	// How much was refunded
+	// return comment
+	// Refund Method (CIB, Electronic Wallet, Bank Trans, In Cash, Others)
+	// Required Refunded Amount
+	// photo sku photo
+	// final exchange status exchange
+	// free shipping button in create new order
+	// tick for 0 product
+	// change colors of each status
+	// insert date for new orders
+
 	const dataTable = () => {
 		return (
 			<div className='tableData'>
@@ -192,15 +214,16 @@ const OrdersList = () => {
 					<div
 						className='text-center mt-5'
 						style={{ fontSize: "1.2rem", fontWeight: "bold" }}>
-						No Un-invoiced Orders Available
+						No Return Orders Available
 					</div>
 				) : (
 					<>
 						<div>
-							<Link className='btn btn-info' to='/admin/create-new-order'>
-								Create New Order
+							<Link className='btn btn-info' to='/admin/order-return'>
+								New Return
 							</Link>
 						</div>
+
 						<div className='form-group text-right'>
 							<label
 								className='mt-3 mx-3'
@@ -310,8 +333,7 @@ const OrdersList = () => {
 									{/* <th scope='col'>City</th> */}
 									<th scope='col'>Shipping Carrier</th>
 									<th scope='col'>Tracking #</th>
-									<th scope='col'>Quantity</th>
-									<th scope='col'>Invoice?</th>
+									<th scope='col'>Ordered Qty</th>
 								</tr>
 							</thead>
 
@@ -379,41 +401,6 @@ const OrdersList = () => {
 											{s.trackingNumber ? s.trackingNumber : "Not Added"}
 										</td>
 										<td>{s.totalOrderQty}</td>
-										{s.invoiceNumber === "Not Added" ? (
-											<td
-												style={{
-													color: "darkred",
-													fontWeight: "bold",
-													cursor: "pointer",
-												}}>
-												<Link
-													to={`#`}
-													onClick={() => {
-														var today = new Date().toDateString("en-US", {
-															timeZone: "Africa/Cairo",
-														});
-
-														var invoiceNumber = `INV${new Date(
-															today,
-														).getFullYear()}${
-															new Date(today).getMonth() + 1
-														}${new Date(today).getDate()}000${
-															allOrders.length - i
-														}`;
-														handleInvoiceStatus(invoiceNumber, s._id);
-													}}>
-													Invoice
-												</Link>
-											</td>
-										) : (
-											<td
-												style={{
-													color: "darkgreen",
-													fontWeight: "bold",
-												}}>
-												Order Already Invoiced
-											</td>
-										)}
 
 										{/* <td>{Invoice(s)}</td> */}
 									</tr>
@@ -427,14 +414,14 @@ const OrdersList = () => {
 	};
 
 	return (
-		<OrdersListWrapper show={AdminMenuStatus}>
+		<ReturnListWrapper show={AdminMenuStatus}>
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu
-						fromPage='OrdersList'
+						fromPage='ReturnList'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
 						collapsed={collapsed}
@@ -442,26 +429,25 @@ const OrdersList = () => {
 					/>
 				</div>
 				<div className='mainContent'>
-					<Navbar fromPage='OrdersList' pageScrolled={pageScrolled} />
+					<Navbar fromPage='ReturnList' pageScrolled={pageScrolled} />
 
 					<div className='mt-5 mx-3'> {dataTable()}</div>
 				</div>
 			</div>
-		</OrdersListWrapper>
+		</ReturnListWrapper>
 	);
 };
 
-export default OrdersList;
+export default ReturnList;
 
-const OrdersListWrapper = styled.div`
+const ReturnListWrapper = styled.div`
 	min-height: 880px;
 	/* overflow-x: hidden; */
 	/* background: #ededed; */
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: ${(props) =>
-			props.show ? "8% 92%" : "15.1% 84.9%"};
+		grid-template-columns: ${(props) => (props.show ? "8% 92%" : "15% 84.8%")};
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */

@@ -64,11 +64,13 @@ const UpdateProduct = () => {
 		var QtyNoVariables =
 			productsWithNoVariables &&
 			productsWithNoVariables
-				.map((iii) => Number(iii.quantity))
+				.map((iii) => (Number(iii.quantity) > 0 ? Number(iii.quantity) : 0))
 				.reduce((a, b) => a + b, 0);
 
 		var QtyWithVariables = productsWithVariables.map((iii) =>
-			iii.map((iiii) => iiii.quantity),
+			iii.map((iiii) =>
+				Number(iiii.quantity) > 0 ? Number(iiii.quantity) : 0,
+			),
 		);
 
 		return Number(QtyNoVariables) + Number(sum_array(QtyWithVariables));
@@ -80,12 +82,18 @@ const UpdateProduct = () => {
 		var QtyNoVariables =
 			productsWithNoVariables &&
 			productsWithNoVariables
-				.map((iii) => Number(iii.quantity) * Number(iii.priceAfterDiscount))
+				.map((iii) =>
+					Number(iii.quantity) > 0
+						? Number(iii.quantity) * Number(iii.priceAfterDiscount)
+						: 0,
+				)
 				.reduce((a, b) => a + b, 0);
 
 		var QtyWithVariables = productsWithVariables.map((iii) =>
-			iii.map(
-				(iiii) => Number(iiii.quantity) * Number(iiii.priceAfterDiscount),
+			iii.map((iiii) =>
+				Number(iiii.quantity) > 0
+					? Number(iiii.quantity) * Number(iiii.priceAfterDiscount)
+					: 0,
 			),
 		);
 

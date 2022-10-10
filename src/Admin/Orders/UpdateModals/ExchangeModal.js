@@ -21,10 +21,11 @@ const ExchangeModal = ({
 	allProducts,
 	chosenProductQtyWithVariables,
 	setChosenProductQtyWithVariables,
+	previousProductVariable,
 }) => {
 	const [chosenProduct, setChosenProduct] = useState({});
 	const [chosenProductVariables, setChosenProductVariables] = useState({});
-	const [pickedQuantity, setPickedQuantity] = useState(1);
+	const [pickedQuantity, setPickedQuantity] = useState(0);
 	const [allColors, setAllColors] = useState([]);
 
 	// eslint-disable-next-line
@@ -52,6 +53,12 @@ const ExchangeModal = ({
 	const mainForm = () => {
 		return (
 			<div className='mx-auto text-center'>
+				<html>
+					<head>
+						<title>Chapter 1</title>
+					</head>
+					<body></body>
+				</html>
 				{allProducts && allProducts.length > 0 && (
 					<div className='form-group mx-auto'>
 						<label>Choose Product</label>
@@ -123,10 +130,12 @@ const ExchangeModal = ({
 												return {
 													...ii,
 													productId: chosenProduct._id,
+													productName: chosenProduct.productName,
 													productMainImage: chosenProduct.thumbnailImage[0]
 														.images[0]
 														? chosenProduct.thumbnailImage[0].images[0].url
 														: null,
+													exchangedProduct: previousProductVariable,
 												};
 											})[0],
 									);
@@ -171,17 +180,6 @@ const ExchangeModal = ({
 										...chosenProductQtyWithVariables,
 										OrderedQty: e.target.value,
 									});
-
-									setUpdateSingleOrder({
-										...updateSingleOrder,
-										exchangedProductQtyWithVariables: [
-											...updateSingleOrder.exchangedProductQtyWithVariables,
-											{
-												...chosenProductQtyWithVariables,
-												OrderedQty: e.target.value,
-											},
-										],
-									});
 								}}
 								type='number'
 								className='form-control'
@@ -195,6 +193,19 @@ const ExchangeModal = ({
 					<button
 						className='btn btn-primary btn-block'
 						onClick={() => {
+							setUpdateSingleOrder({
+								...updateSingleOrder,
+								status: "Exchange - In Processing",
+								exchangedProductQtyWithVariables: [
+									...updateSingleOrder.exchangedProductQtyWithVariables,
+									{
+										...chosenProductQtyWithVariables,
+									},
+								],
+							});
+							setChosenProduct([]);
+							setChosenProductQtyWithVariables({});
+							setPickedQuantity(0);
 							setModalVisible(false);
 						}}>
 						Submit Changes
@@ -207,7 +218,7 @@ const ExchangeModal = ({
 	return (
 		<ExchangeModalWrapper>
 			<Modal
-				width='90%'
+				width='70%'
 				title={
 					<div
 						style={{
@@ -224,7 +235,7 @@ const ExchangeModal = ({
 				// okButtonProps={{ style: { display: "none" } }}
 				cancelButtonProps={{ style: { display: "none" } }}
 				onCancel={() => {
-					setCollapsed(false);
+					setCollapsed(true);
 					setModalVisible(false);
 				}}>
 				{mainForm()}
@@ -235,4 +246,6 @@ const ExchangeModal = ({
 
 export default ExchangeModal;
 
-const ExchangeModalWrapper = styled.div``;
+const ExchangeModalWrapper = styled.div`
+	z-index: 20002 !important;
+`;

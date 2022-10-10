@@ -77,6 +77,7 @@ const UpdateProductSingle = ({ match }) => {
 		useState("SizesColorsImages");
 	const [variablesSubmit, setVariablesSubmit] = useState(false);
 	const [clearance, setClearance] = useState(false);
+	const [activeBackorder, setActiveBackorder] = useState(false);
 	const [shipping, setShipping] = useState(true);
 	const [activeProduct, setActiveProduct] = useState(true);
 	const [featured, setFeatured] = useState(false);
@@ -157,6 +158,13 @@ const UpdateProductSingle = ({ match }) => {
 				);
 				setClearance(
 					data.filter((e) => e._id === match.params.productId)[0].clearance,
+				);
+				setActiveBackorder(
+					data.filter((e) => e._id === match.params.productId)[0]
+						.activeBackorder
+						? data.filter((e) => e._id === match.params.productId)[0]
+								.activeBackorder
+						: false,
 				);
 				setShipping(
 					data.filter((e) => e._id === match.params.productId)[0].shipping,
@@ -648,6 +656,7 @@ const UpdateProductSingle = ({ match }) => {
 			activeProduct: activeProduct,
 			chosenSeason: chosenSeason,
 			featuredProduct: featured,
+			activeBackorder: activeBackorder,
 		};
 
 		updateProduct(match.params.productId, user._id, token, {
@@ -706,6 +715,20 @@ const UpdateProductSingle = ({ match }) => {
 						className='ml-2 mt-2'
 						onChange={() => setClearance(!clearance)}
 						checked={clearance === true ? true : false}
+					/>
+				</div>
+
+				<div className='form-group mt-5'>
+					<label
+						className='text-muted'
+						style={{ fontWeight: "bold", fontSize: "17px" }}>
+						Allow Backorder
+					</label>
+					<input
+						type='checkbox'
+						className='ml-2 mt-2'
+						onChange={() => setActiveBackorder(!activeBackorder)}
+						checked={activeBackorder === true ? true : false}
 					/>
 				</div>
 

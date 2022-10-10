@@ -189,6 +189,15 @@ const items = [
 
 		getItem(
 			<Link
+				to='/admin/return-list'
+				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+				Return List
+			</Link>,
+			"/admin/return-list",
+		),
+
+		getItem(
+			<Link
 				to='/admin/order-exchange'
 				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
 				Order Exchange
@@ -378,6 +387,8 @@ const AdminMenu = ({
 						? "/admin/orders-list"
 						: fromPage === "OrderExchange"
 						? "/admin/order-exchange"
+						: fromPage === "ReturnList"
+						? "/admin/return-list"
 						: "/admin/dashboard"
 				}
 				defaultOpenKeys={[
@@ -436,7 +447,7 @@ const AdminMenuWrapper = styled.div`
 	margin-bottom: 15px;
 	background: ${(props) => (props.show ? "" : "white")};
 	top: 0px !important;
-	position: fixed;
+	/* position: fixed; */
 	z-index: 20000;
 
 	li {
@@ -450,7 +461,7 @@ const AdminMenuWrapper = styled.div`
 
 	.ant-menu.ant-menu-inline-collapsed {
 		min-height: 1000px;
-		position: fixed;
+		/* position: fixed; */
 	}
 
 	button {

@@ -142,17 +142,19 @@ const OrderExchange = () => {
 						<tr>
 							<th scope='col'>Order #</th>
 							<th scope='col'>Customer Name</th>
-							<th scope='col'>Customer Phone</th>
-							<th scope='col'>Purchase Date</th>
+							<th scope='col'>Phone</th>
+							<th scope='col' style={{ width: "8%" }}>
+								Purchase Date
+							</th>
 							<th scope='col'>Status</th>
 							<th scope='col'>Governorate</th>
 							<th scope='col'>City</th>
-							<th scope='col'>Shipping Carrier</th>
+							<th scope='col'> Carrier</th>
 							<th scope='col'>Tracking #</th>
 							<th scope='col'>Ordered By</th>
 							<th scope='col'>Amount</th>
-							<th scope='col'>Ordered Qty</th>
-							<th scope='col'>Exchange Order..?</th>
+							<th scope='col'>Quantity</th>
+							<th scope='col'>Exchange..?</th>
 						</tr>
 					</thead>
 
@@ -198,27 +200,29 @@ const OrderExchange = () => {
 								</td>
 								<td>{s.customerDetails.state}</td>
 								<td>{s.customerDetails.cityName}</td>
-								<td>{s.chosenShippingOption[0].carrierName}</td>
+								<td style={{ width: "8%" }}>
+									{s.chosenShippingOption[0].carrierName}
+								</td>
 								<td>{s.trackingNumber ? s.trackingNumber : "Not Added"}</td>
 								<td>{s.employeeData.name}</td>
 								<td>{s.totalAmountAfterDiscount.toFixed(2)} L.E.</td>
 								<td>{s.totalOrderQty}</td>
-								<Link
-									to={`/admin/exchange-order/${s._id}`}
-									onClick={() => {
-										setModalVisible(true);
-										setSelectedOrder(s);
-										setCollapsed(true);
+								<td
+									style={{
+										color: "blue",
+										fontWeight: "bold",
+										cursor: "pointer",
 									}}>
-									<td
-										style={{
-											color: "blue",
-											fontWeight: "bold",
-											cursor: "pointer",
+									<Link
+										to={`/admin/exchange-order/${s._id}`}
+										onClick={() => {
+											setModalVisible(true);
+											setSelectedOrder(s);
+											setCollapsed(true);
 										}}>
-										Exchange This Order
-									</td>
-								</Link>
+										Exchange Order
+									</Link>
+								</td>
 
 								{/* <td>{Invoice(s)}</td> */}
 							</tr>
@@ -263,7 +267,8 @@ const OrderExchangeWrapper = styled.div`
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: ${(props) => (props.show ? "8% 92%" : "15% 84.8%")};
+		grid-template-columns: ${(props) =>
+			props.show ? "8% 92%" : "15.1% 84.9%"};
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */

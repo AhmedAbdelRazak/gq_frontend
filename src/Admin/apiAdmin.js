@@ -409,6 +409,26 @@ export const updateOrder = (orderId, userId, token, order) => {
 		.catch((err) => console.log(err));
 };
 
+export const updateOrderExchange = (orderId, userId, token, order) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/update/order-exchange/${orderId}/${userId}`,
+		{
+			method: "PUT",
+			headers: {
+				// content type?
+				"Content-Type": "application/json",
+				Accept: "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify({ order: order }),
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
 /**End Of Orders Management*/
 
 export const createShippingOptions = (userId, token, shippingOptions) => {

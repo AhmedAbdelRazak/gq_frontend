@@ -38,7 +38,9 @@ const Trial = ({
 							placeholder='Add Updated Tracking # Here.'
 						/>
 						<div className='text-center mx-auto mt-3'>
-							<button className='btn btn-primary col-md-6 mx-auto'>
+							<button
+								className='btn btn-primary col-md-7 mx-auto'
+								style={{ fontSize: "13px" }}>
 								Send Tracking Number To The Client Via SMS
 							</button>
 						</div>
@@ -53,38 +55,74 @@ const Trial = ({
 								{updateSingleOrder.status}
 							</span>
 						</h4>
-						<select
-							className='form-control'
-							onChange={(e) =>
-								setUpdateSingleOrder({
-									...updateSingleOrder,
-									status: e.target.value,
-								})
-							}
-							style={{
-								border: "#cfcfcf solid 1px",
-								borderRadius: "10px",
-								width: "100%",
-								fontSize: "0.9rem",
-								boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
-							}}>
-							<option>Update Status</option>
-							<option key='1' value='In Processing'>
-								In Processing
-							</option>
-							<option key='2' value='Ready To Ship'>
-								Ready To Ship
-							</option>
-							<option key='3' value='Shipped'>
-								Shipped
-							</option>
-							<option key='4' value='Delivered'>
-								Delivered
-							</option>
-							<option key='5' value='Cancelled'>
-								Cancelled
-							</option>
-						</select>
+
+						{updateSingleOrder.status.includes("Exchange") ? (
+							<select
+								className='form-control'
+								onChange={(e) =>
+									setUpdateSingleOrder({
+										...updateSingleOrder,
+										status: e.target.value,
+									})
+								}
+								style={{
+									border: "#cfcfcf solid 1px",
+									borderRadius: "10px",
+									width: "100%",
+									fontSize: "0.9rem",
+									boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
+								}}>
+								<option>Update Status</option>
+								<option key='1' value='Exchange - In Processing'>
+									Exchange - In Processing
+								</option>
+								<option key='2' value='Exchange - Ready To Ship'>
+									Exchange - Ready To Ship
+								</option>
+								<option key='3' value='Exchange - Shipped'>
+									Exchange - Shipped
+								</option>
+								<option key='4' value='Exchange - Delivered'>
+									Exchange - Delivered
+								</option>
+								<option key='5' value='Exchange - Cancelled'>
+									Exchange - Cancelled
+								</option>
+							</select>
+						) : (
+							<select
+								className='form-control'
+								onChange={(e) =>
+									setUpdateSingleOrder({
+										...updateSingleOrder,
+										status: e.target.value,
+									})
+								}
+								style={{
+									border: "#cfcfcf solid 1px",
+									borderRadius: "10px",
+									width: "100%",
+									fontSize: "0.9rem",
+									boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
+								}}>
+								<option>Update Status</option>
+								<option key='1' value='In Processing'>
+									In Processing
+								</option>
+								<option key='2' value='Ready To Ship'>
+									Ready To Ship
+								</option>
+								<option key='3' value='Shipped'>
+									Shipped
+								</option>
+								<option key='4' value='Delivered'>
+									Delivered
+								</option>
+								<option key='5' value='Cancelled'>
+									Cancelled
+								</option>
+							</select>
+						)}
 					</div>
 				) : null}
 
@@ -177,7 +215,7 @@ const Trial = ({
 	return (
 		<TrialWrapper>
 			<Modal
-				width='90%'
+				width='65%'
 				title={
 					<div
 						style={{

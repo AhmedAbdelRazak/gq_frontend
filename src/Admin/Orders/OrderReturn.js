@@ -163,7 +163,7 @@ const OrderReturn = () => {
 							<th scope='col'>Tracking #</th>
 							<th scope='col'>Ordered By</th>
 							<th scope='col'>Amount</th>
-							<th scope='col'>Ordered Qty</th>
+							<th scope='col'>Quantity</th>
 							<th scope='col'>Return Order..?</th>
 						</tr>
 					</thead>
@@ -213,22 +213,22 @@ const OrderReturn = () => {
 								<td>{s.employeeData.name}</td>
 								<td>{s.totalAmountAfterDiscount.toFixed(2)} L.E.</td>
 								<td>{s.totalOrderQty}</td>
-								<Link
-									to={`#`}
-									onClick={() => {
-										setModalVisible(true);
-										setSelectedOrder(s);
-										setCollapsed(true);
+								<td
+									style={{
+										color: "blue",
+										fontWeight: "bold",
+										cursor: "pointer",
 									}}>
-									<td
-										style={{
-											color: "blue",
-											fontWeight: "bold",
-											cursor: "pointer",
+									<Link
+										to={`#`}
+										onClick={() => {
+											setModalVisible(true);
+											setSelectedOrder(s);
+											setCollapsed(true);
 										}}>
-										Return This Order
-									</td>
-								</Link>
+										Return Order
+									</Link>
+								</td>
 
 								{/* <td>{Invoice(s)}</td> */}
 							</tr>
@@ -273,7 +273,8 @@ const OrderReturnWrapper = styled.div`
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: ${(props) => (props.show ? "8% 92%" : "15% 84.8%")};
+		grid-template-columns: ${(props) =>
+			props.show ? "8% 92%" : "15.1% 84.9%"};
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */

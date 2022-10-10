@@ -1,6 +1,7 @@
 /** @format */
 import { EditOutlined } from "@ant-design/icons";
 import React, { useState, useEffect } from "react";
+import { Redirect } from "react-router-dom";
 // eslint-disable-next-line
 import { toast } from "react-toastify";
 import styled from "styled-components";
@@ -9,7 +10,7 @@ import AdminMenu from "../AdminMenu/AdminMenu";
 import DarkBG from "../AdminMenu/DarkBG";
 import Navbar from "../AdminNavMenu/Navbar";
 // eslint-disable-next-line
-import { getProducts, readSingleOrder, updateOrder } from "../apiAdmin";
+import { getProducts, readSingleOrder, updateOrderExchange } from "../apiAdmin";
 import ExchangeModal from "./UpdateModals/ExchangeModal";
 
 const OrderExchangeSingle = (props) => {
@@ -29,6 +30,8 @@ const OrderExchangeSingle = (props) => {
 	const [allProducts, setAllProducts] = useState([]);
 	const [chosenProductQtyWithVariables, setChosenProductQtyWithVariables] =
 		useState({});
+	const [previousProductVariable, setPreviousProductVariable] = useState({});
+	const [redirect, setRedirect] = useState(false);
 
 	const { user, token } = isAuthenticated();
 
@@ -70,43 +73,6 @@ const OrderExchangeSingle = (props) => {
 		// eslint-disable-next-line
 	}, []);
 
-	const UpdatingOrder = (e) => {
-		e.preventDefault();
-		window.scrollTo({ top: 0, behavior: "smooth" });
-
-		// if (updateSingleOrder.status === "Cancelled") {
-		// 	if (
-		// 		window.confirm(
-		// 			"Once Order is cancelled, The Ordered Quantity will be added BACK to your active stock, Are you sure you want to cancel?",
-		// 		)
-		// 	) {
-		// 		updateOrder(updateSingleOrder._id, user._id, token, updateSingleOrder)
-		// 			.then((response) => {
-		// 				toast.success("Payment on delivery order was successfully updated");
-		// 				setTimeout(function () {
-		// 					window.location.reload(false);
-		// 				}, 2500);
-		// 			})
-
-		// 			.catch((error) => {
-		// 				console.log(error);
-		// 			});
-		// 	}
-		// } else {
-		// 	updateOrder(updateSingleOrder._id, user._id, token, updateSingleOrder)
-		// 		.then((response) => {
-		// 			toast.success("Payment on delivery order was successfully updated");
-		// 			setTimeout(function () {
-		// 				window.location.reload(false);
-		// 			}, 2500);
-		// 		})
-
-		// 		.catch((error) => {
-		// 			console.log(error);
-		// 		});
-		// }
-	};
-
 	useEffect(() => {
 		const onScroll = () => setOffset(window.pageYOffset);
 		// clean up code
@@ -120,12 +86,115 @@ const OrderExchangeSingle = (props) => {
 		return () => window.removeEventListener("scroll", onScroll);
 	}, [offset]);
 
+	const UpdatingOrder = (e) => {
+		e.preventDefault();
+		window.scrollTo({ top: 0, behavior: "smooth" });
+
+		const singleOrderModified = {
+			...updateSingleOrder,
+			totalOrderQtyExchanged: totalExchangedQty(),
+			totalAmountExchanged: totalExchangedAmount(),
+			totalAmountAfterDiscountExchanged: totalExchangedAmount(),
+		};
+		updateOrderExchange(
+			updateSingleOrder._id,
+			user._id,
+			token,
+			singleOrderModified,
+		)
+			.then((response) => {
+				toast.success("Order was successfully exchanged");
+				setTimeout(function () {
+					setRedirect(true);
+				}, 2000);
+			})
+
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+
+	function sum_array(arr) {
+		// store our final answer
+		var sum = 0;
+
+		// loop through entire array
+		for (var i = 0; i < arr.length; i++) {
+			// loop through each inner array
+			for (var j = 0; j < arr[i].length; j++) {
+				// add this number to the current final sum
+				sum += arr[i][j];
+			}
+		}
+
+		return sum;
+	}
+
+	const totalExchangedQty = () => {
+		var habalFelGabal =
+			updateSingleOrder &&
+			updateSingleOrder.exchangedProductQtyWithVariables &&
+			updateSingleOrder.exchangedProductQtyWithVariables.map(
+				(i) => i.exchangedProduct.SubSKU,
+			);
+
+		var unExchangedVariables =
+			updateSingleOrder &&
+			updateSingleOrder.chosenProductQtyWithVariables &&
+			updateSingleOrder.chosenProductQtyWithVariables.map((i) =>
+				i.filter(
+					(ii) => habalFelGabal && habalFelGabal.indexOf(ii.SubSKU) === -1,
+				),
+			);
+
+		var QtyWithVariables = unExchangedVariables.map((iii) =>
+			iii.map((iiii) => Number(iiii.OrderedQty)),
+		);
+
+		var exchangedQty = updateSingleOrder.exchangedProductQtyWithVariables
+			.map((i) => Number(i.OrderedQty))
+			.reduce((a, b) => a + b, 0);
+
+		return Number(exchangedQty) + Number(sum_array(QtyWithVariables));
+	};
+
+	const totalExchangedAmount = () => {
+		var habalFelGabal =
+			updateSingleOrder &&
+			updateSingleOrder.exchangedProductQtyWithVariables &&
+			updateSingleOrder.exchangedProductQtyWithVariables.map(
+				(i) => i.exchangedProduct.SubSKU,
+			);
+
+		var unExchangedVariables =
+			updateSingleOrder &&
+			updateSingleOrder.chosenProductQtyWithVariables &&
+			updateSingleOrder.chosenProductQtyWithVariables.map((i) =>
+				i.filter(
+					(ii) => habalFelGabal && habalFelGabal.indexOf(ii.SubSKU) === -1,
+				),
+			);
+
+		var QtyWithVariablesTotalAmount = unExchangedVariables.map((iii) =>
+			iii.map((iiii) => Number(iiii.pickedPrice) * Number(iiii.OrderedQty)),
+		);
+
+		var exchangedAmount = updateSingleOrder.exchangedProductQtyWithVariables
+			.map((i) => Number(i.OrderedQty) * Number(i.priceAfterDiscount))
+			.reduce((a, b) => a + b, 0);
+
+		return Number(
+			Number(exchangedAmount) + Number(sum_array(QtyWithVariablesTotalAmount)),
+		).toFixed(2);
+	};
+
 	return (
 		<OrderExchangeSingleWrapper show={AdminMenuStatus}>
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}
 			<div className='grid-container'>
+				{redirect ? <Redirect to='/admin/order-exchange' /> : null}
 				<div className=''>
 					<AdminMenu
 						fromPage='OrderExchange'
@@ -160,6 +229,9 @@ const OrderExchangeSingle = (props) => {
 								setChosenProductQtyWithVariables={
 									setChosenProductQtyWithVariables
 								}
+								totalExchangedAmount={totalExchangedAmount}
+								totalExchangedQty={totalExchangedQty}
+								previousProductVariable={previousProductVariable}
 								modalVisible={modalVisible}
 								setModalVisible={setModalVisible}
 								setCollapsed={setCollapsed}
@@ -540,10 +612,11 @@ const OrderExchangeSingle = (props) => {
 											Exchange Product :
 										</div>
 
-										{singleOrder.chosenProductQtyWithVariables.length > 0 ? (
+										{updateSingleOrder.chosenProductQtyWithVariables.length >
+										0 ? (
 											<>
 												<div className='row'>
-													{singleOrder.chosenProductQtyWithVariables.map(
+													{updateSingleOrder.chosenProductQtyWithVariables.map(
 														(p, i) => {
 															return (
 																<React.Fragment key={i}>
@@ -569,6 +642,8 @@ const OrderExchangeSingle = (props) => {
 																								setChosenProductQtyWithVariables(
 																									pp,
 																								);
+																								setPreviousProductVariable(pp);
+																								setCollapsed(true);
 																							}}>
 																							<EditOutlined />
 																						</span>
@@ -585,6 +660,72 @@ const OrderExchangeSingle = (props) => {
 																						/>
 																					</div>
 																				</div>
+
+																				{updateSingleOrder
+																					.exchangedProductQtyWithVariables
+																					.length > 0 &&
+																				updateSingleOrder.exchangedProductQtyWithVariables
+																					.map(
+																						(iv) => iv.exchangedProduct.SubSKU,
+																					)
+																					.indexOf(pp.SubSKU) > -1 ? (
+																					<div>
+																						<div
+																							className='mt-3'
+																							style={{ fontWeight: "bolder" }}>
+																							Exchanged By:
+																						</div>
+
+																						<div className='row'>
+																							<div className='col-md-6 my-auto'>
+																								Product Name:{" "}
+																								<strong
+																									style={{
+																										color: "darkblue",
+																										textTransform: "capitalize",
+																									}}>
+																									{
+																										updateSingleOrder.exchangedProductQtyWithVariables.filter(
+																											(ivv) =>
+																												ivv.exchangedProduct
+																													.SubSKU === pp.SubSKU,
+																										)[0].productName
+																									}
+																									|{" "}
+																									{
+																										updateSingleOrder.exchangedProductQtyWithVariables.filter(
+																											(ivv) =>
+																												ivv.exchangedProduct
+																													.SubSKU === pp.SubSKU,
+																										)[0].SubSKU
+																									}{" "}
+																									|{" "}
+																									{
+																										updateSingleOrder.exchangedProductQtyWithVariables.filter(
+																											(ivv) =>
+																												ivv.exchangedProduct
+																													.SubSKU === pp.SubSKU,
+																										)[0].color
+																									}
+																								</strong>
+																							</div>
+																							<div className='col-md-6'>
+																								<img
+																									style={{ width: "100px" }}
+																									src={
+																										updateSingleOrder.exchangedProductQtyWithVariables.filter(
+																											(ivv) =>
+																												ivv.exchangedProduct
+																													.SubSKU === pp.SubSKU,
+																										)[0].productMainImage
+																									}
+																									alt=''
+																								/>
+																							</div>
+																						</div>
+																					</div>
+																				) : null}
+																				<hr />
 																			</div>
 																		);
 																	})}
@@ -597,6 +738,20 @@ const OrderExchangeSingle = (props) => {
 										) : null}
 									</div>
 								</div>
+								{updateSingleOrder.exchangedProductQtyWithVariables.length >
+								0 ? (
+									<>
+										<strong>
+											Total Quantity After Exchanging: {totalExchangedQty()}
+										</strong>
+										<br />
+										<br />
+										<strong>
+											Total Amount After Exchanging: {totalExchangedAmount()}{" "}
+											L.E.
+										</strong>
+									</>
+								) : null}
 							</div>
 							<div className='col-md-5 mx-auto text-center my-5'>
 								<button
@@ -622,7 +777,7 @@ const OrderExchangeSingleWrapper = styled.div`
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: ${(props) => (props.show ? "8% 92%" : "15% 85%")};
+		grid-template-columns: ${(props) => (props.show ? "6% 94%" : "15% 85%")};
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */
