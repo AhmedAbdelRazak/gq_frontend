@@ -8,7 +8,7 @@ import { isAuthenticated } from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import DarkBG from "../AdminMenu/DarkBG";
 import Navbar from "../AdminNavMenu/Navbar";
-import { readSingleOrder, updateOrder } from "../apiAdmin";
+import { getColors, readSingleOrder, updateOrder } from "../apiAdmin";
 import Trial from "./UpdateModals/Trials";
 
 const SingleOrderPage = (props) => {
@@ -19,6 +19,7 @@ const SingleOrderPage = (props) => {
 	const [updateSingleOrder, setUpdateSingleOrder] = useState({});
 	const [updateCustomerDetails, setUpdateCustomerDetails] = useState({});
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
+	const [allColors, setAllColors] = useState([]);
 	const [offset, setOffset] = useState(0);
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
@@ -94,6 +95,21 @@ const SingleOrderPage = (props) => {
 		}
 		return () => window.removeEventListener("scroll", onScroll);
 	}, [offset]);
+
+	const gettingAllColors = () => {
+		getColors(token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllColors(data);
+			}
+		});
+	};
+
+	useEffect(() => {
+		gettingAllColors();
+		// eslint-disable-next-line
+	}, []);
 
 	return (
 		<SingleOrderPageWrapper show={AdminMenuStatus}>
@@ -204,6 +220,43 @@ const SingleOrderPage = (props) => {
 											onClick={() => {
 												setModalVisible(true);
 												setUpdateElement("Tracking Number");
+											}}>
+											<EditOutlined />
+										</span>
+									</span>
+								)}
+							</h5>
+							<h5
+								style={{
+									fontWeight: "bold",
+									textAlign: "center",
+									marginBottom: "20px",
+								}}>
+								Order Purchase Date:{" "}
+								{updateSingleOrder.orderCreationDate === undefined ? (
+									<span style={{ color: "darkgreen" }}>
+										{new Date(updateSingleOrder.createdAt).toDateString()}
+										<span
+											className='ml-2'
+											style={{ cursor: "pointer" }}
+											onClick={() => {
+												setModalVisible(true);
+												setUpdateElement("PurchaseDate");
+											}}>
+											<EditOutlined />
+										</span>
+									</span>
+								) : (
+									<span style={{ color: "darkgreen" }}>
+										{new Date(
+											updateSingleOrder.orderCreationDate,
+										).toDateString()}
+										<span
+											className='ml-2'
+											style={{ cursor: "pointer" }}
+											onClick={() => {
+												setModalVisible(true);
+												setUpdateElement("PurchaseDate");
 											}}>
 											<EditOutlined />
 										</span>
@@ -426,7 +479,17 @@ const SingleOrderPage = (props) => {
 																				textTransform: "capitalize",
 																			}}>
 																			{pp.productName} | {pp.SubSKU} |{" "}
-																			{pp.SubSKUColor}
+																			{allColors[
+																				allColors
+																					.map((i) => i.hexa)
+																					.indexOf(pp.SubSKUColor)
+																			]
+																				? allColors[
+																						allColors
+																							.map((i) => i.hexa)
+																							.indexOf(pp.SubSKUColor)
+																				  ].color
+																				: pp.SubSKUColor}
 																		</strong>
 																		<br />
 																		<br />
@@ -438,16 +501,29 @@ const SingleOrderPage = (props) => {
 																			? "Units"
 																			: "Unit"}
 																	</div>
+
 																	<div className='col-md-6'>
-																		<img
-																			style={{ width: "100px" }}
-																			src={
-																				pp.productMainImage
-																					? pp.productMainImage
-																					: ""
-																			}
-																			alt=''
-																		/>
+																		{pp.productSubSKUImage ? (
+																			<img
+																				style={{ width: "100px" }}
+																				src={
+																					pp.productSubSKUImage
+																						? pp.productSubSKUImage
+																						: ""
+																				}
+																				alt=''
+																			/>
+																		) : (
+																			<img
+																				style={{ width: "100px" }}
+																				src={
+																					pp.productMainImage
+																						? pp.productMainImage
+																						: ""
+																				}
+																				alt=''
+																			/>
+																		)}
 																	</div>
 																</div>
 															</div>

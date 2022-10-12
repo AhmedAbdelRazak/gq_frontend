@@ -2,9 +2,10 @@
 
 import React from "react";
 import styled from "styled-components";
-import { Modal } from "antd";
+import { DatePicker, Modal } from "antd";
 import "antd/dist/antd.css"; // or 'antd/dist/antd.less'
 import { toast } from "react-toastify";
+import moment from "moment";
 
 const Trial = ({
 	modalVisible,
@@ -44,6 +45,41 @@ const Trial = ({
 								Send Tracking Number To The Client Via SMS
 							</button>
 						</div>
+					</div>
+				) : null}
+
+				{updateElement === "PurchaseDate" ? (
+					<div className='form-group col-md-8 mx-auto my-4 text-center'>
+						<label style={{ fontWeight: "bolder", fontSize: "1rem" }}>
+							Order Date
+						</label>
+						<br />
+						<DatePicker
+							className='inputFields'
+							onChange={(date) => {
+								setUpdateSingleOrder({
+									...updateSingleOrder,
+									orderCreationDate:
+										new Date(date._d).toLocaleDateString() || date._d,
+								});
+							}}
+							// disabledDate={disabledDate}
+							max
+							size='small'
+							showToday={true}
+							defaultValue={moment(
+								new Date(updateSingleOrder.orderCreationDate),
+							)}
+							placeholder='Please pick the desired schedule date'
+							style={{
+								height: "auto",
+								width: "80%",
+								marginLeft: "5px",
+								padding: "10px",
+								// boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
+								borderRadius: "10px",
+							}}
+						/>
 					</div>
 				) : null}
 

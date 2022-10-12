@@ -432,6 +432,13 @@ const CreateNewOrder = () => {
 	// console.log(productNameWithAttributes, "productNameWithAttributes");
 
 	useEffect(() => {
+		const productSubSKUImage = (requiredProduct, productSubSKU) => {
+			const theReturn = requiredProduct.productAttributes.filter(
+				(i) => i.SubSKU === productSubSKU,
+			)[0].productImages[0].url;
+			return theReturn;
+		};
+
 		setChosenProductQty(
 			chosenProductVariables.map((i) => {
 				return i.SubSKU.map((ii) => {
@@ -443,6 +450,11 @@ const CreateNewOrder = () => {
 						productMainImage: addedProductsToCart.filter(
 							(s) => s._id === i.productId,
 						)[0].thumbnailImage[0].images[0].url,
+
+						productSubSKUImage: productSubSKUImage(
+							addedProductsToCart.filter((s) => s._id === i.productId)[0],
+							ii,
+						),
 
 						SubSKUPriceAfterDiscount: addedProductsToCart
 							.filter((s) => s._id === i.productId)[0]
@@ -1355,6 +1367,16 @@ const CreateNewOrder = () => {
 														{pp.OrderedQty}{" "}
 													</strong>
 													{Number(pp.OrderedQty) > 1 ? "Units" : "Unit"}
+													<br />
+													<img
+														style={{
+															marginTop: "10px",
+															width: "80px",
+															marginLeft: "5px",
+														}}
+														src={pp.productSubSKUImage}
+														alt='ProductImage'
+													/>
 												</div>
 											);
 										})}

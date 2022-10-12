@@ -123,6 +123,7 @@ const ExchangeModal = ({
 											(i) => i._id === value,
 										)[0],
 									);
+
 									setChosenProductQtyWithVariables(
 										chosenProduct.productAttributes
 											.filter((i) => i._id === value)

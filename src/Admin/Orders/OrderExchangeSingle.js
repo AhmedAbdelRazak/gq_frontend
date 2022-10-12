@@ -10,7 +10,12 @@ import AdminMenu from "../AdminMenu/AdminMenu";
 import DarkBG from "../AdminMenu/DarkBG";
 import Navbar from "../AdminNavMenu/Navbar";
 // eslint-disable-next-line
-import { getProducts, readSingleOrder, updateOrderExchange } from "../apiAdmin";
+import {
+	getColors,
+	getProducts,
+	readSingleOrder,
+	updateOrderExchange,
+} from "../apiAdmin";
 import ExchangeModal from "./UpdateModals/ExchangeModal";
 
 const OrderExchangeSingle = (props) => {
@@ -27,6 +32,7 @@ const OrderExchangeSingle = (props) => {
 	const [offset, setOffset] = useState(0);
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
+	const [allColors, setAllColors] = useState([]);
 	const [allProducts, setAllProducts] = useState([]);
 	const [chosenProductQtyWithVariables, setChosenProductQtyWithVariables] =
 		useState({});
@@ -70,6 +76,21 @@ const OrderExchangeSingle = (props) => {
 		const orderId = props.match.params.orderId;
 		loadSingleOrder(orderId);
 		gettingAllProducts();
+		// eslint-disable-next-line
+	}, []);
+
+	const gettingAllColors = () => {
+		getColors(token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllColors(data);
+			}
+		});
+	};
+
+	useEffect(() => {
+		gettingAllColors();
 		// eslint-disable-next-line
 	}, []);
 
@@ -409,11 +430,27 @@ const OrderExchangeSingle = (props) => {
 															</div>
 
 															<div className='col-md-6'>
-																<img
-																	style={{ width: "100px" }}
-																	src={p.thumbnailImage[0].images[0].url}
-																	alt=''
-																/>
+																{p.productSubSKUImage ? (
+																	<img
+																		style={{ width: "100px" }}
+																		src={
+																			p.productSubSKUImage
+																				? p.productSubSKUImage
+																				: ""
+																		}
+																		alt=''
+																	/>
+																) : (
+																	<img
+																		style={{ width: "100px" }}
+																		src={
+																			p.productMainImage
+																				? p.productMainImage
+																				: ""
+																		}
+																		alt=''
+																	/>
+																)}
 															</div>
 														</div>
 													</div>
@@ -449,7 +486,17 @@ const OrderExchangeSingle = (props) => {
 																					textTransform: "capitalize",
 																				}}>
 																				{pp.productName} | {pp.SubSKU} |{" "}
-																				{pp.SubSKUColor}
+																				{allColors[
+																					allColors
+																						.map((i) => i.hexa)
+																						.indexOf(pp.SubSKUColor)
+																				]
+																					? allColors[
+																							allColors
+																								.map((i) => i.hexa)
+																								.indexOf(pp.SubSKUColor)
+																					  ].color
+																					: pp.SubSKUColor}
 																			</strong>
 																			<br />
 																			<br />
@@ -462,15 +509,27 @@ const OrderExchangeSingle = (props) => {
 																				: "Unit"}
 																		</div>
 																		<div className='col-md-6'>
-																			<img
-																				style={{ width: "100px" }}
-																				src={
-																					pp.productMainImage
-																						? pp.productMainImage
-																						: ""
-																				}
-																				alt=''
-																			/>
+																			{pp.productSubSKUImage ? (
+																				<img
+																					style={{ width: "100px" }}
+																					src={
+																						pp.productSubSKUImage
+																							? pp.productSubSKUImage
+																							: ""
+																					}
+																					alt=''
+																				/>
+																			) : (
+																				<img
+																					style={{ width: "100px" }}
+																					src={
+																						pp.productMainImage
+																							? pp.productMainImage
+																							: ""
+																					}
+																					alt=''
+																				/>
+																			)}
 																		</div>
 																	</div>
 																</div>
@@ -632,7 +691,17 @@ const OrderExchangeSingle = (props) => {
 																								textTransform: "capitalize",
 																							}}>
 																							{pp.productName} | {pp.SubSKU} |{" "}
-																							{pp.SubSKUColor}
+																							{allColors[
+																								allColors
+																									.map((i) => i.hexa)
+																									.indexOf(pp.SubSKUColor)
+																							]
+																								? allColors[
+																										allColors
+																											.map((i) => i.hexa)
+																											.indexOf(pp.SubSKUColor)
+																								  ].color
+																								: pp.SubSKUColor}
 																						</strong>
 																						<span
 																							className='ml-2'
@@ -649,15 +718,27 @@ const OrderExchangeSingle = (props) => {
 																						</span>
 																					</div>
 																					<div className='col-md-6'>
-																						<img
-																							style={{ width: "100px" }}
-																							src={
-																								pp.productMainImage
-																									? pp.productMainImage
-																									: ""
-																							}
-																							alt=''
-																						/>
+																						{pp.productSubSKUImage ? (
+																							<img
+																								style={{ width: "100px" }}
+																								src={
+																									pp.productSubSKUImage
+																										? pp.productSubSKUImage
+																										: ""
+																								}
+																								alt=''
+																							/>
+																						) : (
+																							<img
+																								style={{ width: "100px" }}
+																								src={
+																									pp.productMainImage
+																										? pp.productMainImage
+																										: ""
+																								}
+																								alt=''
+																							/>
+																						)}
 																					</div>
 																				</div>
 
