@@ -390,13 +390,17 @@ const OrdersList = () => {
 															timeZone: "Africa/Cairo",
 														});
 
-														var invoiceNumber = `INV${new Date(
-															today,
-														).getFullYear()}${
-															new Date(today).getMonth() + 1
-														}${new Date(today).getDate()}000${
-															allOrders.length - i
-														}`;
+														let text = s.OTNumber;
+														let result = "INV" + text.slice(2);
+
+														var invoiceNumber =
+															s.OTNumber === "Not Added"
+																? `INV${new Date(today).getFullYear()}${
+																		new Date(today).getMonth() + 1
+																  }${new Date(today).getDate()}000${
+																		allOrders.length - i
+																  }`
+																: result;
 														handleInvoiceStatus(invoiceNumber, s._id);
 													}}>
 													Invoice
