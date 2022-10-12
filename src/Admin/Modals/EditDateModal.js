@@ -49,7 +49,7 @@ const EditDateModal = ({
 	return (
 		<EditDateModalWrapper>
 			<Modal
-				width='90%'
+				width='60%'
 				title={
 					<div
 						style={{

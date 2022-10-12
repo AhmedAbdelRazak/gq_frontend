@@ -13,6 +13,7 @@ import styled from "styled-components";
 import { ShipToData } from "./ShipToData";
 import Navbar from "../../AdminNavMenu/Navbar";
 import DarkBG from "../../AdminMenu/DarkBG";
+import { Redirect } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -320,6 +321,9 @@ const AddShippingOptions = () => {
 
 	return (
 		<AddShippingOptionsWrapper show={AdminMenuStatus}>
+			{user.userRole === "Order Taker" ? (
+				<Redirect to='/admin/create-new-order' />
+			) : null}
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}

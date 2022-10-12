@@ -21,6 +21,7 @@ import "aos/dist/aos.css";
 import DarkBG from "../AdminMenu/DarkBG";
 import Navbar from "../AdminNavMenu/Navbar";
 import ImageCard from "./ImageCard";
+import { Redirect } from "react-router-dom";
 
 const AddSubcategory = () => {
 	const [SubcategoryName, setSubCategoryName] = useState("");
@@ -305,6 +306,9 @@ const AddSubcategory = () => {
 
 	return (
 		<AddSubcategoryWrapper show={AdminMenuStatus}>
+			{user.userRole === "Order Taker" ? (
+				<Redirect to='/admin/create-new-order' />
+			) : null}
 			<ToastContainer />
 
 			{!collapsed ? (

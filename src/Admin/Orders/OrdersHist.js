@@ -42,17 +42,6 @@ const OrdersHist = () => {
 		});
 	};
 
-	// "Cancelled to returned to stock"
-	// "INV # INVYEARMONTHDAYSERIES AS Invoice #"
-	// "Add OT to Order # should be in another page"
-	// "If OT into INV and only show INV #"
-	// "Hover to side menu"
-	// "Return Exchange"
-	// "Main Dashboard last 7 days, 30 days, ...."
-	// "Time zone difference"
-	// "Summary of order status chart in a table format"
-	// "Status color code changing and only code the status column"
-
 	useEffect(() => {
 		loadOrders();
 		// eslint-disable-next-line
@@ -178,9 +167,15 @@ const OrdersHist = () => {
 									}`}</td>
 								)} */}
 
-								<td style={{ width: "8%" }}>
-									{new Date(s.createdAt).toDateString()}{" "}
-								</td>
+								{s.orderCreationDate ? (
+									<td style={{ width: "8%" }}>
+										{new Date(s.orderCreationDate).toDateString()}{" "}
+									</td>
+								) : (
+									<td style={{ width: "8%" }}>
+										{new Date(s.createdAt).toDateString()}{" "}
+									</td>
+								)}
 								{/* {s.OTNumber && s.OTNumber !== "Not Added" ? (
 									<td className='my-auto'>{s.OTNumber}</td>
 								) : (
@@ -351,23 +346,24 @@ const OrdersHist = () => {
 									</div>
 								</div>
 							</div>
-
-							<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-								<div className='card' style={{ background: "#50cd89" }}>
-									<div className='card-body'>
-										<h5 style={{ fontWeight: "bolder", color: "white" }}>
-											Total Amount (L.E.)
-										</h5>
-										<CountUp
-											style={{ color: "white" }}
-											duration='3'
-											delay={1}
-											end={ArrayOfAmount}
-											separator=','
-										/>
+							{user.userRole === "Order Taker" ? null : (
+								<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+									<div className='card' style={{ background: "#50cd89" }}>
+										<div className='card-body'>
+											<h5 style={{ fontWeight: "bolder", color: "white" }}>
+												Total Amount (L.E.)
+											</h5>
+											<CountUp
+												style={{ color: "white" }}
+												duration='3'
+												delay={1}
+												end={ArrayOfAmount}
+												separator=','
+											/>
+										</div>
 									</div>
 								</div>
-							</div>
+							)}
 						</div>
 					</div>
 

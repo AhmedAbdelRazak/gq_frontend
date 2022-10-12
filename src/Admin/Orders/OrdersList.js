@@ -8,7 +8,7 @@ import { isAuthenticated } from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import DarkBG from "../AdminMenu/DarkBG";
 import Navbar from "../AdminNavMenu/Navbar";
-import { listOrders, updateOrderInvoice } from "../apiAdmin";
+import { listOrdersProcessing, updateOrderInvoice } from "../apiAdmin";
 // eslint-disable-next-line
 import Pagination from "./Pagination";
 
@@ -42,8 +42,8 @@ const OrdersList = () => {
 
 	const loadOrders = () => {
 		function sortOrdersAscendingly(a, b) {
-			const TotalAppointmentsA = a.createdAt;
-			const TotalAppointmentsB = b.createdAt;
+			const TotalAppointmentsA = a.invoiceNumber;
+			const TotalAppointmentsB = b.invoiceNumber;
 			let comparison = 0;
 			if (TotalAppointmentsA < TotalAppointmentsB) {
 				comparison = 1;
@@ -52,22 +52,12 @@ const OrdersList = () => {
 			}
 			return comparison;
 		}
-		listOrders(user._id, token).then((data) => {
+		listOrdersProcessing(user._id, token).then((data) => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
 				if (clickedFilter === "Select All") {
-					setAllOrders(
-						data
-							.filter(
-								(i) =>
-									i.status !== "Delivered" &&
-									i.status !== "Shipped" &&
-									i.status !== "Cancelled" &&
-									i.invoiceNumber === "Not Added",
-							)
-							.sort(sortOrdersAscendingly),
-					);
+					setAllOrders(data.sort(sortOrdersAscendingly));
 				} else if (clickedFilter === "Today") {
 					setAllOrders(
 						data
@@ -318,9 +308,16 @@ const OrdersList = () => {
 							<tbody className='my-auto'>
 								{search(allOrders).map((s, i) => (
 									<tr key={i} className=''>
-										<td style={{ width: "8%" }}>
-											{new Date(s.createdAt).toDateString()}{" "}
-										</td>
+										{s.orderCreationDate ? (
+											<td style={{ width: "8%" }}>
+												{new Date(s.orderCreationDate).toDateString()}{" "}
+											</td>
+										) : (
+											<td style={{ width: "8%" }}>
+												{new Date(s.createdAt).toDateString()}{" "}
+											</td>
+										)}
+
 										{s.OTNumber && s.OTNumber !== "Not Added" ? (
 											<td className='my-auto'>{s.OTNumber}</td>
 										) : (

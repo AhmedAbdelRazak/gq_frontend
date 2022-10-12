@@ -9,6 +9,7 @@ import { getProducts, getSubCategories, removeSubcategory } from "../apiAdmin";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import DarkBG from "../AdminMenu/DarkBG";
+import { Redirect } from "react-router-dom";
 
 const DeleteSubcategory = () => {
 	const [allSubCategories, setAllSubCategories] = useState([]);
@@ -78,6 +79,9 @@ const DeleteSubcategory = () => {
 
 	return (
 		<DeleteSubcategoryWrapper>
+			{user.userRole === "Order Taker" ? (
+				<Redirect to='/admin/create-new-order' />
+			) : null}
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}

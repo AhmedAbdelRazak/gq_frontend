@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { getShippingOptions } from "../../apiAdmin";
 import { isAuthenticated } from "../../../auth/index";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import AdminMenu from "../../AdminMenu/AdminMenu";
 import DarkBG from "../../AdminMenu/DarkBG";
 
@@ -36,6 +36,9 @@ const UpdateShippingOptions = () => {
 
 	return (
 		<UpdateShippingOptionsWrapper>
+			{user.userRole === "Order Taker" ? (
+				<Redirect to='/admin/create-new-order' />
+			) : null}
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}

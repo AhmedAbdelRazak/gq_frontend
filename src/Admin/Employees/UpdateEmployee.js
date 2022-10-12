@@ -6,7 +6,7 @@ import AdminMenu from "../AdminMenu/AdminMenu";
 import Navbar from "../AdminNavMenu/Navbar";
 import { getAllUsers } from "../apiAdmin";
 import { isAuthenticated } from "../../auth/index";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import DarkBG from "../AdminMenu/DarkBG";
 
 const UpdateEmployee = () => {
@@ -49,6 +49,9 @@ const UpdateEmployee = () => {
 
 	return (
 		<UpdateEmployeeWrapper show={AdminMenuStatus}>
+			{user.userRole === "Order Taker" ? (
+				<Redirect to='/admin/create-new-order' />
+			) : null}
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}

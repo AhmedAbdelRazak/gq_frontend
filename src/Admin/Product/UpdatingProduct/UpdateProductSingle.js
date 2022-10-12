@@ -24,6 +24,7 @@ import UpdateBasicDataForm from "./UpdateBasicDataForm";
 import UpdatingProductVariable from "./UpdateProductVariable";
 import DarkBG from "../../AdminMenu/DarkBG";
 import ImageCard from "../AddingProduct/ImageCard";
+import { Redirect } from "react-router-dom";
 const { Option } = Select;
 
 const isActive = (clickedLink, sureClickedLink) => {
@@ -1002,6 +1003,9 @@ const UpdateProductSingle = ({ match }) => {
 
 	return (
 		<UpdateProductSingleWrapper show={AdminMenuStatus}>
+			{user.userRole === "Order Taker" ? (
+				<Redirect to='/admin/create-new-order' />
+			) : null}
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}

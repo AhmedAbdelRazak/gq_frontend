@@ -7,7 +7,7 @@ import { isAuthenticated } from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import DarkBG from "../AdminMenu/DarkBG";
 import Navbar from "../AdminNavMenu/Navbar";
-import { listOrders } from "../apiAdmin";
+import { listOrdersProcessed } from "../apiAdmin";
 import Pagination from "./Pagination";
 import ReturnModal from "./UpdateModals/ReturnModal";
 
@@ -41,15 +41,11 @@ const OrderReturn = () => {
 			}
 			return comparison;
 		}
-		listOrders(user._id, token).then((data) => {
+		listOrdersProcessed(user._id, token).then((data) => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
-				setAllOrders(
-					data
-						.filter((i) => i.status === "Delivered" || i.status === "Shipped")
-						.sort(sortOrdersAscendingly),
-				);
+				setAllOrders(data.sort(sortOrdersAscendingly));
 			}
 		});
 	};
@@ -185,7 +181,15 @@ const OrderReturn = () => {
 
 								<td>{s.customerDetails.fullName}</td>
 								<td>{s.customerDetails.phone}</td>
-								<td>{new Date(s.createdAt).toLocaleDateString()} </td>
+								{s.orderCreationDate ? (
+									<td style={{ width: "8%" }}>
+										{new Date(s.orderCreationDate).toDateString()}{" "}
+									</td>
+								) : (
+									<td style={{ width: "8%" }}>
+										{new Date(s.createdAt).toDateString()}{" "}
+									</td>
+								)}
 								<td
 									style={{
 										fontWeight: "bold",
@@ -291,7 +295,7 @@ const OrderReturnWrapper = styled.div`
 	tr:hover {
 		background: #009ef7 !important;
 		color: white !important;
-		font-weight: bolder !important;
+		/* font-weight: bolder !important; */
 	}
 
 	.tableData {

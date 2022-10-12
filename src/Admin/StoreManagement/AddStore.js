@@ -16,6 +16,7 @@ import Aos from "aos";
 import "aos/dist/aos.css";
 import DarkBG from "../AdminMenu/DarkBG";
 import ImageCard from "./ImageCard";
+import { Redirect } from "react-router-dom";
 
 const AddStore = () => {
 	const [storeName, setStoreName] = useState("");
@@ -225,6 +226,9 @@ const AddStore = () => {
 
 	return (
 		<AddStoreWrapper show={AdminMenuStatus}>
+			{user.userRole === "Order Taker" ? (
+				<Redirect to='/admin/create-new-order' />
+			) : null}
 			<ToastContainer />
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />

@@ -132,6 +132,7 @@ const ShowOrdersHistory = ({
 export default ShowOrdersHistory;
 
 const ShowOrdersHistoryWrapper = styled.div`
+	z-index: 25000;
 	.userImage {
 		width: 50px;
 		height: 40px;

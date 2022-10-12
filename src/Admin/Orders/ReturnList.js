@@ -340,9 +340,15 @@ const ReturnList = () => {
 							<tbody className='my-auto'>
 								{search(allOrders).map((s, i) => (
 									<tr key={i} className=''>
-										<td style={{ width: "8%" }}>
-											{new Date(s.createdAt).toDateString()}{" "}
-										</td>
+										{s.orderCreationDate ? (
+											<td style={{ width: "8%" }}>
+												{new Date(s.orderCreationDate).toDateString()}{" "}
+											</td>
+										) : (
+											<td style={{ width: "8%" }}>
+												{new Date(s.createdAt).toDateString()}{" "}
+											</td>
+										)}
 										{s.OTNumber && s.OTNumber !== "Not Added" ? (
 											<td className='my-auto'>{s.OTNumber}</td>
 										) : (

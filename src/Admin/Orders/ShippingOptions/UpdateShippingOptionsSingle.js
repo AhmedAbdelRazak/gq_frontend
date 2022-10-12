@@ -10,6 +10,7 @@ import { isAuthenticated } from "../../../auth";
 import { getShippingOptions, updateShippingOptions } from "../../apiAdmin";
 import { ShipToData } from "./ShipToData";
 import DarkBG from "../../AdminMenu/DarkBG";
+import { Redirect } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -152,6 +153,9 @@ const UpdateShippingOptionsSingle = ({ match }) => {
 
 	return (
 		<UpdateShippingOptionsSingleWrapper>
+			{user.userRole === "Order Taker" ? (
+				<Redirect to='/admin/create-new-order' />
+			) : null}
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}

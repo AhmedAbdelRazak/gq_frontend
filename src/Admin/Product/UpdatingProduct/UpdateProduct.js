@@ -9,6 +9,7 @@ import CountUp from "react-countup";
 import AttributesModal from "./AttributesModal";
 import DarkBG from "../../AdminMenu/DarkBG";
 import Navbar from "../../AdminNavMenu/Navbar";
+import { isAuthenticated } from "../../../auth";
 
 const UpdateProduct = () => {
 	const [allProducts, setAllProducts] = useState([]);
@@ -349,30 +350,32 @@ const UpdateProduct = () => {
 								</div>
 							</div>
 
-							<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-								<div className='card' style={{ background: "#50cd89" }}>
-									<div className='card-body'>
-										<h5 style={{ fontWeight: "bolder", color: "white" }}>
-											Stock Worth (L.E.)
-										</h5>
-										<CountUp
-											style={{ color: "white" }}
-											duration='3'
-											delay={1}
-											end={overallStockWorth()}
-											separator=','
-										/>
-										<span
-											style={{
-												color: "white",
-												marginLeft: "5px",
-												fontSize: "1.2rem",
-											}}>
-											EGY Pounds
-										</span>
+							{isAuthenticated().user.userRole === "Order Taker" ? null : (
+								<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+									<div className='card' style={{ background: "#50cd89" }}>
+										<div className='card-body'>
+											<h5 style={{ fontWeight: "bolder", color: "white" }}>
+												Stock Worth (L.E.)
+											</h5>
+											<CountUp
+												style={{ color: "white" }}
+												duration='3'
+												delay={1}
+												end={overallStockWorth()}
+												separator=','
+											/>
+											<span
+												style={{
+													color: "white",
+													marginLeft: "5px",
+													fontSize: "1.2rem",
+												}}>
+												EGY Pounds
+											</span>
+										</div>
 									</div>
 								</div>
-							</div>
+							)}
 						</div>
 						{dataTable()}
 					</div>

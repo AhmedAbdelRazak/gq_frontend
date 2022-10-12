@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { getStores } from "../apiAdmin";
 import { isAuthenticated } from "../../auth/index";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import Aos from "aos";
 import "aos/dist/aos.css";
@@ -42,6 +42,9 @@ const UpdateStore = () => {
 
 	return (
 		<UpdateStoreWrapper show={AdminMenuStatus}>
+			{user.userRole === "Order Taker" ? (
+				<Redirect to='/admin/create-new-order' />
+			) : null}
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}

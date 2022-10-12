@@ -1,7 +1,9 @@
 /** @format */
 
 import React, { useState, useEffect } from "react";
+import { Redirect } from "react-router-dom";
 import styled from "styled-components";
+import { isAuthenticated } from "../../auth";
 // import { isAuthenticated } from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import DarkBG from "../AdminMenu/DarkBG";
@@ -30,6 +32,9 @@ const MainReports = () => {
 
 	return (
 		<MainReportsWrapper show={collapsed}>
+			{isAuthenticated().user.userRole === "Order Taker" ? (
+				<Redirect to='/admin/create-new-order' />
+			) : null}
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}

@@ -9,7 +9,7 @@ import { cloudinaryUpload1, getAllUsers, updateUserByAdmin } from "../apiAdmin";
 import Resizer from "react-image-file-resizer";
 import axios from "axios";
 // eslint-disable-next-line
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const UpdateEmployeeSingle = ({ match }) => {
@@ -30,6 +30,7 @@ const UpdateEmployeeSingle = ({ match }) => {
 		loading: false,
 		employeeImage: "",
 		role: 1,
+		userRole: "",
 	});
 
 	const { name, email, password, password2, employeeImage } = values;
@@ -62,6 +63,11 @@ const UpdateEmployeeSingle = ({ match }) => {
 						match.params.userId &&
 						match.params.userId !== "undefined" &&
 						data.filter((e) => e._id === match.params.userId)[0].role,
+
+					userRole:
+						match.params.userId &&
+						match.params.userId !== "undefined" &&
+						data.filter((e) => e._id === match.params.userId)[0].userRole,
 
 					employeeImage:
 						match.params.userId &&
@@ -97,6 +103,7 @@ const UpdateEmployeeSingle = ({ match }) => {
 				activeUser: values.activeUser,
 				employeeImage: employeeImage,
 				email: values.email,
+				userRole: values.userRole,
 			}).then((data) => {
 				if (data.error) {
 					console.log(data.error);
@@ -232,23 +239,17 @@ const UpdateEmployeeSingle = ({ match }) => {
 									onChange={handleChosenRole}
 									className='w-75 mx-auto'
 									style={{ fontSize: "0.80rem" }}>
-									<option>
-										{" "}
-										{values.role === 1
-											? "Admin Account"
-											: values.role === 2
-											? "Owner Account"
-											: values.role === 3
-											? "Order Taker"
-											: values.role === 4
-											? "Operations"
-											: "Please select / Required*"}{" "}
-									</option>
-									<option value='1'>Admin Account</option>
-									<option value='2'>Owner Account</option>
-									<option value='3'>Order Taker</option>
-									<option value='4'>Operations</option>
-									<option value='5'>Finance</option>
+									{values.userRole ? (
+										<option>{values.userRole}</option>
+									) : (
+										<option>Please select / Required*</option>
+									)}
+
+									<option value='Admin Account'>Admin Account</option>
+									<option value='Owner Account'>Owner Account</option>
+									<option value='Order Taker'>Order Taker</option>
+									<option value='Operations'>Operations</option>
+									<option value='Finance'>Finance</option>
 								</select>
 							</div>
 
@@ -267,7 +268,7 @@ const UpdateEmployeeSingle = ({ match }) => {
 	);
 
 	const handleChosenRole = (event) => {
-		setValues({ ...values, role: event.target.value });
+		setValues({ ...values, userRole: event.target.value });
 	};
 
 	const fileUploadAndResizeThumbNail = (e) => {
@@ -357,6 +358,9 @@ const UpdateEmployeeSingle = ({ match }) => {
 
 	return (
 		<UpdateEmployeeSingleWrapper show={AdminMenuStatus}>
+			{user.userRole === "Order Taker" ? (
+				<Redirect to='/admin/create-new-order' />
+			) : null}
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu

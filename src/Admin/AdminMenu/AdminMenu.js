@@ -16,6 +16,8 @@ import {
 	PieChartOutlined,
 	CopyOutlined,
 	AppstoreAddOutlined,
+	MoneyCollectOutlined,
+	BorderHorizontalOutlined,
 } from "@ant-design/icons";
 import { Button, Menu } from "antd";
 
@@ -43,7 +45,31 @@ const items = [
 	// getItem("Option 2", "3", <DesktopOutlined />),
 	// getItem("Option 3", "4", <ContainerOutlined />),
 
-	getItem("Products Management", "sub4", <ShoppingCartOutlined />, [
+	getItem("Products Management", "sub4", <DesktopOutlined />, [
+		getItem(
+			<Link
+				to='/admin/add-product'
+				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+				Add New Product
+			</Link>,
+			"/admin/add-product",
+		),
+		getItem(
+			<Link
+				to='/admin/update-product'
+				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+				Inventory Report
+			</Link>,
+			"/admin/update-product",
+		),
+		getItem(
+			<Link
+				to='/admin/delete-product'
+				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+				Delete Product
+			</Link>,
+			"/admin/delete-product",
+		),
 		getItem("Categories Management", "sub3", <AppstoreOutlined />, [
 			getItem(
 				<Link to='/admin/add-category'>Add Category</Link>,
@@ -74,35 +100,11 @@ const items = [
 		]),
 		getItem("Attributes", "sub17", <AppstoreOutlined />, [
 			getItem(
-				<Link to='/admin/add-color'>Add Colors</Link>,
+				<Link to='/admin/add-color'>Add Colors </Link>,
 				"/admin/add-color",
 			),
 			getItem(<Link to='/admin/add-size'>Add Sizes</Link>, "/admin/add-size"),
 		]),
-		getItem(
-			<Link
-				to='/admin/add-product'
-				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-				Add New Product
-			</Link>,
-			"/admin/add-product",
-		),
-		getItem(
-			<Link
-				to='/admin/update-product'
-				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-				Inventory Report
-			</Link>,
-			"/admin/update-product",
-		),
-		getItem(
-			<Link
-				to='/admin/delete-product'
-				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-				Delete Product
-			</Link>,
-			"/admin/delete-product",
-		),
 	]),
 
 	getItem("Stores Management", "sub31", <AppstoreAddOutlined />, [
@@ -159,7 +161,7 @@ const items = [
 		),
 	]),
 
-	getItem("Orders Management", "sub6", <DesktopOutlined />, [
+	getItem("Orders Management", "sub6", <ShoppingCartOutlined />, [
 		getItem(
 			<Link
 				to='/admin/create-new-order'
@@ -246,6 +248,16 @@ const items = [
 			<Link to='/admin/delete-gender'>Delete Gender</Link>,
 			"/admin/delete-gender",
 		),
+	]),
+
+	getItem("Financial Affairs", "sub33", <MoneyCollectOutlined />, [
+		getItem("Add Expenses", "/admin/add-expenses"),
+		getItem("Financial Report", "/admin/financial-report"),
+	]),
+
+	getItem("Online Store Management", "sub34", <BorderHorizontalOutlined />, [
+		getItem("Coupons", "/admin/add-expenses"),
+		getItem("Online Store Report", "/admin/financial-report"),
 	]),
 
 	// getItem("Navigation Two", "sub3", <AppstoreOutlined />, [
@@ -395,7 +407,7 @@ const AdminMenu = ({
 					"sub1",
 
 					fromPage === "AddGender" ||
-					fromPage === "UpdatedGender" ||
+					fromPage === "UpdateGender" ||
 					fromPage === "DeleteGender"
 						? "sub2"
 						: null,
@@ -413,6 +425,17 @@ const AdminMenu = ({
 						: null,
 
 					fromPage === "AddColor" || fromPage === "AddSize" ? "sub17" : null,
+					fromPage === "AddProduct" ||
+					fromPage === "UpdateProduct" ||
+					fromPage === "DeleteProduct" ||
+					fromPage === "AddSize" ||
+					fromPage === "AddColor" ||
+					fromPage === "AddSubcategory" ||
+					fromPage === "UpdateSubcategory" ||
+					fromPage === "UpdateCategory" ||
+					fromPage === "AddCategory"
+						? "sub4"
+						: null,
 
 					fromPage === "AddShippingOption" ||
 					fromPage === "UpdateShippingOption" ||
@@ -426,9 +449,19 @@ const AdminMenu = ({
 						? "sub31"
 						: null,
 
-					"sub4",
+					fromPage === "CreateNewOrder" ||
+					// fromPage === "AdminDasboard" ||
+					fromPage === "OrdersHist" ||
+					fromPage === "OrderExchange" ||
+					fromPage === "OrdersList" ||
+					fromPage === "ReturnList" ||
+					fromPage === "OrderReturn"
+						? "sub6"
+						: null,
 
-					"sub6",
+					// "sub4",
+
+					// "sub6",
 				]}
 				mode='inline'
 				theme='dark'
@@ -447,20 +480,22 @@ const AdminMenuWrapper = styled.div`
 	margin-bottom: 15px;
 	background: ${(props) => (props.show ? "" : "white")};
 	top: 0px !important;
-	/* position: fixed; */
+	position: fixed;
 	z-index: 20000;
 
 	li {
 		/* margin: 20px auto; */
 		font-size: 0.9rem;
-		margin-top: ${(props) => (props.show ? "50px " : "0px")};
+		margin-top: ${(props) => (props.show ? "30px " : "30px")};
+		margin-bottom: ${(props) => (props.show ? "0px " : "50px")};
+		margin-bottom: ${(props) => (props.show ? "0px " : "20px")};
 	}
 
 	ul {
 	}
 
 	.ant-menu.ant-menu-inline-collapsed {
-		min-height: 1000px;
+		min-height: 850px;
 		/* position: fixed; */
 	}
 
@@ -474,10 +509,10 @@ const AdminMenuWrapper = styled.div`
 		background: #1e1e2d !important;
 	}
 
-	/* .ant-menu.ant-menu-dark,
+	.ant-menu.ant-menu-dark,
 	.ant-menu-dark {
 		position: ${(props) => (props.show ? "fixed" : "")};
-	} */
+	}
 
 	@media (max-width: 1650px) {
 		background: ${(props) => (props.show ? "" : "transparent")};

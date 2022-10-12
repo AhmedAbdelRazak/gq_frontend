@@ -15,7 +15,7 @@ import Chart from "react-apexcharts";
 import CountUp from "react-countup";
 import { getProducts, listOrders } from "./apiAdmin";
 import { isAuthenticated } from "../auth";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import DarkBG from "./AdminMenu/DarkBG";
 import EditDateModal from "./Modals/EditDateModal";
 import ShowOrdersHistory from "./Modals/ShowOrdersHistory";
@@ -470,6 +470,9 @@ const AdminDashboard = () => {
 
 	return (
 		<AdminDashboardWrapper show={collapsed}>
+			{user.userRole === "Order Taker" ? (
+				<Redirect to='/admin/create-new-order' />
+			) : null}
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}

@@ -14,6 +14,7 @@ import {
 import Aos from "aos";
 import "aos/dist/aos.css";
 import DarkBG from "../AdminMenu/DarkBG";
+import { Redirect } from "react-router-dom";
 
 const DeleteCategory = () => {
 	const [allCategories, setAllCategories] = useState([]);
@@ -100,6 +101,9 @@ const DeleteCategory = () => {
 
 	return (
 		<DeleteCategoryWrapper show={AdminMenuStatus}>
+			{user.userRole === "Order Taker" ? (
+				<Redirect to='/admin/create-new-order' />
+			) : null}
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}

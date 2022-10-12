@@ -7,7 +7,7 @@ import AdminMenu from "../AdminMenu/AdminMenu";
 import Navbar from "../AdminNavMenu/Navbar";
 import { signup, isAuthenticated } from "../../auth";
 // eslint-disable-next-line
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import Resizer from "react-image-file-resizer";
 import axios from "axios";
@@ -34,11 +34,21 @@ const AddEmployee = () => {
 		role: 1,
 		misMatch: false,
 		loading: false,
+		userRole: "Order Taker",
 	});
 
 	// eslint-disable-next-line
-	const { name, email, password, password2, misMatch, employeeImage, role } =
-		values;
+	const {
+		name,
+		email,
+		password,
+		password2,
+		misMatch,
+		employeeImage,
+		// eslint-disable-next-line
+		role,
+		userRole,
+	} = values;
 
 	// eslint-disable-next-line
 	const { user, token } = isAuthenticated();
@@ -85,7 +95,8 @@ const AddEmployee = () => {
 				password2,
 				employeeImage,
 				misMatch,
-				role,
+				role: 1,
+				userRole,
 			}).then((data) => {
 				console.log(data);
 				if (data.error || data.misMatch) {
@@ -114,7 +125,7 @@ const AddEmployee = () => {
 	};
 
 	const handleChosenRole = (event) => {
-		setValues({ ...values, role: event.target.value });
+		setValues({ ...values, userRole: event.target.value });
 	};
 
 	const fileUploadAndResizeThumbNail = (e) => {
@@ -327,11 +338,11 @@ const AddEmployee = () => {
 									className='w-75 mx-auto'
 									style={{ fontSize: "0.80rem" }}>
 									<option>Please select / Required*</option>
-									<option value='1'>Admin Account</option>
-									<option value='2'>Owner Account</option>
-									<option value='3'>Order Taker</option>
-									<option value='4'>Operations</option>
-									<option value='5'>Finance</option>
+									<option value='Admin Account'>Admin Account</option>
+									<option value='Owner Account'>Owner Account</option>
+									<option value='Order Taker'>Order Taker</option>
+									<option value='Operations'>Operations</option>
+									<option value='Finance'>Finance</option>
 								</select>
 							</div>
 
@@ -370,6 +381,9 @@ const AddEmployee = () => {
 
 	return (
 		<AddEmployeeWrapper show={AdminMenuStatus}>
+			{user.userRole === "Order Taker" ? (
+				<Redirect to='/admin/create-new-order' />
+			) : null}
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}

@@ -87,7 +87,7 @@ const EditPrice = ({
 	return (
 		<EditPriceWrapper>
 			<Modal
-				width='90%'
+				width='60%'
 				title={
 					<div
 						style={{

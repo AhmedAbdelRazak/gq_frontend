@@ -1,6 +1,7 @@
 /** @format */
 
 import React, { useEffect, useState } from "react";
+import { Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import { isAuthenticated } from "../../../auth";
@@ -51,6 +52,9 @@ const DeleteShippOptions = () => {
 
 	return (
 		<DeleteShippOptionsWrapper>
+			{user.userRole === "Order Taker" ? (
+				<Redirect to='/admin/create-new-order' />
+			) : null}
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}

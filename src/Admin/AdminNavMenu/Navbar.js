@@ -205,7 +205,7 @@ const NavbarWrapper = styled.div`
 	z-index: 1000 !important;
 	padding-top: 5px;
 	padding-bottom: 5px;
-	/* position: ${(props) => (props.show ? "fixed" : "")}; */
+	position: ${(props) => (props.show ? "fixed" : "")};
 	width: ${(props) => (props.show ? "100%" : "100%")};
 
 	.ant-menu-horizontal {
@@ -215,13 +215,13 @@ const NavbarWrapper = styled.div`
 	.rightList > ul {
 		list-style-type: none;
 		/* background: white; */
-		/* position: fixed; */
+		position: fixed;
 		position: ${(props) => (props.show ? "" : "fixed")};
 		z-index: 1000 !important;
 	}
 
 	.blink {
-		background: ${(props) => (props.show ? "white !important" : "#00ff00")};
+		background: ${(props) => (props.show ? "#00ff00 !important" : "#00ff00")};
 	}
 
 	.rightList > ul > li {

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import AdminMenu from "../../AdminMenu/AdminMenu";
-import { Select } from "antd";
+import { DatePicker, Select } from "antd";
 import {
 	createOrder,
 	getColors,
@@ -21,6 +21,7 @@ import DarkBG from "../../AdminMenu/DarkBG";
 import AttributesModal from "../../Product/UpdatingProduct/AttributesModal";
 import { EditOutlined } from "@ant-design/icons";
 import EditPrice from "../../Modals/EditPrice";
+import moment from "moment";
 const { Option } = Select;
 
 const isActive = (clickedLink, sureClickedLink) => {
@@ -56,6 +57,12 @@ const CreateNewOrder = () => {
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [sendSMS, setSendSMS] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
+	const [freeShipping, setFreeShipping] = useState(false);
+	const [orderCreationDate, setOrderCreationDate] = useState(
+		new Date().toLocaleDateString("en-US", {
+			timeZone: "Africa/Cairo",
+		}),
+	);
 	const [customerDetails, setCustomerDetails] = useState({
 		fullName: "",
 		phone: "",
@@ -67,7 +74,7 @@ const CreateNewOrder = () => {
 		carrierName: "No Shipping Carrier",
 		orderComment: "",
 	});
-	const [allOrders, setAllOrders] = useState([]);
+	const [allOrders, setAllOrders] = useState(0);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [modalVisible2, setModalVisible2] = useState(false);
 	const [clickedProduct, setClickedProduct] = useState({});
@@ -126,7 +133,7 @@ const CreateNewOrder = () => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
-				setAllOrders(data);
+				setAllOrders(data.length);
 			}
 		});
 	};
@@ -966,6 +973,16 @@ const CreateNewOrder = () => {
 					.shippingPrice_Client
 			: 0;
 
+	let AppliedshippingFee =
+		chosenShippingOption.length > 0 &&
+		customerDetails.carrierName &&
+		freeShipping === false
+			? chosenShippingOption
+					.map((i) => i.chosenShippingData)[0]
+					.filter((ii) => ii.governorate === customerDetails.state)[0]
+					.shippingPrice_Client
+			: 0;
+
 	let basicProductTotalAmount = productsWithNoVariables
 		.map((i) => Number(i.orderedQuantity) * Number(i.pickedPrice))
 		.reduce((a, b) => a + b, 0);
@@ -984,12 +1001,12 @@ const CreateNewOrder = () => {
 			totalOrderQty: allAddedQty(),
 			status: "In Processing",
 			totalAmount:
-				Number(shippingFee) +
+				Number(AppliedshippingFee) +
 				Number(variableProductTotalAmount) +
 				Number(basicProductTotalAmount),
 
 			totalAmountAfterDiscount: (
-				((Number(shippingFee) +
+				((Number(AppliedshippingFee) +
 					Number(variableProductTotalAmount) +
 					Number(basicProductTotalAmount)) *
 					(100 - orderTakerDiscount)) /
@@ -1093,12 +1110,12 @@ const CreateNewOrder = () => {
 			totalOrderQty: allAddedQty(),
 			status: "In Processing",
 			totalAmount:
-				Number(shippingFee) +
+				Number(AppliedshippingFee) +
 				Number(variableProductTotalAmount) +
 				Number(basicProductTotalAmount),
 
 			totalAmountAfterDiscount: (
-				((Number(shippingFee) +
+				((Number(AppliedshippingFee) +
 					Number(variableProductTotalAmount) +
 					Number(basicProductTotalAmount)) *
 					(100 - orderTakerDiscount)) /
@@ -1112,14 +1129,18 @@ const CreateNewOrder = () => {
 			sendSMS: sendSMS,
 			trackingNumber: "Not Added",
 			invoiceNumber: "Not Added",
-			OTNumber: `OT${new Date().getFullYear()}${
-				new Date().getMonth() + 1
-			}${new Date().getDate()}000${allOrders.length + 1}`,
+			OTNumber: `OT${new Date(orderCreationDate).getFullYear()}${
+				new Date(orderCreationDate).getMonth() + 1
+			}${new Date(orderCreationDate).getDate()}000${allOrders + 1}`,
 			returnStatus: "Not Returned",
 			shipDate: today,
 			returnDate: today,
 			exchangedProductQtyWithVariables: [],
 			exhchangedProductsNoVariable: [],
+			freeShipping: freeShipping,
+			orderCreationDate: orderCreationDate,
+			shippingFees: shippingFee,
+			appliedShippingFees: AppliedshippingFee,
 		};
 
 		createOrder(user._id, token, createOrderData)
@@ -1384,23 +1405,72 @@ const CreateNewOrder = () => {
 					</select>
 				</div>
 
-				<div className='form-group col-md-6 mx-auto my-4 text-center'>
-					<div className='form-group'>
-						<label
-							className=' mx-2'
-							style={{ fontWeight: "bold", fontSize: "17px" }}>
-							Send SMS
-						</label>
+				<div className='row'>
+					<div className='form-group col-md-6 mx-auto  text-center'>
+						<div className='form-group'>
+							<label
+								className=' mx-2'
+								style={{ fontWeight: "bold", fontSize: "17px" }}>
+								Send SMS
+							</label>
 
-						<input
-							type='checkbox'
-							// className='form-control'
-							onChange={() => setSendSMS(!sendSMS)}
-							checked={sendSMS}
-							value={sendSMS}
-							required
-						/>
+							<input
+								type='checkbox'
+								// className='form-control'
+								onChange={() => setSendSMS(!sendSMS)}
+								checked={sendSMS}
+								value={sendSMS}
+								required
+							/>
+						</div>
 					</div>
+					<div className='form-group col-md-6 mx-auto text-center'>
+						<div className='form-group'>
+							<label
+								className=' mx-2'
+								style={{ fontWeight: "bold", fontSize: "17px" }}>
+								Free Shipping
+							</label>
+
+							<input
+								type='checkbox'
+								// className='form-control'
+								onChange={() => setFreeShipping(!freeShipping)}
+								checked={freeShipping}
+								value={freeShipping}
+								required
+							/>
+						</div>
+					</div>
+				</div>
+
+				<div className='form-group col-md-10 mx-auto my-4 text-center'>
+					<label style={{ fontWeight: "bolder", fontSize: "1rem" }}>
+						Order Date
+					</label>
+					<br />
+					<DatePicker
+						className='inputFields'
+						onChange={(date) => {
+							setOrderCreationDate(
+								new Date(date._d).toLocaleDateString() || date._d,
+							);
+						}}
+						// disabledDate={disabledDate}
+						max
+						size='small'
+						showToday={true}
+						defaultValue={moment(new Date(orderCreationDate))}
+						placeholder='Please pick the desired schedule date'
+						style={{
+							height: "auto",
+							width: "50%",
+							marginLeft: "5px",
+							padding: "10px",
+							// boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
+							borderRadius: "10px",
+						}}
+					/>
 				</div>
 
 				<div className='mt-3'>
@@ -1418,7 +1488,7 @@ const CreateNewOrder = () => {
 				<div className='mt-1'>
 					Shipping Fee:{" "}
 					<strong style={{ color: "darkblue" }}>
-						{shippingFee ? shippingFee : 0} L.E.
+						{AppliedshippingFee ? AppliedshippingFee : 0} L.E.
 					</strong>
 				</div>
 
@@ -1428,7 +1498,7 @@ const CreateNewOrder = () => {
 						<>
 							<strong>
 								<s style={{ color: "darkred" }}>
-									{Number(shippingFee) +
+									{Number(AppliedshippingFee) +
 										Number(variableProductTotalAmount) +
 										Number(basicProductTotalAmount)}{" "}
 									L.E.
@@ -1436,7 +1506,7 @@ const CreateNewOrder = () => {
 							</strong>{" "}
 							<strong style={{ color: "darkblue" }}>
 								{(
-									((Number(shippingFee) +
+									((Number(AppliedshippingFee) +
 										Number(variableProductTotalAmount) +
 										Number(basicProductTotalAmount)) *
 										(100 - orderTakerDiscount)) /
@@ -1447,7 +1517,7 @@ const CreateNewOrder = () => {
 						</>
 					) : (
 						<strong style={{ color: "darkblue" }}>
-							{Number(shippingFee) +
+							{Number(AppliedshippingFee) +
 								Number(variableProductTotalAmount) +
 								Number(basicProductTotalAmount)}{" "}
 							L.E.

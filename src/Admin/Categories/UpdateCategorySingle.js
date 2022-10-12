@@ -12,6 +12,7 @@ import Resizer from "react-image-file-resizer";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import DarkBG from "../AdminMenu/DarkBG";
+import { Redirect } from "react-router-dom";
 
 const UpdateCategorySingle = ({ match }) => {
 	// eslint-disable-next-line
@@ -249,6 +250,9 @@ const UpdateCategorySingle = ({ match }) => {
 
 	return (
 		<UpdateCategorySingleWrapper show={AdminMenuStatus}>
+			{user.userRole === "Order Taker" ? (
+				<Redirect to='/admin/create-new-order' />
+			) : null}
 			<ToastContainer />
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />

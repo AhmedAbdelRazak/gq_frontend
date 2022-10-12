@@ -13,6 +13,7 @@ import Navbar from "../AdminNavMenu/Navbar";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import DarkBG from "../AdminMenu/DarkBG";
+import { Redirect } from "react-router-dom";
 
 const CreateColor = () => {
 	const [color, setColor] = useState("");
@@ -162,6 +163,9 @@ const CreateColor = () => {
 
 	return (
 		<CreateColorWrapper show={AdminMenuStatus}>
+			{user.userRole === "Order Taker" ? (
+				<Redirect to='/admin/create-new-order' />
+			) : null}
 			<ToastContainer />
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
