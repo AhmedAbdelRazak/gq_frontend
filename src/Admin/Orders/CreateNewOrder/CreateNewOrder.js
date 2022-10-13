@@ -432,13 +432,13 @@ const CreateNewOrder = () => {
 	// console.log(productNameWithAttributes, "productNameWithAttributes");
 
 	useEffect(() => {
-		const productSubSKUImage = (requiredProduct, productSubSKU) => {
+		const productSubSKUImage = (requiredProduct, productSubSKUColor) => {
 			const theReturn = requiredProduct.productAttributes.filter(
-				(i) => i.SubSKU === productSubSKU,
+				(i) => i.color === productSubSKUColor,
 			)[0].productImages[0].url;
 			return theReturn;
 		};
-
+		// console.log(productSubSKUImage(), "productSubSKUImage");
 		setChosenProductQty(
 			chosenProductVariables.map((i) => {
 				return i.SubSKU.map((ii) => {
@@ -453,7 +453,9 @@ const CreateNewOrder = () => {
 
 						productSubSKUImage: productSubSKUImage(
 							addedProductsToCart.filter((s) => s._id === i.productId)[0],
-							ii,
+							addedProductsToCart
+								.filter((s) => s._id === i.productId)[0]
+								.productAttributes.filter((ss) => ss.SubSKU === ii)[0].color,
 						),
 
 						SubSKUPriceAfterDiscount: addedProductsToCart
