@@ -588,6 +588,7 @@ const UpdateProductSingle = ({ match }) => {
 			</React.Fragment>
 		);
 	};
+
 	const UpdateProductToDatabase = (e) => {
 		e.preventDefault();
 		setClickedLink("MainData");
@@ -659,7 +660,6 @@ const UpdateProductSingle = ({ match }) => {
 			featuredProduct: featured,
 			activeBackorder: activeBackorder,
 		};
-
 		updateProduct(match.params.productId, user._id, token, {
 			product: values,
 		}).then((data) => {

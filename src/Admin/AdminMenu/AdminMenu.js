@@ -20,6 +20,7 @@ import {
 	BorderHorizontalOutlined,
 } from "@ant-design/icons";
 import { Button, Menu } from "antd";
+import LogoImage from "../../GeneralImages/ace-logo.png";
 
 function getItem(label, key, icon, children, type) {
 	return {
@@ -32,6 +33,41 @@ function getItem(label, key, icon, children, type) {
 }
 
 const items = [
+	getItem(
+		<div className='logoClass'></div>,
+		"GQLogo",
+		<div
+			className='logoClass'
+			style={{
+				background: "white",
+				textAlign: "center",
+				padding: "5px",
+				marginLeft: "25%",
+				marginTop: "5px",
+			}}>
+			<Link to='/admin/dashboard'>
+				<img
+					src={LogoImage}
+					alt='GQ Logo'
+					style={{
+						width: "100px",
+						objectFit: "cover",
+					}}
+				/>
+			</Link>
+		</div>,
+	),
+	getItem(
+		<div className='logoClass'></div>,
+		"GQLogo",
+		<div
+			className='logoClass'
+			style={{
+				width: "100%",
+			}}>
+			<hr />
+		</div>,
+	),
 	getItem("Admin Dashboard", "sub1", <PieChartOutlined />, [
 		getItem(
 			<Link to='/admin/dashboard'>Admin Dashboard</Link>,
@@ -478,20 +514,29 @@ export default AdminMenu;
 const AdminMenuWrapper = styled.div`
 	margin-left: 3px;
 	margin-bottom: 15px;
-	background: ${(props) => (props.show ? "" : "white")};
+	background: ${(props) => (props.show ? "" : "#1e1e2d")};
 	top: 0px !important;
 	position: fixed;
 	z-index: 20000;
+	overflow: auto;
+	height: ${(props) => (props.show ? "" : "100%")} !important;
+
+	.logoClass {
+		display: ${(props) => (props.show ? "none " : "block")} !important;
+	}
 
 	li {
 		/* margin: 20px auto; */
 		font-size: 0.9rem;
-		margin-top: ${(props) => (props.show ? "30px " : "30px")};
-		margin-bottom: ${(props) => (props.show ? "0px " : "50px")};
-		margin-bottom: ${(props) => (props.show ? "0px " : "20px")};
+		margin-bottom: ${(props) => (props.show ? "15px " : "15px")};
 	}
 
 	ul {
+	}
+
+	hr {
+		color: white !important;
+		background: white !important;
 	}
 
 	.ant-menu.ant-menu-inline-collapsed {

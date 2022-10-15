@@ -351,7 +351,7 @@ const NavbarWrapper = styled.div`
 				props.show ? "35% !important" : "35% !important"};
 			background: white;
 			padding-bottom: ${(props) =>
-				props.show ? "0px !important" : "20px !important"};
+				props.show ? "45px !important" : "50px !important"};
 		}
 	}
 `;

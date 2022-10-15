@@ -159,36 +159,42 @@ const SingleOrderPage = (props) => {
 									marginBottom: "20px",
 								}}>
 								Order Status:{" "}
-								{updateSingleOrder.status === "Not Processed" ||
-								updateSingleOrder.status === "In Processing" ||
-								updateSingleOrder.status === "Cancelled" ? (
-									<span style={{ color: "darkred" }}>
-										{updateSingleOrder.status}
+								<>
+									{updateSingleOrder.status === "Not Processed" ||
+									updateSingleOrder.status === "In Processing" ||
+									updateSingleOrder.status === "Cancelled" ? (
+										<span style={{ color: "darkred" }}>
+											{updateSingleOrder.status}
 
-										<span
-											className='ml-2'
-											style={{ cursor: "pointer" }}
-											onClick={() => {
-												setModalVisible(true);
-												setUpdateElement("Order Status");
-											}}>
-											<EditOutlined />
+											<span
+												className='ml-2'
+												style={{ cursor: "pointer" }}
+												onClick={() => {
+													setModalVisible(true);
+													setUpdateElement("Order Status");
+												}}>
+												{singleOrder.invoiceNumber === "Not Added" ? null : (
+													<EditOutlined />
+												)}
+											</span>
 										</span>
-									</span>
-								) : (
-									<span style={{ color: "darkgreen" }}>
-										{updateSingleOrder.status}
-										<span
-											className='ml-2'
-											style={{ cursor: "pointer" }}
-											onClick={() => {
-												setModalVisible(true);
-												setUpdateElement("Order Status");
-											}}>
-											<EditOutlined />
+									) : (
+										<span style={{ color: "darkgreen" }}>
+											{updateSingleOrder.status}
+											<span
+												className='ml-2'
+												style={{ cursor: "pointer" }}
+												onClick={() => {
+													setModalVisible(true);
+													setUpdateElement("Order Status");
+												}}>
+												{singleOrder.invoiceNumber === "Not Added" ? null : (
+													<EditOutlined />
+												)}
+											</span>
 										</span>
-									</span>
-								)}
+									)}
+								</>
 							</h5>
 							<h5
 								style={{
@@ -262,6 +268,23 @@ const SingleOrderPage = (props) => {
 										</span>
 									</span>
 								)}
+							</h5>
+							<h5
+								style={{
+									fontWeight: "bold",
+									textAlign: "center",
+									marginBottom: "20px",
+								}}>
+								Order Invoice Number:{" "}
+								<span
+									style={{
+										color:
+											updateSingleOrder.invoiceNumber === "Not Added"
+												? "darkred"
+												: "darkgreen",
+									}}>
+									{updateSingleOrder.invoiceNumber}
+								</span>
 							</h5>
 							<div style={{ fontSize: "1.25rem", fontWeight: "bolder" }}>
 								Customer Details{" "}

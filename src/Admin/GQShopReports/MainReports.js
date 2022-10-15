@@ -73,7 +73,7 @@ const MainReportsWrapper = styled.div`
 		display: grid;
 		/* grid-template-columns: 16% 84%; */
 		grid-template-columns: ${(props) =>
-			props.show ? "4.5% 95.5%" : "15.2% 84.8%"};
+			props.show ? "4.5% 95.5%" : "15% 85%"};
 
 		margin: auto;
 		/* border: 1px solid red; */

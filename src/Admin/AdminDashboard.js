@@ -4,8 +4,11 @@ import {
 	AreaChartOutlined,
 	EditOutlined,
 	FileUnknownOutlined,
+	HomeFilled,
 	ShoppingCartOutlined,
+	StarFilled,
 	VerticalAlignTopOutlined,
+	ZoomInOutlined,
 } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -20,6 +23,11 @@ import DarkBG from "./AdminMenu/DarkBG";
 import EditDateModal from "./Modals/EditDateModal";
 import ShowOrdersHistory from "./Modals/ShowOrdersHistory";
 import AttributesModal from "./Product/UpdatingProduct/AttributesModal";
+import {
+	gettingOrderStatusSummaryCount,
+	gettingOrderStatusSummaryRevenue,
+	overUncancelledRevenue,
+} from "./GQShopReports/GettingNumbers";
 
 const AdminDashboard = () => {
 	const [allOrders, setAllOrders] = useState([]);
@@ -113,18 +121,8 @@ const AdminDashboard = () => {
 			i.status !== "Returned",
 	);
 
-	let overallUncancelledOrders = allOrders.filter(
-		(i) => i.status !== "Cancelled" && i.status !== "Returned",
-	);
-
-	let overallUncancelledOrders2 =
-		overallUncancelledOrders &&
-		overallUncancelledOrders.map((i) => i.totalAmountAfterDiscount);
-
-	const SumoverallUncancelledOrders2 = overallUncancelledOrders2.reduce(
-		(a, b) => a + b,
-		0,
-	);
+	// eslint-disable-next-line
+	var SumoverallUncancelledOrders2 = overUncancelledRevenue(allOrders);
 
 	const todaysRevenue =
 		todaysOrders && todaysOrders.map((i) => i.totalAmountAfterDiscount);
@@ -219,8 +217,8 @@ const AdminDashboard = () => {
 	var chartDataTotalAmount = {
 		options: {
 			chart: {
-				id: "bar",
-				background: "#ebf5ff",
+				id: "area",
+				background: "#f6f6f6",
 			},
 
 			plotOptions: {
@@ -251,16 +249,16 @@ const AdminDashboard = () => {
 					return val;
 				},
 				style: {
-					fontSize: "12px",
+					fontSize: "10px",
 					fontFamily: "Helvetica, Arial, sans-serif",
 					fontWeight: "bold",
 					// colors: undefined,
-					colors: ["#ebf5ff", "#E91E63", "#9C27B0"],
+					colors: ["black", "#E91E63", "#9C27B0"],
 				},
 			},
 
 			title: {
-				text: "GQ Shop Day Over Day Overview",
+				text: "Day Over Day Overview",
 				align: "center",
 				margin: 10,
 				offsetX: 0,
@@ -278,6 +276,11 @@ const AdminDashboard = () => {
 					new Date(i.createdAt).toLocaleDateString(),
 				),
 			},
+			colors: ["#99dd99"],
+
+			stroke: {
+				width: [3, 3],
+			},
 
 			yaxis: {
 				tickAmount: 5,
@@ -285,6 +288,16 @@ const AdminDashboard = () => {
 					formatter: function (val) {
 						return val.toFixed(0);
 					},
+				},
+			},
+			fill: {
+				type: "gradient",
+				colors: ["#99dd99"],
+				gradient: {
+					shadeIntensity: 1,
+					opacityFrom: 0.7,
+					opacityTo: 0.9,
+					stops: [0, 100],
 				},
 			},
 		},
@@ -372,6 +385,33 @@ const AdminDashboard = () => {
 		return modifiedArray;
 	};
 
+	var destructingNestedArray = [];
+	selectedDateOrdersModified() &&
+		selectedDateOrdersModified().map((i) =>
+			i.map((ii) => destructingNestedArray.push(...ii)),
+		);
+
+	var TopSoldProducts = [];
+	destructingNestedArray &&
+		destructingNestedArray.reduce(function (res, value) {
+			if (!res[value.productName]) {
+				res[value.productName] = {
+					status: value.status,
+					productName: value.productName,
+					employeeName: value.employeeName,
+					productMainImage: value.productMainImage,
+					OrderedQty: 0,
+				};
+				TopSoldProducts.push(res[value.productName]);
+			}
+
+			res[value.productName].OrderedQty += Number(value.OrderedQty);
+
+			return res;
+		}, {});
+
+	console.log(TopSoldProducts, "TopSoldProducts");
+
 	const modifyingInventoryTable = () => {
 		function sortTopProducts(a, b) {
 			const TotalAppointmentsA = a.productQty;
@@ -438,6 +478,8 @@ const AdminDashboard = () => {
 					? "ZIRGA"
 					: i.orderSource === "zirga"
 					? "ZIRGA"
+					: i.orderSource === "g&q"
+					? "G&Q"
 					: i.orderSource,
 		};
 	});
@@ -464,9 +506,6 @@ const AdminDashboard = () => {
 
 			return res;
 		}, {});
-
-	console.log(OrderStatusSummary, "OrderStatusSummary");
-	console.log(OrderSourceSummary, "OrderSourceSummary");
 
 	return (
 		<AdminDashboardWrapper show={collapsed}>
@@ -500,7 +539,7 @@ const AdminDashboard = () => {
 										<div className='headerIcons'>
 											<ShoppingCartOutlined />
 										</div>
-										<div className='headerText'>Order Takers Summary</div>
+										<div className='headerText'>Order Summary</div>
 									</div>
 									<ShowOrdersHistory
 										Orders={selectedDateOrdersModified()}
@@ -515,33 +554,7 @@ const AdminDashboard = () => {
 											<hr />
 										</div>
 										<div className='row mt-3'>
-											<div className='col-5 mx-auto'>
-												<span className='cardHeader'>Overall Orders</span>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={1}
-														end={allOrders.length}
-														separator=','
-													/>
-												</div>{" "}
-											</div>
-
-											<div className='col-5 mx-auto'>
-												<span className='cardHeader'>
-													Overall Uncancelled Revenue{" "}
-												</span>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={1}
-														end={SumoverallUncancelledOrders2}
-														separator=','
-													/>
-												</div>{" "}
-											</div>
-
-											<div className='col-5 mt-5 mx-auto'>
+											<div className='col-5 mt-2 mx-auto'>
 												<span className='cardHeader'>Today's Orders </span>{" "}
 												<div className='metrics'>
 													<CountUp
@@ -553,7 +566,7 @@ const AdminDashboard = () => {
 												</div>{" "}
 											</div>
 
-											<div className='col-5 mt-5 mx-auto'>
+											<div className='col-5 mt-2 mx-auto'>
 												<span className='cardHeader'>Yesterday's Orders</span>{" "}
 												<div className='metrics'>
 													<CountUp
@@ -664,7 +677,7 @@ const AdminDashboard = () => {
 												className='col-md-5 mt-3 mx-auto'
 												style={{ fontWeight: "bolder" }}>
 												{" "}
-												<Link to='/admin/orders-hist'>LEARN MORE...</Link>{" "}
+												<Link to='/admin/orders-list'>LEARN MORE...</Link>{" "}
 											</div>
 										</div>
 									</div>
@@ -685,7 +698,7 @@ const AdminDashboard = () => {
 											<Chart
 												options={chartDataTotalAmount.options}
 												series={chartDataTotalAmount.series}
-												type='bar'
+												type='area'
 												style={{
 													width: "100%",
 													height: "100%",
@@ -694,109 +707,18 @@ const AdminDashboard = () => {
 										</div>
 									</div>
 								</div>
-
-								<div className='col-xl-6 col-lg-8 col-md-11  mx-auto my-auto'>
-									<table
-										className='table table-bordered table-md-responsive table-hover '
-										style={{
-											fontSize: "0.75rem",
-											overflowX: "auto",
-											background: "white",
-										}}>
-										<thead style={{ background: "#f1416c", color: "white" }}>
-											<tr
-												style={{
-													fontSize: "0.75rem",
-													textTransform: "capitalize",
-													textAlign: "center",
-												}}>
-												<th scope='col'>#</th>
-												<th scope='col'>Status</th>
-												<th scope='col'>Total Amount (L.E.)</th>
-												<th scope='col'>Orders Count</th>
-												<th scope='col'>Ordered Quantity</th>
-											</tr>
-										</thead>
-										<tbody
-											className='my-auto'
-											style={{
-												fontSize: "0.75rem",
-												textTransform: "capitalize",
-												fontWeight: "bolder",
-											}}>
-											{OrderStatusSummary &&
-												OrderStatusSummary.map((s, i) => {
-													return (
-														<tr key={i} className=''>
-															<td className='my-auto'>{i + 1}</td>
-
-															<td>{s.status}</td>
-															<td>
-																{Number(s.totalAmountAfterDiscount).toFixed(2)}
-															</td>
-															<td>{Number(s.ordersCount)}</td>
-															<td>{Number(s.totalOrderQty)}</td>
-
-															{/* <td>{Invoice(s)}</td> */}
-														</tr>
-													);
-												})}
-										</tbody>
-									</table>
+								<div className='col-md-9 mx-auto mt-3'>
+									<hr />
 								</div>
-								<div className='col-xl-6 col-lg-8 col-md-11  mx-auto my-5'>
-									<table
-										className='table table-bordered table-md-responsive table-hover '
-										style={{
-											fontSize: "0.75rem",
-											overflowX: "auto",
-											background: "white",
-										}}>
-										<thead
-											className=''
-											style={{ background: "#009ef7", color: "white" }}>
-											<tr
-												style={{
-													fontSize: "0.75rem",
-													textTransform: "capitalize",
-													textAlign: "center",
-												}}>
-												<th scope='col'>#</th>
-												<th scope='col'>Order Source</th>
-												<th scope='col'>Total Amount (L.E.)</th>
-												<th scope='col'>Orders Count</th>
-												<th scope='col'>Ordered Quantity</th>
-											</tr>
-										</thead>
-										<tbody
-											className='my-auto'
-											style={{
-												fontSize: "0.75rem",
-												textTransform: "capitalize",
-												fontWeight: "bolder",
-											}}>
-											{OrderSourceSummary &&
-												OrderSourceSummary.map((s, i) => {
-													return (
-														<tr key={i} className=''>
-															<td className='my-auto'>{i + 1}</td>
-
-															<td>{s.orderSource}</td>
-															<td>
-																{Number(s.totalAmountAfterDiscount).toFixed(2)}
-															</td>
-															<td>{Number(s.ordersCount)}</td>
-															<td>{Number(s.totalOrderQty)}</td>
-
-															{/* <td>{Invoice(s)}</td> */}
-														</tr>
-													);
-												})}
-										</tbody>
-									</table>
-								</div>
-
-								<div className='col-xl-4 col-lg-8 col-md-11  mx-auto my-5'>
+								<div className='col-xl-4 col-lg-8 col-md-11 mx-auto'>
+									<div className='thirdCard mb-3'>
+										<div className='headerIconsStars'>
+											<StarFilled />
+											<StarFilled />
+											<StarFilled />
+										</div>
+										<div className='headerText'>G&Q Super Stars</div>
+									</div>
 									<EditDateModal
 										selectedDate={selectedDate}
 										setSelectedDate={setSelectedDate}
@@ -804,7 +726,6 @@ const AdminDashboard = () => {
 										setModalVisible={setModalVisible}
 										setCollapsed={setCollapsed}
 									/>
-
 									<div className='card'>
 										<h5>
 											Top Employees (
@@ -875,11 +796,238 @@ const AdminDashboard = () => {
 											)}
 									</div>
 								</div>
+								<div className='col-xl-4 col-lg-8 col-md-11  mx-auto'>
+									<div className='firstCard mb-3'>
+										<div className='headerIcons'>
+											<ZoomInOutlined />
+										</div>
+										<div className='headerText'>Order Status Summary</div>
+									</div>
 
-								<div className='col-xl-8 col-lg-8 col-md-11 mx-auto my-5'>
+									<div className='card'>
+										<h5>Status Summary</h5>
+										<div className='col-md-10 mx-auto'>
+											<hr />
+										</div>
+										<div className='row mt-3'>
+											<div className='col-5 mx-auto'>
+												<span className='cardHeader'>Orders On Hold</span>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={1}
+														end={gettingOrderStatusSummaryCount(
+															OrderStatusSummary,
+															"On Hold",
+														)}
+														separator=','
+													/>{" "}
+													Orders
+												</div>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={0}
+														end={gettingOrderStatusSummaryRevenue(
+															OrderStatusSummary,
+															"On Hold",
+														)}
+														separator=','
+													/>{" "}
+													L.E.
+												</div>{" "}
+											</div>
+
+											<div className='col-5 mx-auto'>
+												<span className='cardHeader'>Orders In Processing</span>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={1}
+														end={gettingOrderStatusSummaryCount(
+															OrderStatusSummary,
+															"In Processing",
+														)}
+														separator=','
+													/>{" "}
+													Orders
+												</div>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={0}
+														end={gettingOrderStatusSummaryRevenue(
+															OrderStatusSummary,
+															"In Processing",
+														)}
+														separator=','
+													/>{" "}
+													L.E.
+												</div>{" "}
+											</div>
+
+											<div className='col-5 mt-5 mx-auto'>
+												<span className='cardHeader'>Orders Ready To Ship</span>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={1}
+														end={gettingOrderStatusSummaryCount(
+															OrderStatusSummary,
+															"Ready To Ship",
+														)}
+														separator=','
+													/>{" "}
+													Orders
+												</div>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={0}
+														end={gettingOrderStatusSummaryRevenue(
+															OrderStatusSummary,
+															"Ready To Ship",
+														)}
+														separator=','
+													/>{" "}
+													L.E.
+												</div>{" "}
+											</div>
+
+											<div className='col-5 mt-5 mx-auto'>
+												<span className='cardHeader'>Shipped Orders</span>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={1}
+														end={gettingOrderStatusSummaryCount(
+															OrderStatusSummary,
+															"Shipped",
+														)}
+														separator=','
+													/>{" "}
+													Orders
+												</div>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={0}
+														end={gettingOrderStatusSummaryRevenue(
+															OrderStatusSummary,
+															"Shipped",
+														)}
+														separator=','
+													/>{" "}
+													L.E.
+												</div>{" "}
+											</div>
+											<div className='col-5 mt-5 mx-auto'>
+												<span className='cardHeader'>Delivered Orders</span>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={0}
+														end={gettingOrderStatusSummaryCount(
+															OrderStatusSummary,
+															"Delivered",
+														)}
+														separator=','
+													/>{" "}
+													Orders
+												</div>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={0}
+														end={gettingOrderStatusSummaryRevenue(
+															OrderStatusSummary,
+															"Delivered",
+														)}
+														separator=','
+													/>{" "}
+													L.E.
+												</div>{" "}
+											</div>
+											<div className='col-5 mt-5 mx-auto'>
+												<span className='cardHeader'>Cancelled Orders</span>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={0}
+														end={gettingOrderStatusSummaryCount(
+															OrderStatusSummary,
+															"Cancelled",
+														)}
+														separator=','
+													/>{" "}
+													Orders
+												</div>{" "}
+												<div className='metrics'>
+													<CountUp
+														duration='2'
+														delay={0}
+														end={gettingOrderStatusSummaryRevenue(
+															OrderStatusSummary,
+															"Cancelled",
+														)}
+														separator=','
+													/>{" "}
+													L.E.
+												</div>{" "}
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div className='col-xl-4 col-lg-8 col-md-11 mx-auto'>
+									<div className='secondCard mb-3'>
+										<div className='headerIcons'>
+											<HomeFilled />
+										</div>
+										<div className='headerText'>Store Sales Summary</div>
+									</div>
+									<div className='card'>
+										<h5>G&Q Affiliate Stores</h5>
+										<div className='col-md-10 mx-auto'>
+											<hr />
+										</div>
+										<div className='row mt-3'>
+											{OrderSourceSummary &&
+												OrderSourceSummary.map((s, i) => {
+													return (
+														<div className='col-md-5 mx-auto text-capitalize my-3'>
+															<span className='cardHeader'>
+																{s.orderSource} Orders
+															</span>{" "}
+															<div className='metrics'>
+																<CountUp
+																	duration='2'
+																	delay={1}
+																	end={s.ordersCount}
+																	separator=','
+																/>{" "}
+																Orders
+															</div>{" "}
+															<div className='metrics'>
+																<CountUp
+																	duration='2'
+																	delay={1}
+																	end={s.totalAmountAfterDiscount}
+																	separator=','
+																/>{" "}
+																L.E.
+															</div>{" "}
+														</div>
+													);
+												})}
+										</div>
+									</div>
+								</div>
+
+								<div className='col-md-12 mx-auto my-5'>
 									<div className='card'>
 										<h5>
-											Sales Summary (
+											Top Sold Products (
 											{new Date(selectedDate).toDateString("en-US", {
 												timeZone: "Africa/Cairo",
 											})}
@@ -897,102 +1045,58 @@ const AdminDashboard = () => {
 											<hr />
 										</div>
 
-										<div className='row mt-3'>
-											<div className='col-1'>Item #</div>
-											<div className='col-2'>Image</div>
-											<div className='col-2'>Product Name</div>
-											<div className='col-2'>Ordered Qty</div>
-											<div className='col-3'>Ordered By</div>
-											<div className='col-2'>Status</div>
-											<div className='col-md-12 mx-auto'>
-												<hr />
-											</div>
-											<>
-												{selectedDateOrdersModified() &&
-													selectedDateOrdersModified().map((o, i) =>
-														o.map((oo) =>
-															oo.map((ooo, iii) => {
-																return (
-																	<React.Fragment key={iii}>
-																		{i <= 3 ? (
-																			<>
-																				<div className='col-1'> {i + 1} </div>
+										<table
+											className='table table-bordered table-md-responsive table-hover '
+											style={{ fontSize: "0.75rem", overflowX: "auto" }}>
+											<thead className=''>
+												<tr
+													style={{
+														fontSize: "0.75rem",
+														textTransform: "capitalize",
+														textAlign: "center",
+													}}>
+													<th scope='col'>#</th>
+													<th scope='col'>Product Name</th>
+													<th scope='col'>Ordered Qty</th>
+													<th scope='col'>Ordered By</th>
+													<th scope='col'>Status</th>
+													<th scope='col'>Product Image</th>
+												</tr>
+											</thead>
+											<tbody
+												className='my-auto'
+												style={{
+													fontSize: "0.75rem",
+													textTransform: "capitalize",
+													fontWeight: "bolder",
+												}}>
+												{TopSoldProducts &&
+													TopSoldProducts.map((s, i) => {
+														return (
+															<tr key={i} className=''>
+																<td className='my-auto'>{i + 1}</td>
 
-																				<div className='col-2'>
-																					<img
-																						className='userImage'
-																						src={ooo.productMainImage}
-																						alt='product'
-																					/>
-																				</div>
-																				<div className='col-2 text-capitalize'>
-																					{ooo.productName}
-																				</div>
+																<td>{s.productName}</td>
+																<td>{s.OrderedQty}</td>
+																<td>{s.employeeName}</td>
+																<td>{s.status}</td>
+																<td
+																	style={{ width: "15%", textAlign: "center" }}>
+																	<img
+																		width='40%'
+																		height='40%'
+																		style={{ marginLeft: "20px" }}
+																		src={s.productMainImage}
+																		alt={s.productName}
+																	/>
+																</td>
 
-																				<div className='col-2'>
-																					{ooo.OrderedQty}
-																				</div>
-																				<div className='col-3'>
-																					{ooo.employeeName}
-																				</div>
-																				{ooo.status === "Cancelled" ? (
-																					<div
-																						className='col-2'
-																						style={{
-																							color: "darkred",
-																							fontWeight: "bold",
-																						}}>
-																						{ooo.status}
-																					</div>
-																				) : ooo.status === "Shipped" ||
-																				  ooo.status === "Delivered" ? (
-																					<div
-																						className='col-2'
-																						style={{
-																							color: "darkgreen",
-																							fontWeight: "bold",
-																						}}>
-																						{ooo.status}
-																					</div>
-																				) : (
-																					<div
-																						className='col-2'
-																						style={{
-																							color: "black",
-																							fontWeight: "bold",
-																						}}>
-																						{ooo.status}
-																					</div>
-																				)}
-
-																				<div className='col-md-12 mx-auto'>
-																					<hr />
-																				</div>
-																			</>
-																		) : null}
-																	</React.Fragment>
-																);
-															}),
-														),
-													)}
-												{selectedDateOrdersModified() &&
-													selectedDateOrdersModified().length > 4 && (
-														<div
-															className='text-center my-4 mx-auto'
-															style={{ fontWeight: "bolder" }}>
-															{" "}
-															<Link
-																to='#'
-																onClick={() => {
-																	setModalVisible2(true);
-																	setCollapsed(true);
-																}}>
-																SHOW MORE...
-															</Link>{" "}
-														</div>
-													)}
-											</>
-										</div>
+																{/* <td>{Invoice(s)}</td> */}
+															</tr>
+														);
+													})}
+											</tbody>
+										</table>
 									</div>
 								</div>
 
@@ -1121,7 +1225,7 @@ const AdminDashboardWrapper = styled.div`
 		display: grid;
 		/* grid-template-columns: 16% 84%; */
 		grid-template-columns: ${(props) =>
-			props.show ? "4.5% 95.5%" : "15.2% 84.8%"};
+			props.show ? "4.5% 95.5%" : "15% 85%"};
 
 		margin: auto;
 		/* border: 1px solid red; */
@@ -1143,6 +1247,12 @@ const AdminDashboardWrapper = styled.div`
 	.headerIcons {
 		font-size: 2.2rem;
 		color: white;
+		font-weight: bold;
+	}
+
+	.headerIconsStars {
+		font-size: 2.2rem;
+		color: gold;
 		font-weight: bold;
 	}
 
@@ -1220,7 +1330,7 @@ const AdminDashboardWrapper = styled.div`
 	}
 
 	@media (max-width: 1750px) {
-		background: white;
+		/* background: white; */
 
 		.grid-container {
 			display: grid;
@@ -1233,11 +1343,11 @@ const AdminDashboardWrapper = styled.div`
 	}
 
 	@media (max-width: 1400px) {
-		background: white;
+		/* background: white; */
 
 		.grid-container {
 			display: grid;
-			grid-template-columns: 12% 88%;
+			grid-template-columns: 8% 92%;
 			margin: auto;
 			/* border: 1px solid red; */
 			/* grid-auto-rows: minmax(60px, auto); */

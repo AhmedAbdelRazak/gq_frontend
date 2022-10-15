@@ -18,6 +18,8 @@ const OrdersHist = () => {
 	const [offset, setOffset] = useState(0);
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
+	// eslint-disable-next-line
+	const [selectedFilter, setSelectedFilter] = useState("SelectAll");
 
 	const { user, token } = isAuthenticated();
 
@@ -37,7 +39,41 @@ const OrdersHist = () => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
-				setAllOrders(data.sort(sortOrdersAscendingly));
+				if (selectedFilter === "SelectAll") {
+					setAllOrders(data.sort(sortOrdersAscendingly));
+				} else if (selectedFilter === "InProcessing") {
+					setAllOrders(
+						data
+							.filter((i) => i.status === "In Processing")
+							.sort(sortOrdersAscendingly),
+					);
+				} else if (selectedFilter === "OnHold") {
+					setAllOrders(
+						data
+							.filter((i) => i.status === "On Hold")
+							.sort(sortOrdersAscendingly),
+					);
+				} else if (selectedFilter === "NoInvoice") {
+					setAllOrders(
+						data
+							.filter((i) => i.invoiceNumber === "Not Added")
+							.sort(sortOrdersAscendingly),
+					);
+				} else if (selectedFilter === "Exchanged") {
+					setAllOrders(
+						data
+							.filter((i) => i.status.includes("Exchange"))
+							.sort(sortOrdersAscendingly),
+					);
+				} else if (selectedFilter === "Returned") {
+					setAllOrders(
+						data
+							.filter((i) => i.status.includes("Return"))
+							.sort(sortOrdersAscendingly),
+					);
+				} else {
+					setAllOrders(data.sort(sortOrdersAscendingly));
+				}
 			}
 		});
 	};

@@ -435,8 +435,8 @@ const CreateNewOrder = () => {
 		const productSubSKUImage = (requiredProduct, productSubSKUColor) => {
 			const theReturn = requiredProduct.productAttributes.filter(
 				(i) => i.color === productSubSKUColor,
-			)[0].productImages[0].url;
-			return theReturn;
+			)[0].productImages;
+			return theReturn[0] ? theReturn[0].url : undefined;
 		};
 		// console.log(productSubSKUImage(), "productSubSKUImage");
 		setChosenProductQty(
@@ -456,7 +456,16 @@ const CreateNewOrder = () => {
 							addedProductsToCart
 								.filter((s) => s._id === i.productId)[0]
 								.productAttributes.filter((ss) => ss.SubSKU === ii)[0].color,
-						),
+						)
+							? productSubSKUImage(
+									addedProductsToCart.filter((s) => s._id === i.productId)[0],
+									addedProductsToCart
+										.filter((s) => s._id === i.productId)[0]
+										.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+										.color,
+							  )
+							: addedProductsToCart.filter((s) => s._id === i.productId)[0]
+									.thumbnailImage[0].images[0].url,
 
 						SubSKUPriceAfterDiscount: addedProductsToCart
 							.filter((s) => s._id === i.productId)[0]
@@ -1013,7 +1022,7 @@ const CreateNewOrder = () => {
 			chosenProductQtyWithVariables: chosenProductQty,
 			customerDetails: customerDetails,
 			totalOrderQty: allAddedQty(),
-			status: "In Processing",
+			status: "On Hold",
 			totalAmount:
 				Number(AppliedshippingFee) +
 				Number(variableProductTotalAmount) +
@@ -1122,7 +1131,7 @@ const CreateNewOrder = () => {
 			chosenProductQtyWithVariables: chosenProductQty,
 			customerDetails: customerDetails,
 			totalOrderQty: allAddedQty(),
-			status: "In Processing",
+			status: "On Hold",
 			totalAmount:
 				Number(AppliedshippingFee) +
 				Number(variableProductTotalAmount) +
