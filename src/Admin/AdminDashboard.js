@@ -218,7 +218,7 @@ const AdminDashboard = () => {
 		options: {
 			chart: {
 				id: "area",
-				background: "#f6f6f6",
+				background: "",
 			},
 
 			plotOptions: {
@@ -259,7 +259,7 @@ const AdminDashboard = () => {
 
 			title: {
 				text: "Day Over Day Overview",
-				align: "center",
+				align: "left",
 				margin: 10,
 				offsetX: 0,
 				offsetY: 0,
@@ -394,18 +394,20 @@ const AdminDashboard = () => {
 	var TopSoldProducts = [];
 	destructingNestedArray &&
 		destructingNestedArray.reduce(function (res, value) {
-			if (!res[value.productName]) {
-				res[value.productName] = {
+			if (!res[value.productName + value.employeeName]) {
+				res[value.productName + value.employeeName] = {
 					status: value.status,
 					productName: value.productName,
 					employeeName: value.employeeName,
 					productMainImage: value.productMainImage,
 					OrderedQty: 0,
 				};
-				TopSoldProducts.push(res[value.productName]);
+				TopSoldProducts.push(res[value.productName + value.employeeName]);
 			}
 
-			res[value.productName].OrderedQty += Number(value.OrderedQty);
+			res[value.productName + value.employeeName].OrderedQty += Number(
+				value.OrderedQty,
+			);
 
 			return res;
 		}, {});
