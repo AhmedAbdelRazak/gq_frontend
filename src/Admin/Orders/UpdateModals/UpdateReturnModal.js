@@ -11,9 +11,9 @@ import { toast } from "react-toastify";
 
 // import { toast } from "react-toastify";
 
-const ReturnModal = ({
-	selectedOrder,
-	setSelectedOrder,
+const UpdateReturnModal = ({
+	updateSingleOrder,
+	setUpdateSingleOrder,
 	returnDate,
 	setReturnDate,
 	modalVisible,
@@ -22,13 +22,22 @@ const ReturnModal = ({
 	returnStatus,
 	setReturnStatus,
 }) => {
-	const [returnAmount, setReturnAmount] = useState(0);
-	const [refundMethod, setRefundMethod] = useState("");
-	const [reasonForReturn, setReasonForReturn] = useState("");
-	const [refundNumber, setRefundNumber] = useState("");
+	const [returnAmount, setReturnAmount] = useState(
+		updateSingleOrder.returnAmount,
+	);
+	const [refundMethod, setRefundMethod] = useState(
+		updateSingleOrder.refundMethod,
+	);
+	const [reasonForReturn, setReasonForReturn] = useState(
+		updateSingleOrder.reasonForReturn,
+	);
+	const [refundNumber, setRefundNumber] = useState(
+		updateSingleOrder.refundNumber,
+	);
 	const { user, token } = isAuthenticated();
 
-	console.log(selectedOrder, "SelectedOrder");
+	setReturnStatus(updateSingleOrder.returnStatus);
+	setReturnDate(updateSingleOrder.returnDate);
 
 	const UpdatingOrder = (e) => {
 		e.preventDefault();
@@ -55,7 +64,7 @@ const ReturnModal = ({
 				"Are you sure you want to return this item to your stock???",
 			)
 		) {
-			updateOrder(selectedOrder._id, user._id, token, selectedOrder)
+			updateOrder(updateSingleOrder._id, user._id, token, updateSingleOrder)
 				.then((response) => {
 					toast.success("Order was successfully updated");
 					setTimeout(function () {
@@ -80,8 +89,8 @@ const ReturnModal = ({
 					className='inputFields'
 					onChange={(date) => {
 						setReturnDate(new Date(date._d).toLocaleDateString() || date._d);
-						setSelectedOrder({
-							...selectedOrder,
+						setUpdateSingleOrder({
+							...updateSingleOrder,
 							returnDate: new Date(date._d).toLocaleDateString() || date._d,
 							returnedItems: [],
 						});
@@ -90,7 +99,7 @@ const ReturnModal = ({
 					max
 					size='small'
 					showToday={true}
-					defaultValue={moment(new Date(returnDate))}
+					defaultValue={moment(new Date(updateSingleOrder.returnDate))}
 					placeholder='Please pick Return Date'
 					style={{
 						height: "auto",
@@ -112,8 +121,8 @@ const ReturnModal = ({
 						<br />
 						<select
 							onChange={(e) => {
-								setSelectedOrder({
-									...selectedOrder,
+								setUpdateSingleOrder({
+									...updateSingleOrder,
 									refundMethod: e.target.value,
 								});
 
@@ -156,8 +165,8 @@ const ReturnModal = ({
 								type='number'
 								value={refundNumber}
 								onChange={(e) => {
-									setSelectedOrder({
-										...selectedOrder,
+									setUpdateSingleOrder({
+										...updateSingleOrder,
 										refundNumber: e.target.value,
 									});
 
@@ -180,8 +189,8 @@ const ReturnModal = ({
 							type='number'
 							value={returnAmount}
 							onChange={(e) => {
-								setSelectedOrder({
-									...selectedOrder,
+								setUpdateSingleOrder({
+									...updateSingleOrder,
 									returnAmount: e.target.value,
 								});
 
@@ -198,13 +207,13 @@ const ReturnModal = ({
 				<div className='row'>
 					<div className=' col-md-6 my-auto mx-auto'>
 						<label style={{ fontWeight: "bolder", fontSize: "1rem" }}>
-							What is the Return Status? ({selectedOrder.OTNumber})
+							What is the Return Status? ({updateSingleOrder.OTNumber})
 						</label>
 						<br />
 						<select
 							onChange={(e) =>
-								setSelectedOrder({
-									...selectedOrder,
+								setUpdateSingleOrder({
+									...updateSingleOrder,
 									returnStatus: e.target.value,
 									status: e.target.value,
 									returnedItems: [],
@@ -249,8 +258,8 @@ const ReturnModal = ({
 							type='text'
 							value={reasonForReturn}
 							onChange={(e) => {
-								setSelectedOrder({
-									...selectedOrder,
+								setUpdateSingleOrder({
+									...updateSingleOrder,
 									reasonForReturn: e.target.value,
 								});
 
@@ -272,9 +281,9 @@ const ReturnModal = ({
 	};
 
 	return (
-		<ReturnModalWrapper>
+		<UpdateReturnModalWrapper>
 			<Modal
-				width='90%'
+				width='65%'
 				title={
 					<div
 						style={{
@@ -296,10 +305,10 @@ const ReturnModal = ({
 				}}>
 				{mainForm()}
 			</Modal>
-		</ReturnModalWrapper>
+		</UpdateReturnModalWrapper>
 	);
 };
 
-export default ReturnModal;
+export default UpdateReturnModal;
 
-const ReturnModalWrapper = styled.div``;
+const UpdateReturnModalWrapper = styled.div``;

@@ -1,6 +1,5 @@
 /** @format */
 
-import { ArrowDownOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -19,8 +18,6 @@ const ReturnList = () => {
 	const [offset, setOffset] = useState(0);
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
-	const [filtersClick, setFiltersClick] = useState(false);
-	const [clickedFilter, setClickedFilter] = useState("Select All");
 
 	//pagination
 	const [currentPage, setCurrentPage] = useState(1);
@@ -28,6 +25,7 @@ const ReturnList = () => {
 
 	const { user, token } = isAuthenticated();
 
+	// eslint-disable-next-line
 	var today = new Date().toDateString("en-US", {
 		timeZone: "Africa/Cairo",
 	});
@@ -42,12 +40,12 @@ const ReturnList = () => {
 
 	const loadOrders = () => {
 		function sortOrdersAscendingly(a, b) {
-			const TotalAppointmentsA = a.createdAt;
-			const TotalAppointmentsB = b.createdAt;
+			const TotalAppointmentsA = a.returnDate;
+			const TotalAppointmentsB = b.returnDate;
 			let comparison = 0;
-			if (TotalAppointmentsA < TotalAppointmentsB) {
+			if (TotalAppointmentsA > TotalAppointmentsB) {
 				comparison = 1;
-			} else if (TotalAppointmentsA > TotalAppointmentsB) {
+			} else if (TotalAppointmentsA < TotalAppointmentsB) {
 				comparison = -1;
 			}
 			return comparison;
@@ -56,83 +54,14 @@ const ReturnList = () => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
-				if (clickedFilter === "Select All") {
-					setAllOrders(
-						data
-							.filter(
-								(i) =>
-									i.status !== "Delivered" &&
-									i.status !== "Shipped" &&
-									i.status !== "Cancelled" &&
-									i.status !== "In Processing" &&
-									i.status !== "Ready To Ship" &&
-									i.status.includes("Return"),
-							)
-							.sort(sortOrdersAscendingly),
-					);
-				} else if (clickedFilter === "Today") {
-					setAllOrders(
-						data
-							.filter(
-								(i) =>
-									i.status !== "Delivered" &&
-									i.status !== "Shipped" &&
-									i.status !== "Cancelled" &&
-									i.status !== "In Processing" &&
-									i.status !== "Ready To Ship" &&
-									i.status.includes("Return") &&
-									new Date(i.createdAt).setHours(0, 0, 0, 0) ===
-										new Date(today).setHours(0, 0, 0, 0),
-							)
-							.sort(sortOrdersAscendingly),
-					);
-				} else if (clickedFilter === "Yesterday") {
-					setAllOrders(
-						data
-							.filter(
-								(i) =>
-									i.status !== "Delivered" &&
-									i.status !== "Shipped" &&
-									i.status !== "Cancelled" &&
-									i.status !== "In Processing" &&
-									i.status !== "Ready To Ship" &&
-									i.status.includes("Return") &&
-									new Date(i.createdAt).setHours(0, 0, 0, 0) ===
-										new Date(yesterday).setHours(0, 0, 0, 0),
-							)
-							.sort(sortOrdersAscendingly),
-					);
-				} else if (clickedFilter === "Last7Days") {
-					setAllOrders(
-						data
-							.filter(
-								(i) =>
-									i.status !== "Delivered" &&
-									i.status !== "Shipped" &&
-									i.status !== "Cancelled" &&
-									i.status !== "In Processing" &&
-									i.status !== "Ready To Ship" &&
-									i.status.includes("Return") &&
-									new Date(i.createdAt).setHours(0, 0, 0, 0) >=
-										new Date(last7Days).setHours(0, 0, 0, 0),
-							)
-							.sort(sortOrdersAscendingly),
-					);
-				} else {
-					setAllOrders(
-						data
-							.filter(
-								(i) =>
-									i.status !== "Delivered" &&
-									i.status !== "Shipped" &&
-									i.status !== "Cancelled" &&
-									i.status !== "In Processing" &&
-									i.status !== "Ready To Ship" &&
-									i.status.includes("Return"),
-							)
-							.sort(sortOrdersAscendingly),
-					);
-				}
+				setAllOrders(
+					data
+						.filter(
+							(i) =>
+								i.status.includes("Return") || i.status.includes("Returned"),
+						)
+						.sort(sortOrdersAscendingly),
+				);
 			}
 		});
 	};
@@ -140,7 +69,7 @@ const ReturnList = () => {
 	useEffect(() => {
 		loadOrders();
 		// eslint-disable-next-line
-	}, [clickedFilter]);
+	}, []);
 
 	useEffect(() => {
 		const onScroll = () => setOffset(window.pageYOffset);
@@ -196,17 +125,6 @@ const ReturnList = () => {
 		});
 	};
 
-	// How much was refunded
-	// return comment
-	// Refund Method (CIB, Electronic Wallet, Bank Trans, In Cash, Others)
-	// Required Refunded Amount
-	// photo sku photo
-	// final exchange status exchange
-	// free shipping button in create new order
-	// tick for 0 product
-	// change colors of each status
-	// insert date for new orders
-
 	const dataTable = () => {
 		return (
 			<div className='tableData'>
@@ -251,62 +169,6 @@ const ReturnList = () => {
 								placeholder='Search By Client Phone, Client Name, Status Or Carrier'
 								style={{ borderRadius: "20px", width: "50%" }}
 							/>
-							<div
-								className='mb-5 text-center ml-5'
-								style={{ fontWeight: "bolder", color: "#808080" }}>
-								Filters
-								<span
-									style={{
-										fontSize: "12px",
-										fontWeight: "bold",
-										cursor: "pointer",
-									}}
-									onClick={() => {
-										setFiltersClick(!filtersClick);
-									}}>
-									<ArrowDownOutlined />
-								</span>
-								{filtersClick ? (
-									<ul className='filterListWrapper'>
-										<li
-											className='filters-item'
-											onClick={() => {
-												setClickedFilter("Select All");
-											}}>
-											Select All
-										</li>
-										<li
-											className='filters-item'
-											onClick={() => {
-												setClickedFilter("Today");
-											}}>
-											Today
-										</li>
-										<li
-											className='filters-item'
-											onClick={() => {
-												setClickedFilter("Yesterday");
-											}}>
-											Yesteryday
-										</li>
-										<li
-											className='filters-item'
-											onClick={() => {
-												setClickedFilter("Last7Days");
-											}}>
-											Last 7 Days
-										</li>
-										<li
-											className='filters-item'
-											onClick={() => {
-												setClickedFilter("Last30Days");
-											}}>
-											Last 30 Days
-										</li>
-										<li className='filters-item'>Custom Date</li>
-									</ul>
-								) : null}
-							</div>
 						</div>
 
 						{/* <Pagination
@@ -321,45 +183,29 @@ const ReturnList = () => {
 							<thead className='thead-light'>
 								<tr>
 									<th scope='col'>Purchase Date</th>
-									<th scope='col'>Order #</th>
+									<th scope='col'>Return Date</th>
 									<th scope='col'>INV #</th>
 									<th scope='col'>Status</th>
 									<th scope='col'>Name</th>
 									<th scope='col'>Phone</th>
 									<th scope='col'>Amount</th>
+									<th scope='col'>Return Amount</th>
 									<th scope='col'>Store</th>
 									<th scope='col'>Taker</th>
 									<th scope='col'>Governorate</th>
 									{/* <th scope='col'>City</th> */}
 									<th scope='col'>Shipping Carrier</th>
 									<th scope='col'>Tracking #</th>
-									<th scope='col'>Ordered Qty</th>
+									<th scope='col'>Qty</th>
+									<th scope='col'>More...</th>
 								</tr>
 							</thead>
 
 							<tbody className='my-auto'>
 								{search(allOrders).map((s, i) => (
 									<tr key={i} className=''>
-										{s.orderCreationDate ? (
-											<td style={{ width: "8%" }}>
-												{new Date(s.orderCreationDate).toDateString()}{" "}
-											</td>
-										) : (
-											<td style={{ width: "8%" }}>
-												{new Date(s.createdAt).toDateString()}{" "}
-											</td>
-										)}
-										{s.OTNumber && s.OTNumber !== "Not Added" ? (
-											<td className='my-auto'>{s.OTNumber}</td>
-										) : (
-											<td className='my-auto'>{`OT${new Date(
-												s.createdAt,
-											).getFullYear()}${
-												new Date(s.createdAt).getMonth() + 1
-											}${new Date(s.createdAt).getDate()}000${
-												allOrders.length - i
-											}`}</td>
-										)}
+										<td>{new Date(s.orderCreationDate).toDateString()}</td>
+										<td>{new Date(s.returnDate).toDateString()}</td>
 										<td
 											style={{
 												width: "10%",
@@ -371,10 +217,10 @@ const ReturnList = () => {
 										<td
 											style={{
 												fontWeight: "bold",
-												fontSize: "0.9rem",
+												// fontSize: "0.8rem",
 												width: "8.5%",
 												background:
-													s.status === "Delivered" || s.status === "Shipped"
+													s.status === "Returned and Refunded"
 														? "#004b00"
 														: s.status === "Cancelled"
 														? "darkred"
@@ -389,11 +235,14 @@ const ReturnList = () => {
 											{s.status}
 										</td>
 
-										<td style={{ width: "11%" }}>
+										<td style={{ width: "9%" }}>
 											{s.customerDetails.fullName}
 										</td>
 										<td>{s.customerDetails.phone}</td>
 										<td>{s.totalAmountAfterDiscount.toFixed(0)} L.E.</td>
+										<td style={{ width: "7.8%" }}>
+											{s.returnAmount.toFixed(0)} L.E.
+										</td>
 										<td style={{ textTransform: "uppercase" }}>
 											{s.orderSource}
 										</td>
@@ -407,6 +256,11 @@ const ReturnList = () => {
 											{s.trackingNumber ? s.trackingNumber : "Not Added"}
 										</td>
 										<td>{s.totalOrderQty}</td>
+										<td>
+											<Link to={`/admin/return-details/${s._id}`}>
+												Details...
+											</Link>
+										</td>
 
 										{/* <td>{Invoice(s)}</td> */}
 									</tr>
@@ -468,8 +322,8 @@ const ReturnListWrapper = styled.div`
 	}
 
 	tr:hover {
-		background: #009ef7 !important;
-		color: white !important;
+		background: #e3f5ff !important;
+		color: black !important;
 		/* font-weight: bolder !important; */
 	}
 

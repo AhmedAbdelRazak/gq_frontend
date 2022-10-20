@@ -92,7 +92,37 @@ const Trial = ({
 							</span>
 						</h4>
 
-						{updateSingleOrder.status.includes("Exchange") ? (
+						{updateSingleOrder.status.includes("Return") ||
+						updateSingleOrder.status.includes("Returned") ? (
+							<select
+								className='form-control'
+								onChange={(e) =>
+									setUpdateSingleOrder({
+										...updateSingleOrder,
+										status: e.target.value,
+									})
+								}
+								style={{
+									border: "#cfcfcf solid 1px",
+									borderRadius: "10px",
+									width: "100%",
+									fontSize: "0.9rem",
+									boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
+								}}>
+								<option>Update Status</option>
+								<option value='Return Request'>Return Request</option>
+								<option value='In Return'>In Return</option>
+								<option value='Returned and Refunded'>
+									Returned and Refunded
+								</option>
+								<option value='Returned and Not Refunded'>
+									Returned and Not Refunded
+								</option>
+								<option value='Returned and Rejected'>
+									Returned and Rejected
+								</option>
+							</select>
+						) : updateSingleOrder.status.includes("Exchange") ? (
 							<select
 								className='form-control'
 								onChange={(e) =>

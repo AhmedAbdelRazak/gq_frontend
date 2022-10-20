@@ -248,7 +248,7 @@ const NavbarWrapper = styled.div`
 	}
 
 	.rightList > ul > li > img {
-		width: 30px;
+		width: 28px;
 		object-fit: cover;
 		border-radius: 5px;
 	}
@@ -351,7 +351,7 @@ const NavbarWrapper = styled.div`
 				props.show ? "35% !important" : "35% !important"};
 			background: white;
 			padding-bottom: ${(props) =>
-				props.show ? "45px !important" : "50px !important"};
+				props.show ? "4px !important" : "50px !important"};
 		}
 	}
 `;

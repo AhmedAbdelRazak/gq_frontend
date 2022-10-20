@@ -10,6 +10,29 @@ import { listOrders, removeOrder } from "../apiAdmin";
 import { Link } from "react-router-dom";
 import DarkBG from "../AdminMenu/DarkBG";
 import { toast } from "react-toastify";
+import { GroupOutlined } from "@ant-design/icons";
+import FiltersModal from "./UpdateModals/FiltersModal";
+
+const isActive = (clickedLink, sureClickedLink) => {
+	if (clickedLink === sureClickedLink) {
+		return {
+			// color: "white !important",
+			background: "#f5f8fa",
+			color: " #009ef7",
+			fontWeight: "bold",
+			padding: "5px",
+			borderRadius: "5px",
+			// textDecoration: "underline",
+		};
+	} else {
+		return {
+			color: "darkgrey",
+			fontWeight: "bold",
+			padding: "5px",
+			transition: "0.3s",
+		};
+	}
+};
 
 const OrdersHist = () => {
 	const [allOrders, setAllOrders] = useState([]);
@@ -17,20 +40,38 @@ const OrdersHist = () => {
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [offset, setOffset] = useState(0);
 	const [pageScrolled, setPageScrolled] = useState(false);
+	const [modalVisible, setModalVisible] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
 	// eslint-disable-next-line
 	const [selectedFilter, setSelectedFilter] = useState("SelectAll");
 
 	const { user, token } = isAuthenticated();
 
+	// eslint-disable-next-line
+	var today = new Date().toDateString("en-US", {
+		timeZone: "Africa/Cairo",
+	});
+
+	var yesterday = new Date();
+	var last7Days = new Date();
+
+	yesterday.setDate(yesterday.getDate() - 1);
+	last7Days.setDate(last7Days.getDate() - 7);
+
 	const loadOrders = () => {
 		function sortOrdersAscendingly(a, b) {
-			const TotalAppointmentsA = a.createdAt;
-			const TotalAppointmentsB = b.createdAt;
+			const TotalAppointmentsA = a.orderCreationDate;
+			const TotalAppointmentsB = b.orderCreationDate;
+			const TotalAppointmentsC = a.createdAt;
+			const TotalAppointmentsD = b.createdAt;
 			let comparison = 0;
 			if (TotalAppointmentsA < TotalAppointmentsB) {
 				comparison = 1;
 			} else if (TotalAppointmentsA > TotalAppointmentsB) {
+				comparison = -1;
+			} else if (TotalAppointmentsC < TotalAppointmentsD) {
+				comparison = 1;
+			} else if (TotalAppointmentsC > TotalAppointmentsD) {
 				comparison = -1;
 			}
 			return comparison;
@@ -53,6 +94,18 @@ const OrdersHist = () => {
 							.filter((i) => i.status === "On Hold")
 							.sort(sortOrdersAscendingly),
 					);
+				} else if (selectedFilter === "Shipped") {
+					setAllOrders(
+						data
+							.filter((i) => i.status === "Shipped")
+							.sort(sortOrdersAscendingly),
+					);
+				} else if (selectedFilter === "Delivered") {
+					setAllOrders(
+						data
+							.filter((i) => i.status === "Delivered")
+							.sort(sortOrdersAscendingly),
+					);
 				} else if (selectedFilter === "NoInvoice") {
 					setAllOrders(
 						data
@@ -65,10 +118,43 @@ const OrdersHist = () => {
 							.filter((i) => i.status.includes("Exchange"))
 							.sort(sortOrdersAscendingly),
 					);
-				} else if (selectedFilter === "Returned") {
+				} else if (selectedFilter === "Return") {
 					setAllOrders(
 						data
-							.filter((i) => i.status.includes("Return"))
+							.filter(
+								(i) =>
+									i.status.includes("Return") || i.status.includes("Returned"),
+							)
+							.sort(sortOrdersAscendingly),
+					);
+				} else if (selectedFilter === "Today") {
+					setAllOrders(
+						data
+							.filter(
+								(i) =>
+									new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
+									new Date(today).setHours(0, 0, 0, 0),
+							)
+							.sort(sortOrdersAscendingly),
+					);
+				} else if (selectedFilter === "Yesterday") {
+					setAllOrders(
+						data
+							.filter(
+								(i) =>
+									new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
+									new Date(yesterday).setHours(0, 0, 0, 0),
+							)
+							.sort(sortOrdersAscendingly),
+					);
+				} else if (selectedFilter === "Last7Days") {
+					setAllOrders(
+						data
+							.filter(
+								(i) =>
+									new Date(i.orderCreationDate).setHours(0, 0, 0, 0) >=
+									new Date(last7Days).setHours(0, 0, 0, 0),
+							)
 							.sort(sortOrdersAscendingly),
 					);
 				} else {
@@ -81,7 +167,7 @@ const OrdersHist = () => {
 	useEffect(() => {
 		loadOrders();
 		// eslint-disable-next-line
-	}, []);
+	}, [selectedFilter]);
 
 	const nonCancelledOrders =
 		allOrders && allOrders.filter((i) => i.status !== "Cancelled");
@@ -181,7 +267,7 @@ const OrdersHist = () => {
 							<th scope='col'>Tracking #</th>
 							<th scope='col'>Quantity</th>
 							<th scope='col' style={{ width: "8%" }}>
-								More Details
+								Details
 							</th>
 							<th scope='col'>Shipping?</th>
 							<th scope='col'>Delete?</th>
@@ -191,38 +277,16 @@ const OrdersHist = () => {
 					<tbody className='my-auto'>
 						{search(allOrders).map((s, i) => (
 							<tr key={i} className=''>
-								{/* {s.OTNumber && s.OTNumber !== "Not Added" ? (
-									<td className='my-auto'>{s.OTNumber}</td>
-								) : (
-									<td className='my-auto'>{`OT${new Date(
-										s.createdAt,
-									).getFullYear()}${
-										new Date(s.createdAt).getMonth() + 1
-									}${new Date(s.createdAt).getDate()}000${
-										allOrders.length - i
-									}`}</td>
-								)} */}
-
 								{s.orderCreationDate ? (
-									<td style={{ width: "8%" }}>
+									<td style={{ width: "10%" }}>
 										{new Date(s.orderCreationDate).toDateString()}{" "}
 									</td>
 								) : (
-									<td style={{ width: "8%" }}>
+									<td style={{ width: "10%" }}>
 										{new Date(s.createdAt).toDateString()}{" "}
 									</td>
 								)}
-								{/* {s.OTNumber && s.OTNumber !== "Not Added" ? (
-									<td className='my-auto'>{s.OTNumber}</td>
-								) : (
-									<td className='my-auto'>{`OT${new Date(
-										s.createdAt,
-									).getFullYear()}${
-										new Date(s.createdAt).getMonth() + 1
-									}${new Date(s.createdAt).getDate()}000${
-										allOrders.length - i
-									}`}</td>
-								)} */}
+
 								<td
 									style={{
 										width: "10%",
@@ -238,6 +302,7 @@ const OrdersHist = () => {
 										width: "8.5%",
 										background:
 											s.status.includes("Delivered") ||
+											s.status.includes("Returned and Refunded") ||
 											s.status.includes("Shipped")
 												? "#004b00"
 												: s.status === "Cancelled"
@@ -247,6 +312,7 @@ const OrdersHist = () => {
 												: "#e2e2e2",
 										color:
 											s.status.includes("Delivered") ||
+											s.status.includes("Returned and Refunded") ||
 											s.status.includes("Shipped")
 												? "white"
 												: s.status.includes("Cancelled")
@@ -278,15 +344,28 @@ const OrdersHist = () => {
 									}}>
 									<Link to={`/admin/single-order/${s._id}`}>Show More....</Link>
 								</td>
-
-								<td
-									style={{
-										cursor: "pointer",
-										fontSize: "10px,",
-										width: "8%",
-									}}>
-									<Link to={`#`}>Create Shipping</Link>
-								</td>
+								{s.invoiceNumber === "Not Added" ? (
+									<td
+										style={{
+											cursor: "pointer",
+											fontSize: "10px,",
+											width: "8%",
+											color: "darkgray",
+											fontWeight: "bold",
+										}}>
+										Create Shipping
+									</td>
+								) : (
+									<td
+										style={{
+											cursor: "pointer",
+											fontSize: "10px,",
+											width: "8%",
+											fontWeight: "bold",
+										}}>
+										<Link to={`#`}>Create Shipping</Link>
+									</td>
+								)}
 
 								<td
 									onClick={() => {
@@ -342,6 +421,54 @@ const OrdersHist = () => {
 				</div>
 				<div className='mainContent'>
 					<Navbar fromPage='OrdersHist' pageScrolled={pageScrolled} />
+					<FiltersModal
+						selectedFilter={selectedFilter}
+						setSelectedFilter={setSelectedFilter}
+						modalVisible={modalVisible}
+						setModalVisible={setModalVisible}
+					/>
+					<div
+						style={{
+							background: "white",
+							textAlign: "right",
+							fontSize: "13px",
+						}}
+						className='py-3 mb-5'>
+						<span
+							style={isActive("SelectAll", selectedFilter)}
+							className='mx-2 filterItem'
+							onClick={() => setSelectedFilter("SelectAll")}>
+							Select All
+						</span>
+						<span
+							style={isActive("Today", selectedFilter)}
+							className='mx-2 filterItem'
+							onClick={() => setSelectedFilter("Today")}>
+							Today
+						</span>
+						<span
+							style={isActive("Yesterday", selectedFilter)}
+							className='mx-2 filterItem'
+							onClick={() => setSelectedFilter("Yesterday")}>
+							Yesterday
+						</span>
+						<span
+							style={isActive("Last7Days", selectedFilter)}
+							className='mx-2 filterItem'
+							onClick={() => setSelectedFilter("Last7Days")}>
+							Last 7 Days
+						</span>
+
+						<span
+							style={isActive("Group", selectedFilter)}
+							className='mx-2 filterItem'
+							onClick={() => {
+								setModalVisible(true);
+								setSelectedFilter("Group");
+							}}>
+							Group <GroupOutlined />
+						</span>
+					</div>
 					<h3
 						style={{ color: "#009ef7", fontWeight: "bold" }}
 						className='mx-auto text-center mb-5'>
@@ -419,7 +546,7 @@ const OrdersHistWrapper = styled.div`
 
 	.grid-container {
 		display: grid;
-		grid-template-columns: ${(props) => (props.show ? "8% 92%" : "15% 84.5%")};
+		grid-template-columns: ${(props) => (props.show ? "8% 92%" : "15% 85%")};
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */
@@ -434,9 +561,26 @@ const OrdersHistWrapper = styled.div`
 	}
 
 	tr:hover {
-		background: #009ef7 !important;
-		color: white !important;
+		background: #e3f5ff !important;
+		color: black !important;
 		/* font-weight: bolder !important; */
+	}
+
+	.filterItem {
+		color: darkgrey;
+		font-weight: bold;
+		padding: 5px;
+		transition: 0.3s;
+	}
+
+	.filterItem:hover {
+		background: #f5f8fa;
+		color: #009ef7;
+		font-weight: bold;
+		padding: 5px;
+		border-radius: 3px;
+		transition: 0.3s;
+		cursor: pointer;
 	}
 
 	.tableData {

@@ -36,7 +36,16 @@ const AdminDashboard = () => {
 	const [offset, setOffset] = useState(0);
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
-	const [selectedDate, setSelectedDate] = useState(new Date());
+	const [selectedDate, setSelectedDate] = useState(
+		new Date().toDateString("en-US", {
+			timeZone: "Africa/Cairo",
+		}),
+	);
+
+	// eslint-disable-next-line
+	const [filterSelectedDate, setFilterSelectedDate] = useState(
+		new Date().setDate(new Date().getDate() - 90),
+	);
 
 	const [modalVisible, setModalVisible] = useState(false);
 	const [modalVisible2, setModalVisible2] = useState(false);
@@ -83,7 +92,7 @@ const AdminDashboard = () => {
 		gettingAllProducts();
 
 		// eslint-disable-next-line
-	}, []);
+	}, [filterSelectedDate]);
 
 	var today = new Date().toDateString("en-US", {
 		timeZone: "Africa/Cairo",
@@ -92,6 +101,7 @@ const AdminDashboard = () => {
 	var yesterday = new Date();
 	var last7Days = new Date();
 	var last30Days = new Date();
+	var last90Days = new Date();
 	var tomorrow = new Date();
 	var next7Days = new Date();
 	var next30Days = new Date();
@@ -99,6 +109,7 @@ const AdminDashboard = () => {
 	yesterday.setDate(yesterday.getDate() - 1);
 	last7Days.setDate(last7Days.getDate() - 10);
 	last30Days.setDate(last30Days.getDate() - 30);
+	last90Days.setDate(last90Days.getDate() - 90);
 	tomorrow.setDate(tomorrow.getDate() + 2);
 	next7Days.setDate(next7Days.getDate() + 8);
 	next30Days.setDate(next30Days.getDate() + 31);
@@ -326,7 +337,7 @@ const AdminDashboard = () => {
 
 	let selectedDateOrders = allOrders.filter(
 		(i) =>
-			new Date(i.createdAt).setHours(0, 0, 0, 0) ===
+			new Date(i.createdAt).setHours(0, 0, 0, 0) >=
 				new Date(selectedDate).setHours(0, 0, 0, 0) &&
 			i.status !== "Cancelled" &&
 			i.status !== "Returned",
@@ -412,8 +423,6 @@ const AdminDashboard = () => {
 			return res;
 		}, {});
 
-	console.log(TopSoldProducts, "TopSoldProducts");
-
 	const modifyingInventoryTable = () => {
 		function sortTopProducts(a, b) {
 			const TotalAppointmentsA = a.productQty;
@@ -452,39 +461,52 @@ const AdminDashboard = () => {
 	var OrderStatusSummary = [];
 	allOrders &&
 		allOrders.reduce(function (res, value) {
-			if (!res[value.status]) {
-				res[value.status] = {
+			if (!res[value.status + new Date(value.createdAt).toLocaleDateString()]) {
+				res[value.status + new Date(value.createdAt).toLocaleDateString()] = {
 					status: value.status,
+					createdAt: new Date(value.createdAt).toLocaleDateString(),
 					totalAmountAfterDiscount: 0,
 					ordersCount: 0,
 					totalOrderQty: 0,
 				};
-				OrderStatusSummary.push(res[value.status]);
+				OrderStatusSummary.push(
+					res[value.status + new Date(value.createdAt).toLocaleDateString()],
+				);
 			}
-			res[value.status].totalAmountAfterDiscount += Number(
-				value.totalAmountAfterDiscount,
-			);
+			res[
+				value.status + new Date(value.createdAt).toLocaleDateString()
+			].totalAmountAfterDiscount += Number(value.totalAmountAfterDiscount);
 
-			res[value.status].ordersCount += 1;
+			res[
+				value.status + new Date(value.createdAt).toLocaleDateString()
+			].ordersCount += 1;
 
-			res[value.status].totalOrderQty += Number(value.totalOrderQty);
+			res[
+				value.status + new Date(value.createdAt).toLocaleDateString()
+			].totalOrderQty += Number(value.totalOrderQty);
 
 			return res;
 		}, {});
 
-	var orderSourceModified = allOrders.map((i) => {
-		return {
-			...i,
-			orderSource:
-				i.orderSource === "ZITRGA"
-					? "ZIRGA"
-					: i.orderSource === "zirga"
-					? "ZIRGA"
-					: i.orderSource === "g&q"
-					? "G&Q"
-					: i.orderSource,
-		};
-	});
+	var orderSourceModified = allOrders
+		.map((i) => {
+			return {
+				...i,
+				orderSource:
+					i.orderSource === "ZITRGA"
+						? "ZIRGA"
+						: i.orderSource === "zirga"
+						? "ZIRGA"
+						: i.orderSource === "g&q"
+						? "G&Q"
+						: i.orderSource,
+			};
+		})
+		.filter(
+			(iii) =>
+				new Date(iii.createdAt).setHours(0, 0, 0, 0) >=
+				new Date(filterSelectedDate).setHours(0, 0, 0, 0),
+		);
 
 	var OrderSourceSummary = [];
 	orderSourceModified &&
@@ -811,7 +833,7 @@ const AdminDashboard = () => {
 										<div className='col-md-10 mx-auto'>
 											<hr />
 										</div>
-										<div className='row mt-3'>
+										<div className='row my-3'>
 											<div className='col-5 mx-auto'>
 												<span className='cardHeader'>Orders On Hold</span>{" "}
 												<div className='metrics'>
@@ -821,6 +843,7 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryCount(
 															OrderStatusSummary,
 															"On Hold",
+															filterSelectedDate,
 														)}
 														separator=','
 													/>{" "}
@@ -833,6 +856,7 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryRevenue(
 															OrderStatusSummary,
 															"On Hold",
+															filterSelectedDate,
 														)}
 														separator=','
 													/>{" "}
@@ -849,6 +873,7 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryCount(
 															OrderStatusSummary,
 															"In Processing",
+															filterSelectedDate,
 														)}
 														separator=','
 													/>{" "}
@@ -861,6 +886,7 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryRevenue(
 															OrderStatusSummary,
 															"In Processing",
+															filterSelectedDate,
 														)}
 														separator=','
 													/>{" "}
@@ -877,6 +903,7 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryCount(
 															OrderStatusSummary,
 															"Ready To Ship",
+															filterSelectedDate,
 														)}
 														separator=','
 													/>{" "}
@@ -889,6 +916,7 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryRevenue(
 															OrderStatusSummary,
 															"Ready To Ship",
+															filterSelectedDate,
 														)}
 														separator=','
 													/>{" "}
@@ -905,6 +933,7 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryCount(
 															OrderStatusSummary,
 															"Shipped",
+															filterSelectedDate,
 														)}
 														separator=','
 													/>{" "}
@@ -917,6 +946,7 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryRevenue(
 															OrderStatusSummary,
 															"Shipped",
+															filterSelectedDate,
 														)}
 														separator=','
 													/>{" "}
@@ -932,6 +962,7 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryCount(
 															OrderStatusSummary,
 															"Delivered",
+															filterSelectedDate,
 														)}
 														separator=','
 													/>{" "}
@@ -944,6 +975,7 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryRevenue(
 															OrderStatusSummary,
 															"Delivered",
+															filterSelectedDate,
 														)}
 														separator=','
 													/>{" "}
@@ -959,6 +991,7 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryCount(
 															OrderStatusSummary,
 															"Cancelled",
+															filterSelectedDate,
 														)}
 														separator=','
 													/>{" "}
@@ -971,12 +1004,40 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryRevenue(
 															OrderStatusSummary,
 															"Cancelled",
+															filterSelectedDate,
 														)}
 														separator=','
 													/>{" "}
 													L.E.
 												</div>{" "}
 											</div>
+										</div>
+										<hr />
+										<div>
+											<select
+												onChange={(e) => {
+													setFilterSelectedDate(e.target.value);
+												}}
+												placeholder='Select Return Status'
+												className=' mx-auto w-100'
+												style={{
+													paddingTop: "3px",
+													paddingBottom: "3px",
+													// paddingRight: "50px",
+													// textAlign: "center",
+													border: "#cfcfcf solid 1px",
+													borderRadius: "2px",
+													fontSize: "0.9rem",
+													// boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
+													textTransform: "capitalize",
+												}}>
+												<option value='SelectStatus'>Filters:</option>
+												<option value={last90Days}>Select All</option>
+												<option value={today}>Today</option>
+												<option value={yesterday}>Yesterday</option>
+												<option value={last7Days}>Last 7 Days</option>
+												<option value={last30Days}>Last 30 Days</option>
+											</select>
 										</div>
 									</div>
 								</div>
@@ -1022,6 +1083,33 @@ const AdminDashboard = () => {
 														</div>
 													);
 												})}
+										</div>
+										<div className='storeSummaryFilters'>
+											<hr />
+											<select
+												onChange={(e) => {
+													setFilterSelectedDate(e.target.value);
+												}}
+												placeholder='Select Return Status'
+												className=' mx-auto w-100'
+												style={{
+													paddingTop: "3px",
+													paddingBottom: "3px",
+													// paddingRight: "50px",
+													// textAlign: "center",
+													border: "#cfcfcf solid 1px",
+													borderRadius: "2px",
+													fontSize: "0.9rem",
+													// boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
+													textTransform: "capitalize",
+												}}>
+												<option value='SelectStatus'>Filters:</option>
+												<option value={last90Days}>Select All</option>
+												<option value={today}>Today</option>
+												<option value={yesterday}>Yesterday</option>
+												<option value={last7Days}>Last 7 Days</option>
+												<option value={last30Days}>Last 30 Days</option>
+											</select>
 										</div>
 									</div>
 								</div>
@@ -1292,7 +1380,7 @@ const AdminDashboardWrapper = styled.div`
 	}
 
 	.card {
-		min-height: 470px !important;
+		min-height: 490px !important;
 		padding: 15px;
 	}
 
@@ -1331,6 +1419,12 @@ const AdminDashboardWrapper = styled.div`
 		margin-left: 5px;
 	}
 
+	.storeSummaryFilters {
+		position: absolute;
+		top: 83%;
+		width: 94%;
+	}
+
 	@media (max-width: 1750px) {
 		/* background: white; */
 
@@ -1353,6 +1447,11 @@ const AdminDashboardWrapper = styled.div`
 			margin: auto;
 			/* border: 1px solid red; */
 			/* grid-auto-rows: minmax(60px, auto); */
+		}
+
+		.storeSummaryFilters {
+			position: "";
+			width: "";
 		}
 	}
 

@@ -55,6 +55,7 @@ import OrdersList from "./Admin/Orders/OrdersList";
 import OrderExchange from "./Admin/Orders/OrderExchange";
 import OrderExchangeSingle from "./Admin/Orders/OrderExchangeSingle";
 import ReturnList from "./Admin/Orders/ReturnList";
+import ReturnDetails from "./Admin/Orders/ReturnDetails";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -227,6 +228,11 @@ const App = () => {
 				<AdminRoute path='/admin/order-return' exact component={OrderReturn} />
 				<AdminRoute path='/admin/orders-list' exact component={OrdersList} />
 				<AdminRoute path='/admin/return-list' exact component={ReturnList} />
+				<AdminRoute
+					path='/admin/return-details/:orderId'
+					exact
+					component={ReturnDetails}
+				/>
 				<AdminRoute
 					path='/admin/order-exchange'
 					exact

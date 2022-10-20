@@ -293,8 +293,8 @@ const OrderReturnWrapper = styled.div`
 	}
 
 	tr:hover {
-		background: #009ef7 !important;
-		color: white !important;
+		background: #e3f5ff !important;
+		color: black !important;
 		/* font-weight: bolder !important; */
 	}
 

@@ -1,6 +1,5 @@
 /** @format */
 
-import { ArrowDownOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -19,8 +18,6 @@ const OrdersList = () => {
 	const [offset, setOffset] = useState(0);
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
-	const [filtersClick, setFiltersClick] = useState(false);
-	const [clickedFilter, setClickedFilter] = useState("Select All");
 
 	//pagination
 	const [currentPage, setCurrentPage] = useState(1);
@@ -28,6 +25,7 @@ const OrdersList = () => {
 
 	const { user, token } = isAuthenticated();
 
+	// eslint-disable-next-line
 	var today = new Date().toDateString("en-US", {
 		timeZone: "Africa/Cairo",
 	});
@@ -56,63 +54,17 @@ const OrdersList = () => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
-				if (clickedFilter === "Select All") {
-					setAllOrders(data.sort(sortOrdersAscendingly));
-				} else if (clickedFilter === "Today") {
-					setAllOrders(
-						data
-							.filter(
-								(i) =>
-									i.status !== "Delivered" &&
-									i.status !== "Shipped" &&
-									i.status !== "Cancelled" &&
-									i.invoiceNumber === "Not Added" &&
-									new Date(i.createdAt).setHours(0, 0, 0, 0) ===
-										new Date(today).setHours(0, 0, 0, 0),
-							)
-							.sort(sortOrdersAscendingly),
-					);
-				} else if (clickedFilter === "Yesterday") {
-					setAllOrders(
-						data
-							.filter(
-								(i) =>
-									i.status !== "Delivered" &&
-									i.status !== "Shipped" &&
-									i.status !== "Cancelled" &&
-									i.invoiceNumber === "Not Added" &&
-									new Date(i.createdAt).setHours(0, 0, 0, 0) ===
-										new Date(yesterday).setHours(0, 0, 0, 0),
-							)
-							.sort(sortOrdersAscendingly),
-					);
-				} else if (clickedFilter === "Last7Days") {
-					setAllOrders(
-						data
-							.filter(
-								(i) =>
-									i.status !== "Delivered" &&
-									i.status !== "Shipped" &&
-									i.status !== "Cancelled" &&
-									i.invoiceNumber === "Not Added" &&
-									new Date(i.createdAt).setHours(0, 0, 0, 0) >=
-										new Date(last7Days).setHours(0, 0, 0, 0),
-							)
-							.sort(sortOrdersAscendingly),
-					);
-				} else {
-					setAllOrders(
-						data
-							.filter(
-								(i) =>
-									i.status !== "Delivered" &&
-									i.status !== "Shipped" &&
-									i.status !== "Cancelled" &&
-									i.invoiceNumber === "Not Added",
-							)
-							.sort(sortOrdersAscendingly),
-					);
-				}
+				setAllOrders(
+					data
+						.filter(
+							(i) =>
+								i.status !== "Delivered" &&
+								i.status !== "Shipped" &&
+								i.status !== "Cancelled" &&
+								i.invoiceNumber === "Not Added",
+						)
+						.sort(sortOrdersAscendingly),
+				);
 			}
 		});
 	};
@@ -120,7 +72,7 @@ const OrdersList = () => {
 	useEffect(() => {
 		loadOrders();
 		// eslint-disable-next-line
-	}, [clickedFilter]);
+	}, []);
 
 	useEffect(() => {
 		const onScroll = () => setOffset(window.pageYOffset);
@@ -218,62 +170,6 @@ const OrdersList = () => {
 								placeholder='Search By Client Phone, Client Name, Status Or Carrier'
 								style={{ borderRadius: "20px", width: "50%" }}
 							/>
-							<div
-								className='mb-5 text-center ml-5'
-								style={{ fontWeight: "bolder", color: "#808080" }}>
-								Filters
-								<span
-									style={{
-										fontSize: "12px",
-										fontWeight: "bold",
-										cursor: "pointer",
-									}}
-									onClick={() => {
-										setFiltersClick(!filtersClick);
-									}}>
-									<ArrowDownOutlined />
-								</span>
-								{filtersClick ? (
-									<ul className='filterListWrapper'>
-										<li
-											className='filters-item'
-											onClick={() => {
-												setClickedFilter("Select All");
-											}}>
-											Select All
-										</li>
-										<li
-											className='filters-item'
-											onClick={() => {
-												setClickedFilter("Today");
-											}}>
-											Today
-										</li>
-										<li
-											className='filters-item'
-											onClick={() => {
-												setClickedFilter("Yesterday");
-											}}>
-											Yesteryday
-										</li>
-										<li
-											className='filters-item'
-											onClick={() => {
-												setClickedFilter("Last7Days");
-											}}>
-											Last 7 Days
-										</li>
-										<li
-											className='filters-item'
-											onClick={() => {
-												setClickedFilter("Last30Days");
-											}}>
-											Last 30 Days
-										</li>
-										<li className='filters-item'>Custom Date</li>
-									</ul>
-								) : null}
-							</div>
 						</div>
 
 						{/* <Pagination
@@ -479,6 +375,8 @@ const OrdersListWrapper = styled.div`
 	tr:hover {
 		background: #009ef7 !important;
 		color: white !important;
+		background: #e3f5ff !important;
+		color: black !important;
 		/* font-weight: bolder !important; */
 	}
 
