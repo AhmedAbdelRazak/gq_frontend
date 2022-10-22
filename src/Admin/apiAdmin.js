@@ -374,6 +374,38 @@ export const listOrders = (userId, token) => {
 		.catch((err) => console.log(err));
 };
 
+export const ordersLength = (userId, token) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/order/length/${userId}`, {
+		method: "GET",
+		headers: {
+			Accept: "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const listOrdersDates = (userId, token, day1, day2) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/order/list/dates/${day1}/${day2}/${userId}`,
+		{
+			method: "GET",
+			headers: {
+				Accept: "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			// body: JSON.stringify(today),
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
 export const listOrdersProcessing = (userId, token) => {
 	return fetch(
 		`${process.env.REACT_APP_API_URL}/order/list/order-processing/${userId}`,

@@ -11,7 +11,7 @@ import {
 	getProducts,
 	getShippingOptions,
 	getStores,
-	listOrders,
+	ordersLength,
 } from "../../apiAdmin";
 import { ShipToData } from "../ShippingOptions/ShipToData";
 import { isAuthenticated } from "../../../auth";
@@ -74,7 +74,7 @@ const CreateNewOrder = () => {
 		carrierName: "No Shipping Carrier",
 		orderComment: "",
 	});
-	const [allOrders, setAllOrders] = useState(0);
+	const [lengthOfOrders, setLengthOfOrders] = useState(0);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [modalVisible2, setModalVisible2] = useState(false);
 	const [clickedProduct, setClickedProduct] = useState({});
@@ -128,12 +128,12 @@ const CreateNewOrder = () => {
 		});
 	};
 
-	const loadOrders = () => {
-		listOrders(user._id, token).then((data) => {
+	const loadOrdersLength = () => {
+		ordersLength(user._id, token).then((data) => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
-				setAllOrders(data.length);
+				setLengthOfOrders(data);
 			}
 		});
 	};
@@ -142,7 +142,7 @@ const CreateNewOrder = () => {
 		gettingAllProducts();
 		gettingAllShippingOptions();
 		gettingAllStores();
-		loadOrders();
+		loadOrdersLength();
 		// eslint-disable-next-line
 	}, []);
 
@@ -1154,7 +1154,7 @@ const CreateNewOrder = () => {
 			invoiceNumber: "Not Added",
 			OTNumber: `OT${new Date(orderCreationDate).getFullYear()}${
 				new Date(orderCreationDate).getMonth() + 1
-			}${new Date(orderCreationDate).getDate()}000${allOrders + 1}`,
+			}${new Date(orderCreationDate).getDate()}000${lengthOfOrders + 1}`,
 			returnStatus: "Not Returned",
 			shipDate: today,
 			returnDate: today,

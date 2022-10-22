@@ -185,7 +185,7 @@ const OrdersHist = () => {
 
 	function search(orders) {
 		return orders.filter((row) => {
-			var datesYaba = new Date(row.createdAt).toLocaleDateString();
+			var datesYaba = new Date(row.orderCreationDate).toLocaleDateString();
 			return (
 				row.customerDetails.phone.toString().toLowerCase().indexOf(q) > -1 ||
 				row.customerDetails.state.toString().toLowerCase().indexOf(q) > -1 ||

@@ -16,7 +16,7 @@ import AdminMenu from "./AdminMenu/AdminMenu";
 import Navbar from "./AdminNavMenu/Navbar";
 import Chart from "react-apexcharts";
 import CountUp from "react-countup";
-import { getProducts, listOrders } from "./apiAdmin";
+import { getProducts, listOrdersDates } from "./apiAdmin";
 import { isAuthenticated } from "../auth";
 import { Link, Redirect } from "react-router-dom";
 import DarkBG from "./AdminMenu/DarkBG";
@@ -36,30 +36,28 @@ const AdminDashboard = () => {
 	const [offset, setOffset] = useState(0);
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
-	const [selectedDate, setSelectedDate] = useState(
+
+	const [modalVisible, setModalVisible] = useState(false);
+	const [modalVisible2, setModalVisible2] = useState(false);
+	const [allProducts, setAllProducts] = useState([]);
+	const [modalVisible3, setModalVisible3] = useState(false);
+	// eslint-disable-next-line
+	const [day1, setDay1] = useState(
 		new Date().toDateString("en-US", {
 			timeZone: "Africa/Cairo",
 		}),
 	);
-
-	// eslint-disable-next-line
-	const [filterSelectedDate, setFilterSelectedDate] = useState(
-		new Date().setDate(new Date().getDate() - 90),
+	const [day2, setDay2] = useState(
+		new Date(new Date().setDate(new Date().getDate() - 10)),
 	);
-
-	const [modalVisible, setModalVisible] = useState(false);
-	const [modalVisible2, setModalVisible2] = useState(false);
-
-	const [allProducts, setAllProducts] = useState([]);
-	const [modalVisible3, setModalVisible3] = useState(false);
 	const [clickedProduct, setClickedProduct] = useState({});
 
 	const { user, token } = isAuthenticated();
 
 	const loadOrders = () => {
 		function sortOrdersAscendingly(a, b) {
-			const TotalAppointmentsA = a.createdAt;
-			const TotalAppointmentsB = b.createdAt;
+			const TotalAppointmentsA = a.orderCreationDate;
+			const TotalAppointmentsB = b.orderCreationDate;
 			let comparison = 0;
 			if (TotalAppointmentsA > TotalAppointmentsB) {
 				comparison = 1;
@@ -68,7 +66,8 @@ const AdminDashboard = () => {
 			}
 			return comparison;
 		}
-		listOrders(user._id, token).then((data) => {
+
+		listOrdersDates(user._id, token, day1, day2).then((data) => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
@@ -90,9 +89,8 @@ const AdminDashboard = () => {
 	useEffect(() => {
 		loadOrders();
 		gettingAllProducts();
-
 		// eslint-disable-next-line
-	}, [filterSelectedDate]);
+	}, [day1, day2]);
 
 	var today = new Date().toDateString("en-US", {
 		timeZone: "Africa/Cairo",
@@ -102,31 +100,23 @@ const AdminDashboard = () => {
 	var last7Days = new Date();
 	var last30Days = new Date();
 	var last90Days = new Date();
-	var tomorrow = new Date();
-	var next7Days = new Date();
-	var next30Days = new Date();
 
 	yesterday.setDate(yesterday.getDate() - 1);
 	last7Days.setDate(last7Days.getDate() - 10);
 	last30Days.setDate(last30Days.getDate() - 30);
-	last90Days.setDate(last90Days.getDate() - 90);
-	tomorrow.setDate(tomorrow.getDate() + 2);
-	next7Days.setDate(next7Days.getDate() + 8);
-	next30Days.setDate(next30Days.getDate() + 31);
+	last90Days.setDate(last90Days.getDate() - 45);
 
 	// console.log(yesterday, "yesterday");
 
 	let todaysOrders = allOrders.filter(
 		(i) =>
-			new Date(i.createdAt).setHours(0, 0, 0, 0) ===
-				new Date(today).setHours(0, 0, 0, 0) &&
-			i.status !== "Cancelled" &&
-			i.status !== "Returned",
+			new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
+			new Date(today).setHours(0, 0, 0, 0),
 	);
 
 	let yesterdaysOrders = allOrders.filter(
 		(i) =>
-			new Date(i.createdAt).setHours(0, 0, 0, 0) ===
+			new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
 				new Date(yesterday).setHours(0, 0, 0, 0) &&
 			i.status !== "Cancelled" &&
 			i.status !== "Returned",
@@ -196,14 +186,14 @@ const AdminDashboard = () => {
 	let last7daysOrders = allOrders
 		.filter(
 			(i) =>
-				new Date(i.createdAt).setHours(0, 0, 0, 0) >=
+				new Date(i.orderCreationDate).setHours(0, 0, 0, 0) >=
 					new Date(last7Days).setHours(0, 0, 0, 0) &&
 				(i.status !== "Cancelled" || i.status !== "Returned"),
 		)
 		.map((ii) => {
 			return {
 				...ii,
-				createdAt: new Date(ii.createdAt).toLocaleDateString(),
+				orderCreationDate: new Date(ii.orderCreationDate).toLocaleDateString(),
 			};
 		});
 
@@ -212,14 +202,14 @@ const AdminDashboard = () => {
 	var OrdersDates_TotalAmount = [];
 	last7daysOrders &&
 		last7daysOrders.reduce(function (res, value) {
-			if (!res[value.createdAt]) {
-				res[value.createdAt] = {
-					createdAt: value.createdAt,
+			if (!res[value.orderCreationDate]) {
+				res[value.orderCreationDate] = {
+					orderCreationDate: value.orderCreationDate,
 					totalAmountAfterDiscount: 0,
 				};
-				OrdersDates_TotalAmount.push(res[value.createdAt]);
+				OrdersDates_TotalAmount.push(res[value.orderCreationDate]);
 			}
-			res[value.createdAt].totalAmountAfterDiscount += Number(
+			res[value.orderCreationDate].totalAmountAfterDiscount += Number(
 				value.totalAmountAfterDiscount,
 			);
 			return res;
@@ -284,7 +274,7 @@ const AdminDashboard = () => {
 			xaxis: {
 				name: "Schedule Date",
 				categories: OrdersDates_TotalAmount.map((i) =>
-					new Date(i.createdAt).toLocaleDateString(),
+					new Date(i.orderCreationDate).toLocaleDateString(),
 				),
 			},
 			colors: ["#99dd99"],
@@ -337,10 +327,10 @@ const AdminDashboard = () => {
 
 	let selectedDateOrders = allOrders.filter(
 		(i) =>
-			new Date(i.createdAt).setHours(0, 0, 0, 0) >=
-				new Date(selectedDate).setHours(0, 0, 0, 0) &&
-			i.status !== "Cancelled" &&
-			i.status !== "Returned",
+			new Date(i.orderCreationDate).setHours(0, 0, 0, 0) >=
+				new Date(day2).setHours(0, 0, 0, 0) &&
+			new Date(i.orderCreationDate).setHours(0, 0, 0, 0) <=
+				new Date(day1).setHours(0, 0, 0, 0),
 	);
 
 	function sortByTopEmployee(a, b) {
@@ -449,7 +439,7 @@ const AdminDashboard = () => {
 				productImage: i.thumbnailImage,
 				productSKU: i.productSKU,
 				addedBy: i.addedByEmployee,
-				createdAt: i.createdAt,
+				orderCreationDate: i.orderCreationDate,
 				addVariables: i.addVariables,
 				productAttributes: i.productAttributes,
 			};
@@ -461,28 +451,39 @@ const AdminDashboard = () => {
 	var OrderStatusSummary = [];
 	allOrders &&
 		allOrders.reduce(function (res, value) {
-			if (!res[value.status + new Date(value.createdAt).toLocaleDateString()]) {
-				res[value.status + new Date(value.createdAt).toLocaleDateString()] = {
+			if (
+				!res[
+					value.status + new Date(value.orderCreationDate).toLocaleDateString()
+				]
+			) {
+				res[
+					value.status + new Date(value.orderCreationDate).toLocaleDateString()
+				] = {
 					status: value.status,
-					createdAt: new Date(value.createdAt).toLocaleDateString(),
+					orderCreationDate: new Date(
+						value.orderCreationDate,
+					).toLocaleDateString(),
 					totalAmountAfterDiscount: 0,
 					ordersCount: 0,
 					totalOrderQty: 0,
 				};
 				OrderStatusSummary.push(
-					res[value.status + new Date(value.createdAt).toLocaleDateString()],
+					res[
+						value.status +
+							new Date(value.orderCreationDate).toLocaleDateString()
+					],
 				);
 			}
 			res[
-				value.status + new Date(value.createdAt).toLocaleDateString()
+				value.status + new Date(value.orderCreationDate).toLocaleDateString()
 			].totalAmountAfterDiscount += Number(value.totalAmountAfterDiscount);
 
 			res[
-				value.status + new Date(value.createdAt).toLocaleDateString()
+				value.status + new Date(value.orderCreationDate).toLocaleDateString()
 			].ordersCount += 1;
 
 			res[
-				value.status + new Date(value.createdAt).toLocaleDateString()
+				value.status + new Date(value.orderCreationDate).toLocaleDateString()
 			].totalOrderQty += Number(value.totalOrderQty);
 
 			return res;
@@ -504,8 +505,8 @@ const AdminDashboard = () => {
 		})
 		.filter(
 			(iii) =>
-				new Date(iii.createdAt).setHours(0, 0, 0, 0) >=
-				new Date(filterSelectedDate).setHours(0, 0, 0, 0),
+				new Date(iii.orderCreationDate).setHours(0, 0, 0, 0) >=
+				new Date(day2).setHours(0, 0, 0, 0),
 		);
 
 	var OrderSourceSummary = [];
@@ -565,13 +566,7 @@ const AdminDashboard = () => {
 										</div>
 										<div className='headerText'>Order Summary</div>
 									</div>
-									<ShowOrdersHistory
-										Orders={selectedDateOrdersModified()}
-										modalVisible2={modalVisible2}
-										setModalVisible2={setModalVisible2}
-										setCollapsed={setCollapsed}
-										selectedDate={selectedDate}
-									/>
+
 									<div className='card'>
 										<h5>Orders Overview</h5>
 										<div className='col-md-10 mx-auto'>
@@ -743,29 +738,19 @@ const AdminDashboard = () => {
 										</div>
 										<div className='headerText'>G&Q Super Stars</div>
 									</div>
-									<EditDateModal
-										selectedDate={selectedDate}
-										setSelectedDate={setSelectedDate}
-										modalVisible={modalVisible}
-										setModalVisible={setModalVisible}
-										setCollapsed={setCollapsed}
-									/>
+
 									<div className='card'>
-										<h5>
-											Top Employees (
-											{new Date(selectedDate).toDateString("en-US", {
-												timeZone: "Africa/Cairo",
-											})}
-											<span
-												onClick={() => {
-													setModalVisible(true);
-													// setCollapsed(true);
-												}}
-												style={{ cursor: "pointer" }}>
-												<EditOutlined />
-											</span>{" "}
-											):
-										</h5>
+										<h5>Top Employees</h5>{" "}
+										<div className='ml-3'>
+											From:{" "}
+											<strong style={{ color: "#006ca9" }}>
+												{new Date(day2).toDateString()}
+											</strong>{" "}
+											To:{" "}
+											<strong style={{ color: "#006ca9" }}>
+												{new Date(day1).toDateString()}
+											</strong>
+										</div>
 										<div className='col-md-10 mx-auto'>
 											<hr />
 										</div>
@@ -818,6 +803,51 @@ const AdminDashboard = () => {
 													);
 												},
 											)}
+										<div className='mt-3'>
+											<div className='storeSummaryFilters'>
+												<hr />
+												<select
+													onChange={(e) => {
+														if (e.target.value === "SelectAll") {
+															setDay2(last90Days);
+															setDay1(today);
+														} else if (e.target.value === "Today") {
+															setDay2(today);
+															setDay1(today);
+														} else if (e.target.value === "Yesterday") {
+															setDay2(yesterday);
+															setDay1(yesterday);
+														} else if (e.target.value === "Last7Days") {
+															setDay2(last7Days);
+															setDay1(today);
+														} else if (e.target.value === "Last30Days") {
+															setDay2(last30Days);
+															setDay1(today);
+														} else {
+														}
+													}}
+													placeholder='Select Return Status'
+													className=' mx-auto w-100'
+													style={{
+														paddingTop: "3px",
+														paddingBottom: "3px",
+														// paddingRight: "50px",
+														// textAlign: "center",
+														border: "#cfcfcf solid 1px",
+														borderRadius: "2px",
+														fontSize: "0.9rem",
+														// boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
+														textTransform: "capitalize",
+													}}>
+													<option value='SelectStatus'>Filters:</option>
+													<option value='SelectAll'>Select All</option>
+													<option value='Today'>Today</option>
+													<option value='Yesterday'>Yesterday</option>
+													<option value='Last7Days'>Last 7 Days</option>
+													<option value='Last30Days'>Last 30 Days</option>
+												</select>
+											</div>
+										</div>
 									</div>
 								</div>
 								<div className='col-xl-4 col-lg-8 col-md-11  mx-auto'>
@@ -830,6 +860,16 @@ const AdminDashboard = () => {
 
 									<div className='card'>
 										<h5>Status Summary</h5>
+										<div className='ml-3'>
+											From:{" "}
+											<strong style={{ color: "#006ca9" }}>
+												{new Date(day2).toDateString()}
+											</strong>{" "}
+											To:{" "}
+											<strong style={{ color: "#006ca9" }}>
+												{new Date(day1).toDateString()}
+											</strong>
+										</div>
 										<div className='col-md-10 mx-auto'>
 											<hr />
 										</div>
@@ -843,7 +883,8 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryCount(
 															OrderStatusSummary,
 															"On Hold",
-															filterSelectedDate,
+															day1,
+															day2,
 														)}
 														separator=','
 													/>{" "}
@@ -856,7 +897,8 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryRevenue(
 															OrderStatusSummary,
 															"On Hold",
-															filterSelectedDate,
+															day1,
+															day2,
 														)}
 														separator=','
 													/>{" "}
@@ -873,7 +915,8 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryCount(
 															OrderStatusSummary,
 															"In Processing",
-															filterSelectedDate,
+															day1,
+															day2,
 														)}
 														separator=','
 													/>{" "}
@@ -886,7 +929,8 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryRevenue(
 															OrderStatusSummary,
 															"In Processing",
-															filterSelectedDate,
+															day1,
+															day2,
 														)}
 														separator=','
 													/>{" "}
@@ -903,7 +947,8 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryCount(
 															OrderStatusSummary,
 															"Ready To Ship",
-															filterSelectedDate,
+															day1,
+															day2,
 														)}
 														separator=','
 													/>{" "}
@@ -916,7 +961,8 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryRevenue(
 															OrderStatusSummary,
 															"Ready To Ship",
-															filterSelectedDate,
+															day1,
+															day2,
 														)}
 														separator=','
 													/>{" "}
@@ -933,7 +979,8 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryCount(
 															OrderStatusSummary,
 															"Shipped",
-															filterSelectedDate,
+															day1,
+															day2,
 														)}
 														separator=','
 													/>{" "}
@@ -946,7 +993,8 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryRevenue(
 															OrderStatusSummary,
 															"Shipped",
-															filterSelectedDate,
+															day1,
+															day2,
 														)}
 														separator=','
 													/>{" "}
@@ -962,7 +1010,8 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryCount(
 															OrderStatusSummary,
 															"Delivered",
-															filterSelectedDate,
+															day1,
+															day2,
 														)}
 														separator=','
 													/>{" "}
@@ -975,7 +1024,8 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryRevenue(
 															OrderStatusSummary,
 															"Delivered",
-															filterSelectedDate,
+															day1,
+															day2,
 														)}
 														separator=','
 													/>{" "}
@@ -991,7 +1041,8 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryCount(
 															OrderStatusSummary,
 															"Cancelled",
-															filterSelectedDate,
+															day1,
+															day2,
 														)}
 														separator=','
 													/>{" "}
@@ -1004,7 +1055,8 @@ const AdminDashboard = () => {
 														end={gettingOrderStatusSummaryRevenue(
 															OrderStatusSummary,
 															"Cancelled",
-															filterSelectedDate,
+															day1,
+															day2,
 														)}
 														separator=','
 													/>{" "}
@@ -1016,7 +1068,23 @@ const AdminDashboard = () => {
 										<div>
 											<select
 												onChange={(e) => {
-													setFilterSelectedDate(e.target.value);
+													if (e.target.value === "SelectAll") {
+														setDay2(last90Days);
+														setDay1(today);
+													} else if (e.target.value === "Today") {
+														setDay2(today);
+														setDay1(today);
+													} else if (e.target.value === "Yesterday") {
+														setDay2(yesterday);
+														setDay1(yesterday);
+													} else if (e.target.value === "Last7Days") {
+														setDay2(last7Days);
+														setDay1(today);
+													} else if (e.target.value === "Last30Days") {
+														setDay2(last30Days);
+														setDay1(today);
+													} else {
+													}
 												}}
 												placeholder='Select Return Status'
 												className=' mx-auto w-100'
@@ -1032,11 +1100,11 @@ const AdminDashboard = () => {
 													textTransform: "capitalize",
 												}}>
 												<option value='SelectStatus'>Filters:</option>
-												<option value={last90Days}>Select All</option>
-												<option value={today}>Today</option>
-												<option value={yesterday}>Yesterday</option>
-												<option value={last7Days}>Last 7 Days</option>
-												<option value={last30Days}>Last 30 Days</option>
+												<option value='SelectAll'>Select All</option>
+												<option value='Today'>Today</option>
+												<option value='Yesterday'>Yesterday</option>
+												<option value='Last7Days'>Last 7 Days</option>
+												<option value='Last30Days'>Last 30 Days</option>
 											</select>
 										</div>
 									</div>
@@ -1051,6 +1119,16 @@ const AdminDashboard = () => {
 									</div>
 									<div className='card'>
 										<h5>G&Q Affiliate Stores</h5>
+										<div className='ml-3'>
+											From:{" "}
+											<strong style={{ color: "#006ca9" }}>
+												{new Date(day2).toDateString()}
+											</strong>{" "}
+											To:{" "}
+											<strong style={{ color: "#006ca9" }}>
+												{new Date(day1).toDateString()}
+											</strong>
+										</div>
 										<div className='col-md-10 mx-auto'>
 											<hr />
 										</div>
@@ -1088,7 +1166,23 @@ const AdminDashboard = () => {
 											<hr />
 											<select
 												onChange={(e) => {
-													setFilterSelectedDate(e.target.value);
+													if (e.target.value === "SelectAll") {
+														setDay2(last90Days);
+														setDay1(today);
+													} else if (e.target.value === "Today") {
+														setDay2(today);
+														setDay1(today);
+													} else if (e.target.value === "Yesterday") {
+														setDay2(yesterday);
+														setDay1(yesterday);
+													} else if (e.target.value === "Last7Days") {
+														setDay2(last7Days);
+														setDay1(today);
+													} else if (e.target.value === "Last30Days") {
+														setDay2(last30Days);
+														setDay1(today);
+													} else {
+													}
 												}}
 												placeholder='Select Return Status'
 												className=' mx-auto w-100'
@@ -1104,11 +1198,11 @@ const AdminDashboard = () => {
 													textTransform: "capitalize",
 												}}>
 												<option value='SelectStatus'>Filters:</option>
-												<option value={last90Days}>Select All</option>
-												<option value={today}>Today</option>
-												<option value={yesterday}>Yesterday</option>
-												<option value={last7Days}>Last 7 Days</option>
-												<option value={last30Days}>Last 30 Days</option>
+												<option value='SelectAll'>Select All</option>
+												<option value='Today'>Today</option>
+												<option value='Yesterday'>Yesterday</option>
+												<option value='Last7Days'>Last 7 Days</option>
+												<option value='Last30Days'>Last 30 Days</option>
 											</select>
 										</div>
 									</div>
@@ -1116,21 +1210,7 @@ const AdminDashboard = () => {
 
 								<div className='col-md-12 mx-auto my-5'>
 									<div className='card'>
-										<h5>
-											Top Sold Products (
-											{new Date(selectedDate).toDateString("en-US", {
-												timeZone: "Africa/Cairo",
-											})}
-											<span
-												onClick={() => {
-													setModalVisible(true);
-													// setCollapsed(true);
-												}}
-												style={{ cursor: "pointer" }}>
-												<EditOutlined />
-											</span>{" "}
-											):
-										</h5>
+										<h5>Top Sold Products</h5>
 										<div className='col-md-10 mx-auto'>
 											<hr />
 										</div>
@@ -1267,7 +1347,9 @@ const AdminDashboard = () => {
 																	{s.productQty}
 																</td>
 																<td>
-																	{new Date(s.createdAt).toLocaleDateString()}
+																	{new Date(
+																		s.orderCreationDate,
+																	).toLocaleDateString()}
 																</td>
 																<td>{s.addedBy.name}</td>
 																<td
@@ -1380,7 +1462,7 @@ const AdminDashboardWrapper = styled.div`
 	}
 
 	.card {
-		min-height: 490px !important;
+		min-height: 520px !important;
 		padding: 15px;
 	}
 

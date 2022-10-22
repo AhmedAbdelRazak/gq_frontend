@@ -8,10 +8,12 @@ var today = new Date().toDateString("en-US", {
 var yesterday = new Date();
 var last7Days = new Date();
 var last30Days = new Date();
+var last90Days = new Date();
 
 yesterday.setDate(yesterday.getDate() - 1);
-last7Days.setDate(last7Days.getDate() - 7);
+last7Days.setDate(last7Days.getDate() - 10);
 last30Days.setDate(last30Days.getDate() - 30);
+last90Days.setDate(last90Days.getDate() - 90);
 
 export const overUncancelledRevenue = (allOrders) => {
 	let overallUncancelledOrders = allOrders.filter(
@@ -33,13 +35,16 @@ export const overUncancelledRevenue = (allOrders) => {
 export const gettingOrderStatusSummaryRevenue = (
 	OrderStatusSummary,
 	passedStatus,
-	filterSelectedDate,
+	day1,
+	day2,
 ) => {
 	let statusArraySummary = OrderStatusSummary.filter(
 		(i) =>
 			i.status === passedStatus &&
-			new Date(i.createdAt).setHours(0, 0, 0, 0) >=
-				new Date(filterSelectedDate).setHours(0, 0, 0, 0),
+			new Date(i.orderCreationDate).setHours(0, 0, 0, 0) <=
+				new Date(day1).setHours(0, 0, 0, 0) &&
+			new Date(i.orderCreationDate).setHours(0, 0, 0, 0) >=
+				new Date(day2).setHours(0, 0, 0, 0),
 	);
 
 	let statusArraySummaryNumbers =
@@ -57,13 +62,16 @@ export const gettingOrderStatusSummaryRevenue = (
 export const gettingOrderStatusSummaryCount = (
 	OrderStatusSummary,
 	passedStatus,
-	filterSelectedDate,
+	day1,
+	day2,
 ) => {
 	let statusArraySummary = OrderStatusSummary.filter(
 		(i) =>
 			i.status === passedStatus &&
-			new Date(i.createdAt).setHours(0, 0, 0, 0) >=
-				new Date(filterSelectedDate).setHours(0, 0, 0, 0),
+			new Date(i.orderCreationDate).setHours(0, 0, 0, 0) <=
+				new Date(day1).setHours(0, 0, 0, 0) &&
+			new Date(i.orderCreationDate).setHours(0, 0, 0, 0) >=
+				new Date(day2).setHours(0, 0, 0, 0),
 	);
 
 	let statusArraySummaryNumbers =
