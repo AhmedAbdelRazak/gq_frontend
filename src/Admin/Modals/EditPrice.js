@@ -78,6 +78,7 @@ const EditPrice = ({
 						After Discount: {clickedChosenProductQty.SubSKUPriceAfterDiscount}{" "}
 						L.E.
 					</option>
+					<option value='0'>For Free: 0 L.E.</option>
 				</select>
 				<br />
 			</div>

@@ -232,6 +232,22 @@ const SingleOrderPage = (props) => {
 									</span>
 								)}
 							</h5>
+
+							{singleOrder.exchangedProductQtyWithVariables &&
+							singleOrder.exchangedProductQtyWithVariables.length > 0 ? (
+								<h5
+									style={{
+										fontWeight: "bold",
+										textAlign: "center",
+										marginBottom: "20px",
+									}}>
+									Tracking Number After Exchange:{" "}
+									<strong style={{ color: "darkgreen" }}>
+										{singleOrder.exchangeTrackingNumber}
+									</strong>
+								</h5>
+							) : null}
+
 							<h5
 								style={{
 									fontWeight: "bold",
@@ -652,6 +668,16 @@ const SingleOrderPage = (props) => {
 									</strong>
 								)}
 							</div>
+							{singleOrder.exchangedProductQtyWithVariables &&
+							singleOrder.exchangedProductQtyWithVariables.length > 0 ? (
+								<div className='mt-2' style={{ fontSize: "1.2rem" }}>
+									Total Amount After Exchange:{" "}
+									<strong style={{ color: "darkblue" }}>
+										{singleOrder.totalAmountAfterExchange} L.E.
+									</strong>
+								</div>
+							) : null}
+
 							<div className='col-md-5 mx-auto text-center my-5'>
 								<button
 									className='btn btn-success btn-block mb-3 mx-auto text-center'

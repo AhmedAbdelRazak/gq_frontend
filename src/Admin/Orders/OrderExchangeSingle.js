@@ -24,6 +24,7 @@ const OrderExchangeSingle = (props) => {
 	const [modalVisible, setModalVisible] = useState(false);
 	// eslint-disable-next-line
 	const [updateElement, setUpdateElement] = useState("");
+	const [exchangeTrackingNumber, setExchangeTrackingNumber] = useState("");
 	const [singleOrder, setSingleOrder] = useState({});
 	const [updateSingleOrder, setUpdateSingleOrder] = useState({});
 	// eslint-disable-next-line
@@ -113,9 +114,7 @@ const OrderExchangeSingle = (props) => {
 
 		const singleOrderModified = {
 			...updateSingleOrder,
-			totalOrderQtyExchanged: totalExchangedQty(),
-			totalAmountExchanged: totalExchangedAmount(),
-			totalAmountAfterDiscountExchanged: totalExchangedAmount(),
+			totalAmountAfterExchange: totalExchangedAmount(),
 		};
 		updateOrderExchange(
 			updateSingleOrder._id,
@@ -201,7 +200,7 @@ const OrderExchangeSingle = (props) => {
 		);
 
 		var exchangedAmount = updateSingleOrder.exchangedProductQtyWithVariables
-			.map((i) => Number(i.OrderedQty) * Number(i.priceAfterDiscount))
+			.map((i) => Number(i.OrderedQty) * Number(i.pickedPrice))
 			.reduce((a, b) => a + b, 0);
 
 		return Number(
@@ -256,10 +255,10 @@ const OrderExchangeSingle = (props) => {
 								modalVisible={modalVisible}
 								setModalVisible={setModalVisible}
 								setCollapsed={setCollapsed}
+								exchangeTrackingNumber={exchangeTrackingNumber}
+								setExchangeTrackingNumber={setExchangeTrackingNumber}
 							/>
-							<div className='col-md-10 mx-auto text-center mb-5'>
-								<h3 style={{ fontWeight: "bolder" }}>Work In Progress...</h3>
-							</div>
+
 							<div className='col-md-6'>
 								<div style={{ fontSize: "1.25rem", fontWeight: "bolder" }}>
 									Customer Details{" "}

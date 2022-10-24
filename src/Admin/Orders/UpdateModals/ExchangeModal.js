@@ -22,18 +22,21 @@ const ExchangeModal = ({
 	chosenProductQtyWithVariables,
 	setChosenProductQtyWithVariables,
 	previousProductVariable,
+	exchangeTrackingNumber,
+	setExchangeTrackingNumber,
 }) => {
 	const [chosenProduct, setChosenProduct] = useState({});
 	const [chosenProductVariables, setChosenProductVariables] = useState({});
 	const [pickedQuantity, setPickedQuantity] = useState(0);
+	const [pickedPrice, setPickedPrice] = useState(0);
 	const [allColors, setAllColors] = useState([]);
 
 	// eslint-disable-next-line
 	const { user, token } = isAuthenticated();
 
-	console.log(updateSingleOrder, "updateSingleOrder");
-	console.log(chosenProductQtyWithVariables, "chosenProductQtyWithVariables");
-	console.log(chosenProduct, "chosenProduct");
+	// console.log(updateSingleOrder, "updateSingleOrder");
+	// console.log(chosenProductQtyWithVariables, "chosenProductQtyWithVariables");
+	// console.log(chosenProduct, "chosenProduct");
 
 	const gettingAllColors = () => {
 		getColors(token).then((data) => {
@@ -185,7 +188,51 @@ const ExchangeModal = ({
 								type='number'
 								className='form-control'
 								value={pickedQuantity}
-								placeholder='Required - Order Quantity'
+								placeholder='Required - Product Quantity'
+							/>
+						</div>
+					)}
+
+				{chosenProduct &&
+					chosenProduct.productAttributes &&
+					chosenProduct.productAttributes.length > 0 &&
+					chosenProductVariables &&
+					chosenProductVariables.quantity && (
+						<div className='form-group mx-auto col-md-10 '>
+							<label className=''>Add Required Price</label>
+							<input
+								style={{ textAlign: "center" }}
+								onChange={(e) => {
+									setPickedPrice(e.target.value);
+									setChosenProductQtyWithVariables({
+										...chosenProductQtyWithVariables,
+										pickedPrice: e.target.value,
+									});
+								}}
+								type='number'
+								className='form-control'
+								value={pickedPrice}
+								placeholder='Required - Product Price'
+							/>
+						</div>
+					)}
+
+				{chosenProduct &&
+					chosenProduct.productAttributes &&
+					chosenProduct.productAttributes.length > 0 &&
+					chosenProductVariables &&
+					chosenProductVariables.quantity && (
+						<div className='form-group mx-auto col-md-10 '>
+							<label className=''>Exchange Tracking Number</label>
+							<input
+								style={{ textAlign: "center" }}
+								onChange={(e) => {
+									setExchangeTrackingNumber(e.target.value);
+								}}
+								type='text'
+								className='form-control'
+								value={exchangeTrackingNumber}
+								placeholder='Shipping/ Tracking Number For Exchange'
 							/>
 						</div>
 					)}
@@ -197,6 +244,7 @@ const ExchangeModal = ({
 							setUpdateSingleOrder({
 								...updateSingleOrder,
 								status: "Exchange - In Processing",
+								exchangeTrackingNumber: exchangeTrackingNumber,
 								exchangedProductQtyWithVariables: [
 									...updateSingleOrder.exchangedProductQtyWithVariables,
 									{
@@ -204,10 +252,13 @@ const ExchangeModal = ({
 									},
 								],
 							});
+
 							setChosenProduct([]);
 							setChosenProductQtyWithVariables({});
 							setPickedQuantity(0);
+							setPickedPrice(0);
 							setModalVisible(false);
+							setExchangeTrackingNumber("");
 						}}>
 						Submit Changes
 					</button>

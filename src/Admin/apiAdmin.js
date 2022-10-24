@@ -495,6 +495,25 @@ export const updateOrderExchange = (orderId, userId, token, order) => {
 		.catch((err) => console.log(err));
 };
 
+export const listOfOrdersFiltered = (userId, token, limit) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/order/get-limited/orders/${userId}`,
+		{
+			method: "POST",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify({ limit: limit }),
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
 /**End Of Orders Management*/
 
 export const createShippingOptions = (userId, token, shippingOptions) => {

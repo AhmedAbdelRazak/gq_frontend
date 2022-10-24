@@ -6,7 +6,13 @@ import { isAuthenticated } from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import Navbar from "../AdminNavMenu/Navbar";
 import CountUp from "react-countup";
-import { listOrders, removeOrder } from "../apiAdmin";
+import {
+	listOfOrdersFiltered,
+	// eslint-disable-next-line
+	listOrders,
+	listOrdersDates,
+	removeOrder,
+} from "../apiAdmin";
 import { Link } from "react-router-dom";
 import DarkBG from "../AdminMenu/DarkBG";
 import { toast } from "react-toastify";
@@ -36,6 +42,8 @@ const isActive = (clickedLink, sureClickedLink) => {
 
 const OrdersHist = () => {
 	const [allOrders, setAllOrders] = useState([]);
+	// eslint-disable-next-line
+	const [allOrdersFiltered, setAllOrdersFiltered] = useState([]);
 	const [q, setQ] = useState("");
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [offset, setOffset] = useState(0);
@@ -76,7 +84,13 @@ const OrdersHist = () => {
 			}
 			return comparison;
 		}
-		listOrders(user._id, token).then((data) => {
+
+		var day1 = new Date().toDateString("en-US", {
+			timeZone: "Africa/Cairo",
+		});
+
+		var day2 = new Date(new Date().setDate(new Date().getDate() - 60));
+		listOrdersDates(user._id, token, day1, day2).then((data) => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
@@ -164,8 +178,20 @@ const OrdersHist = () => {
 		});
 	};
 
+	const loadOrdersFiltered = () => {
+		listOfOrdersFiltered(user._id, token, 20).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllOrdersFiltered(data);
+			}
+		});
+	};
+
+	// console.log(allOrdersFiltered, "AllOrdersFiltered");
 	useEffect(() => {
 		loadOrders();
+		loadOrdersFiltered();
 		// eslint-disable-next-line
 	}, [selectedFilter]);
 
@@ -269,8 +295,11 @@ const OrdersHist = () => {
 							<th scope='col' style={{ width: "8%" }}>
 								Details
 							</th>
+
 							<th scope='col'>Shipping?</th>
-							<th scope='col'>Delete?</th>
+							{user.userRole === "Admin Account" ? (
+								<th scope='col'>Delete?</th>
+							) : null}
 						</tr>
 					</thead>
 
@@ -367,20 +396,22 @@ const OrdersHist = () => {
 									</td>
 								)}
 
-								<td
-									onClick={() => {
-										handleRemove(s._id);
-										setTimeout(function () {
-											window.location.reload(false);
-										}, 1000);
-									}}
-									style={{
-										color: "red",
-										fontWeight: "bold",
-										cursor: "pointer",
-									}}>
-									Delete?
-								</td>
+								{user.userRole === "Admin Account" ? (
+									<td
+										onClick={() => {
+											handleRemove(s._id);
+											setTimeout(function () {
+												window.location.reload(false);
+											}, 1000);
+										}}
+										style={{
+											color: "red",
+											fontWeight: "bold",
+											cursor: "pointer",
+										}}>
+										Delete?
+									</td>
+								) : null}
 
 								{/* <td>{Invoice(s)}</td> */}
 							</tr>

@@ -1164,6 +1164,8 @@ const CreateNewOrder = () => {
 			orderCreationDate: orderCreationDate,
 			shippingFees: shippingFee,
 			appliedShippingFees: AppliedshippingFee,
+			totalAmountAfterExchange: 0,
+			exchangeTrackingNumber: "Not Added",
 		};
 
 		createOrder(user._id, token, createOrderData)

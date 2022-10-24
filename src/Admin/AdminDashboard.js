@@ -2,6 +2,7 @@
 
 import {
 	AreaChartOutlined,
+	// eslint-disable-next-line
 	EditOutlined,
 	FileUnknownOutlined,
 	HomeFilled,
@@ -20,7 +21,9 @@ import { getProducts, listOrdersDates } from "./apiAdmin";
 import { isAuthenticated } from "../auth";
 import { Link, Redirect } from "react-router-dom";
 import DarkBG from "./AdminMenu/DarkBG";
+// eslint-disable-next-line
 import EditDateModal from "./Modals/EditDateModal";
+// eslint-disable-next-line
 import ShowOrdersHistory from "./Modals/ShowOrdersHistory";
 import AttributesModal from "./Product/UpdatingProduct/AttributesModal";
 import {
@@ -37,7 +40,9 @@ const AdminDashboard = () => {
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
 
+	// eslint-disable-next-line
 	const [modalVisible, setModalVisible] = useState(false);
+	// eslint-disable-next-line
 	const [modalVisible2, setModalVisible2] = useState(false);
 	const [allProducts, setAllProducts] = useState([]);
 	const [modalVisible3, setModalVisible3] = useState(false);
@@ -392,6 +397,18 @@ const AdminDashboard = () => {
 			i.map((ii) => destructingNestedArray.push(...ii)),
 		);
 
+	function sortTopOrdersProducts(a, b) {
+		const TotalAppointmentsA = a.OrderedQty;
+		const TotalAppointmentsB = b.OrderedQty;
+		let comparison = 0;
+		if (TotalAppointmentsA < TotalAppointmentsB) {
+			comparison = 1;
+		} else if (TotalAppointmentsA > TotalAppointmentsB) {
+			comparison = -1;
+		}
+		return comparison;
+	}
+
 	var TopSoldProducts = [];
 	destructingNestedArray &&
 		destructingNestedArray.reduce(function (res, value) {
@@ -412,6 +429,8 @@ const AdminDashboard = () => {
 
 			return res;
 		}, {});
+
+	TopSoldProducts.sort(sortTopOrdersProducts);
 
 	const modifyingInventoryTable = () => {
 		function sortTopProducts(a, b) {
@@ -804,8 +823,7 @@ const AdminDashboard = () => {
 												},
 											)}
 										<div className='mt-3'>
-											<div className='storeSummaryFilters'>
-												<hr />
+											<div className=''>
 												<select
 													onChange={(e) => {
 														if (e.target.value === "SelectAll") {
@@ -1462,7 +1480,7 @@ const AdminDashboardWrapper = styled.div`
 	}
 
 	.card {
-		min-height: 520px !important;
+		min-height: 530px !important;
 		padding: 15px;
 	}
 
