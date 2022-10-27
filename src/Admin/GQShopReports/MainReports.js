@@ -432,15 +432,15 @@ const MainReports = () => {
 		dataLabels: {
 			enabled: true,
 		},
-		colors: [
-			"#f1416c",
-			"#004e00",
-			"#00c400",
-			"#cccc00",
-			"#ffb1b1",
-			"#9dceff",
-			"#003162",
-		],
+		// colors: [
+		// 	"#f1416c",
+		// 	"#004e00",
+		// 	"#00c400",
+		// 	"#cccc00",
+		// 	"#ffb1b1",
+		// 	"#9dceff",
+		// 	"#003162",
+		// ],
 
 		legend: {
 			show: true,
@@ -461,15 +461,15 @@ const MainReports = () => {
 		dataLabels: {
 			enabled: true,
 		},
-		colors: [
-			"#f1416c",
-			"#004e00",
-			"#00c400",
-			"#cccc00",
-			"#ffb1b1",
-			"#9dceff",
-			"#003162",
-		],
+		// colors: [
+		// 	"#f1416c",
+		// 	"#004e00",
+		// 	"#00c400",
+		// 	"#cccc00",
+		// 	"#ffb1b1",
+		// 	"#9dceff",
+		// 	"#003162",
+		// ],
 
 		legend: {
 			show: true,
@@ -947,8 +947,20 @@ const MainReports = () => {
 						setModalVisible={setModalVisible}
 					/>
 					<h3 className='mx-auto text-center' style={{ fontWeight: "bold" }}>
-						Sales Report
+						SALES REPORT <br />
+						<span
+							style={{
+								fontSize: "0.9rem",
+								color: "black",
+								textAlign: "center",
+								fontWeight: "normal",
+							}}>
+							(Selected Date Range From{" "}
+							<strong> {new Date(day2).toDateString()}</strong> to{" "}
+							<strong>{new Date(day1).toDateString()}</strong> )
+						</span>
 					</h3>
+
 					<div className='container-fluid  mb-5'>
 						<div className='row'>
 							<div className='col-xl-3 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
@@ -1036,43 +1048,44 @@ const MainReports = () => {
 							</div>
 						</div>
 					</div>
+					<div className='row mx-4'>
+						<div className='col-md-6 mx-auto'>
+							<div className='card'>
+								<div className='mx-auto text-center ' style={{ width: "85%" }}>
+									<Chart
+										title={pieChart1.title}
+										options={pieChart1}
+										series={pieChart1.series}
+										type='pie'
+										style={{
+											width: "100%",
+											height: "100%",
+										}}
+									/>
+								</div>
+							</div>
+						</div>
 
-					<div className='mx-auto my-3' style={{ width: "70%" }}>
-						<div className='card'>
-							<div className='mx-auto text-center ' style={{ width: "85%" }}>
-								<Chart
-									title={pieChart1.title}
-									options={pieChart1}
-									series={pieChart1.series}
-									type='pie'
-									style={{
-										width: "100%",
-										height: "100%",
-									}}
-								/>
+						<div className='col-md-6 mx-auto'>
+							<div className='card'>
+								<div className='mx-auto text-center ' style={{ width: "85%" }}>
+									<Chart
+										title={pieChart2.title}
+										options={pieChart2}
+										series={pieChart2.series}
+										type='pie'
+										style={{
+											width: "100%",
+											height: "100%",
+										}}
+									/>
+								</div>
 							</div>
 						</div>
 					</div>
 
-					<div className='mx-auto my-3' style={{ width: "70%" }}>
-						<div className='card'>
-							<div className='mx-auto text-center ' style={{ width: "85%" }}>
-								<Chart
-									title={pieChart2.title}
-									options={pieChart2}
-									series={pieChart2.series}
-									type='pie'
-									style={{
-										width: "100%",
-										height: "100%",
-									}}
-								/>
-							</div>
-						</div>
-					</div>
-
-					<div className='row mx-auto'>
-						<div className='col-md-5 mx-auto'>
+					<div className='row mx-4 my-4'>
+						<div className='col-md-6 mx-auto'>
 							<div className='card'>
 								<div className='mx-auto text-center ' style={{ width: "85%" }}>
 									<Chart
@@ -1089,7 +1102,7 @@ const MainReports = () => {
 							</div>
 						</div>
 
-						<div className='col-md-5 mx-auto'>
+						<div className='col-md-6 mx-auto'>
 							<div className='card'>
 								<div className='mx-auto text-center ' style={{ width: "85%" }}>
 									<Chart
@@ -1106,8 +1119,8 @@ const MainReports = () => {
 							</div>
 						</div>
 					</div>
-					<div className='row mx-auto my-3'>
-						<div className='col-md-5 mx-auto'>
+					<div className='row mx-4 my-4'>
+						<div className='col-md-6 mx-auto'>
 							<div className='card'>
 								<div className='mx-auto text-center ' style={{ width: "85%" }}>
 									<Chart
@@ -1123,7 +1136,7 @@ const MainReports = () => {
 								</div>
 							</div>
 						</div>
-						<div className='col-md-5 mx-auto'>
+						<div className='col-md-6 mx-auto'>
 							<div className='card'>
 								<div className='mx-auto text-center ' style={{ width: "85%" }}>
 									<Chart
