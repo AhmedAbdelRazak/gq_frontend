@@ -56,6 +56,7 @@ import OrderExchange from "./Admin/Orders/OrderExchange";
 import OrderExchangeSingle from "./Admin/Orders/OrderExchangeSingle";
 import ReturnList from "./Admin/Orders/ReturnList";
 import ReturnDetails from "./Admin/Orders/ReturnDetails";
+import StockReport from "./Admin/GQShopReports/StockReport";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -210,7 +211,16 @@ const App = () => {
 					component={OrderExchangeSingle}
 				/>
 				<AdminRoute path='/admin/add-employee' exact component={AddEmployee} />
-				<AdminRoute path='/admin/gq-reports' exact component={MainReports} />
+				<AdminRoute
+					path='/admin/gq-reports/sales'
+					exact
+					component={MainReports}
+				/>
+				<AdminRoute
+					path='/admin/gq-reports/stock'
+					exact
+					component={StockReport}
+				/>
 				<AdminRoute
 					path='/admin/update-employee'
 					exact

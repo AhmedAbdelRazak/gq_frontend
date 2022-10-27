@@ -74,8 +74,12 @@ const items = [
 			"/admin/dashboard",
 		),
 		getItem(
-			<Link to='/admin/gq-reports'>GQ Shop Reports</Link>,
-			"/admin/gq-reports",
+			<Link to='/admin/gq-reports/sales'>Sales Report</Link>,
+			"/admin/gq-reports/sales",
+		),
+		getItem(
+			<Link to='/admin/gq-reports/stock'>Stock Report</Link>,
+			"/admin/gq-reports/stock",
 		),
 	]),
 	// getItem("Option 2", "3", <DesktopOutlined />),
@@ -416,7 +420,7 @@ const AdminMenu = ({
 						: fromPage === "AddEmployee"
 						? "/admin/add-employee"
 						: fromPage === "MainReports"
-						? "/admin/gq-reports"
+						? "/admin/gq-reports/sales"
 						: fromPage === "UpdateEmployee"
 						? "/admin/update-employee"
 						: fromPage === "AddColor"
@@ -437,6 +441,8 @@ const AdminMenu = ({
 						? "/admin/order-exchange"
 						: fromPage === "ReturnList"
 						? "/admin/return-list"
+						: fromPage === "StockReport"
+						? "/admin/gq-reports/stock"
 						: "/admin/dashboard"
 				}
 				defaultOpenKeys={[

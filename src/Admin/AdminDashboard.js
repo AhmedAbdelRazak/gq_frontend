@@ -449,6 +449,7 @@ const AdminDashboard = () => {
 			return {
 				productId: i._id,
 				productName: i.productName,
+				createdAt: i.createdAt,
 				productPrice: i.priceAfterDiscount,
 				productQty: i.addVariables
 					? i.productAttributes
@@ -1364,11 +1365,7 @@ const AdminDashboard = () => {
 																	}}>
 																	{s.productQty}
 																</td>
-																<td>
-																	{new Date(
-																		s.orderCreationDate,
-																	).toLocaleDateString()}
-																</td>
+																<td>{new Date(s.createdAt).toDateString()}</td>
 																<td>{s.addedBy.name}</td>
 																<td
 																	style={{ width: "15%", textAlign: "center" }}>
