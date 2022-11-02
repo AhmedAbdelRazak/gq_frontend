@@ -65,6 +65,8 @@ const Navbar = ({ fromPage, pageScrolled }) => {
 									? "/admin/orders-hist"
 									: fromPage === "OrdersList"
 									? "/admin/orders-list"
+									: fromPage === "MainReports"
+									? "/admin/gq-reports/sales"
 									: "/admin/dashboard"
 							}>
 							<Menu.Item key='/admin/dashboard' icon={<HomeOutlined />}>
@@ -74,8 +76,10 @@ const Navbar = ({ fromPage, pageScrolled }) => {
 								key='SubMenu'
 								title='Sales'
 								icon={<SettingOutlined />}>
-								<Menu.Item key='two' icon={<AppstoreOutlined />}>
-									Day Over Day Sales
+								<Menu.Item
+									key='/admin/gq-reports/sales'
+									icon={<AppstoreOutlined />}>
+									<Link to='/admin/gq-reports/sales'>Day Over Day Sales</Link>
 								</Menu.Item>
 								<Menu.Item key='/admin/orders-list' icon={<AppstoreOutlined />}>
 									<Link to='/admin/orders-list'>Pending Sales</Link>
@@ -84,8 +88,16 @@ const Navbar = ({ fromPage, pageScrolled }) => {
 									<Link to='/admin/orders-hist'>Sales History</Link>
 								</Menu.Item>
 								<Menu.ItemGroup title='Top Trending'>
-									<Menu.Item key='four' icon={<AppstoreOutlined />}>
-										Top Sold Items
+									<Menu.Item
+										key='/admin/gq-reports/sales'
+										icon={<AppstoreOutlined />}>
+										<Link
+											to='/admin/gq-reports/sales'
+											onClick={() => {
+												window.scrollTo({ top: 3500, behavior: "smooth" });
+											}}>
+											Top Sold Items
+										</Link>
 									</Menu.Item>
 									<Menu.Item key='five' icon={<AppstoreOutlined />}>
 										Top Employee Performance

@@ -808,3 +808,152 @@ export const getStores = (token) => {
 };
 
 /**End Store Management */
+
+// Loyalty Points
+
+export const allLoyaltyPointsAndStoreStatus = (token) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/store-management`, {
+		method: "GET",
+		headers: {
+			// content type?
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const LoyaltyPointsAndStoreStatus = (userId, token, StoreManagement) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/store-management/create/${userId}`,
+		{
+			method: "POST",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify(StoreManagement),
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+};
+
+// End Of Loyalty Points
+
+// Ads Management
+export const createAds = (userId, token, ads) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/ads/create/${userId}`, {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify(ads),
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+};
+
+export const updateAds = (addsId, userId, token, ads) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/ads/${addsId}/${userId}`, {
+		method: "PUT",
+		headers: {
+			// content type?
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify(ads),
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const getAllAds = (token) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/all-adds`, {
+		method: "GET",
+		headers: {
+			// content type?
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+// End of Ads Management
+
+// Hero Comp Management
+export const createHero = (userId, token, hero) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/hero/create/${userId}`, {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify(hero),
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+};
+
+export const updateHero = (addsId, userId, token, hero) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/hero/${addsId}/${userId}`, {
+		method: "PUT",
+		headers: {
+			// content type?
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify(hero),
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const getAllHeros = (token) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/heroes`, {
+		method: "GET",
+		headers: {
+			// content type?
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+// End of Ads Management

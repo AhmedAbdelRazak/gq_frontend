@@ -243,7 +243,16 @@ const SingleOrderPage = (props) => {
 									}}>
 									Tracking Number After Exchange:{" "}
 									<strong style={{ color: "darkgreen" }}>
-										{singleOrder.exchangeTrackingNumber}
+										{updateSingleOrder.exchangeTrackingNumber}
+										<span
+											className='ml-2'
+											style={{ cursor: "pointer" }}
+											onClick={() => {
+												setModalVisible(true);
+												setUpdateElement("Tracking Number Exchange");
+											}}>
+											<EditOutlined />
+										</span>
 									</strong>
 								</h5>
 							) : null}
@@ -539,6 +548,12 @@ const SingleOrderPage = (props) => {
 																		{Number(pp.OrderedQty) > 1
 																			? "Units"
 																			: "Unit"}
+																		<br />
+																		Quantity:{" "}
+																		<strong style={{ color: "darkblue" }}>
+																			{pp.pickedPrice}
+																		</strong>{" "}
+																		L.E
 																	</div>
 
 																	<div className='col-md-6'>
@@ -600,7 +615,19 @@ const SingleOrderPage = (props) => {
 																	}}>
 																	{ep.exchangedProduct.productName} |{" "}
 																	{ep.exchangedProduct.SubSKU} |{" "}
-																	{ep.exchangedProduct.SubSKUColor}
+																	{allColors[
+																		allColors
+																			.map((i) => i.hexa)
+																			.indexOf(ep.exchangedProduct.SubSKUColor)
+																	]
+																		? allColors[
+																				allColors
+																					.map((i) => i.hexa)
+																					.indexOf(
+																						ep.exchangedProduct.SubSKUColor,
+																					)
+																		  ].color
+																		: ep.exchangedProduct.SubSKUColor}
 																</strong>{" "}
 																<br />
 																<strong>EXCHANGED WITH: </strong>

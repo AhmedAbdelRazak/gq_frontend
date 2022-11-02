@@ -51,7 +51,7 @@ const MainReports = () => {
 		}),
 	);
 	const [day2, setDay2] = useState(
-		new Date(new Date().setDate(new Date().getDate() - 30)),
+		new Date(new Date().setDate(new Date().getDate() - 15)),
 	);
 	const [allColors, setAllColors] = useState([]);
 
@@ -68,7 +68,7 @@ const MainReports = () => {
 	var last90Days = new Date();
 
 	yesterday.setDate(yesterday.getDate() - 1);
-	last7Days.setDate(last7Days.getDate() - 10);
+	last7Days.setDate(last7Days.getDate() - 7);
 	last30Days.setDate(last30Days.getDate() - 30);
 	last90Days.setDate(last90Days.getDate() - 60);
 
@@ -389,6 +389,22 @@ const MainReports = () => {
 		],
 	};
 
+	function sortTopOrdersStatus(a, b) {
+		const TotalAppointmentsA = a.ordersCount
+			? a.ordersCount
+			: a.totalAmountAfterDiscount;
+		const TotalAppointmentsB = b.ordersCount
+			? b.ordersCount
+			: b.totalAmountAfterDiscount;
+		let comparison = 0;
+		if (TotalAppointmentsA < TotalAppointmentsB) {
+			comparison = 1;
+		} else if (TotalAppointmentsA > TotalAppointmentsB) {
+			comparison = -1;
+		}
+		return comparison;
+	}
+
 	var OrderStatus_OrdersCount = [];
 	allOrders &&
 		allOrders.reduce(function (res, value) {
@@ -418,6 +434,9 @@ const MainReports = () => {
 			);
 			return res;
 		}, {});
+
+	OrderStatus_OrdersCount.sort(sortTopOrdersStatus);
+	OrderStatus_TotalAmount.sort(sortTopOrdersStatus);
 
 	var pieChart1 = {
 		series: OrderStatus_OrdersCount.map((i) => {
@@ -957,7 +976,7 @@ const MainReports = () => {
 							}}>
 							(Selected Date Range From{" "}
 							<strong> {new Date(day2).toDateString()}</strong> to{" "}
-							<strong>{new Date(day1).toDateString()}</strong> )
+							<strong>{new Date(day1).toDateString()}</strong>)
 						</span>
 					</h3>
 

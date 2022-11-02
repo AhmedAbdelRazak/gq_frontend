@@ -18,6 +18,7 @@ import {
 	AppstoreAddOutlined,
 	MoneyCollectOutlined,
 	BorderHorizontalOutlined,
+	RadiusBottomleftOutlined,
 } from "@ant-design/icons";
 import { Button, Menu } from "antd";
 import LogoImage from "../../GeneralImages/ace-logo.png";
@@ -296,18 +297,27 @@ const items = [
 	]),
 
 	getItem("Online Store Management", "sub34", <BorderHorizontalOutlined />, [
+		getItem(
+			<Link to='/admin/online-store-management'>Online Store Properties</Link>,
+			"/admin/online-store-management",
+		),
+		getItem("Online Store Report", "/admin/online-store-report"),
 		getItem("Coupons", "/admin/add-expenses"),
-		getItem("Online Store Report", "/admin/financial-report"),
+		getItem(
+			<Link to='/admin/add-hero-comp'>Add Hero Component</Link>,
+			"/admin/add-hero-comp",
+		),
+		getItem("Top Ads", "sub40", <RadiusBottomleftOutlined />, [
+			getItem(
+				<Link to='/admin/add-top-ads'>Add Top Ads</Link>,
+				"/admin/add-top-ads",
+			),
+			getItem(
+				<Link to='/admin/update-top-ads'>Update Top Ads</Link>,
+				"/admin/update-top-ads",
+			),
+		]),
 	]),
-
-	// getItem("Navigation Two", "sub3", <AppstoreOutlined />, [
-	// 	getItem("Option 9", "9"),
-	// 	getItem("Option 10", "10"),
-	// 	getItem("Submenu", "sub3", null, [
-	// 		getItem("Option 11", "11"),
-	// 		getItem("Option 12", "12"),
-	// 	]),
-	// ]),
 ];
 
 const AdminMenu = ({
@@ -443,7 +453,15 @@ const AdminMenu = ({
 						? "/admin/return-list"
 						: fromPage === "StockReport"
 						? "/admin/gq-reports/stock"
-						: "/admin/dashboard"
+						: fromPage === "OnlineStoreManagement"
+						? "/admin/online-store-management"
+						: fromPage === "UpdateTopAds"
+						? "/admin/update-top-ads"
+						: fromPage === "AddTopAds"
+						? "/admin/add-top-ads"
+						: (fromPage = "AddHero"
+								? "/admin/add-hero-comp"
+								: "/admin/dashboard")
 				}
 				defaultOpenKeys={[
 					"sub1",

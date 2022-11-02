@@ -1,5 +1,7 @@
 /** @format */
 @import url("//fonts.googleapis.com/earlyaccess/droidarabickufi.css");
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,700|Open+Sans&display=swap");
+@import url("//fonts.googleapis.com/earlyaccess/droidarabickufi.css");
 
 body {
 	margin: 0;
@@ -158,4 +160,28 @@ body {
 	.DarkbackgroundForSidebar2 {
 		display: none;
 	}
+}
+
+.DarkbackgroundForSidebar {
+	background-color: rgba(0, 0, 0, 0.3);
+	height: 100%;
+	top: 0px;
+	left: 0;
+	position: fixed;
+	z-index: 100;
+	padding: 1000px;
+}
+
+.DarkbackgroundForSidebar2 {
+	background-color: rgba(0, 0, 0, 0.3);
+	height: 100%;
+	top: 30px;
+	left: 0;
+	position: fixed;
+	z-index: 100;
+	padding: 1000px;
+}
+
+.arabicFonts {
+	font-family: "Droid Arabic Kufi";
 }

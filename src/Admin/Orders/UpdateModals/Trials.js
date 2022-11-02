@@ -48,6 +48,31 @@ const Trial = ({
 					</div>
 				) : null}
 
+				{updateElement === "Tracking Number Exchange" ? (
+					<div className='form-group col-md-6 mx-auto my-4 '>
+						<label className=''>Update Tracking Number</label>
+						<input
+							onChange={(e) =>
+								setUpdateSingleOrder({
+									...updateSingleOrder,
+									exchangeTrackingNumber: e.target.value,
+								})
+							}
+							type='text'
+							className='form-control'
+							value={updateSingleOrder.exchangeTrackingNumber}
+							placeholder='Add Updated Exchange Tracking # Here.'
+						/>
+						<div className='text-center mx-auto mt-3'>
+							<button
+								className='btn btn-primary col-md-7 mx-auto'
+								style={{ fontSize: "13px" }}>
+								Send Tracking Number To The Client Via SMS
+							</button>
+						</div>
+					</div>
+				) : null}
+
 				{updateElement === "PurchaseDate" ? (
 					<div className='form-group col-md-8 mx-auto my-4 text-center'>
 						<label style={{ fontWeight: "bolder", fontSize: "1rem" }}>

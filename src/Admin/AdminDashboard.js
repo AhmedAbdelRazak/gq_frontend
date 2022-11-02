@@ -97,6 +97,17 @@ const AdminDashboard = () => {
 		// eslint-disable-next-line
 	}, [day1, day2]);
 
+	useEffect(() => {
+		const reloadCount = sessionStorage.getItem("reloadCount");
+		if (reloadCount < 2) {
+			sessionStorage.setItem("reloadCount", String(reloadCount + 1));
+			window.location.reload();
+		} else {
+			sessionStorage.removeItem("reloadCount");
+		}
+		// eslint-disable-next-line
+	}, []);
+
 	var today = new Date().toDateString("en-US", {
 		timeZone: "Africa/Cairo",
 	});

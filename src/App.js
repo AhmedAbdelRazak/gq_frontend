@@ -39,13 +39,8 @@ import AddEmployee from "./Admin/Employees/AddEmployee";
 import MainReports from "./Admin/GQShopReports/MainReports";
 import UpdateEmployee from "./Admin/Employees/UpdateEmployee";
 import UpdateEmployeeSingle from "./Admin/Employees/UpdateEmployeeSingle";
-import OrderTakerRoute from "./auth/OrderTakerRoute";
-import CreateNewOrderOrderTaker from "./OrderTaker/Orders/CreateNewOrder/CreateNewOrderOrderTaker";
-import OrdersHistOrderTaker from "./OrderTaker/Orders/OrdersHistOrderTaker";
-import SingleOrderPageOrderTaker from "./OrderTaker/Orders/SingleOrderPageOrderTaker";
 import CreateColor from "./Admin/Attributes/CreateColor";
 import CreateSize from "./Admin/Attributes/CreateSize";
-import UpdateProductOrderTaker from "./OrderTaker/Orders/ProductsDetails/UpdateProductOrderTaker";
 import AddStore from "./Admin/StoreManagement/AddStore";
 import UpdateStore from "./Admin/StoreManagement/UpdateStore";
 import DeleteStore from "./Admin/StoreManagement/DeleteStore";
@@ -57,6 +52,18 @@ import OrderExchangeSingle from "./Admin/Orders/OrderExchangeSingle";
 import ReturnList from "./Admin/Orders/ReturnList";
 import ReturnDetails from "./Admin/Orders/ReturnDetails";
 import StockReport from "./Admin/GQShopReports/StockReport";
+import OnlineStoreManagement from "./Admin/OnlineStore/OnlineStoreManagement";
+import AddTopAds from "./Admin/OnlineStore/AddTopAds";
+import UpdateTopAds from "./Admin/OnlineStore/UpdateTopAds";
+
+//Store
+import DarkBackground2 from "./Navbar/DarkBackground2";
+import NavbarTop from "./Navbar/NavbarTop";
+import NavbarBottom from "./Navbar/NavbarBottom";
+import Home from "./pages/Home/Home";
+import NavbarAds from "./Navbar/NavbarAds";
+import { getAllAds } from "./Admin/apiAdmin";
+import AddHeroComp from "./Admin/OnlineStore/AddHeroComp";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -64,6 +71,7 @@ const App = () => {
 	const [clickMenu, setClickMenu] = useState(false);
 	// eslint-disable-next-line
 	const [language, setLanguage] = useState("English");
+	const [allAdsCombined, setAllAdsCombined] = useState([]);
 
 	useEffect(() => {
 		setClickMenu(click);
@@ -80,12 +88,67 @@ const App = () => {
 		// eslint-disable-next-line
 	}, []);
 
+	const languageToggle = () => {
+		console.log(language);
+		localStorage.setItem("lang", JSON.stringify(language));
+		// window.location.reload(false);
+	};
+
+	useEffect(() => {
+		languageToggle();
+		// eslint-disable-next-line
+	}, [language]);
+
+	const gettingAllAds = () => {
+		getAllAds().then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllAdsCombined(data[data.length - 1] && data[data.length - 1]);
+			}
+		});
+	};
+
+	useEffect(() => {
+		gettingAllAds();
+		// eslint-disable-next-line
+	}, []);
+
 	return (
 		<BrowserRouter>
 			<ToastContainer />
+			{window.location.pathname.includes("admin") ||
+			window.location.pathname === "/" ? null : allAdsCombined &&
+			  allAdsCombined.show_ad ? (
+				<NavbarAds />
+			) : null}
+
+			{window.location.pathname.includes("admin") ||
+			window.location.pathname === "/" ? null : (
+				<>
+					{click && clickMenu ? (
+						<DarkBackground2 setClick={setClick} setClickMenu={setClickMenu} />
+					) : null}
+					<NavbarTop
+						click={click}
+						setClick={setClick}
+						clickMenu={clickMenu}
+						setClickMenu={setClickMenu}
+						language={language}
+						setLanguage={setLanguage}
+					/>
+
+					<NavbarBottom chosenLanguage={language} />
+				</>
+			)}
 
 			<Switch>
 				<Route path='/' exact component={Login} />
+				<Route
+					path='/home'
+					exact
+					component={() => <Home chosenLanguage={language} />}
+				/>
 				<Route path='/signup' exact component={Register} />
 				<AdminRoute path='/admin/dashboard' exact component={AdminDashboard} />
 				<AdminRoute path='/admin/add-gender' exact component={AddGender} />
@@ -259,28 +322,20 @@ const App = () => {
 
 				<AdminRoute path='/admin/delete-store' exact component={DeleteStore} />
 
-				<OrderTakerRoute
-					path='/order-taker/create-new-order'
+				<AdminRoute
+					path='/admin/online-store-management'
 					exact
-					component={CreateNewOrderOrderTaker}
+					component={OnlineStoreManagement}
 				/>
 
-				<OrderTakerRoute
-					path='/order-taker/orders-hist'
+				<AdminRoute path='/admin/add-top-ads' exact component={AddTopAds} />
+				<AdminRoute
+					path='/admin/update-top-ads'
 					exact
-					component={OrdersHistOrderTaker}
-				/>
-				<OrderTakerRoute
-					path='/order-taker/single-order/:orderId'
-					exact
-					component={SingleOrderPageOrderTaker}
+					component={UpdateTopAds}
 				/>
 
-				<OrderTakerRoute
-					path='/order-taker/update-product'
-					exact
-					component={UpdateProductOrderTaker}
-				/>
+				<AdminRoute path='/admin/add-hero-comp' exact component={AddHeroComp} />
 			</Switch>
 			<Footer />
 		</BrowserRouter>

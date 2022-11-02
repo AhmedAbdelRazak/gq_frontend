@@ -89,7 +89,7 @@ const OrdersHist = () => {
 			timeZone: "Africa/Cairo",
 		});
 
-		var day2 = new Date(new Date().setDate(new Date().getDate() - 60));
+		var day2 = new Date(new Date().setDate(new Date().getDate() - 15));
 		listOrdersDates(user._id, token, day1, day2).then((data) => {
 			if (data.error) {
 				console.log(data.error);

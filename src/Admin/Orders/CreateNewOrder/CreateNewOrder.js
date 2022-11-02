@@ -142,9 +142,22 @@ const CreateNewOrder = () => {
 		gettingAllProducts();
 		gettingAllShippingOptions();
 		gettingAllStores();
-		loadOrdersLength();
 		// eslint-disable-next-line
 	}, []);
+
+	useEffect(() => {
+		loadOrdersLength();
+		// eslint-disable-next-line
+	}, [
+		customerDetails.fullName,
+		customerDetails.address,
+		customerDetails.carrierName,
+		orderSource,
+		orderCreationDate,
+		freeShipping,
+		sendSMS,
+		customerDetails.state,
+	]);
 
 	function search(orders) {
 		return orders.filter((row) => {
@@ -1059,6 +1072,7 @@ const CreateNewOrder = () => {
 	let lengthsOfArrays_Validation =
 		QuantityValidation && QuantityValidation.map((i) => i.length);
 
+	// eslint-disable-next-line
 	let ArraysValidation =
 		lengthsOfArrays_Validation &&
 		lengthsOfArrays &&
@@ -1074,6 +1088,7 @@ const CreateNewOrder = () => {
 	// console.log(QuantityValidation_NoVariables, "QuantityValidation_NoVariables");
 	// console.log(productsWithNoVariables, "productsWithNoVariables");
 
+	// eslint-disable-next-line
 	let quantityValidationLogic_NoVariables =
 		productsWithNoVariables.length !== QuantityValidation_NoVariables.length;
 
@@ -1109,17 +1124,17 @@ const CreateNewOrder = () => {
 			return toast.error("Please Add Products Colors & Sizes");
 		}
 
-		if (availableVariables() && ArraysValidation === false) {
-			setClickedLink("ProductFeatures");
-			return toast.error(
-				"No Enough Stock Available For The Selected Variables",
-			);
-		}
+		// if (availableVariables() && ArraysValidation === false) {
+		// 	setClickedLink("ProductFeatures");
+		// 	return toast.error(
+		// 		"No Enough Stock Available For The Selected Variables",
+		// 	);
+		// }
 
-		if (quantityValidationLogic_NoVariables) {
-			setClickedLink("AdjustQuantity");
-			return toast.error("No Enough Stock Available 'No Variable Products'");
-		}
+		// if (quantityValidationLogic_NoVariables) {
+		// 	setClickedLink("AdjustQuantity");
+		// 	return toast.error("No Enough Stock Available 'No Variable Products'");
+		// }
 
 		var today = new Date().toDateString("en-US", {
 			timeZone: "Africa/Cairo",

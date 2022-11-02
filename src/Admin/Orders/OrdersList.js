@@ -7,9 +7,14 @@ import { isAuthenticated } from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import DarkBG from "../AdminMenu/DarkBG";
 import Navbar from "../AdminNavMenu/Navbar";
-import { listOrdersProcessing, updateOrderInvoice } from "../apiAdmin";
+import {
+	getProducts,
+	listOrdersProcessing,
+	updateOrderInvoice,
+} from "../apiAdmin";
 // eslint-disable-next-line
 import Pagination from "./Pagination";
+import CountUp from "react-countup";
 
 const OrdersList = () => {
 	const [allOrders, setAllOrders] = useState([]);
@@ -18,6 +23,7 @@ const OrdersList = () => {
 	const [offset, setOffset] = useState(0);
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
+	const [allProducts, setAllProducts] = useState([]);
 
 	//pagination
 	const [currentPage, setCurrentPage] = useState(1);
@@ -69,8 +75,20 @@ const OrdersList = () => {
 		});
 	};
 
+	const gettingAllProducts = () => {
+		getProducts().then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllProducts(data);
+			}
+		});
+	};
+
 	useEffect(() => {
 		loadOrders();
+		gettingAllProducts();
+
 		// eslint-disable-next-line
 	}, []);
 
@@ -172,12 +190,12 @@ const OrdersList = () => {
 							/>
 						</div>
 
-						{/* <Pagination
-					postsPerPage={postsPerPage}
-					totalPosts={allOrders.length}
-					paginate={paginate}
-					currentPage={currentPage}
-				/> */}
+						<Pagination
+							postsPerPage={postsPerPage}
+							totalPosts={allOrders.length}
+							paginate={paginate}
+							currentPage={currentPage}
+						/>
 						<table
 							className='table table-bordered table-md-responsive table-hover text-center'
 							style={{ fontSize: "0.75rem" }}>
@@ -194,127 +212,186 @@ const OrdersList = () => {
 									<th scope='col'>Taker</th>
 									<th scope='col'>Governorate</th>
 									{/* <th scope='col'>City</th> */}
-									<th scope='col'>Shipping Carrier</th>
+									<th scope='col'>Carrier</th>
 									<th scope='col'>Tracking #</th>
 									<th scope='col'>Quantity</th>
 									<th scope='col'>Invoice?</th>
+									<th scope='col'>Details?</th>
 								</tr>
 							</thead>
 
 							<tbody className='my-auto'>
-								{search(allOrders).map((s, i) => (
-									<tr key={i} className=''>
-										{s.orderCreationDate ? (
-											<td style={{ width: "8%" }}>
-												{new Date(s.orderCreationDate).toDateString()}{" "}
-											</td>
-										) : (
-											<td style={{ width: "8%" }}>
-												{new Date(s.createdAt).toDateString()}{" "}
-											</td>
-										)}
+								{search(currentPosts).map((s, i) => {
+									const checkingWithLiveStock = (
+										productId,
+										SubSKU,
+										OrderedQty,
+									) => {
+										const pickedSub =
+											allProducts &&
+											allProducts.filter((iii) => iii._id === productId)[0];
 
-										{s.OTNumber && s.OTNumber !== "Not Added" ? (
-											<td className='my-auto'>{s.OTNumber}</td>
-										) : (
-											<td className='my-auto'>{`OT${new Date(
-												s.createdAt,
-											).getFullYear()}${
-												new Date(s.createdAt).getMonth() + 1
-											}${new Date(s.createdAt).getDate()}000${
-												allOrders.length - i
-											}`}</td>
-										)}
-										<td
-											style={{
-												width: "10%",
-												background:
-													s.invoiceNumber === "Not Added" ? "#f4e4e4" : "",
-											}}>
-											{s.invoiceNumber}
-										</td>
-										<td
-											style={{
-												fontWeight: "bold",
-												fontSize: "0.9rem",
-												width: "8.5%",
-												background:
-													s.status === "Delivered" || s.status === "Shipped"
-														? "#004b00"
-														: s.status === "Cancelled"
-														? "darkred"
-														: "#003264",
-												color:
-													s.status === "Delivered" || s.status === "Shipped"
-														? "white"
-														: s.status === "Cancelled"
-														? "white"
-														: "white",
-											}}>
-											{s.status}
-										</td>
+										const GetSpecificSubSKU =
+											pickedSub.productAttributes.filter(
+												(iii) => iii.SubSKU === SubSKU,
+											)[0];
+										const QtyChecker =
+											GetSpecificSubSKU &&
+											GetSpecificSubSKU.quantity < OrderedQty;
 
-										<td style={{ width: "11%" }}>
-											{s.customerDetails.fullName}
-										</td>
-										<td>{s.customerDetails.phone}</td>
-										<td>{s.totalAmountAfterDiscount.toFixed(0)} L.E.</td>
-										<td style={{ textTransform: "uppercase" }}>
-											{s.orderSource}
-										</td>
-										<td>{s.employeeData.name}</td>
-										<td>{s.customerDetails.state}</td>
-										{/* <td>{s.customerDetails.cityName}</td> */}
-										<td style={{ width: "8%" }}>
-											{s.chosenShippingOption[0].carrierName}
-										</td>
-										<td style={{ width: "8%" }}>
-											{s.trackingNumber ? s.trackingNumber : "Not Added"}
-										</td>
-										<td>{s.totalOrderQty}</td>
-										{s.invoiceNumber === "Not Added" ? (
+										return QtyChecker;
+									};
+
+									var stockCheckHelper = s.chosenProductQtyWithVariables.map(
+										(iii) =>
+											iii.map((iiii) =>
+												checkingWithLiveStock(
+													iiii.productId,
+													iiii.SubSKU,
+													iiii.OrderedQty,
+												),
+											),
+									);
+									var merged = [].concat.apply([], stockCheckHelper);
+									var finalChecker =
+										merged.indexOf(true) === -1 ? "Passed" : "Failed";
+									return (
+										<tr key={i} className=''>
+											{s.orderCreationDate ? (
+												<td style={{ width: "8%" }}>
+													{new Date(s.orderCreationDate).toDateString()}{" "}
+												</td>
+											) : (
+												<td style={{ width: "8%" }}>
+													{new Date(s.createdAt).toDateString()}{" "}
+												</td>
+											)}
+
+											{s.OTNumber && s.OTNumber !== "Not Added" ? (
+												<td className='my-auto'>{s.OTNumber}</td>
+											) : (
+												<td className='my-auto'>{`OT${new Date(
+													s.createdAt,
+												).getFullYear()}${
+													new Date(s.createdAt).getMonth() + 1
+												}${new Date(s.createdAt).getDate()}000${
+													allOrders.length - i
+												}`}</td>
+											)}
 											<td
 												style={{
-													color: "darkred",
+													width: "10%",
+													background:
+														s.invoiceNumber === "Not Added" ? "#f4e4e4" : "",
+												}}>
+												{s.invoiceNumber}
+											</td>
+											<td
+												style={{
+													fontWeight: "bold",
+													fontSize: "0.9rem",
+													width: "8.5%",
+													background:
+														finalChecker === "Failed"
+															? "darkred"
+															: s.status === "Delivered" ||
+															  s.status === "Shipped"
+															? "#004b00"
+															: s.status === "Cancelled"
+															? "darkred"
+															: "#ffffd8",
+													color:
+														finalChecker === "Failed"
+															? "white"
+															: s.status === "Delivered" ||
+															  s.status === "Shipped"
+															? "white"
+															: s.status === "Cancelled"
+															? "white"
+															: "black",
+												}}>
+												{s.status}
+											</td>
+
+											<td style={{ width: "11%" }}>
+												{s.customerDetails.fullName}
+											</td>
+											<td>{s.customerDetails.phone}</td>
+											<td>{s.totalAmountAfterDiscount.toFixed(0)} L.E.</td>
+											<td style={{ textTransform: "uppercase" }}>
+												{s.orderSource}
+											</td>
+											<td>{s.employeeData.name}</td>
+											<td>{s.customerDetails.state}</td>
+											{/* <td>{s.customerDetails.cityName}</td> */}
+											<td style={{ width: "8%" }}>
+												{s.chosenShippingOption[0].carrierName}
+											</td>
+											<td style={{ width: "8%" }}>
+												{s.trackingNumber ? s.trackingNumber : "Not Added"}
+											</td>
+											<td>{s.totalOrderQty}</td>
+
+											{s.invoiceNumber === "Not Added" ? (
+												<td
+													style={{
+														color: "darkred",
+														fontWeight: "bold",
+														cursor: "pointer",
+														width: "8%",
+													}}>
+													{finalChecker === "Passed" ? (
+														<Link
+															to={`#`}
+															onClick={() => {
+																var today = new Date().toDateString("en-US", {
+																	timeZone: "Africa/Cairo",
+																});
+
+																let text = s.OTNumber;
+																let result = "INV" + text.slice(2);
+
+																var invoiceNumber =
+																	s.OTNumber === "Not Added"
+																		? `INV${new Date(today).getFullYear()}${
+																				new Date(today).getMonth() + 1
+																		  }${new Date(today).getDate()}000${
+																				allOrders.length - i
+																		  }`
+																		: result;
+																handleInvoiceStatus(invoiceNumber, s._id);
+															}}>
+															Invoice
+														</Link>
+													) : (
+														<Link to={`#`} style={{ color: "darkred" }}>
+															No Enough Stock
+														</Link>
+													)}
+												</td>
+											) : (
+												<td
+													style={{
+														color: "darkgreen",
+														fontWeight: "bold",
+													}}>
+													Order Already Invoiced
+												</td>
+											)}
+
+											<td
+												style={{
+													color: "blue",
 													fontWeight: "bold",
 													cursor: "pointer",
 												}}>
-												<Link
-													to={`#`}
-													onClick={() => {
-														var today = new Date().toDateString("en-US", {
-															timeZone: "Africa/Cairo",
-														});
-
-														let text = s.OTNumber;
-														let result = "INV" + text.slice(2);
-
-														var invoiceNumber =
-															s.OTNumber === "Not Added"
-																? `INV${new Date(today).getFullYear()}${
-																		new Date(today).getMonth() + 1
-																  }${new Date(today).getDate()}000${
-																		allOrders.length - i
-																  }`
-																: result;
-														handleInvoiceStatus(invoiceNumber, s._id);
-													}}>
-													Invoice
+												<Link to={`/admin/single-order/${s._id}`}>
+													Details....
 												</Link>
 											</td>
-										) : (
-											<td
-												style={{
-													color: "darkgreen",
-													fontWeight: "bold",
-												}}>
-												Order Already Invoiced
-											</td>
-										)}
-
-										{/* <td>{Invoice(s)}</td> */}
-									</tr>
-								))}
+										</tr>
+									);
+								})}
 							</tbody>
 						</table>
 					</>
@@ -322,6 +399,15 @@ const OrdersList = () => {
 			</div>
 		);
 	};
+
+	const overallQtyArray = allOrders && allOrders.map((i) => i.totalOrderQty);
+
+	const ArrayOfQty = overallQtyArray.reduce((a, b) => a + b, 0);
+
+	const overallAmountArray =
+		allOrders && allOrders.map((i) => i.totalAmountAfterDiscount);
+
+	const ArrayOfAmount = overallAmountArray.reduce((a, b) => a + b, 0);
 
 	return (
 		<OrdersListWrapper show={AdminMenuStatus}>
@@ -341,6 +427,62 @@ const OrdersList = () => {
 				<div className='mainContent'>
 					<Navbar fromPage='OrdersList' pageScrolled={pageScrolled} />
 
+					<h3 className='mt-5 text-center' style={{ fontWeight: "bolder" }}>
+						PENDING ORDERS
+					</h3>
+					<div className='row mx-5 mt-5'>
+						<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+							<div className='card' style={{ background: "#f1416c" }}>
+								<div className='card-body'>
+									<h5 style={{ fontWeight: "bolder", color: "white" }}>
+										Overall Orders Count
+									</h5>
+									<CountUp
+										style={{ color: "white" }}
+										duration='3'
+										delay={1}
+										end={allOrders.length}
+										separator=','
+									/>
+								</div>
+							</div>
+						</div>
+
+						<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+							<div className='card' style={{ background: "#009ef7" }}>
+								<div className='card-body'>
+									<h5 style={{ fontWeight: "bolder", color: "white" }}>
+										Overall Ordered Items
+									</h5>
+									<CountUp
+										style={{ color: "white" }}
+										duration='3'
+										delay={1}
+										end={ArrayOfQty}
+										separator=','
+									/>
+								</div>
+							</div>
+						</div>
+						{user.userRole === "Order Taker" ? null : (
+							<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+								<div className='card' style={{ background: "#50cd89" }}>
+									<div className='card-body'>
+										<h5 style={{ fontWeight: "bolder", color: "white" }}>
+											Total Amount (L.E.)
+										</h5>
+										<CountUp
+											style={{ color: "white" }}
+											duration='3'
+											delay={1}
+											end={ArrayOfAmount}
+											separator=','
+										/>
+									</div>
+								</div>
+							</div>
+						)}
+					</div>
 					<div className='mt-5 mx-3'> {dataTable()}</div>
 				</div>
 			</div>
