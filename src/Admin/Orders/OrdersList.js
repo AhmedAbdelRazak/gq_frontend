@@ -7,6 +7,7 @@ import { isAuthenticated } from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import DarkBG from "../AdminMenu/DarkBG";
 import Navbar from "../AdminNavMenu/Navbar";
+import { Helmet } from "react-helmet";
 import {
 	getProducts,
 	listOrdersProcessing,
@@ -100,7 +101,6 @@ const OrdersList = () => {
 								i.map((ii) => ii.filter((iii) => iii === true)),
 							);
 
-							console.log(beforeel[5][0], "ahowannnnnnnnn");
 							var backordersAll = [];
 
 							for (var i = 0; i < beforeel.length; i++) {
@@ -114,6 +114,69 @@ const OrdersList = () => {
 							setAllOrders(backordersAll.sort(sortOrdersAscendingly));
 						}
 					});
+				} else if (backorders === "Good") {
+					getProducts().then((data2) => {
+						if (data2.error) {
+							console.log(data2.error);
+						} else {
+							const checkingWithLiveStock = (productId, SubSKU, OrderedQty) => {
+								const pickedSub =
+									data2 && data2.filter((iii) => iii._id === productId)[0];
+
+								const GetSpecificSubSKU = pickedSub.productAttributes.filter(
+									(iii) => iii.SubSKU === SubSKU,
+								)[0];
+								const QtyChecker =
+									GetSpecificSubSKU && GetSpecificSubSKU.quantity < OrderedQty;
+
+								return QtyChecker;
+							};
+
+							var stockCheckHelper = data.map((i) =>
+								i.chosenProductQtyWithVariables.map((ii) =>
+									ii.map((iii) =>
+										checkingWithLiveStock(
+											iii.productId,
+											iii.SubSKU,
+											iii.OrderedQty,
+										),
+									),
+								),
+							);
+							// var merged = [].concat.apply([], stockCheckHelper);
+
+							var beforeel = stockCheckHelper.map((i) =>
+								i.map((ii) => ii.filter((iii) => iii === true)),
+							);
+
+							var backordersAll = [];
+
+							for (var i = 0; i < beforeel.length; i++) {
+								for (var ii = 0; ii < beforeel[i].length; ii++) {
+									if (
+										beforeel[i][0].indexOf(true) === -1 &&
+										beforeel[i].length === 1
+									) {
+										backordersAll.push(data[i]);
+									} else if (
+										beforeel[i][0].indexOf(true) === -1 &&
+										beforeel[i].length === 2
+									) {
+										if (
+											beforeel[i][0].indexOf(true) === -1 &&
+											beforeel[i][1].indexOf(true) === -1
+										) {
+											backordersAll.push(data[i]);
+										}
+									}
+								}
+							}
+
+							setAllOrders(backordersAll.sort(sortOrdersAscendingly));
+						}
+					});
+				} else if (backorders === "Processing") {
+					setAllOrders(data.filter((i) => i.status.includes("Processing")));
 				} else {
 					setAllOrders(data.sort(sortOrdersAscendingly));
 				}
@@ -173,6 +236,7 @@ const OrdersList = () => {
 				row.customerDetails.email.toString().toLowerCase().indexOf(q) > -1 ||
 				row.status.toString().toLowerCase().indexOf(q) > -1 ||
 				row.invoiceNumber.toString().toLowerCase().indexOf(q) > -1 ||
+				row.OTNumber.toString().toLowerCase().indexOf(q) > -1 ||
 				row.trackingNumber.toString().toLowerCase().indexOf(q) > -1 ||
 				row.chosenShippingOption[0].carrierName
 					.toString()
@@ -236,7 +300,15 @@ const OrdersList = () => {
 				Governorate: i.customerDetails.state,
 				// Carrier: i.customerDetails.carrierName,
 				SKU_Qty: i.chosenProductQtyWithVariables.map((iii) =>
-					iii.map((iiii) => iiii.SubSKU + "  /  " + iiii.OrderedQty + " \n"),
+					iii.map(
+						(iiii) =>
+							iiii.SubSKU +
+							"  /  " +
+							iiii.OrderedQty +
+							"  /  " +
+							iiii.productName +
+							" \n",
+					),
 				),
 				backorder: finalChecker === "Passed" ? "Good" : "Backorder",
 			};
@@ -251,7 +323,6 @@ const OrdersList = () => {
 		const doc = new jsPDF(orientation, unit, size);
 
 		doc.setLanguage("ar-Ar");
-
 		doc.setFontSize(9);
 
 		const title = "PENDING ORDERS";
@@ -352,7 +423,7 @@ const OrdersList = () => {
 						/>
 						<div>
 							<Link
-								className='btn btn-primary'
+								className='btn btn-primary mr-5'
 								onClick={() => exportPDF()}
 								to='#'>
 								Download Report (PDF)
@@ -372,6 +443,20 @@ const OrdersList = () => {
 									Backorders
 								</Link>
 							)}
+							<Link
+								className='btn'
+								style={{ background: "black", color: "white" }}
+								onClick={() => setBackorders("Processing")}
+								to='#'>
+								In Processing
+							</Link>
+							<Link
+								className='btn ml-2 btn-success'
+								// style={{ background: "black", color: "white" }}
+								onClick={() => setBackorders("Good")}
+								to='#'>
+								Good Orders
+							</Link>
 						</div>
 						<table
 							className='table table-bordered table-md-responsive table-hover text-center'
@@ -619,81 +704,106 @@ const OrdersList = () => {
 
 	return (
 		<OrdersListWrapper show={AdminMenuStatus}>
-			{!collapsed ? (
-				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
-			) : null}
-			<div className='grid-container'>
-				<div className=''>
-					<AdminMenu
-						fromPage='OrdersList'
-						AdminMenuStatus={AdminMenuStatus}
-						setAdminMenuStatus={setAdminMenuStatus}
-						collapsed={collapsed}
-						setCollapsed={setCollapsed}
-					/>
+			{allOrders.length === 0 && allProducts.length === 0 ? (
+				<div
+					style={{
+						textAlign: "center",
+						fontWeight: "bolder",
+						marginTop: "50px",
+						fontSize: "2.5rem",
+					}}>
+					Loading....
 				</div>
-				<div className='mainContent'>
-					<Navbar fromPage='OrdersList' pageScrolled={pageScrolled} />
+			) : (
+				<>
+					<Helmet>
+						<meta charSet='utf-8' dir='rtl' />
+						<title>GQ | Pending Orders</title>
 
-					<h3 className='mt-5 text-center' style={{ fontWeight: "bolder" }}>
-						PENDING ORDERS
-					</h3>
-					<div className='row mx-5 mt-5'>
-						<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-							<div className='card' style={{ background: "#f1416c" }}>
-								<div className='card-body'>
-									<h5 style={{ fontWeight: "bolder", color: "white" }}>
-										Overall Orders Count
-									</h5>
-									<CountUp
-										style={{ color: "white" }}
-										duration='3'
-										delay={1}
-										end={allOrders.length}
-										separator=','
-									/>
-								</div>
-							</div>
+						<meta name='description' content='' />
+						<link
+							rel='stylesheet'
+							href='//fonts.googleapis.com/earlyaccess/droidarabickufi.css'
+						/>
+						<link rel='canonical' href='http://infinite-apps.com' />
+					</Helmet>
+					{!collapsed ? (
+						<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+					) : null}
+					<div className='grid-container'>
+						<div className=''>
+							<AdminMenu
+								fromPage='OrdersList'
+								AdminMenuStatus={AdminMenuStatus}
+								setAdminMenuStatus={setAdminMenuStatus}
+								collapsed={collapsed}
+								setCollapsed={setCollapsed}
+							/>
 						</div>
+						<div className='mainContent'>
+							<Navbar fromPage='OrdersList' pageScrolled={pageScrolled} />
 
-						<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-							<div className='card' style={{ background: "#009ef7" }}>
-								<div className='card-body'>
-									<h5 style={{ fontWeight: "bolder", color: "white" }}>
-										Overall Ordered Items
-									</h5>
-									<CountUp
-										style={{ color: "white" }}
-										duration='3'
-										delay={1}
-										end={ArrayOfQty}
-										separator=','
-									/>
-								</div>
-							</div>
-						</div>
-						{user.userRole === "Order Taker" ? null : (
-							<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-								<div className='card' style={{ background: "#50cd89" }}>
-									<div className='card-body'>
-										<h5 style={{ fontWeight: "bolder", color: "white" }}>
-											Total Amount (L.E.)
-										</h5>
-										<CountUp
-											style={{ color: "white" }}
-											duration='3'
-											delay={1}
-											end={ArrayOfAmount}
-											separator=','
-										/>
+							<h3 className='mt-5 text-center' style={{ fontWeight: "bolder" }}>
+								PENDING ORDERS
+							</h3>
+							<div className='row mx-5 mt-5'>
+								<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+									<div className='card' style={{ background: "#f1416c" }}>
+										<div className='card-body'>
+											<h5 style={{ fontWeight: "bolder", color: "white" }}>
+												Overall Orders Count
+											</h5>
+											<CountUp
+												style={{ color: "white" }}
+												duration='3'
+												delay={1}
+												end={allOrders.length}
+												separator=','
+											/>
+										</div>
 									</div>
 								</div>
+
+								<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+									<div className='card' style={{ background: "#009ef7" }}>
+										<div className='card-body'>
+											<h5 style={{ fontWeight: "bolder", color: "white" }}>
+												Overall Ordered Items
+											</h5>
+											<CountUp
+												style={{ color: "white" }}
+												duration='3'
+												delay={1}
+												end={ArrayOfQty}
+												separator=','
+											/>
+										</div>
+									</div>
+								</div>
+								{user.userRole === "Order Taker" ? null : (
+									<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+										<div className='card' style={{ background: "#50cd89" }}>
+											<div className='card-body'>
+												<h5 style={{ fontWeight: "bolder", color: "white" }}>
+													Total Amount (L.E.)
+												</h5>
+												<CountUp
+													style={{ color: "white" }}
+													duration='3'
+													delay={1}
+													end={ArrayOfAmount}
+													separator=','
+												/>
+											</div>
+										</div>
+									</div>
+								)}
 							</div>
-						)}
+							<div className='mt-5 mx-3'> {dataTable()}</div>
+						</div>
 					</div>
-					<div className='mt-5 mx-3'> {dataTable()}</div>
-				</div>
-			</div>
+				</>
+			)}
 		</OrdersListWrapper>
 	);
 };

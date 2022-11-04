@@ -7,6 +7,7 @@ import AdminMenu from "../AdminMenu/AdminMenu";
 import Navbar from "../AdminNavMenu/Navbar";
 import CountUp from "react-countup";
 import {
+	getProducts,
 	listOfOrdersFiltered,
 	// eslint-disable-next-line
 	listOrders,
@@ -55,6 +56,7 @@ const OrdersHist = () => {
 	const [selectedFilter, setSelectedFilter] = useState("SelectAll");
 	const [currentPage, setCurrentPage] = useState(1);
 	const [postsPerPage, setPostsPerPage] = useState(80);
+	const [allProducts, setAllProducts] = useState([]);
 
 	const { user, token } = isAuthenticated();
 
@@ -191,10 +193,21 @@ const OrdersHist = () => {
 		});
 	};
 
+	const gettingAllProducts = () => {
+		getProducts().then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllProducts(data);
+			}
+		});
+	};
+
 	// console.log(allOrdersFiltered, "AllOrdersFiltered");
 	useEffect(() => {
 		loadOrders();
 		loadOrdersFiltered();
+		gettingAllProducts();
 		// eslint-disable-next-line
 	}, [selectedFilter]);
 
@@ -223,6 +236,8 @@ const OrdersHist = () => {
 				row.customerDetails.fullName.toString().toLowerCase().indexOf(q) > -1 ||
 				row.customerDetails.email.toString().toLowerCase().indexOf(q) > -1 ||
 				row.status.toString().toLowerCase().indexOf(q) > -1 ||
+				row.invoiceNumber.toString().toLowerCase().indexOf(q) > -1 ||
+				row.OTNumber.toString().toLowerCase().indexOf(q) > -1 ||
 				row.trackingNumber.toString().toLowerCase().indexOf(q) > -1 ||
 				row.chosenShippingOption[0].carrierName
 					.toString()
@@ -331,118 +346,153 @@ const OrdersHist = () => {
 					</thead>
 
 					<tbody className='my-auto'>
-						{search(currentPosts).map((s, i) => (
-							<tr key={i} className=''>
-								{s.orderCreationDate ? (
-									<td style={{ width: "10%" }}>
-										{new Date(s.orderCreationDate).toDateString()}{" "}
-									</td>
-								) : (
-									<td style={{ width: "10%" }}>
-										{new Date(s.createdAt).toDateString()}{" "}
-									</td>
-								)}
+						{search(currentPosts).map((s, i) => {
+							const checkingWithLiveStock = (productId, SubSKU, OrderedQty) => {
+								const pickedSub =
+									allProducts &&
+									allProducts.filter((iii) => iii._id === productId)[0];
 
-								<td
-									style={{
-										width: "10%",
-										background:
-											s.invoiceNumber === "Not Added" ? "#f4e4e4" : "",
-									}}>
-									{s.invoiceNumber}
-								</td>
-								<td
-									style={{
-										fontWeight: "bold",
-										fontSize: "0.77rem",
-										width: "8.5%",
-										background:
-											s.status.includes("Delivered") ||
-											s.status.includes("Returned and Refunded") ||
-											s.status.includes("Shipped")
-												? "#004b00"
-												: s.status === "Cancelled"
-												? "darkred"
-												: s.status.includes("Ready To Ship")
-												? "#bbffbb"
-												: "#e2e2e2",
-										color:
-											s.status.includes("Delivered") ||
-											s.status.includes("Returned and Refunded") ||
-											s.status.includes("Shipped")
-												? "white"
-												: s.status.includes("Cancelled")
-												? "white"
-												: "black",
-									}}>
-									{s.status}
-								</td>
+								const GetSpecificSubSKU = pickedSub.productAttributes.filter(
+									(iii) => iii.SubSKU === SubSKU,
+								)[0];
+								const QtyChecker =
+									GetSpecificSubSKU && GetSpecificSubSKU.quantity < OrderedQty;
 
-								<td style={{ width: "11%" }}>{s.customerDetails.fullName}</td>
-								<td>{s.customerDetails.phone}</td>
-								<td>{s.totalAmountAfterDiscount.toFixed(0)} L.E.</td>
-								<td style={{ textTransform: "uppercase" }}>{s.orderSource}</td>
-								<td>{s.employeeData.name}</td>
-								<td>{s.customerDetails.state}</td>
-								{/* <td>{s.customerDetails.cityName}</td> */}
-								<td style={{ width: "8%" }}>
-									{s.chosenShippingOption[0].carrierName}
-								</td>
-								<td style={{ width: "8%" }}>
-									{s.trackingNumber ? s.trackingNumber : "Not Added"}
-								</td>
-								<td>{s.totalOrderQty}</td>
-								<td
-									style={{
-										color: "blue",
-										fontWeight: "bold",
-										cursor: "pointer",
-									}}>
-									<Link to={`/admin/single-order/${s._id}`}>Show More....</Link>
-								</td>
-								{s.invoiceNumber === "Not Added" ? (
+								return QtyChecker;
+							};
+
+							var stockCheckHelper = s.chosenProductQtyWithVariables.map(
+								(iii) =>
+									iii.map((iiii) =>
+										checkingWithLiveStock(
+											iiii.productId,
+											iiii.SubSKU,
+											iiii.OrderedQty,
+										),
+									),
+							);
+							var merged = [].concat.apply([], stockCheckHelper);
+							var finalChecker =
+								merged.indexOf(true) === -1 ? "Passed" : "Failed";
+							return (
+								<tr key={i} className=''>
+									{s.orderCreationDate ? (
+										<td style={{ width: "10%" }}>
+											{new Date(s.orderCreationDate).toDateString()}{" "}
+										</td>
+									) : (
+										<td style={{ width: "10%" }}>
+											{new Date(s.createdAt).toDateString()}{" "}
+										</td>
+									)}
+
 									<td
 										style={{
-											cursor: "pointer",
-											fontSize: "10px,",
-											width: "8%",
-											color: "darkgray",
-											fontWeight: "bold",
+											width: "10%",
+											background:
+												s.invoiceNumber === "Not Added" ? "#f4e4e4" : "",
 										}}>
-										Create Shipping
+										{s.invoiceNumber}
 									</td>
-								) : (
 									<td
 										style={{
-											cursor: "pointer",
-											fontSize: "10px,",
-											width: "8%",
 											fontWeight: "bold",
+											fontSize: "0.9rem",
+											width: "8.5%",
+											background:
+												s.status === "Delivered" || s.status === "Shipped"
+													? "#004b00"
+													: s.status === "Cancelled"
+													? "red"
+													: finalChecker === "Failed"
+													? "darkred"
+													: s.status === "In Processing"
+													? "#d8ffff"
+													: s.status === "Exchange - In Processing"
+													? "#d8ebff"
+													: "#ffffd8",
+											color:
+												finalChecker === "Failed"
+													? "white"
+													: s.status === "Delivered" || s.status === "Shipped"
+													? "white"
+													: s.status === "Cancelled"
+													? "white"
+													: "black",
 										}}>
-										<Link to={`#`}>Create Shipping</Link>
+										{s.status}
 									</td>
-								)}
 
-								{user.userRole === "Admin Account" ? (
+									<td style={{ width: "11%" }}>{s.customerDetails.fullName}</td>
+									<td>{s.customerDetails.phone}</td>
+									<td>{s.totalAmountAfterDiscount.toFixed(0)} L.E.</td>
+									<td style={{ textTransform: "uppercase" }}>
+										{s.orderSource}
+									</td>
+									<td>{s.employeeData.name}</td>
+									<td>{s.customerDetails.state}</td>
+									{/* <td>{s.customerDetails.cityName}</td> */}
+									<td style={{ width: "8%" }}>
+										{s.chosenShippingOption[0].carrierName}
+									</td>
+									<td style={{ width: "8%" }}>
+										{s.trackingNumber ? s.trackingNumber : "Not Added"}
+									</td>
+									<td>{s.totalOrderQty}</td>
 									<td
-										onClick={() => {
-											handleRemove(s._id);
-											setTimeout(function () {
-												window.location.reload(false);
-											}, 1000);
-										}}
 										style={{
-											color: "red",
+											color: "blue",
 											fontWeight: "bold",
 											cursor: "pointer",
 										}}>
-										Delete?
+										<Link to={`/admin/single-order/${s._id}`}>
+											Show More....
+										</Link>
 									</td>
-								) : null}
+									{s.invoiceNumber === "Not Added" ? (
+										<td
+											style={{
+												cursor: "pointer",
+												fontSize: "10px,",
+												width: "8%",
+												color: "darkgray",
+												fontWeight: "bold",
+											}}>
+											Create Shipping
+										</td>
+									) : (
+										<td
+											style={{
+												cursor: "pointer",
+												fontSize: "10px,",
+												width: "8%",
+												fontWeight: "bold",
+											}}>
+											<Link to={`#`}>Create Shipping</Link>
+										</td>
+									)}
 
-								{/* <td>{Invoice(s)}</td> */}
-							</tr>
-						))}
+									{user.userRole === "Admin Account" ? (
+										<td
+											onClick={() => {
+												handleRemove(s._id);
+												setTimeout(function () {
+													window.location.reload(false);
+												}, 1000);
+											}}
+											style={{
+												color: "red",
+												fontWeight: "bold",
+												cursor: "pointer",
+											}}>
+											Delete?
+										</td>
+									) : null}
+
+									{/* <td>{Invoice(s)}</td> */}
+								</tr>
+							);
+						})}
 					</tbody>
 				</table>
 			</div>
@@ -464,133 +514,147 @@ const OrdersHist = () => {
 
 	return (
 		<OrdersHistWrapper show={AdminMenuStatus}>
-			{!collapsed ? (
-				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
-			) : null}
-			<div className='grid-container'>
-				<div className=''>
-					<AdminMenu
-						fromPage='OrdersHist'
-						AdminMenuStatus={AdminMenuStatus}
-						setAdminMenuStatus={setAdminMenuStatus}
-						collapsed={collapsed}
-						setCollapsed={setCollapsed}
-					/>
+			{allOrders.length === 0 && allProducts.length === 0 ? (
+				<div
+					style={{
+						textAlign: "center",
+						fontWeight: "bolder",
+						marginTop: "50px",
+						fontSize: "2.5rem",
+					}}>
+					Loading....
 				</div>
-				<div className='mainContent'>
-					<Navbar fromPage='OrdersHist' pageScrolled={pageScrolled} />
-					<FiltersModal
-						selectedFilter={selectedFilter}
-						setSelectedFilter={setSelectedFilter}
-						modalVisible={modalVisible}
-						setModalVisible={setModalVisible}
-					/>
-					<div
-						style={{
-							background: "white",
-							textAlign: "right",
-							fontSize: "13px",
-						}}
-						className='py-3 mb-5'>
-						<span
-							style={isActive("SelectAll", selectedFilter)}
-							className='mx-2 filterItem'
-							onClick={() => setSelectedFilter("SelectAll")}>
-							Select All
-						</span>
-						<span
-							style={isActive("Today", selectedFilter)}
-							className='mx-2 filterItem'
-							onClick={() => setSelectedFilter("Today")}>
-							Today
-						</span>
-						<span
-							style={isActive("Yesterday", selectedFilter)}
-							className='mx-2 filterItem'
-							onClick={() => setSelectedFilter("Yesterday")}>
-							Yesterday
-						</span>
-						<span
-							style={isActive("Last7Days", selectedFilter)}
-							className='mx-2 filterItem'
-							onClick={() => setSelectedFilter("Last7Days")}>
-							Last 7 Days
-						</span>
+			) : (
+				<>
+					{!collapsed ? (
+						<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
+					) : null}
+					<div className='grid-container'>
+						<div className=''>
+							<AdminMenu
+								fromPage='OrdersHist'
+								AdminMenuStatus={AdminMenuStatus}
+								setAdminMenuStatus={setAdminMenuStatus}
+								collapsed={collapsed}
+								setCollapsed={setCollapsed}
+							/>
+						</div>
+						<div className='mainContent'>
+							<Navbar fromPage='OrdersHist' pageScrolled={pageScrolled} />
+							<FiltersModal
+								selectedFilter={selectedFilter}
+								setSelectedFilter={setSelectedFilter}
+								modalVisible={modalVisible}
+								setModalVisible={setModalVisible}
+							/>
+							<div
+								style={{
+									background: "white",
+									textAlign: "right",
+									fontSize: "13px",
+								}}
+								className='py-3 mb-5'>
+								<span
+									style={isActive("SelectAll", selectedFilter)}
+									className='mx-2 filterItem'
+									onClick={() => setSelectedFilter("SelectAll")}>
+									Select All
+								</span>
+								<span
+									style={isActive("Today", selectedFilter)}
+									className='mx-2 filterItem'
+									onClick={() => setSelectedFilter("Today")}>
+									Today
+								</span>
+								<span
+									style={isActive("Yesterday", selectedFilter)}
+									className='mx-2 filterItem'
+									onClick={() => setSelectedFilter("Yesterday")}>
+									Yesterday
+								</span>
+								<span
+									style={isActive("Last7Days", selectedFilter)}
+									className='mx-2 filterItem'
+									onClick={() => setSelectedFilter("Last7Days")}>
+									Last 7 Days
+								</span>
 
-						<span
-							style={isActive("Group", selectedFilter)}
-							className='mx-2 filterItem'
-							onClick={() => {
-								setModalVisible(true);
-								setSelectedFilter("Group");
-							}}>
-							Group <GroupOutlined />
-						</span>
-					</div>
-					<h3
-						style={{ color: "#009ef7", fontWeight: "bold" }}
-						className='mx-auto text-center mb-5'>
-						Sales History
-					</h3>
-					<div className='container-fluid'>
-						<div className='row'>
-							<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-								<div className='card' style={{ background: "#f1416c" }}>
-									<div className='card-body'>
-										<h5 style={{ fontWeight: "bolder", color: "white" }}>
-											Overall Orders Count
-										</h5>
-										<CountUp
-											style={{ color: "white" }}
-											duration='3'
-											delay={1}
-											end={allOrders.length}
-											separator=','
-										/>
-									</div>
-								</div>
+								<span
+									style={isActive("Group", selectedFilter)}
+									className='mx-2 filterItem'
+									onClick={() => {
+										setModalVisible(true);
+										setSelectedFilter("Group");
+									}}>
+									Group <GroupOutlined />
+								</span>
 							</div>
-
-							<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-								<div className='card' style={{ background: "#009ef7" }}>
-									<div className='card-body'>
-										<h5 style={{ fontWeight: "bolder", color: "white" }}>
-											Overall Ordered Items
-										</h5>
-										<CountUp
-											style={{ color: "white" }}
-											duration='3'
-											delay={1}
-											end={ArrayOfQty}
-											separator=','
-										/>
-									</div>
-								</div>
-							</div>
-							{user.userRole === "Order Taker" ? null : (
-								<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-									<div className='card' style={{ background: "#50cd89" }}>
-										<div className='card-body'>
-											<h5 style={{ fontWeight: "bolder", color: "white" }}>
-												Total Amount (L.E.)
-											</h5>
-											<CountUp
-												style={{ color: "white" }}
-												duration='3'
-												delay={1}
-												end={ArrayOfAmount}
-												separator=','
-											/>
+							<h3
+								style={{ color: "#009ef7", fontWeight: "bold" }}
+								className='mx-auto text-center mb-5'>
+								Sales History
+							</h3>
+							<div className='container-fluid'>
+								<div className='row'>
+									<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+										<div className='card' style={{ background: "#f1416c" }}>
+											<div className='card-body'>
+												<h5 style={{ fontWeight: "bolder", color: "white" }}>
+													Overall Orders Count
+												</h5>
+												<CountUp
+													style={{ color: "white" }}
+													duration='3'
+													delay={1}
+													end={allOrders.length}
+													separator=','
+												/>
+											</div>
 										</div>
 									</div>
+
+									<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+										<div className='card' style={{ background: "#009ef7" }}>
+											<div className='card-body'>
+												<h5 style={{ fontWeight: "bolder", color: "white" }}>
+													Overall Ordered Items
+												</h5>
+												<CountUp
+													style={{ color: "white" }}
+													duration='3'
+													delay={1}
+													end={ArrayOfQty}
+													separator=','
+												/>
+											</div>
+										</div>
+									</div>
+									{user.userRole === "Order Taker" ? null : (
+										<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+											<div className='card' style={{ background: "#50cd89" }}>
+												<div className='card-body'>
+													<h5 style={{ fontWeight: "bolder", color: "white" }}>
+														Total Amount (L.E.)
+													</h5>
+													<CountUp
+														style={{ color: "white" }}
+														duration='3'
+														delay={1}
+														end={ArrayOfAmount}
+														separator=','
+													/>
+												</div>
+											</div>
+										</div>
+									)}
 								</div>
-							)}
+							</div>
+
+							{dataTable()}
 						</div>
 					</div>
-
-					{dataTable()}
-				</div>
-			</div>
+				</>
+			)}
 		</OrdersHistWrapper>
 	);
 };

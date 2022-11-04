@@ -49,6 +49,13 @@ const CreateNewOrder = () => {
 	const [chosenProductQty, setChosenProductQty] = useState([]);
 	const [chosenShippingOption, setChosenShippingOption] = useState({});
 	const [allShippingOptions, setAllShippingOptions] = useState({});
+	const [forAI, setForAI] = useState({
+		height: 0,
+		weight: 0,
+		waist: 0,
+		size: "",
+		OTNumber: "",
+	});
 	const [orderTakerDiscount, setOrderTakerDiscount] = useState(0);
 	const [orderSource, setOrderSource] = useState("");
 	const [allColors, setAllColors] = useState([]);
@@ -106,6 +113,11 @@ const CreateNewOrder = () => {
 				);
 			}
 		});
+	};
+
+	const handleChangeAI = (name) => (e) => {
+		const value = e.target.value;
+		setForAI({ ...forAI, [name]: value });
 	};
 
 	const gettingAllShippingOptions = () => {
@@ -1124,6 +1136,10 @@ const CreateNewOrder = () => {
 			return toast.error("Please Add Products Colors & Sizes");
 		}
 
+		// if (customerDetails.phone.length !== 11) {
+		// 	return toast.error("Phone Should Be Only 11 Digits");
+		// }
+
 		// if (availableVariables() && ArraysValidation === false) {
 		// 	setClickedLink("ProductFeatures");
 		// 	return toast.error(
@@ -1181,6 +1197,12 @@ const CreateNewOrder = () => {
 			appliedShippingFees: AppliedshippingFee,
 			totalAmountAfterExchange: 0,
 			exchangeTrackingNumber: "Not Added",
+			forAI: {
+				...forAI,
+				OTNumber: `OT${new Date(orderCreationDate).getFullYear()}${
+					new Date(orderCreationDate).getMonth() + 1
+				}${new Date(orderCreationDate).getDate()}000${lengthOfOrders + 1}`,
+			},
 		};
 
 		createOrder(user._id, token, createOrderData)
@@ -1573,6 +1595,66 @@ const CreateNewOrder = () => {
 							L.E.
 						</strong>
 					)}
+				</div>
+
+				<h5 className='my-3 text-center' style={{ fontWeight: "bold" }}>
+					For AI Purposes (Optional...)
+				</h5>
+
+				<div className='row'>
+					<div className='form-group col-md-3 mx-auto'>
+						<label className=''>Weight</label>
+						<input
+							onChange={handleChangeAI("weight")}
+							type='text'
+							className='form-control'
+							value={forAI.weight}
+						/>
+					</div>
+
+					<div className='form-group col-md-3 mx-auto'>
+						<label className=''>Height</label>
+						<input
+							onChange={handleChangeAI("height")}
+							type='text'
+							className='form-control'
+							value={forAI.height}
+						/>
+					</div>
+					<div className='form-group col-md-3 mx-auto'>
+						<label className=''>Waist</label>
+						<input
+							onChange={handleChangeAI("waist")}
+							type='text'
+							className='form-control'
+							value={forAI.waist}
+						/>
+					</div>
+					<div className='form-group col-md-3 mx-auto'>
+						<select
+							onChange={(e) => setForAI({ ...forAI, size: e.target.value })}
+							placeholder='Select a Ticket'
+							className=' w-75 mt-4'
+							style={{
+								paddingTop: "12px",
+								paddingBottom: "12px",
+								// paddingRight: "50px",
+								// textAlign: "center",
+								border: "#cfcfcf solid 1px",
+								borderRadius: "10px",
+								fontSize: "0.9rem",
+								// boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
+								textTransform: "capitalize",
+							}}>
+							<option value='SelectSize'>Select Size</option>
+							<option value='small'>Small</option>
+							<option value='medium'>Medium</option>
+							<option value='large'>Large</option>
+							<option value='xl'>XL</option>
+							<option value='xxl'>XXL</option>
+							<option value='xxxl'>XXXL</option>
+						</select>
+					</div>
 				</div>
 
 				<div className='mx-auto text-center mt-5 col-md-8'>
