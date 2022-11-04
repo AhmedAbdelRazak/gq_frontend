@@ -18,6 +18,7 @@ import DarkBG from "../AdminMenu/DarkBG";
 import { toast } from "react-toastify";
 import { GroupOutlined } from "@ant-design/icons";
 import FiltersModal from "./UpdateModals/FiltersModal";
+import Pagination from "./Pagination";
 
 const isActive = (clickedLink, sureClickedLink) => {
 	if (clickedLink === sureClickedLink) {
@@ -52,6 +53,8 @@ const OrdersHist = () => {
 	const [collapsed, setCollapsed] = useState(false);
 	// eslint-disable-next-line
 	const [selectedFilter, setSelectedFilter] = useState("SelectAll");
+	const [currentPage, setCurrentPage] = useState(1);
+	const [postsPerPage, setPostsPerPage] = useState(80);
 
 	const { user, token } = isAuthenticated();
 
@@ -89,7 +92,7 @@ const OrdersHist = () => {
 			timeZone: "Africa/Cairo",
 		});
 
-		var day2 = new Date(new Date().setDate(new Date().getDate() - 15));
+		var day2 = new Date(new Date().setDate(new Date().getDate() - 45));
 		listOrdersDates(user._id, token, day1, day2).then((data) => {
 			if (data.error) {
 				console.log(data.error);
@@ -242,6 +245,15 @@ const OrdersHist = () => {
 		}
 	};
 
+	const indexOfLastPost = currentPage * postsPerPage;
+	const indexOfFirstPost = indexOfLastPost - postsPerPage;
+	// eslint-disable-next-line
+	const currentPosts =
+		allOrders && allOrders.slice(indexOfFirstPost, indexOfLastPost);
+
+	// eslint-disable-next-line
+	const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
 	const dataTable = () => {
 		return (
 			<div className='tableData'>
@@ -265,11 +277,26 @@ const OrdersHist = () => {
 						className='p-2 my-5 '
 						type='text'
 						value={q}
-						onChange={(e) => setQ(e.target.value.toLowerCase())}
+						onChange={(e) => {
+							setQ(e.target.value.toLowerCase());
+
+							if (e.target.value.length > 0) {
+								setPostsPerPage(allOrders.length + 2);
+							} else {
+								setPostsPerPage(80);
+							}
+						}}
 						placeholder='Search By Client Phone, Client Name, Status Or Carrier'
 						style={{ borderRadius: "20px", width: "50%" }}
 					/>
 				</div>
+
+				<Pagination
+					postsPerPage={postsPerPage}
+					totalPosts={allOrders.length}
+					paginate={paginate}
+					currentPage={currentPage}
+				/>
 				<table
 					className='table table-bordered table-md-responsive table-hover text-center'
 					style={{ fontSize: "0.75rem" }}>
@@ -304,7 +331,7 @@ const OrdersHist = () => {
 					</thead>
 
 					<tbody className='my-auto'>
-						{search(allOrders).map((s, i) => (
+						{search(currentPosts).map((s, i) => (
 							<tr key={i} className=''>
 								{s.orderCreationDate ? (
 									<td style={{ width: "10%" }}>

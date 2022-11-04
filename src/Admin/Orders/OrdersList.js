@@ -10,11 +10,14 @@ import Navbar from "../AdminNavMenu/Navbar";
 import {
 	getProducts,
 	listOrdersProcessing,
+	ordersLength,
 	updateOrderInvoice,
 } from "../apiAdmin";
 // eslint-disable-next-line
 import Pagination from "./Pagination";
 import CountUp from "react-countup";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 const OrdersList = () => {
 	const [allOrders, setAllOrders] = useState([]);
@@ -24,6 +27,8 @@ const OrdersList = () => {
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
 	const [allProducts, setAllProducts] = useState([]);
+	const [lengthOfOrders, setLengthOfOrders] = useState(0);
+	const [backorders, setBackorders] = useState("NotClicked");
 
 	//pagination
 	const [currentPage, setCurrentPage] = useState(1);
@@ -60,17 +65,58 @@ const OrdersList = () => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
-				setAllOrders(
-					data
-						.filter(
-							(i) =>
-								i.status !== "Delivered" &&
-								i.status !== "Shipped" &&
-								i.status !== "Cancelled" &&
-								i.invoiceNumber === "Not Added",
-						)
-						.sort(sortOrdersAscendingly),
-				);
+				if (backorders === "Clicked") {
+					getProducts().then((data2) => {
+						if (data2.error) {
+							console.log(data2.error);
+						} else {
+							const checkingWithLiveStock = (productId, SubSKU, OrderedQty) => {
+								const pickedSub =
+									data2 && data2.filter((iii) => iii._id === productId)[0];
+
+								const GetSpecificSubSKU = pickedSub.productAttributes.filter(
+									(iii) => iii.SubSKU === SubSKU,
+								)[0];
+								const QtyChecker =
+									GetSpecificSubSKU && GetSpecificSubSKU.quantity < OrderedQty;
+
+								return QtyChecker;
+							};
+
+							var stockCheckHelper = data.map((i) =>
+								i.chosenProductQtyWithVariables.map((ii) =>
+									ii.map((iii) =>
+										checkingWithLiveStock(
+											iii.productId,
+											iii.SubSKU,
+											iii.OrderedQty,
+										),
+									),
+								),
+							);
+							// var merged = [].concat.apply([], stockCheckHelper);
+
+							var beforeel = stockCheckHelper.map((i) =>
+								i.map((ii) => ii.filter((iii) => iii === true)),
+							);
+
+							console.log(beforeel[5][0], "ahowannnnnnnnn");
+							var backordersAll = [];
+
+							for (var i = 0; i < beforeel.length; i++) {
+								for (var ii = 0; ii < beforeel[i].length; ii++) {
+									if (beforeel[i][ii].indexOf(true) !== -1) {
+										backordersAll.push(data[i]);
+									}
+								}
+							}
+
+							setAllOrders(backordersAll.sort(sortOrdersAscendingly));
+						}
+					});
+				} else {
+					setAllOrders(data.sort(sortOrdersAscendingly));
+				}
 			}
 		});
 	};
@@ -85,12 +131,22 @@ const OrdersList = () => {
 		});
 	};
 
+	const loadOrdersLength = () => {
+		ordersLength(user._id, token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setLengthOfOrders(data);
+			}
+		});
+	};
+
 	useEffect(() => {
 		loadOrders();
 		gettingAllProducts();
-
+		loadOrdersLength();
 		// eslint-disable-next-line
-	}, []);
+	}, [backorders]);
 
 	useEffect(() => {
 		const onScroll = () => setOffset(window.pageYOffset);
@@ -145,6 +201,103 @@ const OrdersList = () => {
 		});
 	};
 
+	const mainDate =
+		allOrders &&
+		allOrders.map((i) => {
+			const checkingWithLiveStock = (productId, SubSKU, OrderedQty) => {
+				const pickedSub =
+					allProducts && allProducts.filter((iii) => iii._id === productId)[0];
+
+				const GetSpecificSubSKU = pickedSub.productAttributes.filter(
+					(iii) => iii.SubSKU === SubSKU,
+				)[0];
+				const QtyChecker =
+					GetSpecificSubSKU && GetSpecificSubSKU.quantity < OrderedQty;
+
+				return QtyChecker;
+			};
+
+			var stockCheckHelper = i.chosenProductQtyWithVariables.map((iii) =>
+				iii.map((iiii) =>
+					checkingWithLiveStock(iiii.productId, iiii.SubSKU, iiii.OrderedQty),
+				),
+			);
+			var merged = [].concat.apply([], stockCheckHelper);
+			var finalChecker = merged.indexOf(true) === -1 ? "Passed" : "Failed";
+
+			return {
+				PurchaseDate: new Date(i.orderCreationDate).toLocaleDateString(),
+				Invoice: i.invoiceNumber,
+				Status: i.status,
+				// Name: i.customerDetails.fullName.toString(),
+				Phone: i.customerDetails.phone,
+				Amount: i.totalAmountAfterDiscount + " L.E.",
+				Store: i.orderSource.toUpperCase(),
+				Governorate: i.customerDetails.state,
+				// Carrier: i.customerDetails.carrierName,
+				SKU_Qty: i.chosenProductQtyWithVariables.map((iii) =>
+					iii.map((iiii) => iiii.SubSKU + "  /  " + iiii.OrderedQty + " \n"),
+				),
+				backorder: finalChecker === "Passed" ? "Good" : "Backorder",
+			};
+		});
+
+	const exportPDF = () => {
+		const unit = "pt";
+		const size = "A4"; // Use A1, A2, A3 or A4
+		const orientation = "landscape"; // portrait or landscape
+
+		const marginLeft = 80;
+		const doc = new jsPDF(orientation, unit, size);
+
+		doc.setLanguage("ar-Ar");
+
+		doc.setFontSize(9);
+
+		const title = "PENDING ORDERS";
+		const headers = [
+			[
+				"Date",
+				"Invoice #",
+				"Status",
+				// "Name",
+				"Phone",
+				"Amount",
+				"Store",
+				"Governorate",
+				// "Carrier",
+				"SKU_Qty",
+				"Backorder",
+			],
+		];
+
+		const data = mainDate.map((elt) => [
+			elt.PurchaseDate,
+			elt.Invoice,
+			elt.Status,
+			// elt.Name,
+			elt.Phone,
+			elt.Amount,
+			elt.Store,
+			elt.Governorate,
+			// elt.Carrier,
+			elt.SKU_Qty,
+			elt.backorder,
+		]);
+
+		let content = {
+			startY: 50,
+			head: headers,
+			body: data,
+			// theme: "plain",
+			styles: { fontSize: 8, cellWidth: "auto" },
+		};
+
+		doc.text(title, marginLeft, 40);
+		doc.autoTable(content);
+		doc.save("Pending_Orders.pdf");
+	};
+
 	const dataTable = () => {
 		return (
 			<div className='tableData'>
@@ -157,10 +310,11 @@ const OrdersList = () => {
 				) : (
 					<>
 						<div>
-							<Link className='btn btn-info' to='/admin/create-new-order'>
+							<Link className='btn btn-success' to='/admin/create-new-order'>
 								Create New Order
 							</Link>
 						</div>
+
 						<div className='form-group text-right'>
 							<label
 								className='mt-3 mx-3'
@@ -196,9 +350,33 @@ const OrdersList = () => {
 							paginate={paginate}
 							currentPage={currentPage}
 						/>
+						<div>
+							<Link
+								className='btn btn-primary'
+								onClick={() => exportPDF()}
+								to='#'>
+								Download Report (PDF)
+							</Link>
+							{backorders === "Clicked" ? (
+								<Link
+									className='btn btn-info mx-2'
+									onClick={() => setBackorders("NotClicked")}
+									to='#'>
+									Revert To Default
+								</Link>
+							) : (
+								<Link
+									className='btn btn-danger mx-2'
+									onClick={() => setBackorders("Clicked")}
+									to='#'>
+									Backorders
+								</Link>
+							)}
+						</div>
 						<table
 							className='table table-bordered table-md-responsive table-hover text-center'
-							style={{ fontSize: "0.75rem" }}>
+							style={{ fontSize: "0.75rem" }}
+							id='ahowan'>
 							<thead className='thead-light'>
 								<tr>
 									<th scope='col'>Purchase Date</th>
@@ -299,6 +477,10 @@ const OrdersList = () => {
 															? "#004b00"
 															: s.status === "Cancelled"
 															? "darkred"
+															: s.status === "In Processing"
+															? "#d8ffff"
+															: s.status === "Exchange - In Processing"
+															? "#d8ebff"
 															: "#ffffd8",
 													color:
 														finalChecker === "Failed"
@@ -356,7 +538,7 @@ const OrdersList = () => {
 																		? `INV${new Date(today).getFullYear()}${
 																				new Date(today).getMonth() + 1
 																		  }${new Date(today).getDate()}000${
-																				allOrders.length - i
+																				lengthOfOrders - i
 																		  }`
 																		: result;
 																handleInvoiceStatus(invoiceNumber, s._id);
@@ -364,7 +546,33 @@ const OrdersList = () => {
 															Invoice
 														</Link>
 													) : (
-														<Link to={`#`} style={{ color: "darkred" }}>
+														<Link
+															to={`#`}
+															style={{ color: "darkred" }}
+															onClick={() => {
+																if (
+																	window.confirm(
+																		"Are You Sure You Want To Invoice? Please note that there is no enough stock...",
+																	)
+																) {
+																	var today = new Date().toDateString("en-US", {
+																		timeZone: "Africa/Cairo",
+																	});
+
+																	let text = s.OTNumber;
+																	let result = "INV" + text.slice(2);
+
+																	var invoiceNumber =
+																		s.OTNumber === "Not Added"
+																			? `INV${new Date(today).getFullYear()}${
+																					new Date(today).getMonth() + 1
+																			  }${new Date(today).getDate()}000${
+																					lengthOfOrders - i
+																			  }`
+																			: result;
+																	handleInvoiceStatus(invoiceNumber, s._id);
+																}
+															}}>
 															No Enough Stock
 														</Link>
 													)}
@@ -531,6 +739,18 @@ const OrdersListWrapper = styled.div`
 	}
 
 	.filters-item {
+	}
+
+	@charset "UTF-8";
+	.page-break {
+		page-break-after: always;
+		page-break-inside: avoid;
+		clear: both;
+	}
+	.page-break-before {
+		page-break-before: always;
+		page-break-inside: avoid;
+		clear: both;
 	}
 
 	.tableData {

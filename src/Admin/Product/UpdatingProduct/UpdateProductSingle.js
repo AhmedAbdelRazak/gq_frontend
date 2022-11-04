@@ -174,7 +174,8 @@ const UpdateProductSingle = ({ match }) => {
 					data.filter((e) => e._id === match.params.productId)[0].activeProduct,
 				);
 				setFeatured(
-					data.filter((e) => e._id === match.params.productId)[0].featured,
+					data.filter((e) => e._id === match.params.productId)[0]
+						.featuredProduct,
 				);
 				setProductAttributesFinal(
 					data.filter((e) => e._id === match.params.productId)[0]
@@ -207,6 +208,8 @@ const UpdateProductSingle = ({ match }) => {
 			}
 		});
 	};
+
+	console.log(featured, "Featured");
 
 	const gettingAllCategories = () => {
 		getCategories(user._id, token).then((data) => {
