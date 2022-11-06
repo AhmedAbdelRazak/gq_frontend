@@ -7,7 +7,6 @@ import { isAuthenticated } from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import DarkBG from "../AdminMenu/DarkBG";
 import Navbar from "../AdminNavMenu/Navbar";
-import { Helmet } from "react-helmet";
 import {
 	getProducts,
 	listOrdersProcessing,
@@ -19,6 +18,12 @@ import Pagination from "./Pagination";
 import CountUp from "react-countup";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import ReactExport from "react-export-excel";
+// import ExcelToJson from "./ExcelToJson";
+
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 const OrdersList = () => {
 	const [allOrders, setAllOrders] = useState([]);
@@ -30,6 +35,7 @@ const OrdersList = () => {
 	const [allProducts, setAllProducts] = useState([]);
 	const [lengthOfOrders, setLengthOfOrders] = useState(0);
 	const [backorders, setBackorders] = useState("NotClicked");
+	const [excelDataSet, setExcelDataSet] = useState([]);
 
 	//pagination
 	const [currentPage, setCurrentPage] = useState(1);
@@ -112,6 +118,7 @@ const OrdersList = () => {
 							}
 
 							setAllOrders(backordersAll.sort(sortOrdersAscendingly));
+							setExcelDataSet(backordersAll.sort(sortOrdersAscendingly));
 						}
 					});
 				} else if (backorders === "Good") {
@@ -173,12 +180,15 @@ const OrdersList = () => {
 							}
 
 							setAllOrders(backordersAll.sort(sortOrdersAscendingly));
+							setExcelDataSet(backordersAll.sort(sortOrdersAscendingly));
 						}
 					});
 				} else if (backorders === "Processing") {
 					setAllOrders(data.filter((i) => i.status.includes("Processing")));
+					setExcelDataSet(data.filter((i) => i.status.includes("Processing")));
 				} else {
 					setAllOrders(data.sort(sortOrdersAscendingly));
+					setExcelDataSet(data.sort(sortOrdersAscendingly));
 				}
 			}
 		});
@@ -369,6 +379,73 @@ const OrdersList = () => {
 		doc.save("Pending_Orders.pdf");
 	};
 
+	var adjustedExcelData =
+		excelDataSet &&
+		excelDataSet.map((i) => {
+			return i.chosenProductQtyWithVariables.map((ii) => {
+				return ii.map((iii) => {
+					return {
+						Name: i.customerDetails.fullName,
+						address: i.customerDetails.address,
+						phone1: i.customerDetails.phone,
+						phone2: "",
+						City: i.customerDetails.cityName + " / " + i.customerDetails.city,
+						DescriptionOfGoods: iii.productName + " / " + iii.SubSKU,
+						totalAmount: iii.pickedPrice,
+						ReferenceNumber: iii.trackingNumber,
+						pieces: iii.OrderedQty,
+						comment: i.customerDetails.orderComment
+							? i.customerDetails.orderComment
+							: ".",
+						company: i.orderSource,
+						email: "gqcanihelpyou@gmail.com",
+						weight: 1,
+					};
+				});
+			});
+		});
+
+	var merged = [].concat.apply([], adjustedExcelData);
+	var merged2 = [].concat.apply([], merged);
+
+	console.log(merged2, "adjustedExcelData");
+
+	const DownloadExcel = () => {
+		return (
+			<ExcelFile
+				filename={`GQ_Orders_ ${new Date().toLocaleString("en-US", {
+					timeZone: "Africa/Cairo",
+				})}`}
+				element={
+					<Link
+						className='btn btn-info mr-5 ml-2'
+						// onClick={() => exportPDF()}
+						to='#'>
+						Download Report (Excel)
+					</Link>
+				}>
+				<ExcelSheet data={merged2} name='GQ_Orders'>
+					<ExcelColumn label='Name' value='Name' />
+					<ExcelColumn label='Address' value='address' />
+					<ExcelColumn label='Phone' value='phone1' />
+					<ExcelColumn label='Phone2' value='phone2' />
+					<ExcelColumn label='City' value='City' />
+					<ExcelColumn
+						label='Description Of Goods'
+						value='DescriptionOfGoods'
+					/>
+					<ExcelColumn label='Cod' value='totalAmount' />
+					<ExcelColumn label='Refrance number' value='ReferenceNumber' />
+					<ExcelColumn label='Pieces' value='pieces' />
+					<ExcelColumn label='Comment' value='comment' />
+					<ExcelColumn label='Company' value='company' />
+					<ExcelColumn label='Email' value='email' />
+					<ExcelColumn label='Weight' value='weight' />
+				</ExcelSheet>
+			</ExcelFile>
+		);
+	};
+
 	const dataTable = () => {
 		return (
 			<div className='tableData'>
@@ -423,11 +500,12 @@ const OrdersList = () => {
 						/>
 						<div>
 							<Link
-								className='btn btn-primary mr-5'
+								className='btn btn-primary'
 								onClick={() => exportPDF()}
 								to='#'>
 								Download Report (PDF)
 							</Link>
+							{DownloadExcel()}
 							{backorders === "Clicked" ? (
 								<Link
 									className='btn btn-info mx-2'
@@ -716,17 +794,6 @@ const OrdersList = () => {
 				</div>
 			) : (
 				<>
-					<Helmet>
-						<meta charSet='utf-8' dir='rtl' />
-						<title>GQ | Pending Orders</title>
-
-						<meta name='description' content='' />
-						<link
-							rel='stylesheet'
-							href='//fonts.googleapis.com/earlyaccess/droidarabickufi.css'
-						/>
-						<link rel='canonical' href='http://infinite-apps.com' />
-					</Helmet>
 					{!collapsed ? (
 						<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 					) : null}

@@ -172,8 +172,7 @@ const ExchangeModal = ({
 				{chosenProduct &&
 					chosenProduct.productAttributes &&
 					chosenProduct.productAttributes.length > 0 &&
-					chosenProductVariables &&
-					chosenProductVariables.quantity && (
+					chosenProductVariables && (
 						<div className='form-group mx-auto col-md-10 '>
 							<label className=''>Adjust Quantity</label>
 							<input
@@ -196,8 +195,7 @@ const ExchangeModal = ({
 				{chosenProduct &&
 					chosenProduct.productAttributes &&
 					chosenProduct.productAttributes.length > 0 &&
-					chosenProductVariables &&
-					chosenProductVariables.quantity && (
+					chosenProductVariables && (
 						<div className='form-group mx-auto col-md-10 '>
 							<label className=''>Add Required Price</label>
 							<input
@@ -220,8 +218,7 @@ const ExchangeModal = ({
 				{chosenProduct &&
 					chosenProduct.productAttributes &&
 					chosenProduct.productAttributes.length > 0 &&
-					chosenProductVariables &&
-					chosenProductVariables.quantity && (
+					chosenProductVariables && (
 						<div className='form-group mx-auto col-md-10 '>
 							<label className=''>Exchange Tracking Number</label>
 							<input
