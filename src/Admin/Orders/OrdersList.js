@@ -282,9 +282,9 @@ const OrdersList = () => {
 				const pickedSub =
 					allProducts && allProducts.filter((iii) => iii._id === productId)[0];
 
-				const GetSpecificSubSKU = pickedSub.productAttributes.filter(
-					(iii) => iii.SubSKU === SubSKU,
-				)[0];
+				const GetSpecificSubSKU =
+					pickedSub &&
+					pickedSub.productAttributes.filter((iii) => iii.SubSKU === SubSKU)[0];
 				const QtyChecker =
 					GetSpecificSubSKU && GetSpecificSubSKU.quantity < OrderedQty;
 
@@ -379,36 +379,74 @@ const OrdersList = () => {
 		doc.save("Pending_Orders.pdf");
 	};
 
+	// var adjustedExcelData =
+	// 	excelDataSet &&
+	// 	excelDataSet.map((i) => {
+	// 		return i.chosenProductQtyWithVariables.map((ii) => {
+	// 			return ii.map((iii) => {
+	// 				return {
+	// 					Name: i.customerDetails.fullName,
+	// 					address: i.customerDetails.address,
+	// 					phone1: i.customerDetails.phone,
+	// 					phone2: "",
+	// 					City: i.customerDetails.cityName + " / " + i.customerDetails.city,
+	// 					DescriptionOfGoods: iii.productName + " / " + iii.SubSKU,
+	// 					totalAmount: iii.pickedPrice,
+	// 					ReferenceNumber: iii.trackingNumber,
+	// 					pieces: iii.OrderedQty,
+	// 					comment: i.customerDetails.orderComment
+	// 						? i.customerDetails.orderComment
+	// 						: ".",
+	// 					company: i.orderSource,
+	// 					email: "gqcanihelpyou@gmail.com",
+	// 					weight: 1,
+	// 				};
+	// 			});
+	// 		});
+	// 	});
+
 	var adjustedExcelData =
 		excelDataSet &&
-		excelDataSet.map((i) => {
-			return i.chosenProductQtyWithVariables.map((ii) => {
-				return ii.map((iii) => {
-					return {
-						Name: i.customerDetails.fullName,
-						address: i.customerDetails.address,
-						phone1: i.customerDetails.phone,
-						phone2: "",
-						City: i.customerDetails.cityName + " / " + i.customerDetails.city,
-						DescriptionOfGoods: iii.productName + " / " + iii.SubSKU,
-						totalAmount: iii.pickedPrice,
-						ReferenceNumber: iii.trackingNumber,
-						pieces: iii.OrderedQty,
-						comment: i.customerDetails.orderComment
-							? i.customerDetails.orderComment
-							: ".",
-						company: i.orderSource,
-						email: "gqcanihelpyou@gmail.com",
-						weight: 1,
-					};
-				});
-			});
+		excelDataSet.map((i, counter) => {
+			var descriptionChecker = i.chosenProductQtyWithVariables.map((iii) =>
+				iii.map(
+					(iiii) => iiii.SubSKU + ", Qty: " + iiii.OrderedQty,
+					// "  /  " +
+					// iiii.productName,
+				),
+			);
+
+			var merged = [].concat.apply([], descriptionChecker);
+			var merged2 = [].concat.apply([], merged);
+			return {
+				Index: counter + 1,
+				Name: i.customerDetails.fullName,
+				address: i.customerDetails.address,
+				phone1: i.customerDetails.phone,
+				phone2: "",
+				City: i.customerDetails.cityName + " / " + i.customerDetails.city,
+				DescriptionOfGoods:
+					merged2.length === 1
+						? merged2[0]
+						: merged2.length === 2
+						? merged2[0] + " / " + merged2[1]
+						: merged2.length === 3
+						? merged2[0] + " / " + merged2[1] + " / " + merged2[2]
+						: merged2[0],
+				totalAmount: i.totalAmountAfterDiscount,
+				ReferenceNumber:
+					i.invoiceNumber !== "Not Added" ? i.invoiceNumber : i.OTNumber,
+				pieces: i.totalOrderQty,
+				comment: i.customerDetails.orderComment
+					? i.customerDetails.orderComment
+					: ".",
+				company: i.orderSource.toUpperCase(),
+				email: "gqcanihelpyou@gmail.com",
+				weight: 1,
+			};
 		});
 
-	var merged = [].concat.apply([], adjustedExcelData);
-	var merged2 = [].concat.apply([], merged);
-
-	console.log(merged2, "adjustedExcelData");
+	console.log(adjustedExcelData, "adjustedExcelData");
 
 	const DownloadExcel = () => {
 		return (
@@ -424,7 +462,8 @@ const OrdersList = () => {
 						Download Report (Excel)
 					</Link>
 				}>
-				<ExcelSheet data={merged2} name='GQ_Orders'>
+				<ExcelSheet data={adjustedExcelData} name='GQ_Orders'>
+					<ExcelColumn label='#' value='Index' />
 					<ExcelColumn label='Name' value='Name' />
 					<ExcelColumn label='Address' value='address' />
 					<ExcelColumn label='Phone' value='phone1' />
