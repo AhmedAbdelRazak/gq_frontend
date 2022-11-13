@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Modal, DatePicker } from "antd";
 import "antd/dist/antd.css"; // or 'antd/dist/antd.less'
 import moment from "moment";
-import { updateOrder } from "../../apiAdmin";
+import { updateOrder, updateOrderNoDecrease } from "../../apiAdmin";
 import { isAuthenticated } from "../../../auth";
 import { toast } from "react-toastify";
 
@@ -55,17 +55,34 @@ const ReturnModal = ({
 				"Are you sure you want to return this item to your stock???",
 			)
 		) {
-			updateOrder(selectedOrder._id, user._id, token, selectedOrder)
-				.then((response) => {
-					toast.success("Order was successfully updated");
-					setTimeout(function () {
-						window.location.reload(false);
-					}, 2500);
-				})
+			if (
+				selectedOrder.status === "Returned and Not Refunded" ||
+				selectedOrder.status === "Returned and Refunded"
+			) {
+				updateOrder(selectedOrder._id, user._id, token, selectedOrder)
+					.then((response) => {
+						toast.success("Order was successfully updated");
+						setTimeout(function () {
+							window.location.reload(false);
+						}, 2500);
+					})
 
-				.catch((error) => {
-					console.log(error);
-				});
+					.catch((error) => {
+						console.log(error);
+					});
+			} else {
+				updateOrderNoDecrease(selectedOrder._id, user._id, token, selectedOrder)
+					.then((response) => {
+						toast.success("Order was successfully updated");
+						setTimeout(function () {
+							window.location.reload(false);
+						}, 2500);
+					})
+
+					.catch((error) => {
+						console.log(error);
+					});
+			}
 		}
 	};
 

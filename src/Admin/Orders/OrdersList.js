@@ -12,6 +12,7 @@ import {
 	listOrdersProcessing,
 	ordersLength,
 	updateOrderInvoice,
+	updateOrderInvoiceStock,
 } from "../apiAdmin";
 // eslint-disable-next-line
 import Pagination from "./Pagination";
@@ -77,17 +78,29 @@ const OrdersList = () => {
 						if (data2.error) {
 							console.log(data2.error);
 						} else {
-							const checkingWithLiveStock = (productId, SubSKU, OrderedQty) => {
-								const pickedSub =
-									data2 && data2.filter((iii) => iii._id === productId)[0];
+							const checkingWithLiveStock = (
+								productId,
+								SubSKU,
+								OrderedQty,
+								status,
+							) => {
+								if (
+									status === "In Processing" ||
+									status === "On Hold" ||
+									status === "Ready To Ship"
+								) {
+									const pickedSub =
+										data2 && data2.filter((iii) => iii._id === productId)[0];
 
-								const GetSpecificSubSKU = pickedSub.productAttributes.filter(
-									(iii) => iii.SubSKU === SubSKU,
-								)[0];
-								const QtyChecker =
-									GetSpecificSubSKU && GetSpecificSubSKU.quantity < OrderedQty;
+									const GetSpecificSubSKU = pickedSub.productAttributes.filter(
+										(iii) => iii.SubSKU === SubSKU,
+									)[0];
+									const QtyChecker =
+										GetSpecificSubSKU &&
+										GetSpecificSubSKU.quantity < OrderedQty;
 
-								return QtyChecker;
+									return QtyChecker;
+								}
 							};
 
 							var stockCheckHelper = data.map((i) =>
@@ -97,6 +110,7 @@ const OrdersList = () => {
 											iii.productId,
 											iii.SubSKU,
 											iii.OrderedQty,
+											i.status,
 										),
 									),
 								),
@@ -184,8 +198,18 @@ const OrdersList = () => {
 						}
 					});
 				} else if (backorders === "Processing") {
-					setAllOrders(data.filter((i) => i.status.includes("Processing")));
-					setExcelDataSet(data.filter((i) => i.status.includes("Processing")));
+					setAllOrders(
+						data.filter(
+							(i) =>
+								i.status.includes("Processing") || i.status === "Ready To Ship",
+						),
+					);
+					setExcelDataSet(
+						data.filter(
+							(i) =>
+								i.status.includes("Processing") || i.status === "Ready To Ship",
+						),
+					);
 				} else {
 					setAllOrders(data.sort(sortOrdersAscendingly));
 					setExcelDataSet(data.sort(sortOrdersAscendingly));
@@ -265,14 +289,71 @@ const OrdersList = () => {
 	// eslint-disable-next-line
 	const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-	const handleInvoiceStatus = (invoiceNumber, orderId) => {
-		updateOrderInvoice(user._id, token, orderId, invoiceNumber).then((data) => {
-			if (data.error) {
-				console.log("Status update failed");
-			} else {
-				window.location.reload(false);
-			}
-		});
+	const handleInvoiceStatus = (
+		invoiceNumber,
+		orderId,
+		order,
+		finalChecker2,
+	) => {
+		if (finalChecker2 === "Failed") {
+			console.log(finalChecker2, "Ahowan Yaba sha3'al");
+
+			const checkingWithLiveStock = (productId, SubSKU) => {
+				const pickedSub =
+					allProducts && allProducts.filter((iii) => iii._id === productId)[0];
+
+				const GetSpecificSubSKU = pickedSub.productAttributes.filter(
+					(iii) => iii.SubSKU === SubSKU,
+				)[0];
+				const QtyChecker = GetSpecificSubSKU && GetSpecificSubSKU.quantity;
+
+				return QtyChecker;
+			};
+
+			var modifyingTheVariables = order.chosenProductQtyWithVariables.map(
+				(iii) => iii.filter((iiii) => iiii.quantity < iiii.OrderedQty),
+			);
+
+			var quantityModified = modifyingTheVariables.map((iii) =>
+				iii.map((iiii) => {
+					return {
+						...iiii,
+						quantity: checkingWithLiveStock(iiii.productId, iiii.SubSKU),
+					};
+				}),
+			);
+
+			var orderFinal = {
+				...order,
+				chosenProductQtyWithVariables: quantityModified,
+			};
+
+			console.log(orderFinal, "orderFinal");
+
+			updateOrderInvoiceStock(
+				user._id,
+				token,
+				orderId,
+				orderFinal,
+				invoiceNumber,
+			).then((data) => {
+				if (data.error) {
+					console.log("Status update failed");
+				} else {
+					window.location.reload(false);
+				}
+			});
+		} else {
+			updateOrderInvoice(user._id, token, orderId, invoiceNumber).then(
+				(data) => {
+					if (data.error) {
+						console.log("Status update failed");
+					} else {
+						window.location.reload(false);
+					}
+				},
+			);
+		}
 	};
 
 	const mainDate =
@@ -376,7 +457,7 @@ const OrdersList = () => {
 
 		doc.text(title, marginLeft, 40);
 		doc.autoTable(content);
-		doc.save("Pending_Orders.pdf");
+		doc.save("Checklist.pdf");
 	};
 
 	// var adjustedExcelData =
@@ -410,7 +491,7 @@ const OrdersList = () => {
 		excelDataSet.map((i, counter) => {
 			var descriptionChecker = i.chosenProductQtyWithVariables.map((iii) =>
 				iii.map(
-					(iiii) => iiii.SubSKU + ", Qty: " + iiii.OrderedQty,
+					(iiii) => "SKU: " + iiii.SubSKU + ", Qty: " + iiii.OrderedQty,
 					// "  /  " +
 					// iiii.productName,
 				),
@@ -424,19 +505,19 @@ const OrdersList = () => {
 				address: i.customerDetails.address,
 				phone1: i.customerDetails.phone,
 				phone2: "",
-				City: i.customerDetails.cityName + " / " + i.customerDetails.city,
+				City: i.customerDetails.cityName.toUpperCase(),
 				DescriptionOfGoods:
 					merged2.length === 1
 						? merged2[0]
 						: merged2.length === 2
-						? merged2[0] + " / " + merged2[1]
+						? merged2[0] + " | " + merged2[1]
 						: merged2.length === 3
-						? merged2[0] + " / " + merged2[1] + " / " + merged2[2]
+						? merged2[0] + " | " + merged2[1] + " | " + merged2[2]
 						: merged2[0],
 				totalAmount: i.totalAmountAfterDiscount,
 				ReferenceNumber:
 					i.invoiceNumber !== "Not Added" ? i.invoiceNumber : i.OTNumber,
-				pieces: i.totalOrderQty,
+				parcels: 1,
 				comment: i.customerDetails.orderComment
 					? i.customerDetails.orderComment
 					: ".",
@@ -446,7 +527,7 @@ const OrdersList = () => {
 			};
 		});
 
-	console.log(adjustedExcelData, "adjustedExcelData");
+	// console.log(adjustedExcelData, "adjustedExcelData");
 
 	const DownloadExcel = () => {
 		return (
@@ -606,20 +687,27 @@ const OrdersList = () => {
 										productId,
 										SubSKU,
 										OrderedQty,
+										status,
 									) => {
-										const pickedSub =
-											allProducts &&
-											allProducts.filter((iii) => iii._id === productId)[0];
+										if (
+											status === "In Processing" ||
+											status === "On Hold" ||
+											status === "Ready To Ship"
+										) {
+											const pickedSub =
+												allProducts &&
+												allProducts.filter((iii) => iii._id === productId)[0];
 
-										const GetSpecificSubSKU =
-											pickedSub.productAttributes.filter(
-												(iii) => iii.SubSKU === SubSKU,
-											)[0];
-										const QtyChecker =
-											GetSpecificSubSKU &&
-											GetSpecificSubSKU.quantity < OrderedQty;
+											const GetSpecificSubSKU =
+												pickedSub.productAttributes.filter(
+													(iii) => iii.SubSKU === SubSKU,
+												)[0];
+											const QtyChecker =
+												GetSpecificSubSKU &&
+												GetSpecificSubSKU.quantity < OrderedQty;
 
-										return QtyChecker;
+											return QtyChecker;
+										}
 									};
 
 									var stockCheckHelper = s.chosenProductQtyWithVariables.map(
@@ -629,12 +717,26 @@ const OrdersList = () => {
 													iiii.productId,
 													iiii.SubSKU,
 													iiii.OrderedQty,
+													s.status,
 												),
 											),
 									);
+
 									var merged = [].concat.apply([], stockCheckHelper);
 									var finalChecker =
 										merged.indexOf(true) === -1 ? "Passed" : "Failed";
+
+									//Getting stock as of the time the order was taken
+									var stockCheckHelper2 = s.chosenProductQtyWithVariables.map(
+										(iii) => iii.map((iiii) => iiii.quantity < iiii.OrderedQty),
+									);
+
+									var merged2 = [].concat.apply([], stockCheckHelper2);
+									var finalChecker2 =
+										merged2.indexOf(true) === -1 ? "Passed" : "Failed";
+
+									// console.log(finalChecker2, "Merged2");
+
 									return (
 										<tr key={i} className=''>
 											{s.orderCreationDate ? (
@@ -672,7 +774,9 @@ const OrdersList = () => {
 													fontSize: "0.9rem",
 													width: "8.5%",
 													background:
-														finalChecker === "Failed"
+														finalChecker2 === "Failed" &&
+														finalChecker === "Failed" &&
+														s.status !== "Ready To Ship"
 															? "darkred"
 															: s.status === "Delivered" ||
 															  s.status === "Shipped"
@@ -685,7 +789,9 @@ const OrdersList = () => {
 															? "#d8ebff"
 															: "#ffffd8",
 													color:
-														finalChecker === "Failed"
+														finalChecker2 === "Failed" &&
+														finalChecker === "Failed" &&
+														s.status !== "Ready To Ship"
 															? "white"
 															: s.status === "Delivered" ||
 															  s.status === "Shipped"
@@ -743,7 +849,12 @@ const OrdersList = () => {
 																				lengthOfOrders - i
 																		  }`
 																		: result;
-																handleInvoiceStatus(invoiceNumber, s._id);
+																handleInvoiceStatus(
+																	invoiceNumber,
+																	s._id,
+																	s,
+																	finalChecker2,
+																);
 															}}>
 															Invoice
 														</Link>
@@ -772,7 +883,12 @@ const OrdersList = () => {
 																					lengthOfOrders - i
 																			  }`
 																			: result;
-																	handleInvoiceStatus(invoiceNumber, s._id);
+																	handleInvoiceStatus(
+																		invoiceNumber,
+																		s._id,
+																		s,
+																		finalChecker2,
+																	);
 																}
 															}}>
 															No Enough Stock

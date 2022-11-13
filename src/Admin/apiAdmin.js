@@ -475,6 +475,26 @@ export const updateOrder = (orderId, userId, token, order) => {
 		.catch((err) => console.log(err));
 };
 
+export const updateOrderNoDecrease = (orderId, userId, token, order) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/update/order/nodecrease/${orderId}/${userId}`,
+		{
+			method: "PUT",
+			headers: {
+				// content type?
+				"Content-Type": "application/json",
+				Accept: "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify({ order: order }),
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
 export const updateOrderExchange = (orderId, userId, token, order) => {
 	return fetch(
 		`${process.env.REACT_APP_API_URL}/update/order-exchange/${orderId}/${userId}`,
@@ -655,6 +675,31 @@ export const updateOrderInvoice = (userId, token, orderId, invoiceNumber) => {
 				Authorization: `Bearer ${token}`,
 			},
 			body: JSON.stringify({ invoiceNumber, orderId }),
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const updateOrderInvoiceStock = (
+	userId,
+	token,
+	orderId,
+	order,
+	invoiceNumber,
+) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/order/${orderId}/invoice/stock/${userId}`,
+		{
+			method: "PUT",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify({ invoiceNumber, orderId, order }),
 		},
 	)
 		.then((response) => {

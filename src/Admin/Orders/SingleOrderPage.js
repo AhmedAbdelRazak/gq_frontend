@@ -8,7 +8,12 @@ import { isAuthenticated } from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import DarkBG from "../AdminMenu/DarkBG";
 import Navbar from "../AdminNavMenu/Navbar";
-import { getColors, readSingleOrder, updateOrder } from "../apiAdmin";
+import {
+	getColors,
+	readSingleOrder,
+	updateOrder,
+	updateOrderNoDecrease,
+} from "../apiAdmin";
 import Trial from "./UpdateModals/Trials";
 
 const SingleOrderPage = (props) => {
@@ -69,17 +74,43 @@ const SingleOrderPage = (props) => {
 					});
 			}
 		} else {
-			updateOrder(updateSingleOrder._id, user._id, token, updateSingleOrder)
-				.then((response) => {
-					toast.success("Payment on delivery order was successfully updated");
-					setTimeout(function () {
-						window.location.reload(false);
-					}, 2500);
-				})
+			if (
+				updateSingleOrder.status === "Returned and Not Refunded" ||
+				updateSingleOrder.status === "Returned and Refunded"
+			) {
+				console.log(
+					updateSingleOrder.returnStatus,
+					"updateSingleOrder.returnStatus",
+				);
+				updateOrder(updateSingleOrder._id, user._id, token, updateSingleOrder)
+					.then((response) => {
+						toast.success("Payment on delivery order was successfully updated");
+						setTimeout(function () {
+							window.location.reload(false);
+						}, 2500);
+					})
 
-				.catch((error) => {
-					console.log(error);
-				});
+					.catch((error) => {
+						console.log(error);
+					});
+			} else {
+				updateOrderNoDecrease(
+					updateSingleOrder._id,
+					user._id,
+					token,
+					updateSingleOrder,
+				)
+					.then((response) => {
+						toast.success("Payment on delivery order was successfully updated");
+						setTimeout(function () {
+							window.location.reload(false);
+						}, 2500);
+					})
+
+					.catch((error) => {
+						console.log(error);
+					});
+			}
 		}
 	};
 

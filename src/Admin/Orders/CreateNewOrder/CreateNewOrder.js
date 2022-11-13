@@ -1108,6 +1108,14 @@ const CreateNewOrder = () => {
 		e.preventDefault();
 		window.scrollTo({ top: 0, behavior: "smooth" });
 
+		ordersLength(user._id, token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setLengthOfOrders(data);
+			}
+		});
+
 		if (
 			!customerDetails.fullName ||
 			!customerDetails.phone ||

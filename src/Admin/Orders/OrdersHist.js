@@ -352,9 +352,12 @@ const OrdersHist = () => {
 									allProducts &&
 									allProducts.filter((iii) => iii._id === productId)[0];
 
-								const GetSpecificSubSKU = pickedSub.productAttributes.filter(
-									(iii) => iii.SubSKU === SubSKU,
-								)[0];
+								const GetSpecificSubSKU =
+									pickedSub &&
+									pickedSub.productAttributes &&
+									pickedSub.productAttributes.filter(
+										(iii) => iii.SubSKU === SubSKU,
+									)[0];
 								const QtyChecker =
 									GetSpecificSubSKU && GetSpecificSubSKU.quantity < OrderedQty;
 
