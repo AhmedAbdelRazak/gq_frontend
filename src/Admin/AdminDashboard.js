@@ -565,7 +565,7 @@ const AdminDashboard = () => {
 
 	return (
 		<AdminDashboardWrapper show={collapsed}>
-			{user.userRole === "Order Taker" ? (
+			{user.userRole === "Order Taker" || user.userRole === "Operations" ? (
 				<Redirect to='/admin/create-new-order' />
 			) : null}
 			{!collapsed ? (
@@ -727,7 +727,9 @@ const AdminDashboard = () => {
 												className='col-md-5 mt-3 mx-auto'
 												style={{ fontWeight: "bolder" }}>
 												{" "}
-												<Link to='/admin/orders-list'>LEARN MORE...</Link>{" "}
+												<Link to='/admin/gq-reports/operations'>
+													LEARN MORE...
+												</Link>{" "}
 											</div>
 										</div>
 									</div>

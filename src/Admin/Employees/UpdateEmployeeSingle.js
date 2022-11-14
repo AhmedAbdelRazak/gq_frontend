@@ -358,7 +358,7 @@ const UpdateEmployeeSingle = ({ match }) => {
 
 	return (
 		<UpdateEmployeeSingleWrapper show={AdminMenuStatus}>
-			{user.userRole === "Order Taker" ? (
+			{user.userRole === "Order Taker" || user.userRole === "Operations" ? (
 				<Redirect to='/admin/create-new-order' />
 			) : null}
 			<div className='grid-container'>

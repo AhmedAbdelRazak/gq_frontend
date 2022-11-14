@@ -423,6 +423,23 @@ export const listOrdersProcessing = (userId, token) => {
 		.catch((err) => console.log(err));
 };
 
+export const listOrdersProcessingDetermined = (userId, token, day1, day2) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/order/list/order-processing/${day1}/${day2}/${userId}`,
+		{
+			method: "GET",
+			headers: {
+				Accept: "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
 export const listOrdersProcessed = (userId, token) => {
 	return fetch(
 		`${process.env.REACT_APP_API_URL}/order/list/order-processed/${userId}`,

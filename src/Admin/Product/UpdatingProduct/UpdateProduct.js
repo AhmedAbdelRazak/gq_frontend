@@ -350,7 +350,8 @@ const UpdateProduct = () => {
 								</div>
 							</div>
 
-							{isAuthenticated().user.userRole === "Order Taker" ? null : (
+							{isAuthenticated().user.userRole === "Order Taker" ||
+							isAuthenticated().user.userRole === "Operations" ? null : (
 								<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
 									<div className='card' style={{ background: "#50cd89" }}>
 										<div className='card-body'>

@@ -8,25 +8,52 @@ import AdminMenu from "../AdminMenu/AdminMenu";
 import DarkBG from "../AdminMenu/DarkBG";
 import Navbar from "../AdminNavMenu/Navbar";
 import {
+	getColors,
 	getProducts,
+	// eslint-disable-next-line
 	listOrdersProcessing,
+	listOrdersProcessingDetermined,
 	ordersLength,
 	updateOrderInvoice,
 	updateOrderInvoiceStock,
 } from "../apiAdmin";
 // eslint-disable-next-line
-import Pagination from "./Pagination";
+import Pagination from "../Orders/Pagination";
 import CountUp from "react-countup";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import ReactExport from "react-export-excel";
+import { FileSearchOutlined } from "@ant-design/icons";
+import CustomDatesModal from "./CustomDatesModal";
+import SKUModal from "../Modals/SKUModal";
 // import ExcelToJson from "./ExcelToJson";
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
-const OrdersList = () => {
+const isActive = (clickedLink, sureClickedLink) => {
+	if (clickedLink === sureClickedLink) {
+		return {
+			// color: "white !important",
+			background: "#f5f8fa",
+			color: " #009ef7",
+			fontWeight: "bold",
+			padding: "5px",
+			borderRadius: "5px",
+			// textDecoration: "underline",
+		};
+	} else {
+		return {
+			color: "darkgrey",
+			fontWeight: "bold",
+			padding: "5px",
+			transition: "0.3s",
+		};
+	}
+};
+
+const OperationsReport = () => {
 	const [allOrders, setAllOrders] = useState([]);
 	const [q, setQ] = useState("");
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
@@ -37,10 +64,24 @@ const OrdersList = () => {
 	const [lengthOfOrders, setLengthOfOrders] = useState(0);
 	const [backorders, setBackorders] = useState("NotClicked");
 	const [excelDataSet, setExcelDataSet] = useState([]);
+	const [allColors, setAllColors] = useState([]);
+	const [selectedFilter, setSelectedFilter] = useState("SelectAll");
+	const [modalVisible, setModalVisible] = useState(false);
+	const [modalVisible2, setModalVisible2] = useState(false);
+	const [requiredSKU, setRequiredSKU] = useState("");
 
 	//pagination
 	const [currentPage, setCurrentPage] = useState(1);
 	const [postsPerPage, setPostsPerPage] = useState(100);
+
+	const [day1, setDay1] = useState(
+		new Date().toDateString("en-US", {
+			timeZone: "Africa/Cairo",
+		}),
+	);
+	const [day2, setDay2] = useState(
+		new Date(new Date().setDate(new Date().getDate() - 90)),
+	);
 
 	const { user, token } = isAuthenticated();
 
@@ -52,10 +93,12 @@ const OrdersList = () => {
 	var yesterday = new Date();
 	var last7Days = new Date();
 	var last30Days = new Date();
+	var last90Days = new Date();
 
 	yesterday.setDate(yesterday.getDate() - 1);
-	last7Days.setDate(last7Days.getDate() - 10);
+	last7Days.setDate(last7Days.getDate() - 7);
 	last30Days.setDate(last30Days.getDate() - 30);
+	last90Days.setDate(last90Days.getDate() - 90);
 
 	const loadOrders = () => {
 		function sortOrdersAscendingly(a, b) {
@@ -69,11 +112,37 @@ const OrdersList = () => {
 			}
 			return comparison;
 		}
-		listOrdersProcessing(user._id, token).then((data) => {
+		listOrdersProcessingDetermined(user._id, token, day1, day2).then((data) => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
-				if (backorders === "Clicked") {
+				if (requiredSKU && modalVisible2 === false) {
+					var returnValue = data.map((i) => {
+						return {
+							...i,
+							chosenProductQtyWithVariables:
+								i.chosenProductQtyWithVariables.map((ii) =>
+									// eslint-disable-next-line
+									ii.filter(
+										(iii) =>
+											iii.SubSKU.toLowerCase() === requiredSKU.toLowerCase(),
+									),
+								),
+						};
+					});
+
+					var returnValue2 = returnValue.filter(
+						(i) =>
+							i.chosenProductQtyWithVariables
+								.map((ii) => ii.length > 0)
+								.indexOf(true) > -1,
+					);
+
+					console.log(returnValue2, "ReturnValue2");
+
+					setAllOrders(returnValue2.sort(sortOrdersAscendingly));
+					setExcelDataSet(returnValue2.sort(sortOrdersAscendingly));
+				} else if (backorders === "Clicked") {
 					getProducts().then((data2) => {
 						if (data2.error) {
 							console.log(data2.error);
@@ -238,12 +307,23 @@ const OrdersList = () => {
 		});
 	};
 
+	const gettingAllColors = () => {
+		getColors(token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllColors(data);
+			}
+		});
+	};
+
 	useEffect(() => {
 		loadOrders();
 		gettingAllProducts();
 		loadOrdersLength();
+		gettingAllColors();
 		// eslint-disable-next-line
-	}, [backorders]);
+	}, [backorders, day1, day2, modalVisible2, requiredSKU]);
 
 	useEffect(() => {
 		const onScroll = () => setOffset(window.pageYOffset);
@@ -460,32 +540,6 @@ const OrdersList = () => {
 		doc.save("Checklist.pdf");
 	};
 
-	// var adjustedExcelData =
-	// 	excelDataSet &&
-	// 	excelDataSet.map((i) => {
-	// 		return i.chosenProductQtyWithVariables.map((ii) => {
-	// 			return ii.map((iii) => {
-	// 				return {
-	// 					Name: i.customerDetails.fullName,
-	// 					address: i.customerDetails.address,
-	// 					phone1: i.customerDetails.phone,
-	// 					phone2: "",
-	// 					City: i.customerDetails.cityName + " / " + i.customerDetails.city,
-	// 					DescriptionOfGoods: iii.productName + " / " + iii.SubSKU,
-	// 					totalAmount: iii.pickedPrice,
-	// 					ReferenceNumber: iii.trackingNumber,
-	// 					pieces: iii.OrderedQty,
-	// 					comment: i.customerDetails.orderComment
-	// 						? i.customerDetails.orderComment
-	// 						: ".",
-	// 					company: i.orderSource,
-	// 					email: "gqcanihelpyou@gmail.com",
-	// 					weight: 1,
-	// 				};
-	// 			});
-	// 		});
-	// 	});
-
 	var adjustedExcelData =
 		excelDataSet &&
 		excelDataSet.map((i, counter) => {
@@ -529,6 +583,7 @@ const OrdersList = () => {
 
 	// console.log(adjustedExcelData, "adjustedExcelData");
 
+	// eslint-disable-next-line
 	const DownloadExcel = () => {
 		return (
 			<ExcelFile
@@ -566,6 +621,165 @@ const OrdersList = () => {
 		);
 	};
 
+	const selectedDateOrdersSKUsModified = () => {
+		const modifiedArray =
+			allOrders &&
+			allOrders.map((i) =>
+				i.chosenProductQtyWithVariables.map((ii) =>
+					ii.map((iii) => {
+						return {
+							productName: iii.productName,
+							OrderedQty: iii.OrderedQty,
+							productMainImage: iii.productMainImage,
+							SubSKU: iii.SubSKU,
+							SubSKUColor: iii.SubSKUColor,
+							SubSKUSize: iii.SubSKUSize,
+							productSubSKUImage: iii.productSubSKUImage,
+							totalPaidAmount:
+								Number(iii.pickedPrice).toFixed(2) *
+								Number(iii.OrderedQty).toFixed(2),
+						};
+					}),
+				),
+			);
+
+		return modifiedArray;
+	};
+
+	var destructingNestedArraySKUs = [];
+	selectedDateOrdersSKUsModified() &&
+		selectedDateOrdersSKUsModified().map((i) =>
+			i.map((ii) => destructingNestedArraySKUs.push(...ii)),
+		);
+
+	function sortTopOrdersProductsSKUs(a, b) {
+		const TotalAppointmentsA = a.totalPaidAmount;
+		const TotalAppointmentsB = b.totalPaidAmount;
+		let comparison = 0;
+		if (TotalAppointmentsA < TotalAppointmentsB) {
+			comparison = 1;
+		} else if (TotalAppointmentsA > TotalAppointmentsB) {
+			comparison = -1;
+		}
+		return comparison;
+	}
+
+	var TopSoldProductsSKUs = [];
+	destructingNestedArraySKUs &&
+		destructingNestedArraySKUs.reduce(function (res, value) {
+			if (!res[value.productName + value.SubSKU]) {
+				res[value.productName + value.SubSKU] = {
+					productName: value.productName,
+					productMainImage: value.productMainImage,
+					productSubSKUImage: value.productSubSKUImage,
+					SubSKU: value.SubSKU,
+					SubSKUColor: value.SubSKUColor,
+					SubSKUSize: value.SubSKUSize,
+					OrderedQty: 0,
+					totalPaidAmount: 0,
+				};
+				TopSoldProductsSKUs.push(res[value.productName + value.SubSKU]);
+			}
+
+			res[value.productName + value.SubSKU].OrderedQty += Number(
+				value.OrderedQty,
+			);
+			res[value.productName + value.SubSKU].totalPaidAmount += Number(
+				value.totalPaidAmount,
+			);
+
+			return res;
+		}, {});
+
+	TopSoldProductsSKUs.sort(sortTopOrdersProductsSKUs);
+
+	const TopProductsSKUS = () => {
+		return (
+			<div className='col-md-11 mx-auto my-5'>
+				<div className='card'>
+					<h5
+						style={{
+							textAlign: "center",
+							marginTop: "10px",
+							fontWeight: "bolder",
+							fontSize: "1.1rem",
+						}}>
+						Unfulfilled Sold Products & SKU's By Total Ordered Quantity
+					</h5>
+					<div className='col-md-10 mx-auto'>
+						<hr />
+					</div>
+
+					<table
+						className='table table-bordered table-md-responsive table-hover'
+						style={{ fontSize: "0.75rem", overflowX: "auto" }}>
+						<thead className=''>
+							<tr
+								style={{
+									fontSize: "0.75rem",
+									textTransform: "capitalize",
+									textAlign: "center",
+									backgroundColor: "#009ef7",
+									color: "wheat",
+								}}>
+								<th scope='col'>#</th>
+								<th scope='col'>SKU</th>
+								<th scope='col'>Product Name</th>
+								<th scope='col'>Color</th>
+								<th scope='col'>Size</th>
+								<th scope='col'>Ordered Qty</th>
+								<th scope='col'>Product Image</th>
+							</tr>
+						</thead>
+						<tbody
+							className='my-auto'
+							style={{
+								fontSize: "0.75rem",
+								textTransform: "capitalize",
+								fontWeight: "bolder",
+							}}>
+							{TopSoldProductsSKUs &&
+								TopSoldProductsSKUs.map((s, i) => {
+									return (
+										<tr key={i} className=''>
+											<td className='my-auto'>{i + 1}</td>
+											<td>{s.SubSKU}</td>
+											<td>{s.productName}</td>
+											<td>
+												{allColors[
+													allColors.map((i) => i.hexa).indexOf(s.SubSKUColor)
+												]
+													? allColors[
+															allColors
+																.map((i) => i.hexa)
+																.indexOf(s.SubSKUColor)
+													  ].color
+													: s.SubSKUColor}
+											</td>
+
+											<td>{s.SubSKUSize}</td>
+											<td>{s.OrderedQty}</td>
+											<td style={{ width: "15%", textAlign: "center" }}>
+												<img
+													width='40%'
+													height='40%'
+													style={{ marginLeft: "20px" }}
+													src={s.productSubSKUImage}
+													alt={s.productName}
+												/>
+											</td>
+
+											{/* <td>{Invoice(s)}</td> */}
+										</tr>
+									);
+								})}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		);
+	};
+
 	const dataTable = () => {
 		return (
 			<div className='tableData'>
@@ -578,11 +792,69 @@ const OrdersList = () => {
 				) : (
 					<>
 						<div>
-							<Link className='btn btn-success' to='/admin/create-new-order'>
-								Create New Order
+							<Link
+								className='btn btn-primary mr-4'
+								onClick={() => exportPDF()}
+								to='#'>
+								Download Report (PDF)
+							</Link>
+							{backorders === "Clicked" ? (
+								<Link
+									className='btn btn-info mx-2'
+									onClick={() => {
+										setBackorders("NotClicked");
+										setRequiredSKU("");
+									}}
+									to='#'>
+									Revert To Default
+								</Link>
+							) : (
+								<Link
+									className='btn btn-danger mx-2'
+									onClick={() => {
+										setBackorders("Clicked");
+										setRequiredSKU("");
+									}}
+									to='#'>
+									Backorders
+								</Link>
+							)}
+							<Link
+								className='btn'
+								style={{ background: "black", color: "white" }}
+								onClick={() => {
+									setBackorders("Processing");
+									setRequiredSKU("");
+								}}
+								to='#'>
+								In Processing
+							</Link>
+							<Link
+								className='btn ml-2 btn-success'
+								// style={{ background: "black", color: "white" }}
+								onClick={() => {
+									setBackorders("Good");
+									setRequiredSKU("");
+								}}
+								to='#'>
+								Good Orders
 							</Link>
 						</div>
+						{TopProductsSKUS()}
 
+						<div>
+							<Link
+								className='btn btn-success'
+								to='#'
+								onClick={() => {
+									setModalVisible2(true);
+								}}>
+								Search By SKU{" "}
+								<span className='ml-3' style={{ fontSize: "1.11rem" }}>
+									<FileSearchOutlined />
+								</span>
+							</Link>
+						</div>
 						<div className='form-group text-right'>
 							<label
 								className='mt-3 mx-3'
@@ -618,64 +890,25 @@ const OrdersList = () => {
 							paginate={paginate}
 							currentPage={currentPage}
 						/>
-						<div>
-							<Link
-								className='btn btn-primary'
-								onClick={() => exportPDF()}
-								to='#'>
-								Download Report (PDF)
-							</Link>
-							{DownloadExcel()}
-							{backorders === "Clicked" ? (
-								<Link
-									className='btn btn-info mx-2'
-									onClick={() => setBackorders("NotClicked")}
-									to='#'>
-									Revert To Default
-								</Link>
-							) : (
-								<Link
-									className='btn btn-danger mx-2'
-									onClick={() => setBackorders("Clicked")}
-									to='#'>
-									Backorders
-								</Link>
-							)}
-							<Link
-								className='btn'
-								style={{ background: "black", color: "white" }}
-								onClick={() => setBackorders("Processing")}
-								to='#'>
-								In Processing
-							</Link>
-							<Link
-								className='btn ml-2 btn-success'
-								// style={{ background: "black", color: "white" }}
-								onClick={() => setBackorders("Good")}
-								to='#'>
-								Good Orders
-							</Link>
-						</div>
+
 						<table
-							className='table table-bordered table-md-responsive table-hover text-center'
+							className='table table-bordered table-md-responsive table-hover text-center my-5'
 							style={{ fontSize: "0.75rem" }}
 							id='ahowan'>
 							<thead className='thead-light'>
 								<tr>
+									<th scope='col'>#</th>
+
 									<th scope='col'>Purchase Date</th>
-									<th scope='col'>Order #</th>
 									<th scope='col'>INV #</th>
 									<th scope='col'>Status</th>
 									<th scope='col'>Name</th>
 									<th scope='col'>Phone</th>
 									<th scope='col'>Amount</th>
-									<th scope='col'>Store</th>
-									<th scope='col'>Taker</th>
-									<th scope='col'>Governorate</th>
-									{/* <th scope='col'>City</th> */}
-									<th scope='col'>Carrier</th>
-									<th scope='col'>Tracking #</th>
+									<th scope='col'>SKU #</th>
 									<th scope='col'>Quantity</th>
+									<th scope='col'>Stock Onhand</th>
+									<th scope='col'>Stock Onhand (live)</th>
 									<th scope='col'>Invoice?</th>
 									<th scope='col'>Details?</th>
 								</tr>
@@ -735,10 +968,26 @@ const OrdersList = () => {
 									var finalChecker2 =
 										merged2.indexOf(true) === -1 ? "Passed" : "Failed";
 
+									const returnLiveStock = (productId, SubSKU) => {
+										const pickedSub =
+											allProducts &&
+											allProducts.filter((iii) => iii._id === productId)[0];
+
+										const GetSpecificSubSKU =
+											pickedSub.productAttributes.filter(
+												(iii) => iii.SubSKU === SubSKU,
+											)[0];
+										const liveStock =
+											GetSpecificSubSKU && GetSpecificSubSKU.quantity;
+
+										return liveStock;
+									};
+
 									// console.log(finalChecker2, "Merged2");
 
 									return (
 										<tr key={i} className=''>
+											<td>{i + 1}</td>
 											{s.orderCreationDate ? (
 												<td style={{ width: "8%" }}>
 													{new Date(s.orderCreationDate).toDateString()}{" "}
@@ -749,17 +998,6 @@ const OrdersList = () => {
 												</td>
 											)}
 
-											{s.OTNumber && s.OTNumber !== "Not Added" ? (
-												<td className='my-auto'>{s.OTNumber}</td>
-											) : (
-												<td className='my-auto'>{`OT${new Date(
-													s.createdAt,
-												).getFullYear()}${
-													new Date(s.createdAt).getMonth() + 1
-												}${new Date(s.createdAt).getDate()}000${
-													allOrders.length - i
-												}`}</td>
-											)}
 											<td
 												style={{
 													width: "10%",
@@ -806,21 +1044,48 @@ const OrdersList = () => {
 											<td style={{ width: "11%" }}>
 												{s.customerDetails.fullName}
 											</td>
-											<td>{s.customerDetails.phone}</td>
+											<td style={{ width: "11%" }}>
+												{s.customerDetails.phone}
+											</td>
 											<td>{s.totalAmountAfterDiscount.toFixed(0)} L.E.</td>
-											<td style={{ textTransform: "uppercase" }}>
-												{s.orderSource}
+
+											<td>
+												{s.chosenProductQtyWithVariables.map((i) =>
+													i.map((ii) => (
+														<span>
+															{ii.SubSKU} <br />
+														</span>
+													)),
+												)}
 											</td>
-											<td>{s.employeeData.name}</td>
-											<td>{s.customerDetails.state}</td>
-											{/* <td>{s.customerDetails.cityName}</td> */}
-											<td style={{ width: "8%" }}>
-												{s.chosenShippingOption[0].carrierName}
+
+											<td>
+												{s.chosenProductQtyWithVariables.map((i) =>
+													i.map((ii) => (
+														<span>
+															{ii.OrderedQty} <br />
+														</span>
+													)),
+												)}
 											</td>
-											<td style={{ width: "8%" }}>
-												{s.trackingNumber ? s.trackingNumber : "Not Added"}
+											<td>
+												{s.chosenProductQtyWithVariables.map((i) =>
+													i.map((ii) => (
+														<span>
+															{ii.quantity} <br />
+														</span>
+													)),
+												)}
 											</td>
-											<td>{s.totalOrderQty}</td>
+											<td>
+												{s.chosenProductQtyWithVariables.map((i) =>
+													i.map((ii) => (
+														<span>
+															{returnLiveStock(ii.productId, ii.SubSKU)} <br />
+														</span>
+													)),
+												)}
+											</td>
 
 											{s.invoiceNumber === "Not Added" ? (
 												<td
@@ -828,7 +1093,7 @@ const OrdersList = () => {
 														color: "darkred",
 														fontWeight: "bold",
 														cursor: "pointer",
-														width: "8%",
+														width: "9%",
 													}}>
 													{finalChecker === "Passed" ? (
 														<Link
@@ -926,7 +1191,8 @@ const OrdersList = () => {
 		);
 	};
 
-	const overallQtyArray = allOrders && allOrders.map((i) => i.totalOrderQty);
+	const overallQtyArray =
+		TopSoldProductsSKUs && TopSoldProductsSKUs.map((i) => i.OrderedQty);
 
 	const ArrayOfQty = overallQtyArray.reduce((a, b) => a + b, 0);
 
@@ -936,7 +1202,7 @@ const OrdersList = () => {
 	const ArrayOfAmount = overallAmountArray.reduce((a, b) => a + b, 0);
 
 	return (
-		<OrdersListWrapper show={AdminMenuStatus}>
+		<OperationsReportWrapper show={AdminMenuStatus}>
 			{allOrders.length === 0 && allProducts.length === 0 ? (
 				<div
 					style={{
@@ -955,7 +1221,7 @@ const OrdersList = () => {
 					<div className='grid-container'>
 						<div className=''>
 							<AdminMenu
-								fromPage='OrdersList'
+								fromPage='OperationsReport'
 								AdminMenuStatus={AdminMenuStatus}
 								setAdminMenuStatus={setAdminMenuStatus}
 								collapsed={collapsed}
@@ -963,10 +1229,111 @@ const OrdersList = () => {
 							/>
 						</div>
 						<div className='mainContent'>
-							<Navbar fromPage='OrdersList' pageScrolled={pageScrolled} />
+							<Navbar fromPage='OperationsReport' pageScrolled={pageScrolled} />
+							<div
+								style={{
+									background: "white",
+									textAlign: "right",
+									fontSize: "13px",
+								}}
+								className='py-3 mb-5'>
+								<span
+									style={isActive("SelectAll", selectedFilter)}
+									className='mx-2 filterItem'
+									onClick={() => {
+										setSelectedFilter("SelectAll");
+										setDay2(last90Days);
+										setDay1(today);
+										setRequiredSKU("");
+									}}>
+									Select All
+								</span>
+								<span
+									style={isActive("Today", selectedFilter)}
+									className='mx-2 filterItem'
+									onClick={() => {
+										setSelectedFilter("Today");
+										setDay2(today);
+										setDay1(today);
+										setRequiredSKU("");
+									}}>
+									Today
+								</span>
+								<span
+									style={isActive("Yesterday", selectedFilter)}
+									className='mx-2 filterItem'
+									onClick={() => {
+										setSelectedFilter("Yesterday");
+										setDay2(yesterday);
+										setDay1(yesterday);
+										setRequiredSKU("");
+									}}>
+									Yesterday
+								</span>
+								<span
+									style={isActive("Last7Days", selectedFilter)}
+									className='mx-2 filterItem'
+									onClick={() => {
+										setSelectedFilter("Last7Days");
+										setDay2(last7Days);
+										setDay1(today);
+										setRequiredSKU("");
+									}}>
+									Last 7 Days
+								</span>
+								<span
+									style={isActive("Last30Days", selectedFilter)}
+									className='mx-2 filterItem'
+									onClick={() => {
+										setSelectedFilter("Last30Days");
+										setDay2(last30Days);
+										setDay1(today);
+										setRequiredSKU("");
+									}}>
+									Last 30 Days
+								</span>
 
+								<span
+									style={isActive("CustomDates", selectedFilter)}
+									className='mx-2 filterItem'
+									onClick={() => {
+										setSelectedFilter("CustomDates");
+										setModalVisible(true);
+										setRequiredSKU("");
+									}}>
+									Custom Dates
+								</span>
+							</div>
+							<CustomDatesModal
+								day1={day1}
+								setDay1={setDay1}
+								day2={day2}
+								setDay2={setDay2}
+								modalVisible={modalVisible}
+								setModalVisible={setModalVisible}
+								setRequiredSKU={setRequiredSKU}
+							/>
+							<SKUModal
+								allOrders={allOrders}
+								setAllOrders={setAllOrders}
+								modalVisible2={modalVisible2}
+								setModalVisible2={setModalVisible2}
+								requiredSKU={requiredSKU}
+								setRequiredSKU={setRequiredSKU}
+							/>
 							<h3 className='mt-5 text-center' style={{ fontWeight: "bolder" }}>
-								PENDING ORDERS
+								Operations Unfulfilled Orders Report By SKU <br />
+								<span
+									style={{
+										fontSize: "0.95rem",
+										color: "black",
+										textAlign: "center",
+										fontWeight: "normal",
+									}}>
+									(Selected Date Range From{" "}
+									<strong> {new Date(day2).toDateString()}</strong> to{" "}
+									<strong>{new Date(day1).toDateString()}</strong>)
+								</span>
 							</h3>
 							<div className='row mx-5 mt-5'>
 								<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
@@ -1027,13 +1394,13 @@ const OrdersList = () => {
 					</div>
 				</>
 			)}
-		</OrdersListWrapper>
+		</OperationsReportWrapper>
 	);
 };
 
-export default OrdersList;
+export default OperationsReport;
 
-const OrdersListWrapper = styled.div`
+const OperationsReportWrapper = styled.div`
 	min-height: 880px;
 	/* overflow-x: hidden; */
 	/* background: #ededed; */
@@ -1071,7 +1438,21 @@ const OrdersListWrapper = styled.div`
 		cursor: pointer;
 	}
 
-	.filters-item {
+	.filterItem {
+		color: darkgrey;
+		font-weight: bold;
+		padding: 5px;
+		transition: 0.3s;
+	}
+
+	.filterItem:hover {
+		background: #f5f8fa;
+		color: #009ef7;
+		font-weight: bold;
+		padding: 5px;
+		border-radius: 3px;
+		transition: 0.3s;
+		cursor: pointer;
 	}
 
 	@charset "UTF-8";

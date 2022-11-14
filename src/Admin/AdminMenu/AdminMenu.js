@@ -22,6 +22,8 @@ import {
 } from "@ant-design/icons";
 import { Button, Menu } from "antd";
 import LogoImage from "../../GeneralImages/ace-logo.png";
+import { isAuthenticated } from "../../auth";
+import { getAllUsers } from "../apiAdmin";
 
 function getItem(label, key, icon, children, type) {
 	return {
@@ -81,6 +83,10 @@ const items = [
 		getItem(
 			<Link to='/admin/gq-reports/stock'>Stock Report</Link>,
 			"/admin/gq-reports/stock",
+		),
+		getItem(
+			<Link to='/admin/gq-reports/operations'>Operations Report</Link>,
+			"/admin/gq-reports/operations",
 		),
 	]),
 	// getItem("Option 2", "3", <DesktopOutlined />),
@@ -330,10 +336,27 @@ const AdminMenu = ({
 		getWindowDimensions(),
 	);
 
+	const [values, setValues] = useState({
+		name: "",
+		email: "",
+		password: "",
+		password2: "",
+		error: "",
+		activeUser: true,
+		success: false,
+		misMatch: false,
+		loading: false,
+		employeeImage: "",
+		role: 1,
+		userRole: "",
+	});
+
 	const toggleCollapsed = () => {
 		setCollapsed(!collapsed);
 		setAdminMenuStatus(!collapsed);
 	};
+
+	const { user, token } = isAuthenticated();
 
 	function getWindowDimensions() {
 		const { innerWidth: width, innerHeight: height } = window;
@@ -371,6 +394,56 @@ const AdminMenu = ({
 		return () => window.removeEventListener("resize", handleResize);
 		// eslint-disable-next-line
 	}, [windowDimensions]);
+
+	const gettingAllUsers = () => {
+		getAllUsers(user._id, token).then((data) => {
+			if (data.error) {
+				console.log(data.error, "getting all users error");
+			} else {
+				setValues({
+					...values,
+					name:
+						user._id &&
+						user._id !== "undefined" &&
+						data.filter((e) => e._id === user._id)[0].name,
+					email:
+						user._id &&
+						user._id !== "undefined" &&
+						data.filter((e) => e._id === user._id)[0].email,
+					role:
+						user._id &&
+						user._id !== "undefined" &&
+						data.filter((e) => e._id === user._id)[0].role,
+
+					userRole:
+						user._id &&
+						user._id !== "undefined" &&
+						data.filter((e) => e._id === user._id)[0].userRole,
+
+					employeeImage:
+						user._id &&
+						user._id !== "undefined" &&
+						data.filter((e) => e._id === user._id)[0].employeeImage,
+				});
+			}
+		});
+	};
+
+	useEffect(() => {
+		gettingAllUsers();
+
+		// eslint-disable-next-line
+	}, []);
+
+	const currUser = JSON.parse(localStorage.getItem("jwt"));
+
+	localStorage.setItem(
+		"jwt",
+		JSON.stringify({
+			...currUser,
+			user: { ...currUser.user, userRole: values.userRole },
+		}),
+	);
 
 	return (
 		<AdminMenuWrapper
@@ -459,9 +532,11 @@ const AdminMenu = ({
 						? "/admin/update-top-ads"
 						: fromPage === "AddTopAds"
 						? "/admin/add-top-ads"
-						: (fromPage = "AddHero"
-								? "/admin/add-hero-comp"
-								: "/admin/dashboard")
+						: fromPage === "AddHero"
+						? "/admin/add-hero-comp"
+						: fromPage === "OperationsReport"
+						? "/admin/gq-reports/operations"
+						: "/admin/dashboard"
 				}
 				defaultOpenKeys={[
 					"sub1",

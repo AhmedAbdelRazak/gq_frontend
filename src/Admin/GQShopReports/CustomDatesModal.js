@@ -15,6 +15,7 @@ const CustomDatesModal = ({
 	setDay2,
 	modalVisible,
 	setModalVisible,
+	setRequiredSKU,
 }) => {
 	const mainForm = () => {
 		return (
@@ -27,6 +28,7 @@ const CustomDatesModal = ({
 					className='inputFields'
 					onChange={(date) => {
 						setDay2(new Date(date._d) || date._d);
+						setRequiredSKU("");
 					}}
 					// disabledDate={disabledDate}
 					max
@@ -52,6 +54,7 @@ const CustomDatesModal = ({
 					className='inputFields'
 					onChange={(date) => {
 						setDay1(new Date(date._d) || date._d);
+						setRequiredSKU("");
 					}}
 					// disabledDate={disabledDate}
 					max
@@ -87,11 +90,13 @@ const CustomDatesModal = ({
 				visible={modalVisible}
 				onOk={() => {
 					setModalVisible(false);
+					setRequiredSKU("");
 				}}
 				// okButtonProps={{ style: { display: "none" } }}
 				cancelButtonProps={{ style: { display: "none" } }}
 				onCancel={() => {
 					setModalVisible(false);
+					setRequiredSKU("");
 				}}>
 				{mainForm()}
 			</Modal>

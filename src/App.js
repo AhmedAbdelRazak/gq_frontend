@@ -64,6 +64,7 @@ import Home from "./pages/Home/Home";
 import NavbarAds from "./Navbar/NavbarAds";
 import { getAllAds } from "./Admin/apiAdmin";
 import AddHeroComp from "./Admin/OnlineStore/AddHeroComp";
+import OperationsReport from "./Admin/GQShopReports/OperationsReport";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -283,6 +284,12 @@ const App = () => {
 					path='/admin/gq-reports/stock'
 					exact
 					component={StockReport}
+				/>
+
+				<AdminRoute
+					path='/admin/gq-reports/operations'
+					exact
+					component={OperationsReport}
 				/>
 				<AdminRoute
 					path='/admin/update-employee'

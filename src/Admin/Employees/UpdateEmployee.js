@@ -49,7 +49,7 @@ const UpdateEmployee = () => {
 
 	return (
 		<UpdateEmployeeWrapper show={AdminMenuStatus}>
-			{user.userRole === "Order Taker" ? (
+			{user.userRole === "Order Taker" || user.userRole === "Operations" ? (
 				<Redirect to='/admin/create-new-order' />
 			) : null}
 			{!collapsed ? (
