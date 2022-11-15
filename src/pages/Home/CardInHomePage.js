@@ -8,6 +8,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import { Carousel } from "react-responsive-carousel";
 import { showAverageRating2 } from "../SingleProduct/Rating";
 import { useCartContext } from "../../Checkout/cart_context";
+import { viewsCounter } from "../../apiCore";
 
 const CardInHomePage = ({
 	product,
@@ -25,6 +26,18 @@ const CardInHomePage = ({
 	const [redirect, setRedirect] = useState(false);
 	const [count, setCount] = useState(product.count);
 	// eslint-disable-next-line
+	const [viewsCounterr, setViewsCounterr] = useState(0);
+
+	const SettingViews = () => {
+		const productId = product && product._id;
+		const viewsLength =
+			product && product.viewsCount >= 1 ? product.viewsCount + 1 : 1;
+
+		viewsCounter(productId, viewsLength).then((data) => {
+			setViewsCounterr(data);
+		});
+		// window.scrollTo(0, 0);
+	};
 
 	const { addToCart, openSidebar } = useCartContext();
 
@@ -209,7 +222,11 @@ const CardInHomePage = ({
 							)}
 							<ImageFeat>
 								<Link
-									to={`/product/${product.category.categorySlug}/${product.slug}/${product._id}`}>
+									to={`/product/${product.category.categorySlug}/${product.slug}/${product._id}`}
+									onClick={() => {
+										window.scrollTo({ top: 0, behavior: "smooth" });
+										SettingViews();
+									}}>
 									<ShowImage item={product} />
 								</Link>
 							</ImageFeat>
@@ -255,32 +272,11 @@ const CardInHomePage = ({
 export default CardInHomePage;
 
 const ProductWrapper = styled.div`
-	.cards {
-		text-align: center;
-		box-shadow: 2.5px 2.5px 1.5px 0px rgba(0, 0, 0, 0.3);
-		transition: var(--mainTransition);
-		width: 90%;
-		min-height: 500px;
-		-webkit-animation: fadein 3s; /* Safari, Chrome and Opera > 12.1 */
-		-moz-animation: fadein 3s; /* Firefox < 16 */
-		-ms-animation: fadein 3s; /* Internet Explorer */
-		-o-animation: fadein 3s; /* Opera < 12.1 */
-		animation: fadein 3s;
-		@keyframes fadein {
-			from {
-				opacity: 0;
-			}
-			to {
-				opacity: 1;
-			}
-		}
-	}
-
 	.card {
 		text-align: center;
-		box-shadow: 2.5px 2.5px 1.5px 0px rgba(0, 0, 0, 0.3);
+		/* box-shadow: 2.5px 2.5px 1.5px 0px rgba(0, 0, 0, 0.3); */
 		transition: var(--mainTransition);
-		min-height: 376px;
+		min-height: 500px;
 		width: 90%;
 	}
 	.card:hover {
@@ -316,25 +312,8 @@ const ProductWrapper = styled.div`
 			width: 100%;
 			height: 100%;
 		} */
-		.productname {
-			font-size: 12px !important;
-		}
-
-		.productprice {
-			font-size: 11px !important;
-		}
-		.stockStatus {
-			font-size: 10px;
-		}
-		.cartoptions {
-			font-size: 12px;
-		}
-		.viewproduct {
-			font-size: 12px;
-		}
-
-		.cartoptions2 {
-			font-size: 13px;
+		.card {
+			min-height: 380px;
 		}
 	}
 `;

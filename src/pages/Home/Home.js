@@ -6,12 +6,16 @@ import HeroComponent from "./HeroComponent";
 import { getProducts } from "../../apiCore";
 import CategoryWrapperComp from "./CategoryWrapperComp";
 import FeaturedProducts from "./FeaturedProducts";
+import OurBrandsComp from "./OurBrandsComp";
+import MostViewedProducts from "./MostViewedProducts";
+import GenderLinks from "./GenderLinks";
 
 const Home = ({ chosenLanguage }) => {
 	// eslint-disable-next-line
 	const [allProducts, setAllProducts] = useState([]);
-
 	const [allCategories, setAllCategories] = useState([]);
+	const [allSubcategories, setAllSubcategories] = useState([]);
+	const [allGenders, setAllGenders] = useState([]);
 
 	const gettingAllProducts = () => {
 		getProducts().then((data) => {
@@ -19,16 +23,43 @@ const Home = ({ chosenLanguage }) => {
 				console.log(data.error);
 			} else {
 				setAllProducts(data.filter((i) => i.activeProduct === true));
+
+				//Categories Unique
 				var categoriesArray = data
 					.filter((i) => i.activeProduct === true)
 					.map((ii) => ii.category);
 
-				let unique = [
+				let uniqueCategories = [
 					...new Map(
 						categoriesArray.map((item) => [item["categoryName"], item]),
 					).values(),
 				];
-				setAllCategories(unique);
+				setAllCategories(uniqueCategories);
+
+				//Subcategories Unique
+				var SubcategoriesArray = data
+					.filter((i) => i.activeProduct === true)
+					.map((ii) => ii.subcategory);
+
+				var mergedSubcategories = [].concat.apply([], SubcategoriesArray);
+				let uniqueSubcategories = [
+					...new Map(
+						mergedSubcategories.map((item) => [item["SubcategoryName"], item]),
+					).values(),
+				];
+				setAllSubcategories(uniqueSubcategories);
+
+				//Gender Unique
+				var genderUnique = data
+					.filter((i) => i.activeProduct === true)
+					.map((ii) => ii.gender);
+
+				let uniqueGenders = [
+					...new Map(
+						genderUnique.map((item) => [item["genderName"], item]),
+					).values(),
+				];
+				setAllGenders(uniqueGenders);
 			}
 		});
 	};
@@ -42,16 +73,34 @@ const Home = ({ chosenLanguage }) => {
 		<HomeWrapper>
 			<HeroComponent />
 
+			<GenderLinks allGenders={allGenders} />
+
 			<CategoryWrapperComp
 				chosenLanguage={chosenLanguage}
 				categories={allCategories}
 			/>
+
 			<div className='text-center my-5'>
 				<FeaturedProducts
 					allProducts={allProducts}
 					chosenLanguage={chosenLanguage}
 				/>
 			</div>
+
+			<div className='text-center my-5'>
+				<OurBrandsComp
+					chosenLanguage={chosenLanguage}
+					allSubcategories={allSubcategories}
+				/>
+			</div>
+			<br />
+			<hr />
+			<br />
+			<MostViewedProducts chosenLanguage={chosenLanguage} />
+
+			<br />
+			<hr />
+			<br />
 		</HomeWrapper>
 	);
 };

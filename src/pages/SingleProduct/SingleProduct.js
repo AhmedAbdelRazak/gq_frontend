@@ -2,32 +2,37 @@
 
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+
 import {
+	userlike,
+	userunlike,
 	productStar,
-	read,
+	readProduct,
 	comment,
 	uncomment,
 	like,
 	unlike,
-	//cloudinaryCommentUpload,
-} from "../apiCore";
-import { userlike, userunlike } from "../../user/apiUser";
+	getColors,
+} from "../../apiCore";
 // eslint-disable-next-line
-import { addItem } from "../cartHelpers";
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-import { Carousel } from "react-responsive-carousel";
+import { addItem } from "../../cartHelpers";
 import StarRating from "react-star-ratings";
 import { Modal } from "antd";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "antd/dist/antd.css"; // or 'antd/dist/antd.less'
 import { isAuthenticated } from "../../auth";
+// eslint-disable-next-line
 import { useHistory, useParams, Link, Redirect } from "react-router-dom";
+// eslint-disable-next-line
 import Slider from "react-slick";
 import { showAverageRating } from "./Rating";
-import { useCartContext } from "../checkout/cart_context";
+import { useCartContext } from "../../Checkout/cart_context";
 // import Resizer from "react-image-file-resizer";
 import { Helmet } from "react-helmet";
-import CardForRelatedProducts from "./CardForRelatedProducts";
+import DisplayImages from "./DisplayImages";
+import HistoricalComments from "./HistoricalComments";
+import ColorsAndSizes from "./ColorsAndSizes";
+// import CardForRelatedProducts from "./CardForRelatedProducts";
 
 const SingleProduct = (props) => {
 	const [Product, setProduct] = useState({});
@@ -45,6 +50,28 @@ const SingleProduct = (props) => {
 	const [userlikee, setuserLikee] = useState(false);
 	const [redirect2, setRedirect2] = useState(false);
 	const [relatedProducts, setRelatedProducts] = useState([]);
+	const [allSizes, setAllSizes] = useState([]);
+	const [allAddedColors, setAllAddedColors] = useState([]);
+	const [allColors, setAllColors] = useState([]);
+	const [colorSelected, setColorSelected] = useState(false);
+	const [chosenProductAttributes, setChosenProductAttributes] = useState({
+		SubSKU: "",
+		OrderedQty: 1,
+		productId: "",
+		productName: "",
+		productMainImage: "",
+		productSubSKUImage: "",
+		SubSKUPriceAfterDiscount: "",
+		SubSKURetailerPrice: "",
+		SubSKUWholeSalePrice: "",
+		SubSKUDropshippingPrice: "",
+		pickedPrice: "",
+		quantity: "",
+		SubSKUColor: "",
+		SubSKUSize: "",
+		SubSKUMSRP: "",
+	});
+	const [chosenImages, setChosenImages] = useState({});
 
 	const token = isAuthenticated() && isAuthenticated().token;
 	const user = isAuthenticated() && isAuthenticated().user;
@@ -62,9 +89,24 @@ const SingleProduct = (props) => {
 		return match;
 	};
 
+	const gettingAllColors = () => {
+		getColors(token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllColors(data);
+			}
+		});
+	};
+
+	useEffect(() => {
+		gettingAllColors();
+		// eslint-disable-next-line
+	}, []);
+
 	const loadSingleEmployee = (productId) => {
 		setLoading(true);
-		read(productId).then((data) => {
+		readProduct(productId).then((data) => {
 			if (data.error) {
 				setError(data.error);
 			} else {
@@ -74,6 +116,54 @@ const SingleProduct = (props) => {
 				setLikee(checkLike(data.likes));
 				setuserLikee(checkLike(data.likes));
 				setRelatedProducts(data.relatedProducts);
+
+				//populating the attributes
+
+				setChosenProductAttributes({
+					SubSKU: "",
+					OrderedQty: 1,
+					productId: data._id,
+					productName: data.productName,
+					productMainImage: data.thumbnailImage[0].images[0].url,
+					productSubSKUImage: "",
+					SubSKUPriceAfterDiscount: "",
+					SubSKURetailerPrice: "",
+					SubSKUWholeSalePrice: "",
+					SubSKUDropshippingPrice: "",
+					pickedPrice: "",
+					quantity: "",
+					SubSKUColor: "",
+					SubSKUSize: "",
+					SubSKUMSRP: "",
+				});
+
+				//AllSizes
+				var sizesArray = data.productAttributes.map((i) => i.size);
+
+				let uniqueSizesArray = [
+					...new Map(sizesArray.map((item) => [item, item])).values(),
+				];
+				setAllSizes(uniqueSizesArray);
+
+				//AllSizes
+				var colorsArray = data.productAttributes.map((i) => i.color);
+
+				let uniqueColorArray = [
+					...new Map(colorsArray.map((item) => [item, item])).values(),
+				];
+				setAllAddedColors(uniqueColorArray);
+
+				//consolidating All Images
+				var imagesArray = data.productAttributes.map((i) =>
+					i.productImages.map((ii) => ii.url),
+				);
+
+				var mergedimagesArray = [].concat.apply([], imagesArray);
+
+				let uniqueImagesArray = [
+					...new Map(mergedimagesArray.map((item) => [item, item])).values(),
+				];
+				setChosenImages(uniqueImagesArray);
 			}
 		});
 		setLoading(false);
@@ -293,77 +383,6 @@ const SingleProduct = (props) => {
 		});
 	};
 
-	const historicalComments = () => {
-		return (
-			<>
-				{!loading && Product && Product.comments && comments ? (
-					<div className='col-md-12'>
-						<h3 className='text-primary'>
-							{comments && comments.length} Comments
-						</h3>
-						<hr />
-						{comments &&
-							comments.map((comment, i) => (
-								<div key={i}>
-									<div>
-										<div>
-											<p className='font-italic mark'>
-												<span className='lead m-3'>{comment.text}</span>
-												<br />
-												<br />
-												{comment.commentsPhotos &&
-													comment.commentsPhotos.length > 0 && (
-														<img
-															src={
-																comment.commentsPhotos &&
-																comment.commentsPhotos[0] &&
-																comment.commentsPhotos[0].url
-															}
-															alt='CommentPhoto'
-															style={{
-																width: "180px",
-																height: "180px",
-																boxShadow: "1px 1px 1px 1px rgba(0,0,0,0.2)",
-																borderRadius: "50px",
-																marginLeft: "5%",
-															}}
-														/>
-													)}
-
-												<span
-													style={{
-														padding: "0px",
-														margin: "0px",
-														fontSize: "0.8rem",
-													}}>
-													Posted by {comment.postedBy.name.slice(0, 6)} on{" "}
-													{new Date(comment.created).toDateString()}
-													<span style={{ cursor: "pointer" }}>
-														{isAuthenticated().user &&
-															isAuthenticated().user._id ===
-																comment.postedBy._id && (
-																<span
-																	onClick={() => deleteConfirmed(comment)}
-																	className='text-danger float-right mr-1'>
-																	Remove
-																</span>
-															)}
-													</span>
-												</span>
-											</p>
-										</div>
-									</div>
-									<hr />
-								</div>
-							))}
-					</div>
-				) : (
-					<div className='text-center'>Loading...</div>
-				)}
-			</>
-		);
-	};
-
 	const deleteConfirmed = (comment) => {
 		let answer = window.confirm(
 			"Are you sure you want to delete your comment?",
@@ -378,6 +397,7 @@ const SingleProduct = (props) => {
 		return description;
 	};
 
+	// eslint-disable-next-line
 	const settings = {
 		dots: true,
 		infinite: true,
@@ -409,16 +429,16 @@ const SingleProduct = (props) => {
 		],
 	};
 
+	var titleName =
+		Product && Product.productName && Product.productName.toUpperCase();
+
 	return (
 		<SingleEmp className='mx-auto'>
 			<Helmet>
 				<meta charSet='utf-8' />
-				<title>Demo Ecommerce Web App | Developed By Infinite-Apps</title>
+				<title>{titleName}</title>
 
-				<meta
-					name='description'
-					content='This is a demo website created by Infinite-Apps. This web app is mainly focusing on Ecommerce business/Web Shops and it could be used for Brick and Mortar stores to increase your sales. Infinite Apps can help with your SEO (Search Engine Optimization) so you can market for your business and rank higher with Google. If you are interested, Please contact infinite apps 9099914386 (www.infinite-apps.com)'
-				/>
+				<meta name='description' content={Product.description} />
 				<link
 					rel='stylesheet'
 					href='http://fonts.googleapis.com/earlyaccess/droidarabickufi.css'
@@ -440,90 +460,20 @@ const SingleProduct = (props) => {
 			) : (
 				<>
 					<div className='row'>
-						<div className='col-md-6 text-center  mt-3'>
-							{Product && Product.images && (
-								<Carousel
-									autoPlay
-									infiniteLoop
-									interval={3500}
-									showStatus={false}
-									dynamicHeight={true}
-									showThumbs={true}
-									thumbWidth={70}
-									// width={"75%"}
-									autoFocus={true}>
-									{Product.images.map((i) => (
-										<img
-											alt={Product.productName}
-											src={i.url}
-											key={i.public_id}
-											style={{
-												borderRadius: "15px",
-												// height: "100%",
-												// objectFit: "cover",
-											}}
-										/>
-									))}
-								</Carousel>
-							)}
-							<div className='d-flex mx-3'>
-								<Like>
-									{likee ? (
-										<>
-											<ToastContainer className='toast-top-left' />
+						<DisplayImages
+							Product={Product}
+							chosenImages={chosenImages}
+							likee={likee}
+							setLikee={setLikee}
+							likeToggle={likeToggle}
+							likeToggle2={likeToggle2}
+							shouldRedirect2={shouldRedirect2}
+							redirect2={redirect2}
+						/>
 
-											<h5 onClick={likeToggle} className='mt-4 '>
-												<h5 onClick={likeToggle2}>
-													<i
-														className='fa fa-heart text-danger  Like'
-														style={{
-															padding: "8px",
-															borderRadius: "50%",
-															fontSize: "2rem",
-														}}
-													/>{" "}
-												</h5>
-											</h5>
-											<strong
-												className=''
-												style={{
-													fontStyle: "italic",
-													fontSize: "0.8rem",
-													textDecoration: "underline",
-												}}>
-												{" "}
-												<Link to='/user-dashboard/wishlist'>
-													Added to your Wish List
-												</Link>
-											</strong>
-										</>
-									) : (
-										<div className='viewsLikes'>
-											<h5 onClick={likeToggle} className='mt-4 '>
-												<h5 onClick={likeToggle2}>
-													<i
-														className='fa fa-heart  Like'
-														style={{
-															padding: "8px",
-															borderRadius: "50%",
-															fontSize: "1.7rem",
-														}}
-													/>{" "}
-													{shouldRedirect2(redirect2)}
-													<span
-														style={{ fontSize: "1rem", fontWeight: "bold" }}>
-														Wish List
-													</span>
-												</h5>
-											</h5>
-										</div>
-									)}
-								</Like>
-							</div>
-						</div>
 						<div
-							className='col-md-5 mx-auto mt-3'
-							style={{ border: "3px solid grey", borderRadius: "15px" }}>
+							className='col-md-6 mx-auto mt-3'
+							style={{ border: "1px solid lightgrey", borderRadius: "15px" }}>
 							<h3
 								className='text-title mb-4 my-3'
 								style={{
@@ -532,6 +482,7 @@ const SingleProduct = (props) => {
 									padding: "8px",
 									color: "grey",
 									fontStyle: "italic",
+									textTransform: "capitalize",
 								}}>
 								Product Name: {Product.productName}
 								{Product && Product.ratings && Product.ratings.length > 0 ? (
@@ -550,29 +501,18 @@ const SingleProduct = (props) => {
 								)}
 							</h3>
 							<hr />
-							<p
-								className='text-capitalize text-title mt-4'
-								style={{ color: "#0052a5" }}>
-								Product SKU:{" "}
-								<span style={{ color: "black" }}>{Product.productSKU}</span>
-							</p>
-							{Product.price > Product.priceAfterDiscount ? (
-								<p
-									className='text-capitalize text-title'
-									style={{ color: "#0052a5" }}>
-									Item Price:{" "}
-									<s style={{ color: "red", fontWeight: "bold" }}>
-										{Product.price} KD
-									</s>{" "}
-									{Product.priceAfterDiscount} KD
-								</p>
-							) : (
-								<p
-									className='text-capitalize text-title mt-4'
-									style={{ color: "#0052a5" }}>
-									Item Price: {Product.priceAfterDiscount} KD
-								</p>
-							)}
+							<ColorsAndSizes
+								Product={Product}
+								allColors={allColors}
+								allSizes={allSizes}
+								allAddedColors={allAddedColors}
+								setChosenImages={setChosenImages}
+								setChosenProductAttributes={setChosenProductAttributes}
+								chosenProductAttributes={chosenProductAttributes}
+								setColorSelected={setColorSelected}
+								colorSelected={colorSelected}
+							/>
+
 							<hr />
 							<p
 								className='text-capitalize text-title mt-4'
@@ -585,43 +525,9 @@ const SingleProduct = (props) => {
 								style={{ fontSize: "0.85rem" }}>
 								<span className=''>
 									{Product &&
-										Product.description1 &&
+										Product.description &&
 										selectedFeedbackComments(
-											Product && Product.description1,
-										).map((cc, ii) => {
-											return (
-												<div key={ii} className='ml-3 my-2'>
-													<strong>{cc}</strong>
-												</div>
-											);
-										})}
-								</span>
-							</p>
-							<p
-								className='single-Product-Description-Style'
-								style={{ fontSize: "0.85rem" }}>
-								<span className=''>
-									{Product &&
-										Product.description2 &&
-										selectedFeedbackComments(
-											Product && Product.description2,
-										).map((cc, ii) => {
-											return (
-												<div key={ii} className='ml-3 my-2'>
-													<strong>{cc}</strong>
-												</div>
-											);
-										})}
-								</span>
-							</p>
-							<p
-								className='single-Product-Description-Style'
-								style={{ fontSize: "0.85rem" }}>
-								<span className=''>
-									{Product &&
-										Product.description3 &&
-										selectedFeedbackComments(
-											Product && Product.description3,
+											Product && Product.description,
 										).map((cc, ii) => {
 											return (
 												<div key={ii} className='ml-3 my-2'>
@@ -632,7 +538,6 @@ const SingleProduct = (props) => {
 								</span>
 							</p>
 
-							<br />
 							<br />
 							<br />
 							<hr />
@@ -741,7 +646,7 @@ const SingleProduct = (props) => {
 							</div>
 						</div>
 					</div>
-					{relatedProducts && relatedProducts.length > 0 ? (
+					{/* {relatedProducts && relatedProducts.length > 0 ? (
 						<ProductWrapperRelated>
 							<React.Fragment>
 								<div className='title mb-2'>
@@ -759,8 +664,16 @@ const SingleProduct = (props) => {
 								</Slider>
 							</div>
 						</ProductWrapperRelated>
-					) : null}
-					<div className='p-5'>{historicalComments()}</div>
+					) : null} */}
+					<div className='p-5'>
+						<HistoricalComments
+							loading={loading}
+							Product={Product}
+							comments={comments}
+							deleteConfirmed={deleteConfirmed}
+							isAuthenticated={isAuthenticated}
+						/>
+					</div>
 				</>
 			)}
 		</SingleEmp>
@@ -778,11 +691,11 @@ const SingleEmp = styled.div`
 	} */
 
 	.carousel-root {
-		border: 2px solid grey;
+		border: 1px solid lightgrey;
 		border-radius: 15px;
 		object-fit: cover;
 		/* max-height: 60%; */
-		box-shadow: 3px 2px 3px 2px rgba(0, 0, 0, 0.5);
+		/* box-shadow: 3px 2px 3px 2px rgba(0, 0, 0, 0.5); */
 	}
 	/* .control-dots li {
 		background-color: black !important;
@@ -803,16 +716,7 @@ const SingleEmp = styled.div`
 	}
 `;
 
-const Like = styled.div`
-	cursor: pointer;
-	.Like {
-		background: #ededed;
-		text-decoration: none;
-		color: var(--darkGrey);
-		outline-color: var(--darkGrey);
-	}
-`;
-
+// eslint-disable-next-line
 const ProductWrapperRelated = styled.div`
 	margin-top: 50px;
 

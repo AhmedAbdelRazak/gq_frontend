@@ -65,6 +65,7 @@ import NavbarAds from "./Navbar/NavbarAds";
 import { getAllAds } from "./Admin/apiAdmin";
 import AddHeroComp from "./Admin/OnlineStore/AddHeroComp";
 import OperationsReport from "./Admin/GQShopReports/OperationsReport";
+import SingleProduct from "./pages/SingleProduct/SingleProduct";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -149,6 +150,11 @@ const App = () => {
 					path='/home'
 					exact
 					component={() => <Home chosenLanguage={language} />}
+				/>
+				<Route
+					path='/product/:categoryslug/:slug/:productId'
+					exact
+					component={SingleProduct}
 				/>
 				<Route path='/signup' exact component={Register} />
 				<AdminRoute path='/admin/dashboard' exact component={AdminDashboard} />

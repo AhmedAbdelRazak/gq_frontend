@@ -50,6 +50,14 @@ const FeaturedProducts = ({ allProducts, chosenLanguage }) => {
 
 	return (
 		<FeaturedProductsWrapper>
+			<div
+				className={
+					chosenLanguage === "Arabic" ? "titleArabic mb-2" : "title mb-2"
+				}>
+				<h1 className={chosenLanguage === "Arabic" ? "titleArabic" : "title"}>
+					{chosenLanguage === "Arabic" ? "منتجات مميزة" : "Featured Products"}{" "}
+				</h1>
+			</div>
 			<div className='container-fluid my-3 ProductSlider'>
 				<Slider {...settings} className='mb-5'>
 					{allFeaturedProducts &&
@@ -71,6 +79,33 @@ const FeaturedProducts = ({ allProducts, chosenLanguage }) => {
 export default FeaturedProducts;
 
 const FeaturedProductsWrapper = styled.div`
+	margin-top: 50px;
+
+	.title {
+		text-align: center;
+		font-size: 2rem;
+		letter-spacing: 7px;
+		font-weight: bold;
+		/* color: #ffc4c4; */
+		color: #ff7676;
+		/* text-shadow: 3px 3px 10px; */
+	}
+
+	.titleArabic {
+		text-align: center;
+		font-size: 2rem;
+		/* letter-spacing: 7px; */
+		font-weight: bold;
+		color: #ffc4c4;
+		font-family: "Droid Arabic Kufi";
+		/* text-shadow: 3px 3px 10px; */
+	}
+
+	.images {
+		margin-left: 20px;
+		margin-bottom: 30px;
+	}
+
 	.ProductSlider {
 		padding: 0px 100px 0px 100px;
 	}
@@ -78,6 +113,25 @@ const FeaturedProductsWrapper = styled.div`
 	@media (max-width: 1400px) {
 		.ProductSlider {
 			padding: 0px;
+		}
+	}
+	@media (max-width: 1200px) {
+		.ProductSlider {
+			padding: 0px 10px 0px 10px;
+		}
+
+		.title {
+			font-size: 1rem;
+			font-weight: bold;
+			/* text-shadow: 3px 3px 10px; */
+		}
+
+		.titleArabic {
+			text-align: center;
+			font-size: 1.2rem;
+			/* letter-spacing: 7px; */
+			font-weight: bold;
+			/* text-shadow: 3px 3px 10px; */
 		}
 	}
 `;

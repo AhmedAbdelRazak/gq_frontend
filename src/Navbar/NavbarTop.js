@@ -75,7 +75,7 @@ const NavbarTop = ({
 		"/e_bgremoval" +
 		storeLogo.substr(index + 6);
 
-	console.log(logoImage);
+	// console.log(logoImage);
 
 	const sideCart = () => {
 		return (

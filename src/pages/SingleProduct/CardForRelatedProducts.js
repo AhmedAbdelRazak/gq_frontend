@@ -3,12 +3,12 @@
 import React, { useState, Fragment } from "react";
 import { Link, Redirect } from "react-router-dom";
 import styled from "styled-components";
-import { addItem, updateItem, removeItem } from "../cartHelpers";
-import { views, viewsCounter } from "../apiCore";
+import { addItem, updateItem, removeItem } from "../../cartHelpers";
+import { views, viewsCounter } from "../../apiCore";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
 import { showAverageRating2 } from "../SingleProduct/Rating";
-import { useCartContext } from "../checkout/cart_context";
+import { useCartContext } from "../../checkout/cart_context";
 
 const CardForRelatedProducts = ({
 	product,
