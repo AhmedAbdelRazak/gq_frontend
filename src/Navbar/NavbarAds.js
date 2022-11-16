@@ -29,19 +29,19 @@ const NavbarAds = () => {
 		dots: true,
 		dotsClass: "slick-dots",
 		infinite: true,
-		speed: 1000,
+		speed: 2000,
 		slidesToShow: 1,
 		slidesToScroll: 1,
 		arrows: false,
 		autoplay: true,
-		autoplaySpeed: 6000,
+		autoplaySpeed: 7000,
 		pauseOnHover: true,
 	};
 
 	return (
-		<div style={{ backgroundColor: "#f5f8fa" }}>
+		<div style={{ backgroundColor: "white", padding: "10px" }}>
 			{" "}
-			<NavbarAdsWrapper className='mx-auto mb-1'>
+			<NavbarAdsWrapper className='mx-auto'>
 				<div className='nav-item mainMessages '>
 					<Slider {...settings}>
 						{allAdsCombined &&
@@ -67,16 +67,17 @@ const NavbarAdsWrapper = styled.nav`
 	text-align: center;
 	padding-top: 10px;
 	padding-bottom: 22px;
-	width: 32%;
-	box-shadow: 8px 10px 5px 0px rgba(0, 0, 0, 0.5);
-	background-color: white;
+	width: 70%;
+	/* box-shadow: 8px 10px 5px 0px rgba(0, 0, 0, 0.02); */
+	background: white !important;
+	border: 1px #f5f5f5 solid;
 
 	.slick-dots li button:hover:before,
 	.slick-dots li button:focus:before {
 		opacity: 1;
 	}
 	.slick-dots li button:before {
-		font-size: 12px;
+		font-size: 8px;
 		text-align: center;
 		opacity: 0.25;
 		color: var(--darkGrey);
@@ -85,8 +86,8 @@ const NavbarAdsWrapper = styled.nav`
 	}
 	.slick-dots li.slick-active button:before {
 		opacity: 1;
-		color: #0404e4;
-		font-weight: bold;
+		color: #898989;
+		/* font-weight: bold; */
 	}
 
 	.mainMessages {

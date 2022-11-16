@@ -1,6 +1,7 @@
 /** @format */
 
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const GenderLinks = ({ allGenders }) => {
@@ -12,14 +13,20 @@ const GenderLinks = ({ allGenders }) => {
 					{allGenders &&
 						allGenders.map((g, i) => {
 							return (
-								<div key={i} className='col-md-3 mx-auto'>
-									<img
-										src={g.thumbnail && g.thumbnail[0] && g.thumbnail[0].url}
-										alt={g.genderName}
-										className='mb-4 '
-										style={{ height: "230px", width: "230px" }}
-									/>
-									<div className='GenderText mb-5'>{g.genderName}</div>
+								<div
+									key={i}
+									className='col-lg-2 col-md-4 col-sm-6 col-6 mx-auto text-center'>
+									<Link
+										to={`/our-products?filterby=gender&gendername=${g.genderName}`}>
+										<img
+											src={g.thumbnail && g.thumbnail[0] && g.thumbnail[0].url}
+											alt={g.genderName}
+											className='mb-4 '
+											style={{ height: "230px", width: "230px" }}
+										/>
+										<br />
+										<span className='GenderText mb-5'>{g.genderName}</span>
+									</Link>
 								</div>
 							);
 						})}

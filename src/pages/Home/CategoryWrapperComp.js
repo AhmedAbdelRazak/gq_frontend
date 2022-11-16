@@ -30,7 +30,7 @@ const CategoryWrapperComp = ({ chosenLanguage, categories }) => {
 								className='col-lg-2 col-md-4 col-sm-6 col-6 mx-auto text-center'
 								key={c}>
 								<Link
-									to={`/our-products/${i.categorySlug}/${i._id}/${chosenLanguage}`}
+									to={`/our-products?filterby=category&categoryName=${i.categorySlug}`}
 									className='imgAndCategoryName'
 									onClick={() => {
 										window.scrollTo({ top: 0, behavior: "smooth" });

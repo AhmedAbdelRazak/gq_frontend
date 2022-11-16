@@ -30,7 +30,7 @@ const OurBrandsComp = ({ chosenLanguage, allSubcategories }) => {
 								className='col-lg-2 col-md-4 col-sm-6 col-6 mx-auto text-center'
 								key={c}>
 								<Link
-									to={`/our-products/${i.categorySlug}/${i._id}`}
+									to={`/our-products?filterby=subcategory&subcategoryname=${i.SubcategorySlug}`}
 									className='imgAndCategoryName'
 									onClick={() => {
 										window.scrollTo({ top: 0, behavior: "smooth" });

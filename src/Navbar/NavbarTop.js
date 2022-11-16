@@ -407,6 +407,7 @@ export default withRouter(NavbarTop);
 
 const Nav = styled.nav`
 	margin-top: 0px;
+
 	.infiniteAppsLogo {
 		width: 65px;
 		height: 65px;

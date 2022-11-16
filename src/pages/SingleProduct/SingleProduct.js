@@ -460,19 +460,21 @@ const SingleProduct = (props) => {
 			) : (
 				<>
 					<div className='row'>
-						<DisplayImages
-							Product={Product}
-							chosenImages={chosenImages}
-							likee={likee}
-							setLikee={setLikee}
-							likeToggle={likeToggle}
-							likeToggle2={likeToggle2}
-							shouldRedirect2={shouldRedirect2}
-							redirect2={redirect2}
-						/>
+						<div className='col-md-7 text-center  mt-3'>
+							<DisplayImages
+								Product={Product}
+								chosenImages={chosenImages}
+								likee={likee}
+								setLikee={setLikee}
+								likeToggle={likeToggle}
+								likeToggle2={likeToggle2}
+								shouldRedirect2={shouldRedirect2}
+								redirect2={redirect2}
+							/>
+						</div>
 
 						<div
-							className='col-md-6 mx-auto mt-3'
+							className='col-md-5 mx-auto mt-3'
 							style={{ border: "1px solid lightgrey", borderRadius: "15px" }}>
 							<h3
 								className='text-title mb-4 my-3'
@@ -517,7 +519,7 @@ const SingleProduct = (props) => {
 							<p
 								className='text-capitalize text-title mt-4'
 								style={{ color: "#0052a5" }}>
-								A little bit about {Product.productName}:{" "}
+								A little bit about "{Product.productName}":{" "}
 							</p>
 
 							<p
@@ -542,33 +544,49 @@ const SingleProduct = (props) => {
 							<br />
 							<hr />
 							<div className='row text-center col-lg-12 col-md-11 mx-auto my-5 buttons'>
-								{Product.quantity > 0 ? (
-									<>
-										<div
-											className='col-md-3 btn btn-outline-primary p-2 mx-auto mt-2'
-											style={{ fontSize: "0.9rem", fontWeight: "bolder" }}
-											onClick={() => {
-												// history.push("/cart");
-												openSidebar();
-												addToCart(Product._id, null, 1, Product);
-											}}>
-											<span>
-												<i
-													className='fa fa-calendar mr-2'
-													aria-hidden='true'></i>
-											</span>
-											Add To Cart
-										</div>
-									</>
-								) : (
+								{!chosenProductAttributes.SubSKUColor ||
+								!chosenProductAttributes.SubSKUSize ? (
 									<div
 										className='col-md-3 btn btn-outline-primary p-2 mx-auto mt-2'
 										style={{ fontSize: "0.9rem", fontWeight: "bolder" }}>
 										<span>
 											<i className='fa fa-calendar mr-2' aria-hidden='true'></i>
 										</span>
-										Sold Out
+										Choose A Size And Color
 									</div>
+								) : (
+									<>
+										{chosenProductAttributes.quantity > 0 ? (
+											<>
+												<div
+													className='col-md-3 btn btn-outline-primary p-2 mx-auto mt-2'
+													style={{ fontSize: "0.9rem", fontWeight: "bolder" }}
+													onClick={() => {
+														// history.push("/cart");
+														openSidebar();
+														addToCart(Product._id, null, 1, Product);
+													}}>
+													<span>
+														<i
+															className='fa fa-calendar mr-2'
+															aria-hidden='true'></i>
+													</span>
+													Add To Cart
+												</div>
+											</>
+										) : (
+											<div
+												className='col-md-3 btn btn-outline-danger p-2 mx-auto mt-2'
+												style={{ fontSize: "0.9rem", fontWeight: "bolder" }}>
+												<span>
+													<i
+														className='fa fa-calendar mr-2'
+														aria-hidden='true'></i>
+												</span>
+												Sold Out
+											</div>
+										)}
+									</>
 								)}
 
 								<div
@@ -685,7 +703,6 @@ export default SingleProduct;
 const SingleEmp = styled.div`
 	width: 90%;
 	margin-top: 5px;
-
 	/* .carousel-slider {
 		width: 75%;
 	} */
@@ -713,6 +730,14 @@ const SingleEmp = styled.div`
 
 	.buttons:hover {
 		cursor: pointer;
+	}
+
+	@media (max-width: 1000px) {
+		.slider img {
+			width: 90%;
+			height: 400px !important;
+			object-fit: cover !important;
+		}
 	}
 `;
 

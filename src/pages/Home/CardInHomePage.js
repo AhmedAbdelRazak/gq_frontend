@@ -231,14 +231,7 @@ const CardInHomePage = ({
 								</Link>
 							</ImageFeat>
 						</div>
-						<div
-							className='mt-2 mb-3 productname'
-							style={{
-								fontSize: "15px",
-								fontWeight: "bold",
-								textAlign: "center",
-								textTransform: "capitalize",
-							}}>
+						<div className='mt-2 mb-3 productname'>
 							{chosenLanguage === "Arabic" ? (
 								<span
 									style={{
@@ -300,6 +293,9 @@ const ProductWrapper = styled.div`
 
 	.productname {
 		font-size: 14px;
+		font-weight: bold;
+		text-align: center;
+		text-transform: capitalize;
 	}
 
 	.cartoptions2 {
@@ -313,7 +309,19 @@ const ProductWrapper = styled.div`
 			height: 100%;
 		} */
 		.card {
-			min-height: 380px;
+			min-height: 440px;
+		}
+
+		.cartoptions {
+			font-size: 14px;
+		}
+
+		.cartoptions2 {
+			font-size: 14px;
+		}
+
+		.productname {
+			font-size: 12px;
 		}
 	}
 `;

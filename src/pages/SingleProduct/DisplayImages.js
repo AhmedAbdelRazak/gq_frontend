@@ -18,7 +18,7 @@ const DisplayImages = ({
 	redirect2,
 }) => {
 	return (
-		<div className='col-md-6 text-center  mt-3'>
+		<div>
 			{Product && chosenImages && chosenImages.length > 0 && (
 				<Carousel
 					autoPlay

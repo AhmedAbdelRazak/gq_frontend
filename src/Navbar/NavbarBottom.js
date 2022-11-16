@@ -383,12 +383,11 @@ export default withRouter(NavbarBottom);
 const Nav = styled.nav`
 	border-top: 1px solid lightgray;
 	border-bottom: 1px solid lightgray;
-	margin-top: 5px;
+	/* margin-top: 5px; */
 	position: -webkit-sticky;
 	position: sticky;
 	top: 0;
 	z-index: 120;
-	padding: 1px;
 
 	li a {
 		font-size: 0.95rem;

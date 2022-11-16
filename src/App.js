@@ -66,6 +66,7 @@ import { getAllAds } from "./Admin/apiAdmin";
 import AddHeroComp from "./Admin/OnlineStore/AddHeroComp";
 import OperationsReport from "./Admin/GQShopReports/OperationsReport";
 import SingleProduct from "./pages/SingleProduct/SingleProduct";
+import ShopPageMain from "./pages/ShopPage/ShopPageMain";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -119,11 +120,6 @@ const App = () => {
 	return (
 		<BrowserRouter>
 			<ToastContainer />
-			{window.location.pathname.includes("admin") ||
-			window.location.pathname === "/" ? null : allAdsCombined &&
-			  allAdsCombined.show_ad ? (
-				<NavbarAds />
-			) : null}
 
 			{window.location.pathname.includes("admin") ||
 			window.location.pathname === "/" ? null : (
@@ -143,6 +139,11 @@ const App = () => {
 					<NavbarBottom chosenLanguage={language} />
 				</>
 			)}
+			{window.location.pathname.includes("admin") ||
+			window.location.pathname === "/" ? null : allAdsCombined &&
+			  allAdsCombined.show_ad ? (
+				<NavbarAds />
+			) : null}
 
 			<Switch>
 				<Route path='/' exact component={Login} />
@@ -157,6 +158,11 @@ const App = () => {
 					component={SingleProduct}
 				/>
 				<Route path='/signup' exact component={Register} />
+				<Route
+					path='/our-products'
+					exact
+					component={() => <ShopPageMain chosenLanguage={language} />}
+				/>
 				<AdminRoute path='/admin/dashboard' exact component={AdminDashboard} />
 				<AdminRoute path='/admin/add-gender' exact component={AddGender} />
 				<AdminRoute
