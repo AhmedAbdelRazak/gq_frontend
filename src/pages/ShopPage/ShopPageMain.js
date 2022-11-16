@@ -286,13 +286,13 @@ const ShopPageMain = (props) => {
 						{allCategories &&
 							allCategories.map((c, i) => {
 								return (
-									<label htmlFor={c} className='block ' key={i}>
+									<label htmlFor={c} className='block mr-3 mt-3' key={i}>
 										<input
 											type='checkbox'
 											id={c}
 											// onChange={handleQueryChange_WorkingHours}
 											value={c.categoryName}
-											className='m-3'
+											className='m-2'
 											// checked={
 											// 	PreviousAddedHours &&
 											// 	PreviousAddedHours.hoursCanBeScheduled &&  PreviousAddedHours.hoursCanBeScheduled.indexOf(
@@ -312,13 +312,13 @@ const ShopPageMain = (props) => {
 						{allSizes &&
 							allSizes.map((s, i) => {
 								return (
-									<label htmlFor={s} className='block ' key={i}>
+									<label htmlFor={s} className='block block mr-3 mt-3' key={i}>
 										<input
 											type='checkbox'
 											id={s}
 											// onChange={handleQueryChange_WorkingHours}
 											value={s}
-											className='m-3'
+											className='m-2'
 											// checked={
 											// 	PreviousAddedHours &&
 											// 	PreviousAddedHours.hoursCanBeScheduled &&  PreviousAddedHours.hoursCanBeScheduled.indexOf(
@@ -338,7 +338,7 @@ const ShopPageMain = (props) => {
 						{allProductColors &&
 							allProductColors.map((c, i) => {
 								return (
-									<label htmlFor={c} className='block  m-2' key={i}>
+									<label htmlFor={c} className='block  block mr-3 mt-3' key={i}>
 										<span
 											className='squareColor'
 											style={{ background: c }}></span>
@@ -429,7 +429,7 @@ const ShopPageMainWrapper = styled.div`
 		min-height: ${(props) => (props.show ? "70px" : "")};
 		animation: ${(props) => (props.show ? "fadeIn 0.5s linear forwards" : "")};
 		transition: 0.3s;
-		text-transform: capitalize;
+		text-transform: uppercase;
 	}
 
 	.filterClickedWrapper > label {
