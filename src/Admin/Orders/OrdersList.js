@@ -92,9 +92,12 @@ const OrdersList = () => {
 									const pickedSub =
 										data2 && data2.filter((iii) => iii._id === productId)[0];
 
-									const GetSpecificSubSKU = pickedSub.productAttributes.filter(
-										(iii) => iii.SubSKU === SubSKU,
-									)[0];
+									const GetSpecificSubSKU =
+										pickedSub &&
+										pickedSub.productAttributes &&
+										pickedSub.productAttributes.filter(
+											(iii) => iii.SubSKU === SubSKU,
+										)[0];
 									const QtyChecker =
 										GetSpecificSubSKU &&
 										GetSpecificSubSKU.quantity < OrderedQty;
@@ -144,9 +147,12 @@ const OrdersList = () => {
 								const pickedSub =
 									data2 && data2.filter((iii) => iii._id === productId)[0];
 
-								const GetSpecificSubSKU = pickedSub.productAttributes.filter(
-									(iii) => iii.SubSKU === SubSKU,
-								)[0];
+								const GetSpecificSubSKU =
+									pickedSub &&
+									pickedSub.productAttributes &&
+									pickedSub.productAttributes.filter(
+										(iii) => iii.SubSKU === SubSKU,
+									)[0];
 								const QtyChecker =
 									GetSpecificSubSKU && GetSpecificSubSKU.quantity < OrderedQty;
 
@@ -302,9 +308,10 @@ const OrdersList = () => {
 				const pickedSub =
 					allProducts && allProducts.filter((iii) => iii._id === productId)[0];
 
-				const GetSpecificSubSKU = pickedSub.productAttributes.filter(
-					(iii) => iii.SubSKU === SubSKU,
-				)[0];
+				const GetSpecificSubSKU =
+					pickedSub &&
+					pickedSub.productAttributes &&
+					pickedSub.productAttributes.filter((iii) => iii.SubSKU === SubSKU)[0];
 				const QtyChecker = GetSpecificSubSKU && GetSpecificSubSKU.quantity;
 
 				return QtyChecker;
@@ -365,6 +372,7 @@ const OrdersList = () => {
 
 				const GetSpecificSubSKU =
 					pickedSub &&
+					pickedSub.productAttributes &&
 					pickedSub.productAttributes.filter((iii) => iii.SubSKU === SubSKU)[0];
 				const QtyChecker =
 					GetSpecificSubSKU && GetSpecificSubSKU.quantity < OrderedQty;
@@ -699,6 +707,8 @@ const OrdersList = () => {
 												allProducts.filter((iii) => iii._id === productId)[0];
 
 											const GetSpecificSubSKU =
+												pickedSub &&
+												pickedSub.productAttributes &&
 												pickedSub.productAttributes.filter(
 													(iii) => iii.SubSKU === SubSKU,
 												)[0];
