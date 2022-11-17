@@ -1168,7 +1168,7 @@ const OperationsReport = () => {
 																	);
 																}
 															}}>
-															No Enough Stock
+															Not Enough Stock
 														</Link>
 													)}
 												</td>

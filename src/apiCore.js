@@ -284,3 +284,209 @@ export const getColors = (token) => {
 		})
 		.catch((err) => console.log(err));
 };
+
+export const gettingAllProducts = (
+	filterBy,
+	urlFilters,
+	setAllProducts,
+	setAllCategories,
+	setAllSubcategories,
+	setAllSizes,
+	setAllProductColors,
+	setAllGenders,
+	setSelectedPriceRange,
+	setMinPrice,
+	setMaxPrice,
+) => {
+	getProducts().then((data) => {
+		if (data.error) {
+			console.log(data.error);
+		} else {
+			if (filterBy === "gender") {
+				setAllProducts(
+					data
+						.filter((i) => i.activeProduct === true)
+						.filter(
+							(iii) =>
+								iii.gender.genderName.toLowerCase() ===
+								urlFilters.toLowerCase(),
+						),
+				);
+			} else if (filterBy === "category") {
+				setAllProducts(
+					data
+						.filter((i) => i.activeProduct === true)
+						.filter(
+							(iii) =>
+								iii.category.categorySlug.toLowerCase() ===
+								urlFilters.toLowerCase(),
+						),
+				);
+			} else if (filterBy === "subcategory") {
+				setAllProducts(
+					data
+						.filter((i) => i.activeProduct === true)
+						.filter(
+							(iii) =>
+								iii.subcategory
+									.map((iiii) => iiii.SubcategorySlug)
+									.indexOf(urlFilters.toLowerCase()) !== -1,
+						),
+				);
+			} else {
+				setAllProducts(data.filter((i) => i.activeProduct === true));
+			}
+
+			//Categories Unique
+			// var categoriesArray = data
+			// 	.filter((i) => i.activeProduct === true)
+			// 	.map((ii) => ii.category);
+
+			// let uniqueCategories = [
+			// 	...new Map(
+			// 		categoriesArray.map((item) => [item["categoryName"], item]),
+			// 	).values(),
+			// ];
+			// setAllCategories(uniqueCategories);
+
+			if (filterBy === "gender") {
+				// eslint-disable-next-line
+				var categoriesArray = data
+					.filter((i) => i.activeProduct === true)
+					.filter(
+						(iii) =>
+							iii.gender.genderName.toLowerCase() === urlFilters.toLowerCase(),
+					)
+					.filter((i) => i.activeProduct === true)
+					.map((ii) => ii.category);
+
+				let uniqueCategories = [
+					...new Map(
+						categoriesArray.map((item) => [item["categoryName"], item]),
+					).values(),
+				];
+				setAllCategories(uniqueCategories);
+			} else if (filterBy === "category") {
+				// eslint-disable-next-line
+				var categoriesArray = data
+					.filter((i) => i.activeProduct === true)
+					.filter(
+						(iii) =>
+							iii.category.categorySlug.toLowerCase() ===
+							urlFilters.toLowerCase(),
+					)
+					.filter((i) => i.activeProduct === true)
+					.map((ii) => ii.category);
+
+				let uniqueCategories = [
+					...new Map(
+						categoriesArray.map((item) => [item["categoryName"], item]),
+					).values(),
+				];
+				setAllCategories(uniqueCategories);
+			} else if (filterBy === "subcategory") {
+				// eslint-disable-next-line
+				var categoriesArray = data
+					.filter((i) => i.activeProduct === true)
+					.filter(
+						(iii) =>
+							iii.subcategory
+								.map((iiii) => iiii.SubcategorySlug)
+								.indexOf(urlFilters.toLowerCase()) !== -1,
+					)
+					.filter((i) => i.activeProduct === true)
+					.map((ii) => ii.category);
+
+				let uniqueCategories = [
+					...new Map(
+						categoriesArray.map((item) => [item["categoryName"], item]),
+					).values(),
+				];
+				setAllCategories(uniqueCategories);
+			} else {
+				// eslint-disable-next-line
+				var categoriesArray = data
+					.filter((i) => i.activeProduct === true)
+					.map((ii) => ii.category);
+
+				let uniqueCategories = [
+					...new Map(
+						categoriesArray.map((item) => [item["categoryName"], item]),
+					).values(),
+				];
+				setAllCategories(uniqueCategories);
+			}
+
+			///
+
+			//Subcategories Unique
+			var SubcategoriesArray = data
+				.filter((i) => i.activeProduct === true)
+				.map((ii) => ii.subcategory);
+
+			var mergedSubcategories = [].concat.apply([], SubcategoriesArray);
+			let uniqueSubcategories = [
+				...new Map(
+					mergedSubcategories.map((item) => [item["SubcategoryName"], item]),
+				).values(),
+			];
+			setAllSubcategories(uniqueSubcategories);
+
+			//Gender Unique
+			var genderUnique = data
+				.filter((i) => i.activeProduct === true)
+				.map((ii) => ii.gender);
+
+			let uniqueGenders = [
+				...new Map(
+					genderUnique.map((item) => [item["genderName"], item]),
+				).values(),
+			];
+			setAllGenders(uniqueGenders);
+
+			//Unique Sizes
+			const allSizes = data
+				.filter((i) => i.activeProduct === true)
+				.map((i) => i.productAttributes.map((ii) => ii.size));
+
+			var mergedSizes = [].concat.apply([], allSizes);
+
+			let uniqueSizes = [
+				...new Map(mergedSizes.map((item) => [item, item])).values(),
+			];
+			setAllSizes(uniqueSizes);
+
+			//Unique Colors
+			const allColorsCombined = data
+				.filter((i) => i.activeProduct === true)
+				.map((i) => i.productAttributes.map((ii) => ii.color));
+
+			var mergedColors = [].concat.apply([], allColorsCombined);
+
+			let uniqueColors = [
+				...new Map(mergedColors.map((item) => [item, item])).values(),
+			];
+
+			setAllProductColors(uniqueColors);
+
+			//Unique Prices
+			const allPricesCombined = data
+				.filter((i) => i.activeProduct === true)
+				.map((i) => i.productAttributes.map((ii) => ii.priceAfterDiscount));
+
+			var mergedPrices = [].concat.apply([], allPricesCombined);
+
+			let uniquePrices = [
+				...new Map(mergedPrices.map((item) => [item, item])).values(),
+			];
+
+			setMinPrice(Math.min(...uniquePrices));
+			setMaxPrice(Math.max(...uniquePrices));
+
+			setSelectedPriceRange([
+				Math.min(...uniquePrices),
+				Math.max(...uniquePrices),
+			]);
+		}
+	});
+};

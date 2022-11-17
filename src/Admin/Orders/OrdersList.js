@@ -901,7 +901,7 @@ const OrdersList = () => {
 																	);
 																}
 															}}>
-															No Enough Stock
+															Not Enough Stock
 														</Link>
 													)}
 												</td>

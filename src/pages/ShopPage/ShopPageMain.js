@@ -1,33 +1,12 @@
 /** @format */
 
-import { ArrowDownOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { getProducts } from "../../apiCore";
+import { getColors, gettingAllProducts } from "../../apiCore";
+import MainFilter from "./Filters/MainFilter";
+import CardForShop from "./CardForShop";
 
-const isActive = (c, sureClickedLink, filterItemClicked) => {
-	if (c === sureClickedLink && filterItemClicked) {
-		return {
-			background: "rgb(245, 245, 245)",
-			transition: "0.3s",
-			padding: "3px",
-			color: "black",
-			fontWeight: "bold",
-		};
-	} else {
-		return {
-			margin: "0px 20px",
-			textTransform: "uppercase",
-			fontSize: "1rem",
-			fontWeight: "bold",
-			color: "#767676",
-			transition: "0.3s",
-			padding: "3px",
-		};
-	}
-};
-
-const ShopPageMain = (props) => {
+const ShopPageMain = ({ chosenLanguage }) => {
 	const [allProducts, setAllProducts] = useState([]);
 	const [allCategories, setAllCategories] = useState([]);
 	// eslint-disable-next-line
@@ -38,110 +17,11 @@ const ShopPageMain = (props) => {
 	const [allProductColors, setAllProductColors] = useState([]);
 	const [filterItemClicked, setFilterItemClicked] = useState(false);
 	const [clickedItem, setClickedItem] = useState("");
-
-	const gettingAllProducts = (filterBy, urlFilters) => {
-		getProducts().then((data) => {
-			if (data.error) {
-				console.log(data.error);
-			} else {
-				if (filterBy === "gender") {
-					setAllProducts(
-						data
-							.filter((i) => i.activeProduct === true)
-							.filter(
-								(iii) =>
-									iii.gender.genderName.toLowerCase() ===
-									urlFilters.toLowerCase(),
-							),
-					);
-				} else if (filterBy === "category") {
-					setAllProducts(
-						data
-							.filter((i) => i.activeProduct === true)
-							.filter(
-								(iii) =>
-									iii.category.categorySlug.toLowerCase() ===
-									urlFilters.toLowerCase(),
-							),
-					);
-				} else if (filterBy === "subcategory") {
-					setAllProducts(
-						data
-							.filter((i) => i.activeProduct === true)
-							.filter(
-								(iii) =>
-									iii.subcategory
-										.map((iiii) => iiii.SubcategorySlug)
-										.indexOf(urlFilters.toLowerCase()) !== -1,
-							),
-					);
-				} else {
-					setAllProducts(data.filter((i) => i.activeProduct === true));
-				}
-
-				//Categories Unique
-				var categoriesArray = data
-					.filter((i) => i.activeProduct === true)
-					.map((ii) => ii.category);
-
-				let uniqueCategories = [
-					...new Map(
-						categoriesArray.map((item) => [item["categoryName"], item]),
-					).values(),
-				];
-				setAllCategories(uniqueCategories);
-
-				//Subcategories Unique
-				var SubcategoriesArray = data
-					.filter((i) => i.activeProduct === true)
-					.map((ii) => ii.subcategory);
-
-				var mergedSubcategories = [].concat.apply([], SubcategoriesArray);
-				let uniqueSubcategories = [
-					...new Map(
-						mergedSubcategories.map((item) => [item["SubcategoryName"], item]),
-					).values(),
-				];
-				setAllSubcategories(uniqueSubcategories);
-
-				//Gender Unique
-				var genderUnique = data
-					.filter((i) => i.activeProduct === true)
-					.map((ii) => ii.gender);
-
-				let uniqueGenders = [
-					...new Map(
-						genderUnique.map((item) => [item["genderName"], item]),
-					).values(),
-				];
-				setAllGenders(uniqueGenders);
-
-				//Unique Sizes
-				const allSizes = data
-					.filter((i) => i.activeProduct === true)
-					.map((i) => i.productAttributes.map((ii) => ii.size));
-
-				var mergedSizes = [].concat.apply([], allSizes);
-
-				let uniqueSizes = [
-					...new Map(mergedSizes.map((item) => [item, item])).values(),
-				];
-				setAllSizes(uniqueSizes);
-
-				//Unique Colors
-				const allColorsCombined = data
-					.filter((i) => i.activeProduct === true)
-					.map((i) => i.productAttributes.map((ii) => ii.color));
-
-				var mergedColors = [].concat.apply([], allColorsCombined);
-
-				let uniqueColors = [
-					...new Map(mergedColors.map((item) => [item, item])).values(),
-				];
-				setAllProductColors(uniqueColors);
-			}
-		});
-	};
+	const [usedFilters, setUsedFilters] = useState([]);
+	const [allColors, setAllColors] = useState([]);
+	const [selectedPriceRange, setSelectedPriceRange] = useState(0);
+	const [minPrice, setMinPrice] = useState(0);
+	const [maxPrice, setMaxPrice] = useState(0);
 
 	//getting filters from URL
 	const filterPath = window.location.search;
@@ -159,200 +39,122 @@ const ShopPageMain = (props) => {
 		filterPath.indexOf("&"),
 	);
 
+	const gettingAllColors = () => {
+		getColors().then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllColors(data);
+			}
+		});
+	};
+
 	useEffect(() => {
-		gettingAllProducts(filterBy, urlFilters);
+		if (filterBy && urlFilters) {
+			setUsedFilters([
+				{
+					filterBy: filterBy,
+					filterByType: [urlFilters],
+				},
+			]);
+		}
+		gettingAllColors();
+		gettingAllProducts(
+			filterBy,
+			urlFilters,
+			setAllProducts,
+			setAllCategories,
+			setAllSubcategories,
+			setAllSizes,
+			setAllProductColors,
+			setAllGenders,
+			setSelectedPriceRange,
+			setMinPrice,
+			setMaxPrice,
+			selectedPriceRange,
+		);
 
 		// eslint-disable-next-line
 	}, []);
 
+	const returnFinalProducts = () => {
+		var filteredByCategories =
+			usedFilters &&
+			usedFilters
+				.filter((ii) => ii.filterBy === "category")
+				.map((iii) => iii.filterByType)[0];
+
+		var finalProducts =
+			allProducts &&
+			allProducts.filter(
+				(i) =>
+					filteredByCategories &&
+					filteredByCategories.indexOf(i.category.categorySlug) !== -1,
+			);
+
+		return finalProducts;
+	};
+
+	console.log(returnFinalProducts(), "returnFinalProducts");
+	console.log(usedFilters, "usedFilters");
+
+	var allProductsAdded =
+		allProducts &&
+		allProducts.map((ii) => {
+			return {
+				...ii,
+				quantity: 12,
+			};
+		});
+
 	return (
-		<ShopPageMainWrapper show={filterItemClicked}>
+		<ShopPageMainWrapper>
 			<div className='heroFilter'>
 				<div className='titleWrapper'>
 					<h5>{urlFilters ? urlFilters : ""}</h5>
 					<h2>All products</h2>
 				</div>
 			</div>
-			<div
-				className='filtersWrapper'
-				onMouseLeave={() => {
-					setFilterItemClicked(false);
-				}}>
-				<strong className='filterTitle'>Filters: </strong>
-				<span
-					className='filtersItem'
-					style={isActive("productType", clickedItem, filterItemClicked)}
-					onClick={() => {
-						if (filterItemClicked) {
-							if (clickedItem === "productType") {
-								setFilterItemClicked(!filterItemClicked);
-							} else {
-								setClickedItem("productType");
-							}
-						} else {
-							setFilterItemClicked(!filterItemClicked);
-							setClickedItem("productType");
-						}
-					}}>
-					Product Type{" "}
-					<span className='arrowDownIcon'>
-						<ArrowDownOutlined />
-					</span>{" "}
-				</span>
-				<span
-					className='filtersItem'
-					style={isActive("size", clickedItem, filterItemClicked)}
-					onClick={() => {
-						if (filterItemClicked) {
-							if (clickedItem === "size") {
-								setFilterItemClicked(!filterItemClicked);
-							} else {
-								setClickedItem("size");
-							}
-						} else {
-							setFilterItemClicked(!filterItemClicked);
-							setClickedItem("size");
-						}
-					}}>
-					Size{" "}
-					<span className='arrowDownIcon'>
-						<ArrowDownOutlined />
-					</span>{" "}
-				</span>
-				<span
-					className='filtersItem'
-					style={isActive("color", clickedItem, filterItemClicked)}
-					onClick={() => {
-						if (filterItemClicked) {
-							if (clickedItem === "color") {
-								setFilterItemClicked(!filterItemClicked);
-							} else {
-								setClickedItem("color");
-							}
-						} else {
-							setFilterItemClicked(!filterItemClicked);
-							setClickedItem("color");
-						}
-					}}>
-					Color{" "}
-					<span className='arrowDownIcon'>
-						<ArrowDownOutlined />
-					</span>{" "}
-				</span>
-				<span
-					className='filtersItem'
-					style={isActive("price", clickedItem, filterItemClicked)}
-					onClick={() => {
-						if (filterItemClicked) {
-							if (clickedItem === "price") {
-								setFilterItemClicked(!filterItemClicked);
-							} else {
-								setClickedItem("price");
-							}
-						} else {
-							setFilterItemClicked(!filterItemClicked);
-							setClickedItem("price");
-						}
-					}}>
-					Price{" "}
-					<span className='arrowDownIcon'>
-						<ArrowDownOutlined />
-					</span>{" "}
-				</span>
-				<span
-					className='filtersItem'
-					style={isActive("sortBy", clickedItem, filterItemClicked)}
-					onClick={() => {
-						if (filterItemClicked) {
-							setClickedItem("sortBy");
-							if (clickedItem === "sortBy") {
-								setFilterItemClicked(!filterItemClicked);
-							} else {
-								setClickedItem("sortBy");
-							}
-						} else {
-							setFilterItemClicked(!filterItemClicked);
-							setClickedItem("sortBy");
-						}
-					}}>
-					Sort By{" "}
-					<span className='arrowDownIcon'>
-						<ArrowDownOutlined />
-					</span>{" "}
-				</span>
-
-				{clickedItem === "productType" && (
-					<div className='filterClickedWrapper'>
-						{allCategories &&
-							allCategories.map((c, i) => {
-								return (
-									<label htmlFor={c} className='block mr-3 mt-3' key={i}>
-										<input
-											type='checkbox'
-											id={c}
-											// onChange={handleQueryChange_WorkingHours}
-											value={c.categoryName}
-											className='m-2'
-											// checked={
-											// 	PreviousAddedHours &&
-											// 	PreviousAddedHours.hoursCanBeScheduled &&  PreviousAddedHours.hoursCanBeScheduled.indexOf(
-											// 		h,
-											// 	) !== -1
-											// }
-										/>
-										{c.categoryName}
-									</label>
-								);
-							})}
-					</div>
-				)}
-
-				{clickedItem === "size" && (
-					<div className='filterClickedWrapper'>
-						{allSizes &&
-							allSizes.map((s, i) => {
-								return (
-									<label htmlFor={s} className='block block mr-3 mt-3' key={i}>
-										<input
-											type='checkbox'
-											id={s}
-											// onChange={handleQueryChange_WorkingHours}
-											value={s}
-											className='m-2'
-											// checked={
-											// 	PreviousAddedHours &&
-											// 	PreviousAddedHours.hoursCanBeScheduled &&  PreviousAddedHours.hoursCanBeScheduled.indexOf(
-											// 		h,
-											// 	) !== -1
-											// }
-										/>
-										{s}
-									</label>
-								);
-							})}
-					</div>
-				)}
-
-				{clickedItem === "color" && (
-					<div className='filterClickedWrapper'>
-						{allProductColors &&
-							allProductColors.map((c, i) => {
-								return (
-									<label htmlFor={c} className='block  block mr-3 mt-3' key={i}>
-										<span
-											className='squareColor'
-											style={{ background: c }}></span>
-
-										{c}
-									</label>
-								);
-							})}
-					</div>
-				)}
-			</div>
-			<h1 className='mt-5'>
+			<span>
+				<MainFilter
+					clickedItem={clickedItem}
+					setClickedItem={setClickedItem}
+					filterItemClicked={filterItemClicked}
+					setFilterItemClicked={setFilterItemClicked}
+					allCategories={allCategories}
+					allProductColors={allProductColors}
+					allSizes={allSizes}
+					usedFilters={usedFilters}
+					setUsedFilters={setUsedFilters}
+					allColors={allColors}
+					selectedPriceRange={selectedPriceRange}
+					setSelectedPriceRange={setSelectedPriceRange}
+					minPrice={minPrice}
+					maxPrice={maxPrice}
+				/>
+			</span>
+			{/* <h1 className='my-5'>
 				All Products: {allProducts && allProducts.length}
-			</h1>
+			</h1> */}
+
+			<div className='ml-5 text-center my-3'>
+				<div className='row mx-auto'>
+					{allProductsAdded &&
+						allProductsAdded.map((product, i) => (
+							<div
+								className='col-lg-3 col-md-6 col-sm-12 mx-auto text-center my-3'
+								// style={{ border: "solid black 1px" }}
+								key={i}>
+								<CardForShop
+									product={product}
+									key={i}
+									chosenLanguage={chosenLanguage}
+								/>
+							</div>
+						))}
+					<hr />
+				</div>
+			</div>
 		</ShopPageMainWrapper>
 	);
 };
@@ -390,63 +192,32 @@ const ShopPageMainWrapper = styled.div`
 		margin-top: 60px;
 	}
 
-	.filtersWrapper {
-		margin: 0px 0px 0px 50px;
-		/* border: 2px red solid; */
+	.ProductSlider {
+		padding: 0px 100px 0px 100px;
 	}
 
-	.filterTitle {
-		text-transform: uppercase;
-		letter-spacing: 1px;
-		font-size: 1rem;
-		color: black;
+	@media (max-width: 1400px) {
+		.ProductSlider {
+			padding: 0px;
+		}
 	}
+	@media (max-width: 1200px) {
+		.ProductSlider {
+			padding: 0px 10px 0px 10px;
+		}
 
-	.filtersItem {
-		margin: 0px 20px;
-		text-transform: uppercase;
-		font-size: 1rem;
-		font-weight: bold;
-		color: #767676;
-		transition: 0.3s;
-		padding: 3px;
-	}
+		.title {
+			font-size: 1rem;
+			font-weight: bold;
+			/* text-shadow: 3px 3px 10px; */
+		}
 
-	.filtersItem:hover {
-		cursor: pointer;
-		background: rgb(245, 245, 245);
-		transition: 0.3s;
-		padding: 3px;
-	}
-
-	.arrowDownIcon {
-		font-size: 1.2rem;
-		font-weight: bolder;
-	}
-
-	.filterClickedWrapper {
-		background: ${(props) => (props.show ? "rgb(245, 245, 245)" : "")};
-		min-height: ${(props) => (props.show ? "70px" : "")};
-		animation: ${(props) => (props.show ? "fadeIn 0.5s linear forwards" : "")};
-		transition: 0.3s;
-		text-transform: uppercase;
-	}
-
-	.filterClickedWrapper > label {
-		display: ${(props) => (props.show ? "" : "none")};
-	}
-
-	.squareColor {
-		padding: 4px 15px;
-		border-radius: 2px;
-	}
-
-	@keyframes fadeIn {
-		0% {
-			opacity: 0;
-		} // CSS properties at start
-		100% {
-			opacity: 1;
-		} // CSS properties at end
+		.titleArabic {
+			text-align: center;
+			font-size: 1.2rem;
+			/* letter-spacing: 7px; */
+			font-weight: bold;
+			/* text-shadow: 3px 3px 10px; */
+		}
 	}
 `;
