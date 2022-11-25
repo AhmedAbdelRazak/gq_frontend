@@ -257,7 +257,7 @@ const ReturnList = () => {
 										</td>
 										<td>{s.totalOrderQty}</td>
 										<td>
-											<Link to={`/admin/return-details/${s._id}`}>
+											<Link to={`/admin/single-order/${s._id}`}>
 												Details...
 											</Link>
 										</td>

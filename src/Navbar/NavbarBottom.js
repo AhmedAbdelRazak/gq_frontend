@@ -1,6 +1,6 @@
 /** @format */
 // eslint-disable-next-line
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { isAuthenticated } from "../auth";
 // import CartButtons from "./CartButtons";
@@ -8,6 +8,7 @@ import styled from "styled-components";
 import { useCartContext } from "../Checkout/cart_context";
 import { FaTrash, FaMinus, FaPlus, FaTimes } from "react-icons/fa";
 import DarkBackground from "./DarkBackground";
+import { getColors } from "../apiCore";
 
 const isActive = (history, path) => {
 	if (history.location.pathname === path) {
@@ -38,6 +39,8 @@ const isActive2 = (history, path) => {
 const NavbarBottom = ({ history, chosenLanguage }) => {
 	// const [click, setClick] = useState(false);
 	//
+	const [allColors, setAllColors] = useState([]);
+
 	const {
 		cart,
 		total_items,
@@ -46,13 +49,33 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 		toggleAmount,
 		// total_amount,
 		openSidebar,
+		changeSize,
+		changeColor,
 		closeSidebar,
 		isSidebarOpen,
 	} = useCartContext();
 
+	const gettingAllColors = () => {
+		getColors().then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllColors(data);
+			}
+		});
+	};
+
+	useEffect(() => {
+		gettingAllColors();
+
+		// eslint-disable-next-line
+	}, []);
+
 	// const handleSidebar = () => {
 	// 	setClick(!click);
 	// };
+
+	var checkingAvailability = [];
 
 	const sideCart = () => {
 		return (
@@ -65,12 +88,40 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 				</div>
 				<div className='cellPhoneLayout mt-5'>
 					{cart.map((i, k) => {
+						var productColors =
+							i.allProductDetailsIncluded.productAttributes.map(
+								(iii) => iii.color,
+							);
+						var uniqueProductColors = [
+							...new Map(productColors.map((item) => [item, item])).values(),
+						];
+
+						var productSizes =
+							i.allProductDetailsIncluded.productAttributes.map(
+								(iii) => iii.size,
+							);
+						var uniqueProductSizes = [
+							...new Map(productSizes.map((item) => [item, item])).values(),
+						];
+
+						var chosenAttribute =
+							i.allProductDetailsIncluded.productAttributes.filter(
+								(iii) => iii.color === i.color && iii.size === i.size,
+							)[0];
+
+						if (i.allProductDetailsIncluded.activeBackorder) {
+							checkingAvailability.push(true);
+						} else {
+							checkingAvailability.push(chosenAttribute.quantity >= i.amount);
+						}
+
 						const increase = () => {
 							toggleAmount(i.id, "inc");
 						};
 						const decrease = () => {
 							toggleAmount(i.id, "dec");
 						};
+
 						return (
 							<div key={k} className='mt-2'>
 								<div className='row mx-auto'>
@@ -89,9 +140,85 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 												fontSize: "12px",
 												fontWeight: "bold",
 												marginLeft: "10px",
+												textTransform: "capitalize",
 											}}>
 											{chosenLanguage === "Arabic" ? i.nameArabic : i.name}
 										</div>
+										<div
+											style={{
+												fontSize: "12px",
+												fontWeight: "bold",
+												marginLeft: "10px",
+												marginTop: "10px",
+												textTransform: "capitalize",
+											}}>
+											<span className='mr-3 '>
+												Size:{" "}
+												<select
+													style={{ textTransform: "capitalize" }}
+													onChange={(e) => changeSize(i.id, e.target.value)}>
+													<option style={{ textTransform: "capitalize" }}>
+														{i.size}
+													</option>
+
+													{uniqueProductSizes &&
+														uniqueProductSizes.map((ss, ii) => {
+															return (
+																<option key={ii} value={ss}>
+																	{ss}
+																</option>
+															);
+														})}
+												</select>
+											</span>
+											<span>
+												Color:{" "}
+												<select
+													style={{ textTransform: "capitalize" }}
+													onChange={(e) => changeColor(i.id, e.target.value)}>
+													<option style={{ textTransform: "capitalize" }}>
+														{allColors &&
+															allColors[
+																allColors.map((ii) => ii.hexa).indexOf(i.color)
+															] &&
+															allColors[
+																allColors.map((ii) => ii.hexa).indexOf(i.color)
+															].color}
+													</option>
+
+													{uniqueProductColors &&
+														uniqueProductColors.map((cc, ii) => {
+															return (
+																<option key={ii} value={cc}>
+																	{allColors &&
+																		allColors[
+																			allColors.map((ii) => ii.hexa).indexOf(cc)
+																		] &&
+																		allColors[
+																			allColors.map((ii) => ii.hexa).indexOf(cc)
+																		].color}
+																</option>
+															);
+														})}
+												</select>
+											</span>
+										</div>
+										<div
+											style={{
+												fontSize: "12px",
+												fontWeight: "bold",
+												marginLeft: "10px",
+												marginTop: "10px",
+												textTransform: "capitalize",
+												color: "darkgreen",
+											}}>
+											{i.allProductDetailsIncluded
+												.activeBackorder ? null : chosenAttribute.quantity >=
+											  i.amount ? null : (
+												<span style={{ color: "red" }}>Unavailable Stock</span>
+											)}
+										</div>
+
 										{chosenLanguage === "Arabic" ? (
 											<span
 												className='buttons-up-down'
@@ -142,7 +269,7 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 												marginLeft: "70px",
 												marginTop: "10px",
 											}}>
-											{i.priceAfterDiscount * i.amount} KD
+											{i.priceAfterDiscount * i.amount} L.E.
 										</div>
 										<button
 											type='button'
@@ -171,17 +298,21 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 								? "مواصلة التسوق"
 								: "Continue Shopping"}
 						</Link>
-						<Link
-							to='/cart'
-							className='link-btn btn-primary'
-							onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-							{chosenLanguage === "Arabic" ? "الدفع" : "Check Out"}
-						</Link>
+						{checkingAvailability.indexOf(false) !== -1 ? null : (
+							<Link
+								to='/cart'
+								className='link-btn btn-primary'
+								onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+								{chosenLanguage === "Arabic" ? "الدفع" : "Check Out"}
+							</Link>
+						)}
 					</div>
 				</div>
 			</SideWrapper>
 		);
 	};
+
+	console.log(checkingAvailability, "available");
 
 	return (
 		<Nav

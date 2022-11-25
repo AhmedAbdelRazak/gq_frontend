@@ -23,3 +23,5 @@ export const CLEAR_CART = "CLEAR_CART";
 export const COUNT_CART_TOTALS = "COUNT_CART_TOTALS";
 export const SHIPPING_FEES = "SHIPPING_FEE";
 export const SHIPPING_DETAILS = "SHIPPING_DETAILS";
+export const CHANGE_COLOR = "CHANGE_COLOR";
+export const CHANGE_SIZE = "CHANGE_SIZE";

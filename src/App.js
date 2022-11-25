@@ -55,6 +55,8 @@ import StockReport from "./Admin/GQShopReports/StockReport";
 import OnlineStoreManagement from "./Admin/OnlineStore/OnlineStoreManagement";
 import AddTopAds from "./Admin/OnlineStore/AddTopAds";
 import UpdateTopAds from "./Admin/OnlineStore/UpdateTopAds";
+import OperationsReport from "./Admin/GQShopReports/OperationsReport";
+import ReturnOrExchange from "./Admin/Orders/ReturnAndExchange/ReturnOrExchange";
 
 //Store
 import DarkBackground2 from "./Navbar/DarkBackground2";
@@ -64,9 +66,10 @@ import Home from "./pages/Home/Home";
 import NavbarAds from "./Navbar/NavbarAds";
 import { getAllAds } from "./Admin/apiAdmin";
 import AddHeroComp from "./Admin/OnlineStore/AddHeroComp";
-import OperationsReport from "./Admin/GQShopReports/OperationsReport";
+
 import SingleProduct from "./pages/SingleProduct/SingleProduct";
 import ShopPageMain from "./pages/ShopPage/ShopPageMain";
+import UpdateOrderMiscellaneous from "./Admin/Orders/CreateNewOrder/UpdateOrderMiscellaneous";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -275,6 +278,13 @@ const App = () => {
 					exact
 					component={CreateNewOrder}
 				/>
+
+				<AdminRoute
+					path='/admin/update-miscellaneous-order/:orderId'
+					exact
+					component={UpdateOrderMiscellaneous}
+				/>
+
 				<AdminRoute path='/admin/orders-hist' exact component={OrdersHist} />
 				<AdminRoute
 					path='/admin/single-order/:orderId'
@@ -329,6 +339,11 @@ const App = () => {
 					path='/admin/order-exchange'
 					exact
 					component={OrderExchange}
+				/>
+				<AdminRoute
+					path='/admin/exchange-or-return'
+					exact
+					component={ReturnOrExchange}
 				/>
 
 				<AdminRoute path='/admin/update-store' exact component={UpdateStore} />

@@ -77,26 +77,26 @@ const ShopPageMain = ({ chosenLanguage }) => {
 		// eslint-disable-next-line
 	}, []);
 
-	const returnFinalProducts = () => {
-		var filteredByCategories =
-			usedFilters &&
-			usedFilters
-				.filter((ii) => ii.filterBy === "category")
-				.map((iii) => iii.filterByType)[0];
+	// const returnFinalProducts = () => {
+	// 	var filteredByCategories =
+	// 		usedFilters &&
+	// 		usedFilters
+	// 			.filter((ii) => ii.filterBy === "category")
+	// 			.map((iii) => iii.filterByType)[0];
 
-		var finalProducts =
-			allProducts &&
-			allProducts.filter(
-				(i) =>
-					filteredByCategories &&
-					filteredByCategories.indexOf(i.category.categorySlug) !== -1,
-			);
+	// 	var finalProducts =
+	// 		allProducts &&
+	// 		allProducts.filter(
+	// 			(i) =>
+	// 				filteredByCategories &&
+	// 				filteredByCategories.indexOf(i.category.categorySlug) !== -1,
+	// 		);
 
-		return finalProducts;
-	};
+	// 	return finalProducts;
+	// };
 
-	console.log(returnFinalProducts(), "returnFinalProducts");
-	console.log(usedFilters, "usedFilters");
+	// console.log(returnFinalProducts(), "returnFinalProducts");
+	// console.log(usedFilters, "usedFilters");
 
 	var allProductsAdded =
 		allProducts &&

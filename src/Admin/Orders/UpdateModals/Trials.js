@@ -4,6 +4,7 @@ import React from "react";
 import styled from "styled-components";
 import { DatePicker, Modal } from "antd";
 import "antd/dist/antd.css"; // or 'antd/dist/antd.less'
+// eslint-disable-next-line
 import { toast } from "react-toastify";
 import moment from "moment";
 
@@ -116,9 +117,40 @@ const Trial = ({
 								{updateSingleOrder.status}
 							</span>
 						</h4>
+						{updateSingleOrder.status.includes("(Partial)") ? (
+							<select
+								className='form-control'
+								onChange={(e) =>
+									setUpdateSingleOrder({
+										...updateSingleOrder,
+										status: e.target.value,
+									})
+								}
+								style={{
+									border: "#cfcfcf solid 1px",
+									borderRadius: "10px",
+									width: "100%",
+									fontSize: "0.9rem",
+									boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
+								}}>
+								<option>Update Status</option>
+								<option value='Return Request (Partial)'>
+									Return Request (Partial)
+								</option>
+								<option value='In Return (Partial)'>In Return (Partial)</option>
+								<option value='Returned and Not Refunded (Partial)'>
+									Returned and Not Refunded (Partial)
+								</option>
+								<option value='Returned and Refunded (Partial)'>
+									Returned and Refunded (Partial)
+								</option>
 
-						{updateSingleOrder.status.includes("Return") ||
-						updateSingleOrder.status.includes("Returned") ? (
+								<option value='Returned and Rejected (Partial)'>
+									Returned and Rejected (Partial)
+								</option>
+							</select>
+						) : updateSingleOrder.status.includes("Return") ||
+						  updateSingleOrder.status.includes("Returned") ? (
 							<select
 								className='form-control'
 								onChange={(e) =>
@@ -147,7 +179,8 @@ const Trial = ({
 									Returned and Rejected
 								</option>
 							</select>
-						) : updateSingleOrder.status.includes("Exchange") ? (
+						) : updateSingleOrder.status.includes("Exchange") ||
+						  updateSingleOrder.status.includes("Exchanged") ? (
 							<select
 								className='form-control'
 								onChange={(e) =>
@@ -176,8 +209,8 @@ const Trial = ({
 								<option key='4' value='Exchange - Delivered'>
 									Exchange - Delivered
 								</option>
-								<option key='5' value='Exchange - Cancelled'>
-									Exchange - Cancelled
+								<option key='5' value='Exchanged - Stocked'>
+									Exchanged - Stocked
 								</option>
 							</select>
 						) : (
@@ -325,7 +358,7 @@ const Trial = ({
 					}
 
 					setModalVisible(false);
-					toast.success(`${updateElement} was successfully updated`);
+					// toast.success(`${updateElement} was successfully updated`);
 				}}
 				// okButtonProps={{ style: { display: "none" } }}
 				cancelButtonProps={{ style: { display: "none" } }}

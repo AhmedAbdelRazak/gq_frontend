@@ -317,9 +317,7 @@ const OrdersList = () => {
 				return QtyChecker;
 			};
 
-			var modifyingTheVariables = order.chosenProductQtyWithVariables.map(
-				(iii) => iii.filter((iiii) => iiii.quantity < iiii.OrderedQty),
-			);
+			var modifyingTheVariables = order.chosenProductQtyWithVariables;
 
 			var quantityModified = modifyingTheVariables.map((iii) =>
 				iii.map((iiii) => {
@@ -332,10 +330,11 @@ const OrdersList = () => {
 
 			var orderFinal = {
 				...order,
+				onholdStatus: "Not On Hold",
 				chosenProductQtyWithVariables: quantityModified,
 			};
 
-			console.log(orderFinal, "orderFinal");
+			// console.log(orderFinal, "orderFinal");
 
 			updateOrderInvoiceStock(
 				user._id,
@@ -343,6 +342,7 @@ const OrdersList = () => {
 				orderId,
 				orderFinal,
 				invoiceNumber,
+				"Not On Hold",
 			).then((data) => {
 				if (data.error) {
 					console.log("Status update failed");

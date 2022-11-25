@@ -13,6 +13,9 @@ import Navbar from "../AdminNavMenu/Navbar";
 import CountUp from "react-countup";
 import Chart from "react-apexcharts";
 import CustomDatesModal from "./CustomDatesModal";
+import OrdersCountCards from "../CardsBreakDown/OrdersCountCards";
+import OrdersQtyCard from "../CardsBreakDown/OrdersQtyCard";
+import OrdersTotalAmountCards from "../CardsBreakDown/OrdersTotalAmountCards";
 
 const isActive = (clickedLink, sureClickedLink) => {
 	if (clickedLink === sureClickedLink) {
@@ -70,7 +73,7 @@ const MainReports = () => {
 	yesterday.setDate(yesterday.getDate() - 1);
 	last7Days.setDate(last7Days.getDate() - 7);
 	last30Days.setDate(last30Days.getDate() - 30);
-	last90Days.setDate(last90Days.getDate() - 60);
+	last90Days.setDate(last90Days.getDate() - 120);
 
 	const loadOrders = () => {
 		function sortOrdersAscendingly(a, b) {
@@ -1033,6 +1036,15 @@ const MainReports = () => {
 									</div>
 								</div>
 							)}
+						</div>
+						<div>
+							<OrdersCountCards allOrders={allOrders} />
+						</div>
+						<div>
+							<OrdersQtyCard allOrders={allOrders} />
+						</div>
+						<div>
+							<OrdersTotalAmountCards allOrders={allOrders} />
 						</div>
 					</div>
 

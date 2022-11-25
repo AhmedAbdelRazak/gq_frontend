@@ -10,6 +10,8 @@ import {
 	SIDEBAR_CLOSE,
 	SHIPPING_FEES,
 	SHIPPING_DETAILS,
+	CHANGE_COLOR,
+	CHANGE_SIZE,
 } from "../actions";
 
 const cart_reducer = (state, action) => {
@@ -21,6 +23,7 @@ const cart_reducer = (state, action) => {
 	}
 
 	if (action.type === ADD_TO_CART) {
+		// eslint-disable-next-line
 		const { id, color, amount, product } = action.payload;
 		// console.log(product, "ActionPayload");
 		const tempItem = state.cart.find((i) => i.id === id);
@@ -44,11 +47,14 @@ const cart_reducer = (state, action) => {
 				_id: product._id,
 				name: product.productName,
 				nameArabic: product.productName_Arabic,
-				color,
+				color: product.productAttributes.map((i) => i.color)[0],
+				size: product.productAttributes.map((i) => i.size)[0],
 				amount,
 				image: product.thumbnailImage[0].images[0].url,
-				price: product.price,
-				priceAfterDiscount: product.priceAfterDiscount,
+				price: product.productAttributes.map((i) => i.MSRP)[0],
+				priceAfterDiscount: product.productAttributes.map(
+					(i) => i.priceAfterDiscount,
+				)[0],
 				max: product.quantity,
 				loyaltyPoints: product.loyaltyPoints,
 				slug: product.slug,
@@ -56,6 +62,7 @@ const cart_reducer = (state, action) => {
 				categoryName: product.category.categoryName,
 				categoryNameArabic: product.category.categoryName_Arabic,
 				relatedProducts: product.relatedProducts,
+				allProductDetailsIncluded: product,
 			};
 			return { ...state, cart: [...state.cart, newItem] };
 		}
@@ -117,6 +124,33 @@ const cart_reducer = (state, action) => {
 		const { chosenShipmentDetails } = action.payload;
 		return { ...state, shipmentChosen: chosenShipmentDetails };
 	}
+
+	if (action.type === CHANGE_COLOR) {
+		const { id, color } = action.payload;
+		const tempCart = state.cart.map((item) => {
+			if (item.id === id) {
+				let newColor = color;
+				return { ...item, color: newColor };
+			}
+			return item;
+		});
+
+		return { ...state, cart: tempCart };
+	}
+
+	if (action.type === CHANGE_SIZE) {
+		const { id, size } = action.payload;
+		const tempCart = state.cart.map((item) => {
+			if (item.id === id) {
+				let newSize = size;
+				return { ...item, size: newSize };
+			}
+			return item;
+		});
+
+		return { ...state, cart: tempCart };
+	}
+
 	throw new Error(`No Matching "${action.type}" - action type`);
 };
 

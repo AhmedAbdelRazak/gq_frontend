@@ -6,6 +6,8 @@ import {
 	ADD_TO_CART,
 	REMOVE_CART_ITEM,
 	TOGGLE_CART_ITEM_AMOUNT,
+	CHANGE_COLOR,
+	CHANGE_SIZE,
 	CLEAR_CART,
 	COUNT_CART_TOTALS,
 	SIDEBAR_OPEN,
@@ -47,6 +49,7 @@ export const CartProvider = ({ children }) => {
 	// add to cart
 	const addToCart = (id, color, amount, product) => {
 		dispatch({ type: ADD_TO_CART, payload: { id, color, amount, product } });
+		// console.log(product, "product from cart_context");
 	};
 	// remove item
 	const removeItem = (id) => {
@@ -60,6 +63,18 @@ export const CartProvider = ({ children }) => {
 	// clear cart
 	const clearCart = () => {
 		dispatch({ type: CLEAR_CART });
+	};
+
+	// change color
+	const changeColor = (id, color) => {
+		// console.log(id, value);
+		dispatch({ type: CHANGE_COLOR, payload: { id, color } });
+	};
+
+	// change color
+	const changeSize = (id, size) => {
+		// console.log(id, value);
+		dispatch({ type: CHANGE_SIZE, payload: { id, size } });
 	};
 
 	const addShipmentFee = (ShippingPrice) => {
@@ -87,6 +102,8 @@ export const CartProvider = ({ children }) => {
 				closeSidebar,
 				addShipmentFee,
 				addShipmentDetails,
+				changeColor,
+				changeSize,
 			}}>
 			{children}
 		</CartContext.Provider>

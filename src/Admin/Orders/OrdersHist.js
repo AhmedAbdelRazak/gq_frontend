@@ -20,6 +20,15 @@ import { toast } from "react-toastify";
 import { GroupOutlined } from "@ant-design/icons";
 import FiltersModal from "./UpdateModals/FiltersModal";
 import Pagination from "./Pagination";
+import OrdersCountCards from "../CardsBreakDown/OrdersCountCards";
+import OrdersQtyCard from "../CardsBreakDown/OrdersQtyCard";
+import OrdersTotalAmountCards from "../CardsBreakDown/OrdersTotalAmountCards";
+import ReactExport from "react-export-excel";
+// import ExcelToJson from "./ExcelToJson";
+
+const ExcelFile = ReactExport.ExcelFile;
+const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 const isActive = (clickedLink, sureClickedLink) => {
 	if (clickedLink === sureClickedLink) {
@@ -57,6 +66,15 @@ const OrdersHist = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [postsPerPage, setPostsPerPage] = useState(80);
 	const [allProducts, setAllProducts] = useState([]);
+	const [day1, setDay1] = useState(
+		new Date().toDateString("en-US", {
+			timeZone: "Africa/Cairo",
+		}),
+	);
+	const [day2, setDay2] = useState(
+		new Date(new Date().setDate(new Date().getDate() - 45)),
+	);
+	const [excelDataSet, setExcelDataSet] = useState([]);
 
 	const { user, token } = isAuthenticated();
 
@@ -67,9 +85,11 @@ const OrdersHist = () => {
 
 	var yesterday = new Date();
 	var last7Days = new Date();
+	var last90Days = new Date();
 
 	yesterday.setDate(yesterday.getDate() - 1);
 	last7Days.setDate(last7Days.getDate() - 7);
+	last90Days.setDate(last90Days.getDate() - 120);
 
 	const loadOrders = () => {
 		function sortOrdersAscendingly(a, b) {
@@ -90,11 +110,6 @@ const OrdersHist = () => {
 			return comparison;
 		}
 
-		var day1 = new Date().toDateString("en-US", {
-			timeZone: "Africa/Cairo",
-		});
-
-		var day2 = new Date(new Date().setDate(new Date().getDate() - 45));
 		listOrdersDates(user._id, token, day1, day2).then((data) => {
 			if (data.error) {
 				console.log(data.error);
@@ -107,8 +122,18 @@ const OrdersHist = () => {
 							.filter((i) => i.status === "In Processing")
 							.sort(sortOrdersAscendingly),
 					);
+					setExcelDataSet(
+						data
+							.filter((i) => i.status === "In Processing")
+							.sort(sortOrdersAscendingly),
+					);
 				} else if (selectedFilter === "OnHold") {
 					setAllOrders(
+						data
+							.filter((i) => i.status === "On Hold")
+							.sort(sortOrdersAscendingly),
+					);
+					setExcelDataSet(
 						data
 							.filter((i) => i.status === "On Hold")
 							.sort(sortOrdersAscendingly),
@@ -119,8 +144,18 @@ const OrdersHist = () => {
 							.filter((i) => i.status === "Shipped")
 							.sort(sortOrdersAscendingly),
 					);
+					setExcelDataSet(
+						data
+							.filter((i) => i.status === "Shipped")
+							.sort(sortOrdersAscendingly),
+					);
 				} else if (selectedFilter === "Delivered") {
 					setAllOrders(
+						data
+							.filter((i) => i.status === "Delivered")
+							.sort(sortOrdersAscendingly),
+					);
+					setExcelDataSet(
 						data
 							.filter((i) => i.status === "Delivered")
 							.sort(sortOrdersAscendingly),
@@ -131,10 +166,28 @@ const OrdersHist = () => {
 							.filter((i) => i.invoiceNumber === "Not Added")
 							.sort(sortOrdersAscendingly),
 					);
+					setExcelDataSet(
+						data
+							.filter((i) => i.invoiceNumber === "Not Added")
+							.sort(sortOrdersAscendingly),
+					);
 				} else if (selectedFilter === "Exchanged") {
 					setAllOrders(
 						data
-							.filter((i) => i.status.includes("Exchange"))
+							.filter(
+								(i) =>
+									i.status.includes("Exchange") ||
+									i.status.includes("Exchanged"),
+							)
+							.sort(sortOrdersAscendingly),
+					);
+					setExcelDataSet(
+						data
+							.filter(
+								(i) =>
+									i.status.includes("Exchange") ||
+									i.status.includes("Exchanged"),
+							)
 							.sort(sortOrdersAscendingly),
 					);
 				} else if (selectedFilter === "Return") {
@@ -146,8 +199,25 @@ const OrdersHist = () => {
 							)
 							.sort(sortOrdersAscendingly),
 					);
+					setExcelDataSet(
+						data
+							.filter(
+								(i) =>
+									i.status.includes("Return") || i.status.includes("Returned"),
+							)
+							.sort(sortOrdersAscendingly),
+					);
 				} else if (selectedFilter === "Today") {
 					setAllOrders(
+						data
+							.filter(
+								(i) =>
+									new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
+									new Date(today).setHours(0, 0, 0, 0),
+							)
+							.sort(sortOrdersAscendingly),
+					);
+					setExcelDataSet(
 						data
 							.filter(
 								(i) =>
@@ -166,6 +236,15 @@ const OrdersHist = () => {
 							)
 							.sort(sortOrdersAscendingly),
 					);
+					setExcelDataSet(
+						data
+							.filter(
+								(i) =>
+									new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
+									new Date(yesterday).setHours(0, 0, 0, 0),
+							)
+							.sort(sortOrdersAscendingly),
+					);
 				} else if (selectedFilter === "Last7Days") {
 					setAllOrders(
 						data
@@ -176,9 +255,20 @@ const OrdersHist = () => {
 							)
 							.sort(sortOrdersAscendingly),
 					);
+					setExcelDataSet(
+						data
+							.filter(
+								(i) =>
+									new Date(i.orderCreationDate).setHours(0, 0, 0, 0) >=
+									new Date(last7Days).setHours(0, 0, 0, 0),
+							)
+							.sort(sortOrdersAscendingly),
+					);
 				} else {
 					setAllOrders(data.sort(sortOrdersAscendingly));
+					setExcelDataSet(data.sort(sortOrdersAscendingly));
 				}
+				setExcelDataSet(data.sort(sortOrdersAscendingly));
 			}
 		});
 	};
@@ -209,7 +299,7 @@ const OrdersHist = () => {
 		loadOrdersFiltered();
 		gettingAllProducts();
 		// eslint-disable-next-line
-	}, [selectedFilter]);
+	}, [selectedFilter, day1, day2]);
 
 	const nonCancelledOrders =
 		allOrders && allOrders.filter((i) => i.status !== "Cancelled");
@@ -272,11 +362,12 @@ const OrdersHist = () => {
 	const dataTable = () => {
 		return (
 			<div className='tableData'>
-				<div className='mt-4'>
+				<div className='mt-4 ml-2'>
 					<Link className='btn btn-info' to='/admin/create-new-order'>
 						Create New Order
 					</Link>
 				</div>
+				<div className='mt-4'>{DownloadExcel()}</div>
 				<div className=' mb-3 form-group mx-3 text-center'>
 					<label
 						className='mt-3 mx-3'
@@ -515,6 +606,84 @@ const OrdersHist = () => {
 		return () => window.removeEventListener("scroll", onScroll);
 	}, [offset]);
 
+	var adjustedExcelData =
+		excelDataSet &&
+		excelDataSet.map((i, counter) => {
+			var descriptionChecker = i.chosenProductQtyWithVariables.map((iii) =>
+				iii.map(
+					(iiii) => "SKU: " + iiii.SubSKU + ", Qty: " + iiii.OrderedQty,
+					// "  /  " +
+					// iiii.productName,
+				),
+			);
+
+			var merged = [].concat.apply([], descriptionChecker);
+			var merged2 = [].concat.apply([], merged);
+			return {
+				Index: counter + 1,
+				Name: i.customerDetails.fullName,
+				address: i.customerDetails.address,
+				phone1: i.customerDetails.phone,
+				phone2: "",
+				City: i.customerDetails.cityName.toUpperCase(),
+				DescriptionOfGoods:
+					merged2.length === 1
+						? merged2[0]
+						: merged2.length === 2
+						? merged2[0] + " | " + merged2[1]
+						: merged2.length === 3
+						? merged2[0] + " | " + merged2[1] + " | " + merged2[2]
+						: merged2[0],
+				totalAmount: i.totalAmountAfterDiscount,
+				ReferenceNumber:
+					i.invoiceNumber !== "Not Added" ? i.invoiceNumber : i.OTNumber,
+				parcels: 1,
+				comment: i.customerDetails.orderComment
+					? i.customerDetails.orderComment
+					: ".",
+				company: i.orderSource.toUpperCase(),
+				email: "gqcanihelpyou@gmail.com",
+				weight: 1,
+			};
+		});
+
+	const DownloadExcel = () => {
+		return (
+			<ExcelFile
+				filename={`GQ_Orders_ ${new Date().toLocaleString("en-US", {
+					timeZone: "Africa/Cairo",
+				})}`}
+				element={
+					<Link
+						className='btn btn-danger mr-5 ml-2'
+						// onClick={() => exportPDF()}
+						to='#'>
+						Download Report (Excel)
+					</Link>
+				}>
+				<ExcelSheet data={adjustedExcelData} name='GQ_Orders'>
+					<ExcelColumn label='#' value='Index' />
+					<ExcelColumn label='Name' value='Name' />
+					<ExcelColumn label='Address' value='address' />
+					<ExcelColumn label='Phone' value='phone1' />
+					<ExcelColumn label='Phone2' value='phone2' />
+					<ExcelColumn label='City' value='City' />
+					<ExcelColumn
+						label='Description Of Goods'
+						value='DescriptionOfGoods'
+					/>
+					<ExcelColumn label='Cod' value='totalAmount' />
+					<ExcelColumn label='Refrance number' value='ReferenceNumber' />
+					<ExcelColumn label='Pieces' value='pieces' />
+					<ExcelColumn label='Comment' value='comment' />
+					<ExcelColumn label='Company' value='company' />
+					<ExcelColumn label='Email' value='email' />
+					<ExcelColumn label='Weight' value='weight' />
+				</ExcelSheet>
+			</ExcelFile>
+		);
+	};
+
 	return (
 		<OrdersHistWrapper show={AdminMenuStatus}>
 			{allOrders.length === 0 && allProducts.length === 0 ? (
@@ -560,7 +729,11 @@ const OrdersHist = () => {
 								<span
 									style={isActive("SelectAll", selectedFilter)}
 									className='mx-2 filterItem'
-									onClick={() => setSelectedFilter("SelectAll")}>
+									onClick={() => {
+										setSelectedFilter("SelectAll");
+										setDay2(last90Days);
+										setDay1(today);
+									}}>
 									Select All
 								</span>
 								<span
@@ -595,8 +768,20 @@ const OrdersHist = () => {
 							<h3
 								style={{ color: "#009ef7", fontWeight: "bold" }}
 								className='mx-auto text-center mb-5'>
-								Sales History
+								SALES HISTORY <br />
+								<span
+									style={{
+										fontSize: "0.9rem",
+										color: "black",
+										textAlign: "center",
+										fontWeight: "normal",
+									}}>
+									(Selected Date Range From{" "}
+									<strong> {new Date(day2).toDateString()}</strong> to{" "}
+									<strong>{new Date(day1).toDateString()}</strong>)
+								</span>
 							</h3>
+
 							<div className='container-fluid'>
 								<div className='row'>
 									<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
@@ -652,6 +837,18 @@ const OrdersHist = () => {
 										</div>
 									)}
 								</div>
+								<div>
+									<OrdersCountCards allOrders={allOrders} />
+								</div>
+								<div>
+									<OrdersQtyCard allOrders={allOrders} />
+								</div>
+								{user.userRole === "Order Taker" ||
+								user.userRole === "Operations" ? null : (
+									<div>
+										<OrdersTotalAmountCards allOrders={allOrders} />
+									</div>
+								)}
 							</div>
 
 							{dataTable()}

@@ -95,6 +95,20 @@ const OrderExchangeSingle = (props) => {
 		// eslint-disable-next-line
 	}, []);
 
+	// Return and Exchange in the side menu
+	// Search for INV number
+	// Below, we should find the order details.
+	// On click on the SKU ask, Return or Exchange
+	// Split the screen after the process.
+	// Total price difference after return or exchange
+	// Add an extra status for exchange to be "exchanged - Stocked"
+	// stock update when exchanging only if the status is Exchange - Delivered
+	// Returned Not Refunded to be returned to stock
+
+	// Small squares under the 3 rectangles
+
+	// If one item is backorder, don't decrease from the stock for the entire order
+
 	useEffect(() => {
 		const onScroll = () => setOffset(window.pageYOffset);
 		// clean up code

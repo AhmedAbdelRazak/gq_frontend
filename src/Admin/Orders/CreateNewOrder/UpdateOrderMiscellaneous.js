@@ -12,6 +12,7 @@ import {
 	getShippingOptions,
 	getStores,
 	ordersLength,
+	readSingleOrder,
 } from "../../apiAdmin";
 import { ShipToData } from "../ShippingOptions/ShipToData";
 import { isAuthenticated } from "../../../auth";
@@ -39,7 +40,7 @@ const isActive = (clickedLink, sureClickedLink) => {
 	}
 };
 
-const CreateNewOrder = () => {
+const UpdateOrderMiscellaneous = (props) => {
 	const [clickedLink, setClickedLink] = useState("ChooseProducts");
 	const [allProducts, setAllProducts] = useState([]);
 	const [allStores, setAllStores] = useState([]);
@@ -98,7 +99,7 @@ const CreateNewOrder = () => {
 		setCustomerDetails({ ...customerDetails, [name]: value });
 	};
 
-	const gettingAllProducts = () => {
+	const gettingAllProducts = (orderId) => {
 		getProducts().then((data) => {
 			if (data.error) {
 				console.log(data.error);
@@ -111,6 +112,158 @@ const CreateNewOrder = () => {
 						};
 					}),
 				);
+
+				readSingleOrder(user._id, token, orderId).then((data2) => {
+					if (data2.error) {
+						console.log(data2.error);
+					} else {
+						var chosenProductVariableMerged = [].concat.apply(
+							[],
+							data2.chosenProductQtyWithVariables,
+						);
+						var arrayOfRequiredSubSKU = chosenProductVariableMerged.map(
+							(iii) => iii.SubSKU,
+						);
+						setOrderTakerDiscount(data2.orderTakerDiscount);
+						setOrderSource(data2.orderSource);
+						setFreeShipping(data2.freeShipping);
+						setOrderCreationDate(data2.orderCreationDate);
+						setCustomerDetails(data2.customerDetails);
+						setChosenShippingOption(data2.chosenShippingOption);
+						// setChosenProductQty(data2.chosenProductQtyWithVariables);
+						var chosenProductVariables2 = chosenProductVariableMerged.map(
+							(i) => {
+								return {
+									SubSKU: arrayOfRequiredSubSKU,
+									productName: i.productName,
+									productId: i.productId,
+								};
+							},
+						);
+
+						let chosenProductVariables2RemoveDup = [
+							...new Map(
+								chosenProductVariables2.map((item) => [
+									item["productId"],
+									item,
+								]),
+							).values(),
+						];
+
+						setChosenProductVariables(chosenProductVariables2RemoveDup);
+
+						var productIdsList = data2.chosenProductQtyWithVariables.map((i) =>
+							i.map((ii) => ii.productId),
+						);
+						var mergedProductIdArray = [].concat.apply([], productIdsList);
+						var filteredProductsToCart = data.filter(
+							(i) => mergedProductIdArray.indexOf(i._id) !== -1,
+						);
+						setAddedProductToCart(filteredProductsToCart);
+
+						const productSubSKUImage = (
+							requiredProduct,
+							productSubSKUColor,
+						) => {
+							const theReturn = requiredProduct.productAttributes.filter(
+								(i) => i.color === productSubSKUColor,
+							)[0].productImages;
+							return theReturn[0] ? theReturn[0].url : undefined;
+						};
+						// console.log(productSubSKUImage(), "productSubSKUImage");
+						setChosenProductQty(
+							chosenProductVariables2RemoveDup.map((i) => {
+								return i.SubSKU.map((ii) => {
+									return {
+										SubSKU: ii,
+										OrderedQty: 1,
+										productId: i.productId,
+										productName: i.productName,
+										productMainImage: filteredProductsToCart.filter(
+											(s) => s._id === i.productId,
+										)[0].thumbnailImage[0].images[0].url,
+
+										productSubSKUImage: productSubSKUImage(
+											filteredProductsToCart.filter(
+												(s) => s._id === i.productId,
+											)[0],
+											filteredProductsToCart
+												.filter((s) => s._id === i.productId)[0]
+												.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+												.color,
+										)
+											? productSubSKUImage(
+													filteredProductsToCart.filter(
+														(s) => s._id === i.productId,
+													)[0],
+													filteredProductsToCart
+														.filter((s) => s._id === i.productId)[0]
+														.productAttributes.filter(
+															(ss) => ss.SubSKU === ii,
+														)[0].color,
+											  )
+											: filteredProductsToCart.filter(
+													(s) => s._id === i.productId,
+											  )[0].thumbnailImage[0].images[0].url,
+
+										SubSKUPriceAfterDiscount: filteredProductsToCart
+											.filter((s) => s._id === i.productId)[0]
+											.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+											.priceAfterDiscount,
+
+										SubSKURetailerPrice: filteredProductsToCart
+											.filter((s) => s._id === i.productId)[0]
+											.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+											.price,
+
+										SubSKUWholeSalePrice: filteredProductsToCart
+											.filter((s) => s._id === i.productId)[0]
+											.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+											? filteredProductsToCart
+													.filter((s) => s._id === i.productId)[0]
+													.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+													.WholeSalePrice
+											: 0,
+
+										SubSKUDropshippingPrice: filteredProductsToCart
+											.filter((s) => s._id === i.productId)[0]
+											.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+											? filteredProductsToCart
+													.filter((s) => s._id === i.productId)[0]
+													.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+													.DropShippingPrice
+											: 0,
+
+										pickedPrice: filteredProductsToCart
+											.filter((s) => s._id === i.productId)[0]
+											.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+											.priceAfterDiscount,
+
+										quantity: filteredProductsToCart
+											.filter((s) => s._id === i.productId)[0]
+											.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+											.quantity,
+
+										SubSKUColor: filteredProductsToCart
+											.filter((s) => s._id === i.productId)[0]
+											.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+											.color,
+
+										SubSKUSize: filteredProductsToCart
+											.filter((s) => s._id === i.productId)[0]
+											.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+											.size,
+
+										SubSKUMSRP: filteredProductsToCart
+											.filter((s) => s._id === i.productId)[0]
+											.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+											.MSRP,
+									};
+								});
+							}),
+						);
+					}
+				});
 			}
 		});
 	};
@@ -151,7 +304,8 @@ const CreateNewOrder = () => {
 	};
 
 	useEffect(() => {
-		gettingAllProducts();
+		const orderId = props.match.params.orderId;
+		gettingAllProducts(orderId);
 		gettingAllShippingOptions();
 		gettingAllStores();
 		// eslint-disable-next-line
@@ -180,6 +334,8 @@ const CreateNewOrder = () => {
 			);
 		});
 	}
+
+	// console.log(chosenProductQty, "chosenproductqty");
 
 	const PickingUpProducts = () => {
 		return (
@@ -429,8 +585,6 @@ const CreateNewOrder = () => {
 		);
 	};
 
-	// console.log(addedProductsToCart, "addedProductsToCart");
-
 	const availableVariables = () => {
 		let allAddedVariables =
 			addedProductsToCart && addedProductsToCart.map((i) => i.addVariables);
@@ -459,92 +613,95 @@ const CreateNewOrder = () => {
 	// console.log(productNameWithAttributes, "productNameWithAttributes");
 
 	useEffect(() => {
-		const productSubSKUImage = (requiredProduct, productSubSKUColor) => {
-			const theReturn = requiredProduct.productAttributes.filter(
-				(i) => i.color === productSubSKUColor,
-			)[0].productImages;
-			return theReturn[0] ? theReturn[0].url : undefined;
-		};
-		// console.log(productSubSKUImage(), "productSubSKUImage");
-		setChosenProductQty(
-			chosenProductVariables.map((i) => {
-				return i.SubSKU.map((ii) => {
-					return {
-						SubSKU: ii,
-						OrderedQty: 1,
-						productId: i.productId,
-						productName: i.productName,
-						productMainImage: addedProductsToCart.filter(
-							(s) => s._id === i.productId,
-						)[0].thumbnailImage[0].images[0].url,
+		if (addedProductsToCart.length > 0) {
+			const productSubSKUImage = (requiredProduct, productSubSKUColor) => {
+				const theReturn = requiredProduct.productAttributes.filter(
+					(i) => i.color === productSubSKUColor,
+				)[0].productImages;
+				return theReturn[0] ? theReturn[0].url : undefined;
+			};
+			// console.log(productSubSKUImage(), "productSubSKUImage");
+			setChosenProductQty(
+				chosenProductVariables.map((i) => {
+					return i.SubSKU.map((ii) => {
+						return {
+							SubSKU: ii,
+							OrderedQty: 1,
+							productId: i.productId,
+							productName: i.productName,
+							productMainImage: addedProductsToCart.filter(
+								(s) => s._id === i.productId,
+							)[0].thumbnailImage[0].images[0].url,
 
-						productSubSKUImage: productSubSKUImage(
-							addedProductsToCart.filter((s) => s._id === i.productId)[0],
-							addedProductsToCart
+							productSubSKUImage: productSubSKUImage(
+								addedProductsToCart.filter((s) => s._id === i.productId)[0],
+								addedProductsToCart
+									.filter((s) => s._id === i.productId)[0]
+									.productAttributes.filter((ss) => ss.SubSKU === ii)[0].color,
+							)
+								? productSubSKUImage(
+										addedProductsToCart.filter((s) => s._id === i.productId)[0],
+										addedProductsToCart
+											.filter((s) => s._id === i.productId)[0]
+											.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+											.color,
+								  )
+								: addedProductsToCart.filter((s) => s._id === i.productId)[0]
+										.thumbnailImage[0].images[0].url,
+
+							SubSKUPriceAfterDiscount: addedProductsToCart
 								.filter((s) => s._id === i.productId)[0]
-								.productAttributes.filter((ss) => ss.SubSKU === ii)[0].color,
-						)
-							? productSubSKUImage(
-									addedProductsToCart.filter((s) => s._id === i.productId)[0],
-									addedProductsToCart
+								.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+								.priceAfterDiscount,
+
+							SubSKURetailerPrice: addedProductsToCart
+								.filter((s) => s._id === i.productId)[0]
+								.productAttributes.filter((ss) => ss.SubSKU === ii)[0].price,
+
+							SubSKUWholeSalePrice: addedProductsToCart
+								.filter((s) => s._id === i.productId)[0]
+								.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+								? addedProductsToCart
 										.filter((s) => s._id === i.productId)[0]
 										.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
-										.color,
-							  )
-							: addedProductsToCart.filter((s) => s._id === i.productId)[0]
-									.thumbnailImage[0].images[0].url,
+										.WholeSalePrice
+								: 0,
 
-						SubSKUPriceAfterDiscount: addedProductsToCart
-							.filter((s) => s._id === i.productId)[0]
-							.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
-							.priceAfterDiscount,
+							SubSKUDropshippingPrice: addedProductsToCart
+								.filter((s) => s._id === i.productId)[0]
+								.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+								? addedProductsToCart
+										.filter((s) => s._id === i.productId)[0]
+										.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+										.DropShippingPrice
+								: 0,
 
-						SubSKURetailerPrice: addedProductsToCart
-							.filter((s) => s._id === i.productId)[0]
-							.productAttributes.filter((ss) => ss.SubSKU === ii)[0].price,
+							pickedPrice: addedProductsToCart
+								.filter((s) => s._id === i.productId)[0]
+								.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
+								.priceAfterDiscount,
 
-						SubSKUWholeSalePrice: addedProductsToCart
-							.filter((s) => s._id === i.productId)[0]
-							.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
-							? addedProductsToCart
-									.filter((s) => s._id === i.productId)[0]
-									.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
-									.WholeSalePrice
-							: 0,
+							quantity: addedProductsToCart
+								.filter((s) => s._id === i.productId)[0]
+								.productAttributes.filter((ss) => ss.SubSKU === ii)[0].quantity,
 
-						SubSKUDropshippingPrice: addedProductsToCart
-							.filter((s) => s._id === i.productId)[0]
-							.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
-							? addedProductsToCart
-									.filter((s) => s._id === i.productId)[0]
-									.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
-									.DropShippingPrice
-							: 0,
+							SubSKUColor: addedProductsToCart
+								.filter((s) => s._id === i.productId)[0]
+								.productAttributes.filter((ss) => ss.SubSKU === ii)[0].color,
 
-						pickedPrice: addedProductsToCart
-							.filter((s) => s._id === i.productId)[0]
-							.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
-							.priceAfterDiscount,
+							SubSKUSize: addedProductsToCart
+								.filter((s) => s._id === i.productId)[0]
+								.productAttributes.filter((ss) => ss.SubSKU === ii)[0].size,
 
-						quantity: addedProductsToCart
-							.filter((s) => s._id === i.productId)[0]
-							.productAttributes.filter((ss) => ss.SubSKU === ii)[0].quantity,
+							SubSKUMSRP: addedProductsToCart
+								.filter((s) => s._id === i.productId)[0]
+								.productAttributes.filter((ss) => ss.SubSKU === ii)[0].MSRP,
+						};
+					});
+				}),
+			);
+		}
 
-						SubSKUColor: addedProductsToCart
-							.filter((s) => s._id === i.productId)[0]
-							.productAttributes.filter((ss) => ss.SubSKU === ii)[0].color,
-
-						SubSKUSize: addedProductsToCart
-							.filter((s) => s._id === i.productId)[0]
-							.productAttributes.filter((ss) => ss.SubSKU === ii)[0].size,
-
-						SubSKUMSRP: addedProductsToCart
-							.filter((s) => s._id === i.productId)[0]
-							.productAttributes.filter((ss) => ss.SubSKU === ii)[0].MSRP,
-					};
-				});
-			}),
-		);
 		// eslint-disable-next-line
 	}, [chosenProductVariables]);
 
@@ -562,6 +719,7 @@ const CreateNewOrder = () => {
 		gettingAllColors();
 		// eslint-disable-next-line
 	}, []);
+	// console.log(addedProductsToCart, "addedProductsToCart");
 
 	const sizesAndColorsOptions = () => {
 		return (
@@ -1106,7 +1264,6 @@ const CreateNewOrder = () => {
 	let quantityValidationLogic_NoVariables =
 		productsWithNoVariables.length !== QuantityValidation_NoVariables.length;
 
-	//On HOld orders shouldn't be subtracted from stock except after invoicing.
 	const CreatingOrder = (e) => {
 		e.preventDefault();
 		window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1208,10 +1365,6 @@ const CreateNewOrder = () => {
 			appliedShippingFees: AppliedshippingFee,
 			totalAmountAfterExchange: 0,
 			exchangeTrackingNumber: "Not Added",
-			onHoldStatus:
-				availableVariables() && ArraysValidation === false
-					? "On Hold"
-					: "Not On Hold",
 			forAI: {
 				...forAI,
 				OTNumber: `OT${new Date(orderCreationDate).getFullYear()}${
@@ -1697,7 +1850,7 @@ const CreateNewOrder = () => {
 	}, [offset]);
 
 	return (
-		<CreateNewOrderWrapper show={AdminMenuStatus}>
+		<UpdateOrderMiscellaneousWrapper show={AdminMenuStatus}>
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}
@@ -1880,13 +2033,13 @@ const CreateNewOrder = () => {
 					</div>
 				</div>
 			</div>
-		</CreateNewOrderWrapper>
+		</UpdateOrderMiscellaneousWrapper>
 	);
 };
 
-export default CreateNewOrder;
+export default UpdateOrderMiscellaneous;
 
-const CreateNewOrderWrapper = styled.div`
+const UpdateOrderMiscellaneousWrapper = styled.div`
 	min-height: 880px;
 	overflow-x: hidden;
 	/* background: #ededed; */

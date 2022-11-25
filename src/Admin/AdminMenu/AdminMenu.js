@@ -229,11 +229,11 @@ const items = [
 
 		getItem(
 			<Link
-				to='/admin/order-return'
+				to='/admin/exchange-or-return'
 				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-				Order Return
+				Exchange & Return
 			</Link>,
-			"/admin/order-return",
+			"/admin/exchange-or-return",
 		),
 
 		getItem(
@@ -243,15 +243,6 @@ const items = [
 				Return List
 			</Link>,
 			"/admin/return-list",
-		),
-
-		getItem(
-			<Link
-				to='/admin/order-exchange'
-				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-				Order Exchange
-			</Link>,
-			"/admin/order-exchange",
 		),
 
 		getItem(
@@ -516,8 +507,8 @@ const AdminMenu = ({
 						? "/admin/update-store"
 						: fromPage === "DeleteStore"
 						? "/admin/delete-store"
-						: fromPage === "OrderReturn"
-						? "/admin/order-return"
+						: fromPage === "ReturnOrExchange"
+						? "/admin/exchange-or-return"
 						: fromPage === "OrdersList"
 						? "/admin/orders-list"
 						: fromPage === "OrderExchange"
@@ -590,7 +581,8 @@ const AdminMenu = ({
 					fromPage === "OrderExchange" ||
 					fromPage === "OrdersList" ||
 					fromPage === "ReturnList" ||
-					fromPage === "OrderReturn"
+					fromPage === "OrderReturn" ||
+					fromPage === "ReturnOrExchange"
 						? "sub6"
 						: null,
 

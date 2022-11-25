@@ -2,6 +2,8 @@
 
 import { EditOutlined } from "@ant-design/icons";
 import React, { useState, useEffect } from "react";
+// eslint-disable-next-line
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import { isAuthenticated } from "../../auth";
@@ -76,12 +78,9 @@ const SingleOrderPage = (props) => {
 		} else {
 			if (
 				updateSingleOrder.status === "Returned and Not Refunded" ||
-				updateSingleOrder.status === "Returned and Refunded"
+				updateSingleOrder.status === "Returned and Not Refunded (Partial)" ||
+				updateSingleOrder.status === "Exchanged - Stocked"
 			) {
-				console.log(
-					updateSingleOrder.returnStatus,
-					"updateSingleOrder.returnStatus",
-				);
 				updateOrder(updateSingleOrder._id, user._id, token, updateSingleOrder)
 					.then((response) => {
 						toast.success("Payment on delivery order was successfully updated");
@@ -342,6 +341,7 @@ const SingleOrderPage = (props) => {
 									{updateSingleOrder.invoiceNumber}
 								</span>
 							</h5>
+
 							<div style={{ fontSize: "1.25rem", fontWeight: "bolder" }}>
 								Customer Details{" "}
 								<span
@@ -580,7 +580,7 @@ const SingleOrderPage = (props) => {
 																			? "Units"
 																			: "Unit"}
 																		<br />
-																		Quantity:{" "}
+																		Price:{" "}
 																		<strong style={{ color: "darkblue" }}>
 																			{pp.pickedPrice}
 																		</strong>{" "}
@@ -620,6 +620,117 @@ const SingleOrderPage = (props) => {
 									</div>
 								</>
 							) : null}
+
+							{singleOrder.returnedItems.length > 0 &&
+							singleOrder.status.includes("(Partial)") ? (
+								<>
+									<div
+										style={{
+											fontSize: "1.25rem",
+											fontWeight: "bolder",
+											marginTop: "30px",
+										}}>
+										Order Return Details:
+									</div>
+									<div
+										className='row my-3'
+										style={{ border: "lightgrey solid 2px" }}>
+										<div
+											className='col-md-3 mx-auto my-3'
+											style={{ fontWeight: "bold" }}>
+											Refund Number: {singleOrder.refundNumber}
+										</div>
+										<div
+											className='col-md-3 mx-auto my-3'
+											style={{ fontWeight: "bold" }}>
+											Refund Method: {singleOrder.refundMethod}
+										</div>
+										<div
+											className='col-md-3 mx-auto my-3'
+											style={{ fontWeight: "bold" }}>
+											Reason For Return: {singleOrder.reasonForReturn}
+										</div>
+										<div
+											className='col-md-3 mx-auto my-3'
+											style={{ fontWeight: "bold" }}>
+											Return Date:{" "}
+											{new Date(singleOrder.returnDate).toDateString()}
+										</div>
+									</div>
+
+									<div className='row'>
+										{singleOrder.returnedItems.map((p, i) => {
+											return (
+												<React.Fragment key={i}>
+													<div className='col-md-4 text-capitalize'>
+														<div className='row'>
+															<div className='col-md-6'>
+																Product Name:{" "}
+																<strong
+																	style={{
+																		color: "darkblue",
+																		textTransform: "capitalize",
+																	}}>
+																	{p.productName} | {p.SubSKU} |{" "}
+																	{allColors[
+																		allColors
+																			.map((i) => i.hexa)
+																			.indexOf(p.SubSKUColor)
+																	]
+																		? allColors[
+																				allColors
+																					.map((i) => i.hexa)
+																					.indexOf(p.SubSKUColor)
+																		  ].color
+																		: p.SubSKUColor}
+																</strong>
+																<br />
+																<br />
+																Quantity:{" "}
+																<strong style={{ color: "darkblue" }}>
+																	{p.OrderedQty}{" "}
+																</strong>
+																{Number(p.OrderedQty) > 1 ? "Units" : "Unit"}
+																<br />
+																Price:{" "}
+																<strong style={{ color: "darkblue" }}>
+																	{p.returnAmount}
+																</strong>{" "}
+																L.E
+															</div>
+
+															<div className='col-md-6'>
+																{p.productSubSKUImage ? (
+																	<img
+																		style={{ width: "100px" }}
+																		src={
+																			p.productSubSKUImage
+																				? p.productSubSKUImage
+																				: ""
+																		}
+																		alt=''
+																	/>
+																) : (
+																	<img
+																		style={{ width: "100px" }}
+																		src={
+																			p.productMainImage
+																				? p.productMainImage
+																				: ""
+																		}
+																		alt=''
+																	/>
+																)}
+															</div>
+														</div>
+													</div>
+												</React.Fragment>
+											);
+										})}
+									</div>
+								</>
+							) : null}
+
 							<div className='col-md-8 mx-auto text-center'>
 								<hr />
 							</div>
@@ -726,12 +837,24 @@ const SingleOrderPage = (props) => {
 									</strong>
 								)}
 							</div>
-							{singleOrder.exchangedProductQtyWithVariables &&
-							singleOrder.exchangedProductQtyWithVariables.length > 0 ? (
+							{singleOrder.returnedItems &&
+							singleOrder.returnedItems.length > 0 ? (
 								<div className='mt-2' style={{ fontSize: "1.2rem" }}>
-									Total Amount After Exchange:{" "}
+									<strong
+										style={{ color: "red", border: "solid lightgrey 1px" }}>
+										Total Amount Should Be Refunded: {singleOrder.returnAmount}{" "}
+										L.E.
+									</strong>
+									<br />
+									Total Amount After Refund:{" "}
 									<strong style={{ color: "darkblue" }}>
-										{singleOrder.totalAmountAfterExchange} L.E.
+										{singleOrder.returnAmount -
+											singleOrder.totalAmountAfterDiscount <
+										0
+											? singleOrder.totalAmountAfterDiscount -
+											  singleOrder.returnAmount
+											: 0}{" "}
+										L.E.
 									</strong>
 								</div>
 							) : null}

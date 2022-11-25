@@ -472,6 +472,24 @@ export const readSingleOrder = (userId, token, orderId) => {
 		.catch((err) => console.log(err));
 };
 
+export const readSingleOrderByInvoice = (userId, token, invoice) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/order/byinvoice/${invoice}/${userId}`,
+		{
+			method: "GET",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
 export const updateOrder = (orderId, userId, token, order) => {
 	return fetch(
 		`${process.env.REACT_APP_API_URL}/update/order/${orderId}/${userId}`,
@@ -515,6 +533,26 @@ export const updateOrderNoDecrease = (orderId, userId, token, order) => {
 export const updateOrderExchange = (orderId, userId, token, order) => {
 	return fetch(
 		`${process.env.REACT_APP_API_URL}/update/order-exchange/${orderId}/${userId}`,
+		{
+			method: "PUT",
+			headers: {
+				// content type?
+				"Content-Type": "application/json",
+				Accept: "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify({ order: order }),
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const updateOrderExchangeRevert = (orderId, userId, token, order) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/revert/order-exchange-revert/${orderId}/${userId}`,
 		{
 			method: "PUT",
 			headers: {
@@ -706,6 +744,7 @@ export const updateOrderInvoiceStock = (
 	orderId,
 	order,
 	invoiceNumber,
+	onholdStatus,
 ) => {
 	return fetch(
 		`${process.env.REACT_APP_API_URL}/order/${orderId}/invoice/stock/${userId}`,
@@ -716,7 +755,7 @@ export const updateOrderInvoiceStock = (
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${token}`,
 			},
-			body: JSON.stringify({ invoiceNumber, orderId, order }),
+			body: JSON.stringify({ invoiceNumber, orderId, order, onholdStatus }),
 		},
 	)
 		.then((response) => {
