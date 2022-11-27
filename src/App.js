@@ -57,6 +57,8 @@ import AddTopAds from "./Admin/OnlineStore/AddTopAds";
 import UpdateTopAds from "./Admin/OnlineStore/UpdateTopAds";
 import OperationsReport from "./Admin/GQShopReports/OperationsReport";
 import ReturnOrExchange from "./Admin/Orders/ReturnAndExchange/ReturnOrExchange";
+import UpdateOrderMiscellaneous from "./Admin/Orders/CreateNewOrder/UpdateOrderMiscellaneous";
+import ExchangeList from "./Admin/Orders/ExchangeList";
 
 //Store
 import DarkBackground2 from "./Navbar/DarkBackground2";
@@ -69,7 +71,6 @@ import AddHeroComp from "./Admin/OnlineStore/AddHeroComp";
 
 import SingleProduct from "./pages/SingleProduct/SingleProduct";
 import ShopPageMain from "./pages/ShopPage/ShopPageMain";
-import UpdateOrderMiscellaneous from "./Admin/Orders/CreateNewOrder/UpdateOrderMiscellaneous";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -330,6 +331,11 @@ const App = () => {
 				<AdminRoute path='/admin/order-return' exact component={OrderReturn} />
 				<AdminRoute path='/admin/orders-list' exact component={OrdersList} />
 				<AdminRoute path='/admin/return-list' exact component={ReturnList} />
+				<AdminRoute
+					path='/admin/exchange-list'
+					exact
+					component={ExchangeList}
+				/>
 				<AdminRoute
 					path='/admin/return-details/:orderId'
 					exact

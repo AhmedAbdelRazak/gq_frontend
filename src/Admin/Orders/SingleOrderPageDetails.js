@@ -2,26 +2,14 @@
 
 import React from "react";
 import styled from "styled-components";
-import OrderDetailsExchange from "./OrderDetailsExchange";
-// eslint-disable-next-line
-import OrderDetailsReturns from "./OrderDetailsReturns";
+import OrderDetailsExchange from "./ReturnAndExchange/OrderDetailsExchange";
 
-const OrderDetails = ({
+const SingleOrderPageDetails = ({
 	singleOrder,
 	updateSingleOrder,
 	allColors,
-	setModalVisible,
-	setChosenProductQtyWithVariables,
-	setPreviousProductVariable,
-	setCollapsed,
-	totalExchangedAmount,
-	totalExchangedQty,
-	modalVisible2,
-	setModalVisible2,
-	returnedItems,
-	setReturnedItems,
-	returnFullOrder,
-	setReturnFullOrder,
+	totalExchangedAmount2,
+	totalExchangedQty2,
 }) => {
 	var alreadyExchanged =
 		updateSingleOrder.exchangedProductQtyWithVariables &&
@@ -31,126 +19,17 @@ const OrderDetails = ({
 		updateSingleOrder.returnedItems &&
 		updateSingleOrder.returnedItems.length > 0;
 
+	const totalExchangedAmount = () => {
+		return totalExchangedAmount2;
+	};
+
+	const totalExchangedQty = () => {
+		return totalExchangedQty2;
+	};
+
 	return (
-		<OrderDetailsWrapper>
+		<SingleOrderPageDetailsWrapper>
 			<div className='col-md-10 mx-auto'>
-				<div style={{ fontSize: "1.25rem", fontWeight: "bolder" }}>
-					Customer Details{" "}
-				</div>
-
-				<div className='row my-3'>
-					<div className='col-md-6'>
-						Customer Name:{" "}
-						<strong style={{ color: "darkblue" }}>
-							{updateSingleOrder.customerDetails &&
-								updateSingleOrder.customerDetails.fullName}
-						</strong>
-					</div>
-					<div className='col-md-6'>
-						Customer Phone:{" "}
-						<strong style={{ color: "darkblue" }}>
-							{updateSingleOrder.customerDetails &&
-								updateSingleOrder.customerDetails.phone}
-						</strong>
-					</div>
-					<div className='col-md-6'>
-						Customer Email:{" "}
-						<strong style={{ color: "darkblue" }}>
-							{" "}
-							{updateSingleOrder.customerDetails.email}
-						</strong>
-					</div>
-
-					<div className='col-md-6 mx-auto'>
-						Customer Additional Comment:{" "}
-						<strong style={{ color: "darkblue" }}>
-							{updateSingleOrder.customerDetails.orderComment}
-						</strong>
-					</div>
-				</div>
-
-				<div
-					className='mt-2'
-					style={{ fontSize: "1.25rem", fontWeight: "bolder" }}>
-					Shipping Details:{" "}
-				</div>
-				<div className='row mt-3'>
-					<div className='col-md-6'>
-						Carrier Name:{" "}
-						<strong style={{ color: "darkblue" }}>
-							{singleOrder.chosenShippingOption &&
-								singleOrder.chosenShippingOption[0] &&
-								singleOrder.chosenShippingOption[0].carrierName}
-						</strong>
-					</div>
-
-					<div className='col-md-6'>
-						<div className='mt-1'>
-							Customer Address:{" "}
-							<strong style={{ color: "darkblue" }}>
-								{singleOrder.customerDetails.address}
-							</strong>
-						</div>
-					</div>
-
-					<div className='col-md-6'>
-						<div className='mt-1'>
-							Ship To Governorate:{" "}
-							<strong style={{ color: "darkblue" }}>
-								{singleOrder.customerDetails.state}
-							</strong>
-						</div>
-					</div>
-
-					<div className='col-md-6'>
-						<div className='mt-1'>
-							Ship To City:{" "}
-							<strong style={{ color: "darkblue" }}>
-								{singleOrder.customerDetails.cityName}
-							</strong>
-						</div>
-					</div>
-
-					<div className='col-md-6'>
-						<div className='mt-1'>
-							Ship To City Code:{" "}
-							<strong style={{ color: "darkblue" }}>
-								{singleOrder.customerDetails.city}
-							</strong>
-						</div>
-					</div>
-
-					<div className='col-md-6'>
-						<div className='mt-1'>
-							Shipping Price:{" "}
-							<strong style={{ color: "darkblue" }}>
-								{singleOrder.chosenShippingOption.length > 0 &&
-									singleOrder.customerDetails.carrierName &&
-									singleOrder.chosenShippingOption[0].chosenShippingData.filter(
-										(ii) =>
-											ii.governorate === singleOrder.customerDetails.state,
-									)[0].shippingPrice_Client}{" "}
-								L.E.
-							</strong>
-						</div>
-					</div>
-
-					<div className='col-md-6 mx-auto'>
-						<div className='mt-1'>
-							Estimated Time For Arrival:{" "}
-							<strong style={{ color: "darkblue" }}>
-								{singleOrder.chosenShippingOption.length > 0 &&
-									singleOrder.customerDetails.carrierName &&
-									singleOrder.chosenShippingOption[0].chosenShippingData.filter(
-										(ii) =>
-											ii.governorate === singleOrder.customerDetails.state,
-									)[0].estimatedTimeForArrival}{" "}
-								Day
-							</strong>
-						</div>
-					</div>
-				</div>
-
 				{singleOrder.productsNoVariable.length > 0 ? (
 					<React.Fragment>
 						<div
@@ -304,67 +183,6 @@ const OrderDetails = ({
 																		/>
 																	)}
 																</div>
-																{singleOrder &&
-																(singleOrder.status === "Shipped" ||
-																	singleOrder.status === "Delivered" ||
-																	singleOrder.status ===
-																		"Exchange - In Processing" ||
-																	singleOrder.status ===
-																		"Exchange - Ready To Ship" ||
-																	singleOrder.status === "Return Request" ||
-																	singleOrder.status === "In Return" ||
-																	singleOrder.status ===
-																		"In Return (Partial)") ? (
-																	<div className=''>
-																		<div className='row'>
-																			<div className='col-md-6'>
-																				<button
-																					onClick={() => {
-																						setModalVisible2(true);
-																						setCollapsed(true);
-																						setReturnedItems(
-																							returnedItems.length === 0
-																								? [{ ...pp, returnAmount: 0 }]
-																								: [
-																										...returnedItems,
-																										{ ...pp, returnAmount: 0 },
-																								  ],
-																						);
-																					}}
-																					className='mr-5 btn btn-block'
-																					style={{
-																						background: "#767600",
-																						color: "white",
-																						border: "none",
-																						padding: "5px",
-																					}}>
-																					Return
-																				</button>
-																			</div>
-
-																			<div className='col-md-6'>
-																				<button
-																					className='btn btn-block'
-																					style={{
-																						background: "#005ab3",
-																						color: "white",
-																						border: "none",
-																						padding: "5px",
-																					}}
-																					onClick={() => {
-																						setModalVisible(true);
-																						setChosenProductQtyWithVariables(
-																							pp,
-																						);
-																						setPreviousProductVariable(pp);
-																						setCollapsed(true);
-																					}}>
-																					Exchange
-																				</button>
-																			</div>
-																		</div>
-																	</div>
-																) : null}
 															</div>
 
 															<div className='mb-3 col-md-8 mx-auto'>
@@ -425,12 +243,12 @@ const OrderDetails = ({
 				</div>
 				<br />
 			</div>
-		</OrderDetailsWrapper>
+		</SingleOrderPageDetailsWrapper>
 	);
 };
 
-export default OrderDetails;
+export default SingleOrderPageDetails;
 
-const OrderDetailsWrapper = styled.div`
+const SingleOrderPageDetailsWrapper = styled.div`
 	margin-bottom: 100px;
 `;

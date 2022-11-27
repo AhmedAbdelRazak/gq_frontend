@@ -423,6 +423,40 @@ export const listOrdersProcessing = (userId, token) => {
 		.catch((err) => console.log(err));
 };
 
+export const listOrdersReturn = (userId, token) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/order/list/order-return/${userId}`,
+		{
+			method: "GET",
+			headers: {
+				Accept: "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const listOrdersExchange = (userId, token) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/order/list/order-exchange/${userId}`,
+		{
+			method: "GET",
+			headers: {
+				Accept: "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
 export const listOrdersProcessingDetermined = (userId, token, day1, day2) => {
 	return fetch(
 		`${process.env.REACT_APP_API_URL}/order/list/order-processing/${day1}/${day2}/${userId}`,
@@ -533,6 +567,26 @@ export const updateOrderNoDecrease = (orderId, userId, token, order) => {
 export const updateOrderExchange = (orderId, userId, token, order) => {
 	return fetch(
 		`${process.env.REACT_APP_API_URL}/update/order-exchange/${orderId}/${userId}`,
+		{
+			method: "PUT",
+			headers: {
+				// content type?
+				"Content-Type": "application/json",
+				Accept: "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify({ order: order }),
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const updateOrderExchangeAndReturn = (orderId, userId, token, order) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/update/order-exchange-return/${orderId}/${userId}`,
 		{
 			method: "PUT",
 			headers: {

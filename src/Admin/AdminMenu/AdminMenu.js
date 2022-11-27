@@ -244,6 +244,14 @@ const items = [
 			</Link>,
 			"/admin/return-list",
 		),
+		getItem(
+			<Link
+				to='/admin/exchange-list'
+				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+				Exchange List
+			</Link>,
+			"/admin/exchange-list",
+		),
 
 		getItem(
 			<Link
@@ -527,6 +535,8 @@ const AdminMenu = ({
 						? "/admin/add-hero-comp"
 						: fromPage === "OperationsReport"
 						? "/admin/gq-reports/operations"
+						: fromPage === "ExchangeList"
+						? "/admin/exchange-list"
 						: "/admin/dashboard"
 				}
 				defaultOpenKeys={[
@@ -581,6 +591,7 @@ const AdminMenu = ({
 					fromPage === "OrderExchange" ||
 					fromPage === "OrdersList" ||
 					fromPage === "ReturnList" ||
+					fromPage === "ExchangeList" ||
 					fromPage === "OrderReturn" ||
 					fromPage === "ReturnOrExchange"
 						? "sub6"

@@ -52,11 +52,7 @@ const ReturnModal = ({
 			return toast.error("Please Fill In The Reason For Return");
 		}
 
-		if (
-			window.confirm(
-				"Are you sure you want to return this item to your stock???",
-			)
-		) {
+		if (window.confirm("Are you sure you want to fully return this order")) {
 			if (updateSingleOrder.status === "Returned and Not Refunded") {
 				updateOrder(updateSingleOrder._id, user._id, token, updateSingleOrder)
 					.then((response) => {
@@ -111,7 +107,7 @@ const ReturnModal = ({
 					max
 					size='small'
 					showToday={true}
-					defaultValue={moment(new Date(returnDate))}
+					// defaultValue={moment(new Date(returnDate))}
 					placeholder='Please pick Return Date'
 					style={{
 						height: "auto",
@@ -535,6 +531,7 @@ const ReturnModal = ({
 					setCollapsed(false);
 					setReturnFullOrder("");
 				}}
+				okButtonProps={{ style: { display: "none" } }}
 				// okButtonProps={{ style: { display: "none" } }}
 				cancelButtonProps={{ style: { display: "none" } }}
 				onCancel={() => {

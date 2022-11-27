@@ -24,11 +24,12 @@ const ExchangeModal = ({
 	previousProductVariable,
 	exchangeTrackingNumber,
 	setExchangeTrackingNumber,
+	setPickedPrice,
+	pickedPrice,
 }) => {
 	const [chosenProduct, setChosenProduct] = useState({});
 	const [chosenProductVariables, setChosenProductVariables] = useState({});
 	const [pickedQuantity, setPickedQuantity] = useState(0);
-	const [pickedPrice, setPickedPrice] = useState(0);
 	const [allColors, setAllColors] = useState([]);
 
 	// eslint-disable-next-line
@@ -52,6 +53,8 @@ const ExchangeModal = ({
 		gettingAllColors();
 		// eslint-disable-next-line
 	}, []);
+
+	// console.log(chosenProductQtyWithVariables, "chosenProductQtyWithVariables");
 
 	const mainForm = () => {
 		return (
@@ -182,6 +185,8 @@ const ExchangeModal = ({
 									setChosenProductQtyWithVariables({
 										...chosenProductQtyWithVariables,
 										OrderedQty: e.target.value,
+										pickedPrice:
+											chosenProductQtyWithVariables.priceAfterDiscount,
 									});
 								}}
 								type='number'
@@ -197,20 +202,27 @@ const ExchangeModal = ({
 					chosenProduct.productAttributes.length > 0 &&
 					chosenProductVariables && (
 						<div className='form-group mx-auto col-md-10 '>
-							<label className=''>Add Required Price</label>
+							<label className=''>Additional Fees On The Customer</label>
 							<input
 								style={{ textAlign: "center" }}
 								onChange={(e) => {
 									setPickedPrice(e.target.value);
 									setChosenProductQtyWithVariables({
 										...chosenProductQtyWithVariables,
-										pickedPrice: e.target.value,
+										pickedPrice:
+											chosenProductQtyWithVariables.priceAfterDiscount,
 									});
 								}}
 								type='number'
 								className='form-control'
 								value={pickedPrice}
-								placeholder='Required - Product Price'
+								disabled={
+									pickedPrice.length === 2 &&
+									updateSingleOrder.exchangedProductQtyWithVariables.length >= 1
+										? true
+										: false
+								}
+								placeholder='Required - Additional Fees (e.g. Shipping Fee)'
 							/>
 						</div>
 					)}
@@ -242,6 +254,7 @@ const ExchangeModal = ({
 								...updateSingleOrder,
 								status: "Exchange - In Processing",
 								exchangeTrackingNumber: exchangeTrackingNumber,
+
 								exchangedProductQtyWithVariables: [
 									...updateSingleOrder.exchangedProductQtyWithVariables,
 									{
@@ -253,7 +266,7 @@ const ExchangeModal = ({
 							setChosenProduct([]);
 							setChosenProductQtyWithVariables({});
 							setPickedQuantity(0);
-							setPickedPrice(0);
+							// setPickedPrice(0);
 							setModalVisible(false);
 							setExchangeTrackingNumber("");
 						}}>
@@ -281,6 +294,7 @@ const ExchangeModal = ({
 					setModalVisible(false);
 					setCollapsed(false);
 				}}
+				okButtonProps={{ style: { display: "none" } }}
 				// okButtonProps={{ style: { display: "none" } }}
 				cancelButtonProps={{ style: { display: "none" } }}
 				onCancel={() => {

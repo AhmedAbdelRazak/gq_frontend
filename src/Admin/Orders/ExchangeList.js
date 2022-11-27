@@ -7,7 +7,7 @@ import { isAuthenticated } from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import DarkBG from "../AdminMenu/DarkBG";
 import Navbar from "../AdminNavMenu/Navbar";
-import { listOrdersReturn, updateOrderInvoice } from "../apiAdmin";
+import { listOrdersExchange, updateOrderInvoice } from "../apiAdmin";
 // eslint-disable-next-line
 import Pagination from "./Pagination";
 import ReactExport from "react-export-excel";
@@ -16,7 +16,7 @@ const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
-const ReturnList = () => {
+const ExchangeList = () => {
 	const [allOrders, setAllOrders] = useState([]);
 	const [q, setQ] = useState("");
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
@@ -46,17 +46,17 @@ const ReturnList = () => {
 
 	const loadOrders = () => {
 		function sortOrdersAscendingly(a, b) {
-			const TotalAppointmentsA = a.returnDate;
-			const TotalAppointmentsB = b.returnDate;
+			const TotalAppointmentsA = a.updatedAt;
+			const TotalAppointmentsB = b.updatedAt;
 			let comparison = 0;
-			if (TotalAppointmentsA > TotalAppointmentsB) {
+			if (TotalAppointmentsA <= TotalAppointmentsB) {
 				comparison = 1;
-			} else if (TotalAppointmentsA < TotalAppointmentsB) {
+			} else if (TotalAppointmentsA > TotalAppointmentsB) {
 				comparison = -1;
 			}
 			return comparison;
 		}
-		listOrdersReturn(user._id, token).then((data) => {
+		listOrdersExchange(user._id, token).then((data) => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
@@ -142,6 +142,7 @@ const ReturnList = () => {
 				Index: counter + 1,
 				Name: i.customerDetails.fullName,
 				address: i.customerDetails.address,
+				Status: i.status,
 				phone1: i.customerDetails.phone,
 				phone2: "",
 				City: i.customerDetails.cityName.toUpperCase(),
@@ -154,7 +155,8 @@ const ReturnList = () => {
 						? merged2[0] + " | " + merged2[1] + " | " + merged2[2]
 						: merged2[0],
 				totalAmount: i.totalAmountAfterDiscount,
-				returnAmount: i.returnAmount.toFixed(0),
+				AfterExchange: i.totalAmountAfterExchange,
+				AmountDue: i.totalAmountAfterExchange - i.totalAmountAfterDiscount,
 				ReferenceNumber:
 					i.invoiceNumber !== "Not Added" ? i.invoiceNumber : i.OTNumber,
 				parcels: 1,
@@ -184,16 +186,17 @@ const ReturnList = () => {
 				<ExcelSheet data={adjustedExcelData} name='GQ_Orders'>
 					<ExcelColumn label='#' value='Index' />
 					<ExcelColumn label='Name' value='Name' />
+					<ExcelColumn label='Status' value='Status' />
 					<ExcelColumn label='Address' value='address' />
 					<ExcelColumn label='Phone' value='phone1' />
-					<ExcelColumn label='Phone2' value='phone2' />
 					<ExcelColumn label='City' value='City' />
 					<ExcelColumn
 						label='Description Of Goods'
 						value='DescriptionOfGoods'
 					/>
 					<ExcelColumn label='Cod' value='totalAmount' />
-					<ExcelColumn label='Refund Amount' value='returnAmount' />
+					<ExcelColumn label='Total After Exchange' value='AfterExchange' />
+					<ExcelColumn label='Amount Due' value='AmountDue' />
 					<ExcelColumn label='Refrance number' value='ReferenceNumber' />
 					<ExcelColumn label='Pieces' value='pieces' />
 					<ExcelColumn label='Comment' value='comment' />
@@ -220,7 +223,7 @@ const ReturnList = () => {
 							<Link
 								className='btn btn-info ml-2'
 								to='/admin/exchange-or-return'>
-								New Return
+								New Exchange
 							</Link>
 						</div>
 						<div className='mt-4'>{DownloadExcel()}</div>
@@ -266,13 +269,17 @@ const ReturnList = () => {
 							<thead className='thead-light'>
 								<tr>
 									<th scope='col'>Purchase Date</th>
-									<th scope='col'>Return Date</th>
 									<th scope='col'>INV #</th>
 									<th scope='col'>Status</th>
 									<th scope='col'>Name</th>
 									<th scope='col'>Phone</th>
 									<th scope='col'>Amount</th>
-									<th scope='col'>Return Amount</th>
+									<th scope='col'>After Exch.</th>
+									<th
+										scope='col'
+										style={{ background: "black", color: "white" }}>
+										Amount Due
+									</th>
 									<th scope='col'>Store</th>
 									<th scope='col'>Taker</th>
 									<th scope='col'>Governorate</th>
@@ -288,7 +295,6 @@ const ReturnList = () => {
 								{search(allOrders).map((s, i) => (
 									<tr key={i} className=''>
 										<td>{new Date(s.orderCreationDate).toDateString()}</td>
-										<td>{new Date(s.returnDate).toDateString()}</td>
 										<td
 											style={{
 												width: "10%",
@@ -302,20 +308,16 @@ const ReturnList = () => {
 												fontWeight: "bold",
 												// fontSize: "0.8rem",
 												width: "8.5%",
-												background:
-													s.status === "Returned and Refunded" ||
-													s.status ===
-														"Exchange And Return Processed And Stocked"
-														? "#004b00"
-														: s.status === "Returned and Not Refunded"
-														? "darkred"
-														: "#003264",
-												color:
-													s.status === "Delivered" || s.status === "Shipped"
-														? "white"
-														: s.status === "Cancelled"
-														? "white"
-														: "white",
+												background: s.status.includes("Delivered")
+													? "#004b00"
+													: s.status.includes("Stocked")
+													? "#589100"
+													: "#ffd4b8",
+												color: s.status.includes("Delivered")
+													? "white"
+													: s.status.includes("Stocked")
+													? "white"
+													: "black",
 											}}>
 											{s.status}
 										</td>
@@ -325,9 +327,12 @@ const ReturnList = () => {
 										</td>
 										<td>{s.customerDetails.phone}</td>
 										<td>{s.totalAmountAfterDiscount.toFixed(0)} L.E.</td>
-										<td style={{ width: "7.8%" }}>
-											{s.returnAmount.toFixed(0)} L.E.
+										<td>{s.totalAmountAfterExchange} L.E.</td>
+										<td style={{ background: "#003456", color: "white" }}>
+											{s.totalAmountAfterExchange - s.totalAmountAfterDiscount}{" "}
+											L.E.
 										</td>
+
 										<td style={{ textTransform: "uppercase" }}>
 											{s.orderSource}
 										</td>
@@ -359,14 +364,14 @@ const ReturnList = () => {
 	};
 
 	return (
-		<ReturnListWrapper show={AdminMenuStatus}>
+		<ExchangeListWrapper show={AdminMenuStatus}>
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu
-						fromPage='ReturnList'
+						fromPage='ExchangeList'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
 						collapsed={collapsed}
@@ -374,18 +379,18 @@ const ReturnList = () => {
 					/>
 				</div>
 				<div className='mainContent'>
-					<Navbar fromPage='ReturnList' pageScrolled={pageScrolled} />
+					<Navbar fromPage='ExchangeList' pageScrolled={pageScrolled} />
 
 					<div className='mt-5 mx-3'> {dataTable()}</div>
 				</div>
 			</div>
-		</ReturnListWrapper>
+		</ExchangeListWrapper>
 	);
 };
 
-export default ReturnList;
+export default ExchangeList;
 
-const ReturnListWrapper = styled.div`
+const ExchangeListWrapper = styled.div`
 	min-height: 880px;
 	/* overflow-x: hidden; */
 	/* background: #ededed; */

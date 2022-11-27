@@ -38,10 +38,11 @@ const ReturnOrExchange = () => {
 	const [loading, setLoading] = useState(true);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [modalVisible2, setModalVisible2] = useState(false);
-	const [returnDate, setReturnDate] = useState(new Date());
+	const [returnDate, setReturnDate] = useState(new Date().toLocaleString());
 	const [returnStatus, setReturnStatus] = useState(false);
 	const [returnedItems, setReturnedItems] = useState([]);
 	const [returnFullOrder, setReturnFullOrder] = useState("");
+	const [pickedPrice, setPickedPrice] = useState("");
 
 	const { user, token } = isAuthenticated();
 
@@ -158,9 +159,15 @@ const ReturnOrExchange = () => {
 			iii.map((iiii) => Number(iiii.pickedPrice) * Number(iiii.OrderedQty)),
 		);
 
-		var exchangedAmount = updateSingleOrder.exchangedProductQtyWithVariables
-			.map((i) => Number(i.OrderedQty) * Number(i.pickedPrice))
-			.reduce((a, b) => a + b, 0);
+		var exchangedAmount = updateSingleOrder.freeShipping
+			? updateSingleOrder.exchangedProductQtyWithVariables
+					.map((i) => Number(i.OrderedQty) * Number(i.pickedPrice))
+					.reduce((a, b) => a + b, 0)
+			: updateSingleOrder.exchangedProductQtyWithVariables
+					.map((i) => Number(i.OrderedQty) * Number(i.pickedPrice))
+					.reduce((a, b) => a + b, 0) +
+			  updateSingleOrder.shippingFees +
+			  Number(pickedPrice);
 
 		return Number(
 			Number(exchangedAmount) + Number(sum_array(QtyWithVariablesTotalAmount)),
@@ -171,10 +178,20 @@ const ReturnOrExchange = () => {
 		e.preventDefault();
 		window.scrollTo({ top: 0, behavior: "smooth" });
 
-		const singleOrderModified = {
-			...updateSingleOrder,
-			totalAmountAfterExchange: totalExchangedAmount(),
-		};
+		const singleOrderModified =
+			updateSingleOrder.exchangedProductQtyWithVariables &&
+			updateSingleOrder.exchangedProductQtyWithVariables.length > 0 &&
+			updateSingleOrder.returnedItems &&
+			updateSingleOrder.returnedItems.length > 0
+				? {
+						...updateSingleOrder,
+						status: "Exchange - In Processing | In Return (Partial)",
+						totalAmountAfterExchange: totalExchangedAmount(),
+				  }
+				: {
+						...updateSingleOrder,
+						totalAmountAfterExchange: totalExchangedAmount(),
+				  };
 		updateOrderExchange(
 			updateSingleOrder._id,
 			user._id,
@@ -201,6 +218,7 @@ const ReturnOrExchange = () => {
 			...updateSingleOrder,
 			totalAmountAfterExchange: totalExchangedAmount(),
 		};
+
 		updateOrderExchangeRevert(
 			updateSingleOrder._id,
 			user._id,
@@ -255,6 +273,42 @@ const ReturnOrExchange = () => {
 		}
 	};
 
+	const UpdatingOrderReturnExchange = (e) => {
+		e.preventDefault();
+		window.scrollTo({ top: 0, behavior: "smooth" });
+
+		const singleOrderModified =
+			updateSingleOrder.exchangedProductQtyWithVariables &&
+			updateSingleOrder.exchangedProductQtyWithVariables.length > 0 &&
+			updateSingleOrder.returnedItems &&
+			updateSingleOrder.returnedItems.length > 0
+				? {
+						...updateSingleOrder,
+						status: "Exchange - In Processing | In Return (Partial)",
+						totalAmountAfterExchange: totalExchangedAmount(),
+				  }
+				: {
+						...updateSingleOrder,
+						totalAmountAfterExchange: totalExchangedAmount(),
+				  };
+		updateOrderExchange(
+			updateSingleOrder._id,
+			user._id,
+			token,
+			singleOrderModified,
+		)
+			.then((response) => {
+				toast.success("Order was successfully updated");
+				setTimeout(function () {
+					window.location.reload(false);
+				}, 2000);
+			})
+
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+
 	return (
 		<ReturnOrExchangeWrapper show={collapsed}>
 			{!collapsed ? (
@@ -293,6 +347,8 @@ const ReturnOrExchange = () => {
 						setExchangeTrackingNumber={setExchangeTrackingNumber}
 						modalVisible2={modalVisible2}
 						setModalVisible2={setModalVisible2}
+						pickedPrice={pickedPrice}
+						setPickedPrice={setPickedPrice}
 					/>
 
 					<ReturnModal
@@ -364,76 +420,133 @@ const ReturnOrExchange = () => {
 							) : null}
 						</div>
 					</div>
-					{singleOrder &&
-					updateSingleOrder &&
-					!loading &&
-					allColors.length > 0 ? (
-						<div className='my-3 mx-auto'>
-							<h5 className='text-center mb-3'>
-								Order Details For Invoice {singleOrder.invoiceNumber}{" "}
-							</h5>
-							<OrderDetails
-								singleOrder={singleOrder}
-								updateSingleOrder={updateSingleOrder}
-								allColors={allColors}
-								setModalVisible={setModalVisible}
-								setChosenProductQtyWithVariables={
-									setChosenProductQtyWithVariables
-								}
-								setPreviousProductVariable={setPreviousProductVariable}
-								setCollapsed={setCollapsed}
-								totalExchangedAmount={totalExchangedAmount}
-								totalExchangedQty={totalExchangedQty}
-								setModalVisible2={setModalVisible2}
-								returnedItems={returnedItems}
-								setReturnedItems={setReturnedItems}
-								returnFullOrder={returnFullOrder}
-								setReturnFullOrder={setReturnFullOrder}
-							/>
-						</div>
-					) : null}
+					<>
+						{singleOrder.status === "In Processing" ||
+						singleOrder.status === "Ready To Ship" ||
+						singleOrder.status === "Returned and Refunded" ||
+						singleOrder.status === "Returned and Not Refunded" ||
+						singleOrder.status === "Returned and Refunded (Partial)" ||
+						singleOrder.status === "Returned and Not Refunded (Partial)" ||
+						singleOrder.status === "Exchange - Shipped" ||
+						singleOrder.status === "Exchange - Delivered" ||
+						singleOrder.status ===
+							"Exchange And Return Processed And Stocked" ||
+						singleOrder.status === "Exchanged - Stocked" ? (
+							<>
+								<div className='text-center mt-4'>
+									<h5>Sorry, This order couldn't be Returned Or Exchanged</h5>
+									<div>Current Order Status: {singleOrder.status}</div>
+								</div>
+							</>
+						) : (
+							<>
+								{singleOrder &&
+								updateSingleOrder &&
+								!loading &&
+								allColors.length > 0 ? (
+									<div className='my-3 mx-auto'>
+										<h5 className='text-center mb-3'>
+											Order Details For Invoice {singleOrder.invoiceNumber}{" "}
+										</h5>
+										<OrderDetails
+											singleOrder={singleOrder}
+											updateSingleOrder={updateSingleOrder}
+											allColors={allColors}
+											setModalVisible={setModalVisible}
+											setChosenProductQtyWithVariables={
+												setChosenProductQtyWithVariables
+											}
+											setPreviousProductVariable={setPreviousProductVariable}
+											setCollapsed={setCollapsed}
+											totalExchangedAmount={totalExchangedAmount}
+											totalExchangedQty={totalExchangedQty}
+											setModalVisible2={setModalVisible2}
+											returnedItems={returnedItems}
+											setReturnedItems={setReturnedItems}
+											returnFullOrder={returnFullOrder}
+											setReturnFullOrder={setReturnFullOrder}
+										/>
+									</div>
+								) : null}
 
-					{updateSingleOrder &&
-					updateSingleOrder.exchangedProductQtyWithVariables &&
-					updateSingleOrder.exchangedProductQtyWithVariables.length > 0 &&
-					singleOrder &&
-					singleOrder.exchangedProductQtyWithVariables &&
-					singleOrder.exchangedProductQtyWithVariables.length === 0 ? (
-						<div className='col-md-5 mx-auto text-center my-5'>
-							<button
-								className='btn btn-success btn-block mb-3 mx-auto text-center'
-								onClick={UpdatingOrder}>
-								Exchange Order
-							</button>
-						</div>
-					) : null}
+								{updateSingleOrder &&
+								updateSingleOrder.exchangedProductQtyWithVariables &&
+								updateSingleOrder.exchangedProductQtyWithVariables.length > 0 &&
+								singleOrder &&
+								singleOrder.exchangedProductQtyWithVariables &&
+								singleOrder.exchangedProductQtyWithVariables.length === 0 &&
+								updateSingleOrder.returnedItems &&
+								updateSingleOrder.returnedItems.length === 0 &&
+								singleOrder.returnedItems &&
+								singleOrder.returnedItems.length === 0 ? (
+									<div className='col-md-5 mx-auto text-center my-5'>
+										<button
+											className='btn btn-success btn-block mb-3 mx-auto text-center'
+											onClick={UpdatingOrder}>
+											Exchange Order
+										</button>
+									</div>
+								) : null}
 
-					{singleOrder &&
-					singleOrder.exchangedProductQtyWithVariables &&
-					singleOrder.exchangedProductQtyWithVariables.length > 0 ? (
-						<div className='col-md-5 mx-auto text-center my-5'>
-							<button
-								className='btn btn-danger btn-block mb-3 mx-auto text-center'
-								onClick={UpdatingOrderRevert}>
-								Revert This Order To It's Original Status
-							</button>
-						</div>
-					) : null}
+								{(singleOrder &&
+									singleOrder.exchangedProductQtyWithVariables &&
+									singleOrder.exchangedProductQtyWithVariables.length > 0) ||
+								(singleOrder.returnedItems &&
+									singleOrder.returnedItems.length > 0) ? (
+									<div className='col-md-5 mx-auto text-center my-5'>
+										<button
+											className='btn btn-danger btn-block mb-3 mx-auto text-center'
+											onClick={UpdatingOrderRevert}>
+											Revert This Order To It's Original Status
+										</button>
+									</div>
+								) : null}
 
-					{updateSingleOrder &&
-					updateSingleOrder.returnedItems &&
-					updateSingleOrder.returnedItems.length > 0 &&
-					singleOrder &&
-					singleOrder.returnedItems &&
-					singleOrder.returnedItems.length === 0 ? (
-						<div className='col-md-5 mx-auto text-center my-5'>
-							<button
-								className='btn btn-success btn-block mb-3 mx-auto text-center'
-								onClick={UpdatingOrderReturn}>
-								Update Order Return
-							</button>
-						</div>
-					) : null}
+								{updateSingleOrder &&
+								updateSingleOrder.exchangedProductQtyWithVariables &&
+								updateSingleOrder.exchangedProductQtyWithVariables.length ===
+									0 &&
+								singleOrder &&
+								singleOrder.exchangedProductQtyWithVariables &&
+								singleOrder.exchangedProductQtyWithVariables.length === 0 &&
+								updateSingleOrder &&
+								updateSingleOrder.returnedItems &&
+								updateSingleOrder.returnedItems.length > 0 &&
+								singleOrder &&
+								singleOrder.returnedItems &&
+								singleOrder.returnedItems.length === 0 ? (
+									<div className='col-md-5 mx-auto text-center my-5'>
+										<button
+											className='btn btn-success btn-block mb-3 mx-auto text-center'
+											onClick={UpdatingOrderReturn}>
+											Update Order Return
+										</button>
+									</div>
+								) : null}
+
+								{updateSingleOrder &&
+								updateSingleOrder.exchangedProductQtyWithVariables &&
+								updateSingleOrder.exchangedProductQtyWithVariables.length > 0 &&
+								singleOrder &&
+								singleOrder.exchangedProductQtyWithVariables &&
+								singleOrder.exchangedProductQtyWithVariables.length === 0 &&
+								updateSingleOrder &&
+								updateSingleOrder.returnedItems &&
+								updateSingleOrder.returnedItems.length > 0 &&
+								singleOrder &&
+								singleOrder.returnedItems &&
+								singleOrder.returnedItems.length === 0 ? (
+									<div className='col-md-5 mx-auto text-center my-5'>
+										<button
+											className='btn btn-success btn-block mb-3 mx-auto text-center'
+											onClick={UpdatingOrderReturnExchange}>
+											Update Order Return | Exchange
+										</button>
+									</div>
+								) : null}
+							</>
+						)}
+					</>
 				</div>
 			</div>
 		</ReturnOrExchangeWrapper>

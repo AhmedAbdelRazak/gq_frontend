@@ -14,8 +14,10 @@ import {
 	getColors,
 	readSingleOrder,
 	updateOrder,
+	updateOrderExchangeAndReturn,
 	updateOrderNoDecrease,
 } from "../apiAdmin";
+import SingleOrderPageDetails from "./SingleOrderPageDetails";
 import Trial from "./UpdateModals/Trials";
 
 const SingleOrderPage = (props) => {
@@ -82,6 +84,25 @@ const SingleOrderPage = (props) => {
 				updateSingleOrder.status === "Exchanged - Stocked"
 			) {
 				updateOrder(updateSingleOrder._id, user._id, token, updateSingleOrder)
+					.then((response) => {
+						toast.success("Payment on delivery order was successfully updated");
+						setTimeout(function () {
+							window.location.reload(false);
+						}, 2500);
+					})
+
+					.catch((error) => {
+						console.log(error);
+					});
+			} else if (
+				updateSingleOrder.status === "Exchange And Return Processed And Stocked"
+			) {
+				updateOrderExchangeAndReturn(
+					updateSingleOrder._id,
+					user._id,
+					token,
+					updateSingleOrder,
+				)
 					.then((response) => {
 						toast.success("Payment on delivery order was successfully updated");
 						setTimeout(function () {
@@ -659,74 +680,79 @@ const SingleOrderPage = (props) => {
 									</div>
 
 									<div className='row'>
-										{singleOrder.returnedItems.map((p, i) => {
-											return (
-												<React.Fragment key={i}>
-													<div className='col-md-4 text-capitalize'>
-														<div className='row'>
-															<div className='col-md-6'>
-																Product Name:{" "}
-																<strong
-																	style={{
-																		color: "darkblue",
-																		textTransform: "capitalize",
-																	}}>
-																	{p.productName} | {p.SubSKU} |{" "}
-																	{allColors[
-																		allColors
-																			.map((i) => i.hexa)
-																			.indexOf(p.SubSKUColor)
-																	]
-																		? allColors[
-																				allColors
-																					.map((i) => i.hexa)
-																					.indexOf(p.SubSKUColor)
-																		  ].color
-																		: p.SubSKUColor}
-																</strong>
-																<br />
-																<br />
-																Quantity:{" "}
-																<strong style={{ color: "darkblue" }}>
-																	{p.OrderedQty}{" "}
-																</strong>
-																{Number(p.OrderedQty) > 1 ? "Units" : "Unit"}
-																<br />
-																Price:{" "}
-																<strong style={{ color: "darkblue" }}>
-																	{p.returnAmount}
-																</strong>{" "}
-																L.E
-															</div>
+										{singleOrder.returnedItems &&
+											singleOrder.returnedItems.length > 0 &&
+											singleOrder.exchangedProductQtyWithVariables &&
+											singleOrder.exchangedProductQtyWithVariables.length ===
+												0 &&
+											singleOrder.returnedItems.map((p, i) => {
+												return (
+													<React.Fragment key={i}>
+														<div className='col-md-4 text-capitalize'>
+															<div className='row'>
+																<div className='col-md-6'>
+																	Product Name:{" "}
+																	<strong
+																		style={{
+																			color: "darkblue",
+																			textTransform: "capitalize",
+																		}}>
+																		{p.productName} | {p.SubSKU} |{" "}
+																		{allColors[
+																			allColors
+																				.map((i) => i.hexa)
+																				.indexOf(p.SubSKUColor)
+																		]
+																			? allColors[
+																					allColors
+																						.map((i) => i.hexa)
+																						.indexOf(p.SubSKUColor)
+																			  ].color
+																			: p.SubSKUColor}
+																	</strong>
+																	<br />
+																	<br />
+																	Quantity:{" "}
+																	<strong style={{ color: "darkblue" }}>
+																		{p.OrderedQty}{" "}
+																	</strong>
+																	{Number(p.OrderedQty) > 1 ? "Units" : "Unit"}
+																	<br />
+																	Price:{" "}
+																	<strong style={{ color: "darkblue" }}>
+																		{p.returnAmount}
+																	</strong>{" "}
+																	L.E
+																</div>
 
-															<div className='col-md-6'>
-																{p.productSubSKUImage ? (
-																	<img
-																		style={{ width: "100px" }}
-																		src={
-																			p.productSubSKUImage
-																				? p.productSubSKUImage
-																				: ""
-																		}
-																		alt=''
-																	/>
-																) : (
-																	<img
-																		style={{ width: "100px" }}
-																		src={
-																			p.productMainImage
-																				? p.productMainImage
-																				: ""
-																		}
-																		alt=''
-																	/>
-																)}
+																<div className='col-md-6'>
+																	{p.productSubSKUImage ? (
+																		<img
+																			style={{ width: "100px" }}
+																			src={
+																				p.productSubSKUImage
+																					? p.productSubSKUImage
+																					: ""
+																			}
+																			alt=''
+																		/>
+																	) : (
+																		<img
+																			style={{ width: "100px" }}
+																			src={
+																				p.productMainImage
+																					? p.productMainImage
+																					: ""
+																			}
+																			alt=''
+																		/>
+																	)}
+																</div>
 															</div>
 														</div>
-													</div>
-												</React.Fragment>
-											);
-										})}
+													</React.Fragment>
+												);
+											})}
 									</div>
 								</>
 							) : null}
@@ -734,7 +760,23 @@ const SingleOrderPage = (props) => {
 							<div className='col-md-8 mx-auto text-center'>
 								<hr />
 							</div>
+
+							{singleOrder &&
+							singleOrder.exchangedProductQtyWithVariables &&
+							singleOrder.exchangedProductQtyWithVariables.length > 0 &&
+							singleOrder.returnedItems &&
+							singleOrder.returnedItems.length > 0 ? (
+								<SingleOrderPageDetails
+									singleOrder={singleOrder}
+									updateSingleOrder={updateSingleOrder}
+									allColors={allColors}
+									totalExchangedAmount2={singleOrder.totalAmountAfterExchange}
+									totalExchangedQty={0}
+								/>
+							) : null}
 							{singleOrder.exchangedProductQtyWithVariables &&
+							singleOrder.returnedItems &&
+							singleOrder.returnedItems.length === 0 &&
 							singleOrder.exchangedProductQtyWithVariables.length > 0 ? (
 								<>
 									<div
@@ -787,6 +829,11 @@ const SingleOrderPage = (props) => {
 																	{ep.OrderedQty}{" "}
 																</strong>
 																{Number(ep.OrderedQty) > 1 ? "Units" : "Unit"}
+																<br />
+																Price:{" "}
+																<strong style={{ color: "darkblue" }}>
+																	{ep.pickedPrice}{" "}
+																</strong>
 															</div>
 
 															<div className='col-md-6 my-4'>
@@ -813,51 +860,101 @@ const SingleOrderPage = (props) => {
 								<hr />
 							</div>
 							<br />
-							<div style={{ fontSize: "1.25rem", fontWeight: "bolder" }}>
-								Order Total Value:
-							</div>
+							{singleOrder &&
+							singleOrder.returnedItems &&
+							singleOrder.returnedItems.length > 0 &&
+							singleOrder.exchangedProductQtyWithVariables &&
+							singleOrder.exchangedProductQtyWithVariables.length > 0 ? null : (
+								<>
+									<div style={{ fontSize: "1.25rem", fontWeight: "bolder" }}>
+										Order Total Value:
+									</div>
 
-							<div className='mt-4' style={{ fontSize: "1.2rem" }}>
-								Total Amount:{" "}
-								{singleOrder.totalAmount !==
-								singleOrder.totalAmountAfterDiscount ? (
-									<>
-										<strong>
-											<s style={{ color: "darkred" }}>
-												{singleOrder.totalAmount} L.E.
-											</s>
-										</strong>{" "}
-										<strong style={{ color: "darkblue" }}>
-											{singleOrder.totalAmountAfterDiscount} L.E.
-										</strong>
-									</>
-								) : (
-									<strong style={{ color: "darkblue" }}>
-										{singleOrder.totalAmountAfterDiscount} L.E.
-									</strong>
-								)}
-							</div>
-							{singleOrder.returnedItems &&
-							singleOrder.returnedItems.length > 0 ? (
-								<div className='mt-2' style={{ fontSize: "1.2rem" }}>
-									<strong
-										style={{ color: "red", border: "solid lightgrey 1px" }}>
-										Total Amount Should Be Refunded: {singleOrder.returnAmount}{" "}
-										L.E.
-									</strong>
+									<div className='mt-4' style={{ fontSize: "1.2rem" }}>
+										Total Amount:{" "}
+										{singleOrder.totalAmount !==
+										singleOrder.totalAmountAfterDiscount ? (
+											<>
+												<strong>
+													<s style={{ color: "darkred" }}>
+														{singleOrder.totalAmount} L.E.
+													</s>
+												</strong>{" "}
+												<strong style={{ color: "darkblue" }}>
+													{singleOrder.totalAmountAfterDiscount} L.E.
+												</strong>
+											</>
+										) : (
+											<strong style={{ color: "darkblue" }}>
+												{singleOrder.totalAmountAfterDiscount} L.E.
+											</strong>
+										)}
+									</div>
+									{singleOrder.returnedItems &&
+									singleOrder.returnedItems.length > 0 ? (
+										<div className='mt-2' style={{ fontSize: "1.2rem" }}>
+											<strong
+												style={{ color: "red", border: "solid lightgrey 1px" }}>
+												Total Amount Should Be Refunded:{" "}
+												{singleOrder.returnAmount} L.E.
+											</strong>
+											<br />
+											Total Amount After Refund:{" "}
+											<strong style={{ color: "darkblue" }}>
+												{singleOrder.returnAmount -
+													singleOrder.totalAmountAfterDiscount <
+												0
+													? singleOrder.totalAmountAfterDiscount -
+													  singleOrder.returnAmount
+													: 0}{" "}
+												L.E.
+											</strong>
+										</div>
+									) : null}
+
+									{singleOrder.exchangedProductQtyWithVariables &&
+									singleOrder.exchangedProductQtyWithVariables.length > 0 ? (
+										<div className='mt-2' style={{ fontSize: "1.2rem" }}>
+											Total Amount After Exchange:{" "}
+											<strong style={{ color: "darkblue" }}>
+												{singleOrder.totalAmountAfterExchange} L.E.
+											</strong>
+											<br />
+											<strong
+												style={{ color: "red", border: "solid lightgrey 1px" }}>
+												Total Amount Due:{" "}
+												{Number(updateSingleOrder.totalAmountAfterExchange) -
+													Number(
+														updateSingleOrder.totalAmountAfterDiscount,
+													)}{" "}
+												L.E.
+											</strong>
+										</div>
+									) : null}
 									<br />
-									Total Amount After Refund:{" "}
-									<strong style={{ color: "darkblue" }}>
-										{singleOrder.returnAmount -
-											singleOrder.totalAmountAfterDiscount <
-										0
-											? singleOrder.totalAmountAfterDiscount -
-											  singleOrder.returnAmount
-											: 0}{" "}
-										L.E.
-									</strong>
-								</div>
-							) : null}
+									{updateSingleOrder.returnedItems.length > 0 &&
+										updateSingleOrder.exchangedProductQtyWithVariables.length >
+											0 && (
+											<strong
+												style={{
+													color: "darkgoldenrod",
+													fontSize: "1.3rem",
+													fontWeight: "bolder",
+												}}>
+												Total Amount Due After RETURN AND EXCHANGE:{" "}
+												<span
+													style={{
+														fontSize: "1.6rem",
+													}}>
+													{updateSingleOrder.totalAmountAfterExchange -
+														updateSingleOrder.totalAmountAfterDiscount -
+														updateSingleOrder.returnAmount}{" "}
+													L.E.
+												</span>
+											</strong>
+										)}
+								</>
+							)}
 
 							<div className='col-md-5 mx-auto text-center my-5'>
 								<button

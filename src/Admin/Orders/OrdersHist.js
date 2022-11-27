@@ -67,13 +67,13 @@ const OrdersHist = () => {
 	const [postsPerPage, setPostsPerPage] = useState(80);
 	const [allProducts, setAllProducts] = useState([]);
 	const [day1, setDay1] = useState(
-		new Date().toDateString("en-US", {
-			timeZone: "Africa/Cairo",
-		}),
+		new Date(new Date().setDate(new Date().getDate() + 1)),
 	);
 	const [day2, setDay2] = useState(
 		new Date(new Date().setDate(new Date().getDate() - 45)),
 	);
+	const [chosenCard, setChosenCard] = useState("OrdersCountCard");
+
 	const [excelDataSet, setExcelDataSet] = useState([]);
 
 	const { user, token } = isAuthenticated();
@@ -362,7 +362,7 @@ const OrdersHist = () => {
 	const dataTable = () => {
 		return (
 			<div className='tableData'>
-				<div className='mt-4 ml-2'>
+				<div className='mt-5 ml-2'>
 					<Link className='btn btn-info' to='/admin/create-new-order'>
 						Create New Order
 					</Link>
@@ -837,18 +837,49 @@ const OrdersHist = () => {
 										</div>
 									)}
 								</div>
-								<div>
-									<OrdersCountCards allOrders={allOrders} />
+								<div className='mt-3 ml-5'>
+									<span
+										className='mx-1 ordersCount'
+										onClick={() => {
+											setChosenCard("OrdersCountCard");
+										}}>
+										Orders Count
+									</span>
+									<span
+										className='mx-1 ordersQty'
+										onClick={() => {
+											setChosenCard("OrdersQtyCard");
+										}}>
+										Orders Quantity
+									</span>
+									<span
+										className='mx-1 ordersAmount'
+										onClick={() => {
+											setChosenCard("OrdersTotalAmountCard");
+										}}>
+										Orders Total Amount
+									</span>
 								</div>
-								<div>
-									<OrdersQtyCard allOrders={allOrders} />
-								</div>
-								{user.userRole === "Order Taker" ||
-								user.userRole === "Operations" ? null : (
+								{chosenCard === "OrdersCountCard" ? (
 									<div>
-										<OrdersTotalAmountCards allOrders={allOrders} />
+										<OrdersCountCards allOrders={allOrders} />
 									</div>
-								)}
+								) : null}
+								{chosenCard === "OrdersQtyCard" ? (
+									<div>
+										<OrdersQtyCard allOrders={allOrders} />
+									</div>
+								) : null}
+								{chosenCard === "OrdersTotalAmountCard" ? (
+									<div>
+										{user.userRole === "Order Taker" ||
+										user.userRole === "Operations" ? null : (
+											<div>
+												<OrdersTotalAmountCards allOrders={allOrders} />
+											</div>
+										)}
+									</div>
+								) : null}
 							</div>
 
 							{dataTable()}
@@ -904,6 +935,41 @@ const OrdersHistWrapper = styled.div`
 		border-radius: 3px;
 		transition: 0.3s;
 		cursor: pointer;
+	}
+
+	.ordersCount {
+		padding: 4px 25px;
+		background: #f1416c;
+		border-radius: 2px;
+		color: white;
+		font-weight: bold;
+		transition: 0.3s;
+	}
+
+	.ordersQty {
+		padding: 4px 13px;
+		background: #009ef7;
+		border-radius: 2px;
+		color: white;
+		font-weight: bold;
+		transition: 0.3s;
+	}
+
+	.ordersAmount {
+		padding: 4px;
+		background: #50cd89;
+		border-radius: 2px;
+		color: white;
+		font-weight: bold;
+		transition: 0.3s;
+	}
+
+	.ordersAmount:hover,
+	.ordersQty:hover,
+	.ordersCount:hover {
+		padding: 9px 25px;
+		cursor: pointer;
+		transition: 0.3s;
 	}
 
 	.tableData {

@@ -44,6 +44,7 @@ const MainReports = () => {
 	const [collapsed, setCollapsed] = useState(false);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [selectedFilter, setSelectedFilter] = useState("SelectAll");
+	const [chosenCard, setChosenCard] = useState("OrdersCountCard");
 	// eslint-disable-next-line
 	const [modalVisible, setModalVisible] = useState(false);
 	// eslint-disable-next-line
@@ -1037,15 +1038,44 @@ const MainReports = () => {
 								</div>
 							)}
 						</div>
-						<div>
-							<OrdersCountCards allOrders={allOrders} />
+						<div className='mt-3 ml-5'>
+							<span
+								className='mx-1 ordersCount'
+								onClick={() => {
+									setChosenCard("OrdersCountCard");
+								}}>
+								Orders Count
+							</span>
+							<span
+								className='mx-1 ordersQty'
+								onClick={() => {
+									setChosenCard("OrdersQtyCard");
+								}}>
+								Orders Quantity
+							</span>
+							<span
+								className='mx-1 ordersAmount'
+								onClick={() => {
+									setChosenCard("OrdersTotalAmountCard");
+								}}>
+								Orders Total Amount
+							</span>
 						</div>
-						<div>
-							<OrdersQtyCard allOrders={allOrders} />
-						</div>
-						<div>
-							<OrdersTotalAmountCards allOrders={allOrders} />
-						</div>
+						{chosenCard === "OrdersCountCard" ? (
+							<div>
+								<OrdersCountCards allOrders={allOrders} />
+							</div>
+						) : null}
+						{chosenCard === "OrdersQtyCard" ? (
+							<div>
+								<OrdersQtyCard allOrders={allOrders} />
+							</div>
+						) : null}
+						{chosenCard === "OrdersTotalAmountCard" ? (
+							<div>
+								<OrdersTotalAmountCards allOrders={allOrders} />
+							</div>
+						) : null}
 					</div>
 
 					<div className='mx-auto my-3' style={{ width: "75%" }}>
@@ -1389,6 +1419,41 @@ const MainReportsWrapper = styled.div`
 		border-radius: 3px;
 		transition: 0.3s;
 		cursor: pointer;
+	}
+
+	.ordersCount {
+		padding: 4px 25px;
+		background: #f1416c;
+		border-radius: 2px;
+		color: white;
+		font-weight: bold;
+		transition: 0.3s;
+	}
+
+	.ordersQty {
+		padding: 4px 13px;
+		background: #009ef7;
+		border-radius: 2px;
+		color: white;
+		font-weight: bold;
+		transition: 0.3s;
+	}
+
+	.ordersAmount {
+		padding: 4px;
+		background: #50cd89;
+		border-radius: 2px;
+		color: white;
+		font-weight: bold;
+		transition: 0.3s;
+	}
+
+	.ordersAmount:hover,
+	.ordersQty:hover,
+	.ordersCount:hover {
+		padding: 9px 25px;
+		cursor: pointer;
+		transition: 0.3s;
 	}
 
 	.tableData {

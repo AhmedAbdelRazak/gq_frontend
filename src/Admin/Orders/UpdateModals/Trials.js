@@ -117,7 +117,32 @@ const Trial = ({
 								{updateSingleOrder.status}
 							</span>
 						</h4>
-						{updateSingleOrder.status.includes("(Partial)") ? (
+						{updateSingleOrder.status.includes("Partial") &&
+						updateSingleOrder.status.includes("Exchange") ? (
+							<select
+								className='form-control'
+								onChange={(e) =>
+									setUpdateSingleOrder({
+										...updateSingleOrder,
+										status: e.target.value,
+									})
+								}
+								style={{
+									border: "#cfcfcf solid 1px",
+									borderRadius: "10px",
+									width: "100%",
+									fontSize: "0.9rem",
+									boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
+								}}>
+								<option>Update Status</option>
+								<option value='Exchange - In Processing | In Return (Partial)'>
+									Exchange - In Processing | In Return (Partial)
+								</option>
+								<option value='Exchange And Return Processed And Stocked'>
+									Exchange And Return Processed And Stocked
+								</option>
+							</select>
+						) : updateSingleOrder.status.includes("(Partial)") ? (
 							<select
 								className='form-control'
 								onChange={(e) =>
