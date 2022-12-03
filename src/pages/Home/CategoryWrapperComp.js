@@ -27,7 +27,7 @@ const CategoryWrapperComp = ({ chosenLanguage, categories }) => {
 					categories.map((i, c) => {
 						return (
 							<div
-								className='col-lg-2 col-md-4 col-sm-6 col-6 mx-auto text-center'
+								className='col-lg-1 col-md-4 col-sm-6 col-6 mx-5 categoriesWrapper'
 								key={c}>
 								<Link
 									to={`/our-products?filterby=category&categoryName=${i.categorySlug}`}
@@ -47,13 +47,13 @@ const CategoryWrapperComp = ({ chosenLanguage, categories }) => {
 														: i.categoryName}
 												</div> */}
 								</Link>
-								{chosenLanguage === "Arabic" ? (
+								{/* {chosenLanguage === "Arabic" ? (
 									<div className='CategoryTextArabic mb-5'>
 										{i.categoryName_Arabic}
 									</div>
 								) : (
 									<div className='CategoryText mb-5'>{i.categoryName}</div>
-								)}
+								)} */}
 							</div>
 						);
 					})}
@@ -110,8 +110,36 @@ const CategoriesPics = styled.div`
 		box-shadow: 5px 5px 2px 2px rgba(0, 0, 0, 0.5);
 	}
 
+	.titleOurCategories {
+		text-transform: uppercase;
+		color: darkred;
+		text-align: left !important;
+		margin-left: 30px;
+		letter-spacing: 0px;
+		font-size: 2rem !important;
+		font-weight: bold;
+
+	}
+
+	.titleOurCategories2 {
+		text-transform: uppercase;
+		color: darkred;
+		text-align: left !important;
+		letter-spacing: 0px
+		font-size: 2rem !important;
+		font-weight: bold;
+		margin-left: 30px;
+
+	}
+
 
 	@media (max-width: 900px) {
+		.categoriesWrapper {
+		margin: auto !important;
+	}
+	.row {
+		margin-left: 40px;
+	}
 		img {
 			/* box-shadow: 1px 1px 2.5px 2.5px rgba(0, 0, 0, 0.3); */
 			border: 2px white solid;
@@ -124,7 +152,7 @@ const CategoriesPics = styled.div`
 			margin-bottom: 7px;
 			/* font-style: italic; */
 			font-weight: bold;
-			letter-spacing: 3px;
+			/* letter-spacing: 3px; */
 			/* text-shadow: 1px 4px 3px rgba(0, 0, 0, 0.5); */
 			color: #330000;
 		}
@@ -152,7 +180,7 @@ const CategoriesPics = styled.div`
 			margin-bottom: 7px;
 			/* font-style: italic; */
 			/* font-weight: bold; */
-			letter-spacing: 3px;
+			/* letter-spacing: 3px; */
 			/* text-shadow: 1px 4px 3px rgba(0, 0, 0, 0.5); */
 			color: #330000;
 			display: none;
@@ -165,6 +193,8 @@ const CategoriesPics = styled.div`
 		width: 205px !important;
 		box-shadow: 5px 5px 2px 2px rgba(0, 0, 0, 0.5);
 	}
+
+	
 
 		/* .hamadaTest {
 			position: absolute;

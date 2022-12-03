@@ -86,8 +86,8 @@ const ImageCardHero = ({
 								) : null}
 							</div>
 							<div className='text-muted fs-7'>
-								Set the Home Page Main thumbnail image 1. Only *.png, *.jpg and
-								*.jpeg image files are accepted
+								Image Size should be 3800*1700. Set the Home Page Main thumbnail
+								image 1. Only *.png, *.jpg and *.jpeg image files are accepted
 							</div>
 						</div>
 					</div>
@@ -117,7 +117,7 @@ const ImageCardHero = ({
 														type='button'
 														className='close'
 														onClick={() => {
-															handleImageRemove2(image.public_id);
+															handleImageRemove(image.public_id);
 															setThumbnail2([]);
 														}}
 														style={{
@@ -158,8 +158,8 @@ const ImageCardHero = ({
 								) : null}
 							</div>
 							<div className='text-muted fs-7'>
-								Set the Home Page Main thumbnail image 2. Only *.png, *.jpg and
-								*.jpeg image files are accepted
+								Image Size should be 3800*1700. Set the Home Page Main thumbnail
+								image 1. Only *.png, *.jpg and *.jpeg image files are accepted
 							</div>
 						</div>
 					</div>
@@ -181,7 +181,9 @@ const ImageCardHero = ({
 								<div className='image-input-wrapper w-180px h-180px'></div>
 								<div className='col-12'>
 									{thumbnail3 &&
+										thumbnail3.length > 0 &&
 										thumbnail3.images &&
+										thumbnail3.images[0] &&
 										thumbnail3.images.map((image) => {
 											return (
 												<div className='m-3 col-6 '>

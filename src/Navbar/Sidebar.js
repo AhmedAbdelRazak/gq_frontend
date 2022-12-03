@@ -13,11 +13,36 @@ const Sidebar = ({
 	language,
 	setLanguage,
 	history,
+	allGenders,
 }) => {
 	return (
 		<>
 			<SideWrapper show={clickMenu}>
 				<ul>
+					<li
+						className='mt-3 genderWrapper'
+						onClick={() => {
+							window.scrollTo({ top: 0, behavior: "smooth" });
+						}}>
+						{allGenders &&
+							allGenders.map((g, i) => {
+								return (
+									<Link
+										to={`/our-products?filterby=gender&gendername=${g.genderName}`}
+										className='genderItem'
+										key={i}
+										onClick={() => {
+											setClickMenu(false);
+											setClick(false);
+										}}>
+										{g.genderName}
+									</Link>
+								);
+							})}
+					</li>
+					<div className='col-10 mx-auto'>
+						<hr />
+					</div>
 					<li
 						className='mt-3'
 						onClick={() => {
@@ -292,11 +317,25 @@ const SideWrapper = styled.nav`
 	z-index: 500;
 	border-right: 3px solid var(--darkGrey);
 	transition: 0.5s;
-	transform: ${(props) => (props.show ? "translateX(0)" : "translateX(220%)")};
+	transform: ${(props) => (props.show ? "translateX(0)" : "translateX(-100%)")};
 	/*transform: translateX(-100%);*/ /**this will hide the side bar */
 	ul {
 		list-style-type: none;
 		padding: 0 !important;
+	}
+
+	.genderItem {
+		margin: 0px 12px;
+		font-weight: bold;
+		text-transform: uppercase;
+		color: darkgrey;
+	}
+	.genderWrapper {
+		text-align: center;
+	}
+
+	hr {
+		border-bottom: 1px solid darkgrey;
 	}
 	.sidebar-link {
 		display: block;
@@ -315,7 +354,7 @@ const SideWrapper = styled.nav`
 	}
 
 	.fontawesome-icons {
-		color: green;
+		color: darkred;
 		margin-right: 10px;
 		/* font-weight: bold; */
 	}

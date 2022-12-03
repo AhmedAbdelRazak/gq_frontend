@@ -7,10 +7,15 @@ import styled from "styled-components";
 import { useCartContext } from "../Checkout/cart_context";
 import { FaTrash, FaMinus, FaPlus, FaTimes } from "react-icons/fa";
 import DarkBackground from "./DarkBackground";
-import { allLoyaltyPointsAndStoreStatus } from "../apiCore";
+import {
+	allLoyaltyPointsAndStoreStatus,
+	getColors,
+	getProducts,
+} from "../apiCore";
 import { Helmet } from "react-helmet";
 import Sidebar from "./Sidebar";
-
+import EgyptianFlag from "../GeneralImages/Egypt.png";
+import AmericanFlag from "../GeneralImages/UnitedStates.png";
 // import logo from "../pagesImgs/Sinai-I-Logo.jpg";
 
 const NavbarTop = ({
@@ -21,6 +26,7 @@ const NavbarTop = ({
 	setClickMenu,
 	language,
 	setLanguage,
+	chosenLanguage,
 }) => {
 	const {
 		cart,
@@ -32,12 +38,16 @@ const NavbarTop = ({
 		openSidebar,
 		closeSidebar,
 		isSidebarOpen,
+		changeSize,
+		changeColor,
 	} = useCartContext();
 
 	// eslint-disable-next-line
 	const [logoImage, setLogoImage] = useState("");
 	// eslint-disable-next-line
 	const [onlineStoreName, setOnlineStoreName] = useState("");
+	const [allColors, setAllColors] = useState([]);
+	const [allGenders, setAllGenders] = useState([]);
 
 	const handleSidebar = () => {
 		setClick(!click);
@@ -62,20 +72,59 @@ const NavbarTop = ({
 		});
 	};
 
+	const gettingAllProducts = () => {
+		getProducts().then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				//Gender Unique
+				var genderUnique = data
+					.filter((i) => i.activeProduct === true)
+					.map((ii) => ii.gender);
+
+				let uniqueGenders = [
+					...new Map(
+						genderUnique.map((item) => [item["genderName"], item]),
+					).values(),
+				];
+				setAllGenders(uniqueGenders);
+			}
+		});
+	};
+
 	useEffect(() => {
 		getOnlineStoreName();
+		gettingAllProducts();
+		// eslint-disable-next-line
+	}, []);
+
+	const gettingAllColors = () => {
+		getColors().then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllColors(data);
+			}
+		});
+	};
+
+	useEffect(() => {
+		gettingAllColors();
+
 		// eslint-disable-next-line
 	}, []);
 
 	const storeLogo = logoImage;
 	var index = storeLogo.indexOf("upload");
 
+	// eslint-disable-next-line
 	var finalLogoUrl =
 		storeLogo.substr(0, index + 6) +
 		"/e_bgremoval" +
 		storeLogo.substr(index + 6);
 
 	// console.log(logoImage);
+	var checkingAvailability = [];
 
 	const sideCart = () => {
 		return (
@@ -86,98 +135,288 @@ const NavbarTop = ({
 					style={{ fontSize: "20px", color: "darkRed", cursor: "pointer" }}>
 					<FaTimes />
 				</div>
-				<div className='cellPhoneLayout mt-5'>
-					{cart.map((i, k) => {
-						const increase = () => {
-							toggleAmount(i.id, "inc");
-						};
-						const decrease = () => {
-							toggleAmount(i.id, "dec");
-						};
-						return (
-							<div key={k} className='mt-2'>
-								<div className='row mx-auto'>
-									<div className='col-3'>
-										<span>
-											<img
-												src={i.image}
-												alt={i.name}
-												style={{ width: "80px", height: "80px" }}
-											/>
-										</span>
-									</div>
-									<div className='col-9 mx-auto my-auto'>
-										<div
-											style={{
-												fontSize: "12px",
-												fontWeight: "bold",
-												marginLeft: "10px",
-											}}>
-											{i.name}
-										</div>
-										<span
-											className='buttons-up-down'
-											style={{ color: "#282491", marginTop: "10px" }}>
-											<span style={{ color: "black" }}>Quantity:</span>
-											<button
-												type='button'
-												className='amount-btn'
-												onClick={decrease}>
-												<FaMinus />
-											</button>
-											<span className='amount'>{i.amount}</span>
-											<button
-												type='button'
-												className='amount-btn'
-												onClick={increase}>
-												<FaPlus />
-											</button>
-										</span>
-										<div
-											style={{
-												fontSize: "0.9rem",
-												fontWeight: "bold",
-												letterSpacing: "3px",
-												color: "#8d9124",
-												marginLeft: "70px",
-												marginTop: "10px",
-											}}>
-											${i.price * i.amount}
-										</div>
-										<button
-											className='trashIcon'
-											type='button'
-											style={{
-												marginLeft: "250px",
-												color: "red",
-												border: "none",
-												fontWeight: "bold",
-											}}
-											onClick={() => removeItem(i.id)}>
-											<FaTrash />
-										</button>
-									</div>
-								</div>
-
-								<hr />
-							</div>
-						);
-					})}
-					<div className='link-container' onClick={closeSidebar}>
-						<Link
-							to='/our-products'
-							className='link-btn btn-primary'
-							onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-							continue shopping
-						</Link>
-						<Link
-							to='/cart'
-							className='link-btn btn-primary'
-							onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-							Check Out
-						</Link>
+				{cart && cart.length === 0 ? (
+					<div style={{ marginTop: "80px" }}>
+						<h3
+							style={{
+								textAlign: "center",
+								fontWeight: "bolder",
+								color: "darkcyan",
+							}}>
+							Your Cart Is Empty
+						</h3>
 					</div>
-				</div>
+				) : (
+					<div className='cellPhoneLayout mt-5'>
+						{cart.map((i, k) => {
+							var productColors =
+								i.allProductDetailsIncluded.productAttributes.map(
+									(iii) => iii.color,
+								);
+							var uniqueProductColors = [
+								...new Map(productColors.map((item) => [item, item])).values(),
+							];
+
+							var productSizes =
+								i.allProductDetailsIncluded.productAttributes.map(
+									(iii) => iii.size,
+								);
+							var uniqueProductSizes = [
+								...new Map(productSizes.map((item) => [item, item])).values(),
+							];
+
+							var chosenAttribute =
+								i.allProductDetailsIncluded.productAttributes.filter(
+									(iii) => iii.color === i.color && iii.size === i.size,
+								)[0];
+
+							if (i.allProductDetailsIncluded.activeBackorder) {
+								checkingAvailability.push(true);
+							} else {
+								checkingAvailability.push(chosenAttribute.quantity >= i.amount);
+							}
+
+							const increase = () => {
+								toggleAmount(i.id, "inc", chosenAttribute, i.max);
+							};
+							const decrease = () => {
+								toggleAmount(i.id, "dec", chosenAttribute, i.max);
+							};
+							return (
+								<div key={k} className='mt-2'>
+									<div className='row mx-auto'>
+										<div className='col-3'>
+											<span>
+												<img
+													src={i.image}
+													alt={i.name}
+													style={{ width: "80px", height: "80px" }}
+												/>
+											</span>
+										</div>
+										<div className='col-9 mx-auto my-auto'>
+											<div
+												style={{
+													fontSize: "12px",
+													fontWeight: "bold",
+													marginLeft: "10px",
+													textTransform: "capitalize",
+												}}>
+												{i.name}
+											</div>
+											<div
+												className='row'
+												style={{
+													fontSize: "12px",
+													fontWeight: "bold",
+													marginLeft: "10px",
+													marginTop: "10px",
+													textTransform: "capitalize",
+												}}>
+												<div className='col-4 mr-3'>
+													Size:{" "}
+													<select
+														style={{ textTransform: "capitalize" }}
+														onChange={(e) => {
+															var chosenAttribute2 =
+																i.allProductDetailsIncluded.productAttributes.filter(
+																	(iii) =>
+																		iii.color === i.color &&
+																		iii.size.toLowerCase() ===
+																			e.target.value.toLowerCase(),
+																)[0];
+															changeSize(
+																i.id,
+																e.target.value,
+																i.color,
+																chosenAttribute2.quantity,
+																i.size,
+															);
+														}}>
+														<option style={{ textTransform: "capitalize" }}>
+															{i.size}
+														</option>
+
+														{uniqueProductSizes &&
+															uniqueProductSizes.map((ss, ii) => {
+																return (
+																	<option key={ii} value={ss}>
+																		{ss}
+																	</option>
+																);
+															})}
+													</select>
+												</div>
+												<div className='col-4  '>
+													Color:{" "}
+													<select
+														style={{ textTransform: "capitalize" }}
+														onChange={(e) => {
+															var chosenColorImageHelper =
+																i.allProductDetailsIncluded.productAttributes.filter(
+																	(iii) => iii.color === e.target.value,
+																)[0];
+
+															var chosenColorImage =
+																chosenColorImageHelper &&
+																chosenColorImageHelper.productImages &&
+																chosenColorImageHelper.productImages[0] &&
+																chosenColorImageHelper.productImages[0].url;
+
+															var chosenAttribute2 =
+																i.allProductDetailsIncluded.productAttributes.filter(
+																	(iii) =>
+																		iii.color.toLowerCase() ===
+																			e.target.value.toLowerCase() &&
+																		iii.size.toLowerCase() === i.size,
+																)[0];
+															changeColor(
+																i.id,
+																e.target.value,
+																i.size,
+																chosenColorImage,
+																chosenAttribute2.quantity,
+																i.color,
+															);
+														}}>
+														<option style={{ textTransform: "capitalize" }}>
+															{allColors &&
+																allColors[
+																	allColors
+																		.map((ii) => ii.hexa)
+																		.indexOf(i.color)
+																] &&
+																allColors[
+																	allColors
+																		.map((ii) => ii.hexa)
+																		.indexOf(i.color)
+																].color}
+														</option>
+
+														{uniqueProductColors &&
+															uniqueProductColors.map((cc, ii) => {
+																return (
+																	<option key={ii} value={cc}>
+																		{allColors &&
+																			allColors[
+																				allColors
+																					.map((ii) => ii.hexa)
+																					.indexOf(cc)
+																			] &&
+																			allColors[
+																				allColors
+																					.map((ii) => ii.hexa)
+																					.indexOf(cc)
+																			].color}
+																	</option>
+																);
+															})}
+													</select>
+												</div>
+											</div>
+											<div
+												style={{
+													fontSize: "12px",
+													fontWeight: "bold",
+													marginLeft: "10px",
+													marginTop: "10px",
+													textTransform: "capitalize",
+													color: "darkgreen",
+												}}>
+												{i.allProductDetailsIncluded
+													.activeBackorder ? null : chosenAttribute.quantity >=
+												  i.amount ? null : (
+													<span style={{ color: "red" }}>
+														Unavailable Stock
+													</span>
+												)}
+											</div>
+											{chosenLanguage === "Arabic" ? (
+												<span
+													className='buttons-up-down'
+													style={{ color: "#282491", marginTop: "10px" }}>
+													<button
+														type='button'
+														className='amount-btn'
+														onClick={increase}>
+														<FaPlus />
+													</button>
+													<span className='amount'>{i.amount}</span>
+
+													<button
+														type='button'
+														className='amount-btn'
+														onClick={decrease}>
+														<FaMinus />
+													</button>
+													<span style={{ color: "black" }}>الكمية</span>
+												</span>
+											) : (
+												<span
+													className='buttons-up-down'
+													style={{ color: "#282491", marginTop: "10px" }}>
+													<span style={{ color: "black" }}>Quantity</span>
+													<button
+														type='button'
+														className='amount-btn'
+														onClick={decrease}>
+														<FaMinus />
+													</button>
+													<span className='amount'>{i.amount}</span>
+													<button
+														type='button'
+														className='amount-btn'
+														onClick={increase}>
+														<FaPlus />
+													</button>
+												</span>
+											)}
+											<div
+												style={{
+													fontSize: "0.9rem",
+													fontWeight: "bold",
+													letterSpacing: "3px",
+													color: "#8d9124",
+													marginLeft: "70px",
+													marginTop: "10px",
+												}}>
+												{i.priceAfterDiscount * i.amount} L.E.
+											</div>
+											<button
+												className='trashIcon'
+												type='button'
+												style={{
+													marginLeft: "250px",
+													color: "red",
+													border: "none",
+													fontWeight: "bold",
+												}}
+												onClick={() => removeItem(i.id, i.size, i.color)}>
+												<FaTrash />
+											</button>
+										</div>
+									</div>
+
+									<hr />
+								</div>
+							);
+						})}
+						<div className='link-container' onClick={closeSidebar}>
+							<Link
+								to='/our-products'
+								className='link-btn btn-primary'
+								onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+								continue shopping
+							</Link>
+							<Link
+								to='/cart'
+								className='link-btn btn-primary'
+								onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+								Check Out
+							</Link>
+						</div>
+					</div>
+				)}
 			</SideWrapperCart>
 		);
 	};
@@ -185,12 +424,12 @@ const NavbarTop = ({
 	return (
 		<Nav
 			className=' navbar  navbar-expand-sm nav-center py-0'
-			style={{ backgroundColor: "white" }}>
+			style={{ backgroundColor: "rgb(235, 235, 235)" }}>
 			{click ? (
 				<i
 					className='fas fa-times nav-icon faaa-bars'
 					onClick={handleSidebar}
-					style={{ color: "green" }}></i>
+					style={{ color: "darkred" }}></i>
 			) : (
 				<i
 					className='fa fa-bars nav-icon faaa-bars'
@@ -213,8 +452,9 @@ const NavbarTop = ({
 				setClick={setClick}
 				setLanguage={setLanguage}
 				language={language}
+				allGenders={allGenders}
 			/>
-			<div className='logo-type ml-5'>
+			<div className='logo-type ml-5 logoWrapper'>
 				<Link
 					to='/'
 					onClick={() => {
@@ -243,8 +483,8 @@ const NavbarTop = ({
 								}}
 								style={{
 									color: "black",
-									textDecoration: "underline",
-									fontWeight: "bold",
+									// textDecoration: "underline",
+									// fontWeight: "bold",
 									marginRight: "20px",
 									// fontStyle: "italic",
 								}}>
@@ -255,18 +495,37 @@ const NavbarTop = ({
 					{isAuthenticated() && isAuthenticated().user.role === 1 && (
 						<li className='nav-item'>
 							<Link
-								className='nav-link mt-2'
+								className='nav-link'
 								to='/admin/dashboard'
 								onClick={() => {
 									window.scrollTo({ top: 0, behavior: "smooth" });
 								}}
 								style={{
 									color: "black",
-									textDecoration: "underline",
-									fontWeight: "bold",
+									// textDecoration: "underline",
+									// fontWeight: "bold",
 									marginRight: "20px",
 									// fontStyle: "italic",
 								}}>
+								<svg
+									className='Styles__AccountIcon-d7nzgu-1 pWXnP'
+									width='17'
+									height='17'
+									style={{ marginRight: "5px", marginBottom: "2px" }}
+									viewBox='0 0 20 20'
+									fill='none'
+									xmlns='http://www.w3.org/2000/svg'
+									role='img'
+									aria-labelledby='00ea8e94-2216-4b64-acff-4d2fb3126ffb'>
+									<title id='00ea8e94-2216-4b64-acff-4d2fb3126ffb'>
+										Account
+									</title>
+									<path
+										fill-rule='evenodd'
+										clip-rule='evenodd'
+										d='M13.5 4.79092C13.5 2.53192 11.4849 0.700012 9 0.700012L8.782 0.704731C6.39831 0.808141 4.5 2.59836 4.5 4.79092V5.6091C4.5 7.8681 6.5151 9.70001 9 9.70001L9.218 9.69529C11.6017 9.59188 13.5 7.80166 13.5 5.6091V4.79092ZM8.84702 2.20332L9.014 2.19901L9.18583 2.20488C10.7822 2.28873 12 3.44567 12 4.79092V5.6091L11.9946 5.76395C11.9049 7.04676 10.7094 8.12918 9.15298 8.1967L8.96754 8.20036L8.78519 8.19546C7.21783 8.1113 6 6.95435 6 5.6091V4.79092L6.0054 4.63607C6.09507 3.35326 7.29059 2.27084 8.84702 2.20332ZM15.3594 12.6468C13.6548 12.1815 11.3274 11.7 9 11.7C6.6726 11.7 4.3452 12.1815 2.6406 12.6468C1.0773 13.0725 0 14.4972 0 16.1172V18H18V16.1172L17.9949 15.9238C17.913 14.3848 16.8602 13.0555 15.3594 12.6468ZM3.03471 14.0941C5.07704 13.5366 7.12428 13.2 9 13.2C10.8757 13.2 12.923 13.5366 14.9644 14.0939L15.1214 14.1434C15.9428 14.4386 16.5 15.2247 16.5 16.1172V16.499H1.5V16.1172L1.50646 15.9512C1.57496 15.0735 2.1823 14.3262 3.03471 14.0941Z'
+										fill='black'></path>
+								</svg>
 								Hello {isAuthenticated().user.name}
 							</Link>
 						</li>
@@ -274,15 +533,15 @@ const NavbarTop = ({
 					{isAuthenticated() && isAuthenticated().user.role === 2 && (
 						<li className='nav-item'>
 							<Link
-								className='nav-link mt-2'
+								className='nav-link '
 								to='/admin/dashboard'
 								onClick={() => {
 									window.scrollTo({ top: 0, behavior: "smooth" });
 								}}
 								style={{
 									color: "black",
-									textDecoration: "underline",
-									fontWeight: "bold",
+									// textDecoration: "underline",
+									// fontWeight: "bold",
 									marginRight: "20px",
 									// fontStyle: "italic",
 								}}>
@@ -294,7 +553,7 @@ const NavbarTop = ({
 						<Fragment>
 							<li className='nav-item'>
 								<Link
-									className='nav-link mt-2 '
+									className='nav-link  '
 									to='/signin'
 									onClick={() => {
 										window.scrollTo({ top: 0, behavior: "smooth" });
@@ -302,25 +561,44 @@ const NavbarTop = ({
 									style={{
 										color: "black",
 										textDecoration: "underline",
-										fontWeight: "bold",
+										// fontWeight: "bold",
 										marginRight: "20px",
 										// fontStyle: "italic",
 									}}>
+									<svg
+										className='Styles__AccountIcon-d7nzgu-1 pWXnP'
+										width='17'
+										height='17'
+										style={{ marginRight: "5px", marginBottom: "2px" }}
+										viewBox='0 0 20 20'
+										fill='none'
+										xmlns='http://www.w3.org/2000/svg'
+										role='img'
+										aria-labelledby='00ea8e94-2216-4b64-acff-4d2fb3126ffb'>
+										<title id='00ea8e94-2216-4b64-acff-4d2fb3126ffb'>
+											Account
+										</title>
+										<path
+											fill-rule='evenodd'
+											clip-rule='evenodd'
+											d='M13.5 4.79092C13.5 2.53192 11.4849 0.700012 9 0.700012L8.782 0.704731C6.39831 0.808141 4.5 2.59836 4.5 4.79092V5.6091C4.5 7.8681 6.5151 9.70001 9 9.70001L9.218 9.69529C11.6017 9.59188 13.5 7.80166 13.5 5.6091V4.79092ZM8.84702 2.20332L9.014 2.19901L9.18583 2.20488C10.7822 2.28873 12 3.44567 12 4.79092V5.6091L11.9946 5.76395C11.9049 7.04676 10.7094 8.12918 9.15298 8.1967L8.96754 8.20036L8.78519 8.19546C7.21783 8.1113 6 6.95435 6 5.6091V4.79092L6.0054 4.63607C6.09507 3.35326 7.29059 2.27084 8.84702 2.20332ZM15.3594 12.6468C13.6548 12.1815 11.3274 11.7 9 11.7C6.6726 11.7 4.3452 12.1815 2.6406 12.6468C1.0773 13.0725 0 14.4972 0 16.1172V18H18V16.1172L17.9949 15.9238C17.913 14.3848 16.8602 13.0555 15.3594 12.6468ZM3.03471 14.0941C5.07704 13.5366 7.12428 13.2 9 13.2C10.8757 13.2 12.923 13.5366 14.9644 14.0939L15.1214 14.1434C15.9428 14.4386 16.5 15.2247 16.5 16.1172V16.499H1.5V16.1172L1.50646 15.9512C1.57496 15.0735 2.1823 14.3262 3.03471 14.0941Z'
+											fill='black'></path>
+									</svg>
 									Login
 								</Link>
 							</li>
 
 							<li className='nav-item'>
 								<Link
-									className='nav-link mt-2'
+									className='nav-link '
 									to='/signup'
 									onClick={() => {
 										window.scrollTo({ top: 0, behavior: "smooth" });
 									}}
 									style={{
 										color: "black",
-										textDecoration: "underline",
-										fontWeight: "bold",
+										// textDecoration: "underline",
+										// fontWeight: "bold",
 										marginRight: "100px",
 										// fontStyle: "italic",
 									}}>
@@ -332,11 +610,11 @@ const NavbarTop = ({
 					{isAuthenticated() && (
 						<li className='nav-item'>
 							<span
-								className='nav-link mt-2'
+								className='nav-link '
 								style={{
 									cursor: "pointer",
-									fontWeight: "bold",
-									textDecoration: "underline",
+									// fontWeight: "bold",
+									// textDecoration: "underline",
 									color: "red",
 									// fontStyle: "italic",
 									marginRight: "100px",
@@ -353,27 +631,39 @@ const NavbarTop = ({
 							</span>
 						</li>
 					)}
-					<li className='nav-item mt-2'>
-						<span style={{ fontWeight: "bold" }}>Language</span>{" "}
-						<span className='mx-3 btn' style={{ padding: "1px" }}>
+					<li
+						className='nav-item mt-2 languageList'
+						style={{
+							// border: "1px solid black",
+							width: "90px",
+							height: "30px",
+						}}>
+						<span className='' style={{ padding: "0px" }}>
 							{language === "English" ? (
 								<span
-									style={{ background: "#c40000", color: "white" }}
-									className='btn '
+									// style={{
+									// 	background: "#c40000",
+									// 	color: "white",
+									// 	width: "100%",
+									// }}
+									className=''
 									onClick={() => {
 										setLanguage("Arabic");
 										// window.location.reload(false);
 									}}>
-									Arabic
+									{" "}
+									<img className='flags' src={EgyptianFlag} alt='Arabic' />
+									<span>Arabic</span>
 								</span>
 							) : (
 								<span
-									style={{ background: "#c40000", color: "white" }}
-									className='btn '
+									// style={{ background: "#c40000", color: "white" }}
+									className=' '
 									onClick={() => {
 										setLanguage("English");
 										// window.location.reload(false);
 									}}>
+									<img className='flags' src={AmericanFlag} alt='English' />{" "}
 									English
 								</span>
 							)}
@@ -393,7 +683,7 @@ const NavbarTop = ({
 					</sup>
 					<i
 						className='fa fa-cart-plus faaa-bars'
-						style={{ color: "black" }}
+						style={{ color: "black", fontSize: "20px", marginTop: "10px" }}
 						aria-hidden='true'></i>
 				</div>
 
@@ -408,26 +698,20 @@ export default withRouter(NavbarTop);
 const Nav = styled.nav`
 	margin-top: 0px;
 
+	.logoWrapper,
 	.infiniteAppsLogo {
-		width: 65px;
-		height: 65px;
-		margin-top: 0px;
-		margin-bottom: 0px;
-		margin-left: 0px;
-		border-radius: 15px;
+		display: none;
 	}
 
 	.btn:hover {
 		cursor: pointer;
 	}
 
-	.imgLogo {
-		width: 120%;
-		height: 120%;
-		margin-top: 0px;
-		margin-bottom: 0px;
-		margin-left: 0px;
-		border-radius: 15px;
+	.flags {
+		object-fit: cover;
+	}
+	.languageList:hover {
+		cursor: pointer;
 	}
 
 	/* .imgLogo {
@@ -458,6 +742,12 @@ const Nav = styled.nav`
 		display: none;
 	}
 
+	@media (max-width: 900px) {
+		.logoWrapper {
+			display: block;
+		}
+	}
+
 	@media (max-width: 680px) {
 		position: -webkit-sticky;
 		position: sticky;
@@ -469,18 +759,19 @@ const Nav = styled.nav`
 		z-index: 120;
 
 		.cart-badge {
-			border-radius: 100%;
+			border-radius: 20%;
 			font-size: 13px;
-			/* font-style: italic; */
-			background: #737070;
-			color: black;
+			font-style: italic;
+			color: white;
 			text-decoration: none !important;
 			display: block;
-			margin-left: 10px;
+			margin-left: 18px;
 			font-weight: bold;
+			background: darkred;
+			padding: 6px;
 			position: absolute;
-			top: 0px;
-			left: 3px;
+			top: -14px;
+			left: -10px;
 		}
 
 		.logo-type {
@@ -505,7 +796,7 @@ const Nav = styled.nav`
 		.nav-icon {
 			font-size: 1.35rem;
 			cursor: pointer;
-			margin-left: 4px;
+			margin-left: 15px;
 		}
 
 		.nav-cart {
@@ -520,6 +811,7 @@ const Nav = styled.nav`
 			padding: 0 5px;
 		}
 		.infiniteAppsLogo {
+			display: block;
 			width: 159px;
 			height: 79px;
 			margin-top: 0px;
@@ -529,8 +821,8 @@ const Nav = styled.nav`
 		}
 
 		.imgLogo {
-			width: 150px;
-			height: 79px;
+			width: 100px;
+			height: 100px;
 			margin-top: 0px;
 			margin-bottom: 0px;
 			margin-left: 0px;
@@ -551,9 +843,9 @@ const Nav = styled.nav`
 	font-size: 1rem;
 
 	li a:hover {
-		background: #727272;
+		background: rgb(240, 240, 240);
 		text-decoration: none;
-		color: var(--mainWhite) !important;
+		/* color: var(--mainWhite) !important; */
 		outline-color: var(--darkGrey);
 		transition: var(--mainTransition);
 	}

@@ -2,27 +2,28 @@
 // eslint-disable-next-line
 import React, { Fragment, useEffect, useState } from "react";
 import { Link, withRouter } from "react-router-dom";
+// eslint-disable-next-line
 import { isAuthenticated } from "../auth";
 // import CartButtons from "./CartButtons";
 import styled from "styled-components";
 import { useCartContext } from "../Checkout/cart_context";
 import { FaTrash, FaMinus, FaPlus, FaTimes } from "react-icons/fa";
 import DarkBackground from "./DarkBackground";
-import { getColors } from "../apiCore";
+import { allLoyaltyPointsAndStoreStatus, getColors } from "../apiCore";
 
 const isActive = (history, path) => {
 	if (history.location.pathname === path) {
 		return {
-			color: "white !important",
-			background: "#c4ffc4",
+			color: "black",
 			fontWeight: "bold",
-			// textDecoration: "underline",
+			textDecoration: "underline",
 		};
 	} else {
-		return { color: "#c4ffc4", fontWeight: "bold" };
+		return { color: "darkGrey", fontWeight: "bold" };
 	}
 };
 
+// eslint-disable-next-line
 const isActive2 = (history, path) => {
 	if (history.location.pathname === path) {
 		return {
@@ -40,6 +41,7 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 	// const [click, setClick] = useState(false);
 	//
 	const [allColors, setAllColors] = useState([]);
+	const [logoImage, setLogoImage] = useState("");
 
 	const {
 		cart,
@@ -65,9 +67,25 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 		});
 	};
 
+	const getOnlineStoreName = () => {
+		allLoyaltyPointsAndStoreStatus().then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setLogoImage(
+					data &&
+						data[data.length - 1] &&
+						data[data.length - 1].addStoreLogo &&
+						data[data.length - 1].addStoreLogo[0] &&
+						data[data.length - 1].addStoreLogo[0].url,
+				);
+			}
+		});
+	};
+
 	useEffect(() => {
 		gettingAllColors();
-
+		getOnlineStoreName();
 		// eslint-disable-next-line
 	}, []);
 
@@ -86,238 +104,332 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 					style={{ fontSize: "15px", color: "black", cursor: "pointer" }}>
 					<FaTimes />
 				</div>
-				<div className='cellPhoneLayout mt-5'>
-					{cart.map((i, k) => {
-						var productColors =
-							i.allProductDetailsIncluded.productAttributes.map(
-								(iii) => iii.color,
-							);
-						var uniqueProductColors = [
-							...new Map(productColors.map((item) => [item, item])).values(),
-						];
+				{cart && cart.length === 0 ? (
+					<div style={{ marginTop: "80px" }}>
+						<h3
+							style={{
+								textAlign: "center",
+								fontWeight: "bolder",
+								color: "darkcyan",
+							}}>
+							Your Cart Is Empty
+						</h3>
+					</div>
+				) : (
+					<div className='cellPhoneLayout mt-5'>
+						{cart &&
+							cart.length > 0 &&
+							cart.map((i, k) => {
+								var productColors =
+									i.allProductDetailsIncluded.productAttributes.map(
+										(iii) => iii.color,
+									);
+								var uniqueProductColors = [
+									...new Map(
+										productColors.map((item) => [item, item]),
+									).values(),
+								];
 
-						var productSizes =
-							i.allProductDetailsIncluded.productAttributes.map(
-								(iii) => iii.size,
-							);
-						var uniqueProductSizes = [
-							...new Map(productSizes.map((item) => [item, item])).values(),
-						];
+								var productSizes =
+									i.allProductDetailsIncluded.productAttributes.map(
+										(iii) => iii.size,
+									);
+								var uniqueProductSizes = [
+									...new Map(productSizes.map((item) => [item, item])).values(),
+								];
 
-						var chosenAttribute =
-							i.allProductDetailsIncluded.productAttributes.filter(
-								(iii) => iii.color === i.color && iii.size === i.size,
-							)[0];
+								var chosenAttribute =
+									i.allProductDetailsIncluded.productAttributes.filter(
+										(iii) => iii.color === i.color && iii.size === i.size,
+									)[0];
 
-						if (i.allProductDetailsIncluded.activeBackorder) {
-							checkingAvailability.push(true);
-						} else {
-							checkingAvailability.push(chosenAttribute.quantity >= i.amount);
-						}
+								if (i.allProductDetailsIncluded.activeBackorder) {
+									checkingAvailability.push(true);
+								} else {
+									checkingAvailability.push(
+										chosenAttribute.quantity >= i.amount,
+									);
+								}
 
-						const increase = () => {
-							toggleAmount(i.id, "inc");
-						};
-						const decrease = () => {
-							toggleAmount(i.id, "dec");
-						};
+								const increase = () => {
+									toggleAmount(i.id, "inc", chosenAttribute, i.max);
+								};
+								const decrease = () => {
+									toggleAmount(i.id, "dec", chosenAttribute, i.max);
+								};
 
-						return (
-							<div key={k} className='mt-2'>
-								<div className='row mx-auto'>
-									<div className='col-3'>
-										<span>
-											<img
-												src={i.image}
-												alt={i.name}
-												style={{ width: "80px", height: "80px" }}
-											/>
-										</span>
+								return (
+									<div key={k} className='mt-2'>
+										<div className='row mx-auto'>
+											<div className='col-3'>
+												<span>
+													<img
+														src={i.image}
+														alt={i.name}
+														style={{ width: "80px", height: "80px" }}
+													/>
+												</span>
+											</div>
+											<div className='col-9 mx-auto my-auto'>
+												<div
+													style={{
+														fontSize: "12px",
+														fontWeight: "bold",
+														marginLeft: "10px",
+														textTransform: "capitalize",
+													}}>
+													{chosenLanguage === "Arabic" ? i.nameArabic : i.name}
+												</div>
+												<div
+													style={{
+														fontSize: "12px",
+														fontWeight: "bold",
+														marginLeft: "10px",
+														marginTop: "10px",
+														textTransform: "capitalize",
+													}}>
+													<span className='mr-3 '>
+														Size:{" "}
+														<select
+															style={{ textTransform: "capitalize" }}
+															onChange={(e) => {
+																var chosenAttribute2 =
+																	i.allProductDetailsIncluded.productAttributes.filter(
+																		(iii) =>
+																			iii.color === i.color &&
+																			iii.size.toLowerCase() ===
+																				e.target.value.toLowerCase(),
+																	)[0];
+																changeSize(
+																	i.id,
+																	e.target.value,
+																	i.color,
+																	chosenAttribute2.quantity,
+																	i.size,
+																);
+															}}>
+															<option style={{ textTransform: "capitalize" }}>
+																{i.size}
+															</option>
+
+															{uniqueProductSizes &&
+																uniqueProductSizes.map((ss, ii) => {
+																	return (
+																		<option key={ii} value={ss}>
+																			{ss}
+																		</option>
+																	);
+																})}
+														</select>
+													</span>
+													<span>
+														Color:{" "}
+														<select
+															style={{ textTransform: "capitalize" }}
+															onChange={(e) => {
+																var chosenColorImageHelper =
+																	i.allProductDetailsIncluded.productAttributes.filter(
+																		(iii) => iii.color === e.target.value,
+																	)[0];
+
+																var chosenColorImage =
+																	chosenColorImageHelper &&
+																	chosenColorImageHelper.productImages &&
+																	chosenColorImageHelper.productImages[0] &&
+																	chosenColorImageHelper.productImages[0].url;
+
+																var chosenAttribute2 =
+																	i.allProductDetailsIncluded.productAttributes.filter(
+																		(iii) =>
+																			iii.color.toLowerCase() ===
+																				e.target.value.toLowerCase() &&
+																			iii.size.toLowerCase() === i.size,
+																	)[0];
+																changeColor(
+																	i.id,
+																	e.target.value,
+																	i.size,
+																	chosenColorImage,
+																	chosenAttribute2.quantity,
+																	i.color,
+																);
+															}}>
+															<option style={{ textTransform: "capitalize" }}>
+																{allColors &&
+																	allColors[
+																		allColors
+																			.map((ii) => ii.hexa)
+																			.indexOf(i.color)
+																	] &&
+																	allColors[
+																		allColors
+																			.map((ii) => ii.hexa)
+																			.indexOf(i.color)
+																	].color}
+															</option>
+
+															{uniqueProductColors &&
+																uniqueProductColors.map((cc, ii) => {
+																	return (
+																		<option key={ii} value={cc}>
+																			{allColors &&
+																				allColors[
+																					allColors
+																						.map((ii) => ii.hexa)
+																						.indexOf(cc)
+																				] &&
+																				allColors[
+																					allColors
+																						.map((ii) => ii.hexa)
+																						.indexOf(cc)
+																				].color}
+																		</option>
+																	);
+																})}
+														</select>
+													</span>
+												</div>
+												<div
+													style={{
+														fontSize: "12px",
+														fontWeight: "bold",
+														marginLeft: "10px",
+														marginTop: "10px",
+														textTransform: "capitalize",
+														color: "darkgreen",
+													}}>
+													{i.allProductDetailsIncluded
+														.activeBackorder ? null : chosenAttribute.quantity >=
+													  i.amount ? null : (
+														<span style={{ color: "red" }}>
+															Unavailable Stock
+														</span>
+													)}
+												</div>
+
+												{chosenLanguage === "Arabic" ? (
+													<span
+														className='buttons-up-down'
+														style={{ color: "#282491", marginTop: "10px" }}>
+														<button
+															type='button'
+															className='amount-btn'
+															onClick={increase}>
+															<FaPlus />
+														</button>
+														<span className='amount'>{i.amount}</span>
+
+														<button
+															type='button'
+															className='amount-btn'
+															onClick={decrease}>
+															<FaMinus />
+														</button>
+														<span style={{ color: "black" }}>الكمية</span>
+													</span>
+												) : (
+													<span
+														className='buttons-up-down'
+														style={{ color: "#282491", marginTop: "10px" }}>
+														<span style={{ color: "black" }}>Quantity</span>
+														<button
+															type='button'
+															className='amount-btn'
+															onClick={decrease}>
+															<FaMinus />
+														</button>
+														<span className='amount'>{i.amount}</span>
+														<button
+															type='button'
+															className='amount-btn'
+															onClick={increase}>
+															<FaPlus />
+														</button>
+													</span>
+												)}
+
+												<div
+													style={{
+														fontSize: "0.9rem",
+														fontWeight: "bold",
+														letterSpacing: "3px",
+														color: "#8d9124",
+														marginLeft: "70px",
+														marginTop: "10px",
+													}}>
+													{i.priceAfterDiscount * i.amount} L.E.
+												</div>
+												<button
+													type='button'
+													style={{
+														marginLeft: "250px",
+														color: "red",
+														border: "none",
+														fontWeight: "bold",
+													}}
+													onClick={() => removeItem(i.id, i.size, i.color)}>
+													<FaTrash />
+												</button>
+											</div>
+										</div>
+
+										<hr />
 									</div>
-									<div className='col-9 mx-auto my-auto'>
-										<div
-											style={{
-												fontSize: "12px",
-												fontWeight: "bold",
-												marginLeft: "10px",
-												textTransform: "capitalize",
-											}}>
-											{chosenLanguage === "Arabic" ? i.nameArabic : i.name}
-										</div>
-										<div
-											style={{
-												fontSize: "12px",
-												fontWeight: "bold",
-												marginLeft: "10px",
-												marginTop: "10px",
-												textTransform: "capitalize",
-											}}>
-											<span className='mr-3 '>
-												Size:{" "}
-												<select
-													style={{ textTransform: "capitalize" }}
-													onChange={(e) => changeSize(i.id, e.target.value)}>
-													<option style={{ textTransform: "capitalize" }}>
-														{i.size}
-													</option>
-
-													{uniqueProductSizes &&
-														uniqueProductSizes.map((ss, ii) => {
-															return (
-																<option key={ii} value={ss}>
-																	{ss}
-																</option>
-															);
-														})}
-												</select>
-											</span>
-											<span>
-												Color:{" "}
-												<select
-													style={{ textTransform: "capitalize" }}
-													onChange={(e) => changeColor(i.id, e.target.value)}>
-													<option style={{ textTransform: "capitalize" }}>
-														{allColors &&
-															allColors[
-																allColors.map((ii) => ii.hexa).indexOf(i.color)
-															] &&
-															allColors[
-																allColors.map((ii) => ii.hexa).indexOf(i.color)
-															].color}
-													</option>
-
-													{uniqueProductColors &&
-														uniqueProductColors.map((cc, ii) => {
-															return (
-																<option key={ii} value={cc}>
-																	{allColors &&
-																		allColors[
-																			allColors.map((ii) => ii.hexa).indexOf(cc)
-																		] &&
-																		allColors[
-																			allColors.map((ii) => ii.hexa).indexOf(cc)
-																		].color}
-																</option>
-															);
-														})}
-												</select>
-											</span>
-										</div>
-										<div
-											style={{
-												fontSize: "12px",
-												fontWeight: "bold",
-												marginLeft: "10px",
-												marginTop: "10px",
-												textTransform: "capitalize",
-												color: "darkgreen",
-											}}>
-											{i.allProductDetailsIncluded
-												.activeBackorder ? null : chosenAttribute.quantity >=
-											  i.amount ? null : (
-												<span style={{ color: "red" }}>Unavailable Stock</span>
-											)}
-										</div>
-
-										{chosenLanguage === "Arabic" ? (
-											<span
-												className='buttons-up-down'
-												style={{ color: "#282491", marginTop: "10px" }}>
-												<button
-													type='button'
-													className='amount-btn'
-													onClick={increase}>
-													<FaPlus />
-												</button>
-												<span className='amount'>{i.amount}</span>
-
-												<button
-													type='button'
-													className='amount-btn'
-													onClick={decrease}>
-													<FaMinus />
-												</button>
-												<span style={{ color: "black" }}>الكمية</span>
-											</span>
-										) : (
-											<span
-												className='buttons-up-down'
-												style={{ color: "#282491", marginTop: "10px" }}>
-												<span style={{ color: "black" }}>Quantity</span>
-												<button
-													type='button'
-													className='amount-btn'
-													onClick={decrease}>
-													<FaMinus />
-												</button>
-												<span className='amount'>{i.amount}</span>
-												<button
-													type='button'
-													className='amount-btn'
-													onClick={increase}>
-													<FaPlus />
-												</button>
-											</span>
-										)}
-
-										<div
-											style={{
-												fontSize: "0.9rem",
-												fontWeight: "bold",
-												letterSpacing: "3px",
-												color: "#8d9124",
-												marginLeft: "70px",
-												marginTop: "10px",
-											}}>
-											{i.priceAfterDiscount * i.amount} L.E.
-										</div>
-										<button
-											type='button'
-											style={{
-												marginLeft: "250px",
-												color: "red",
-												border: "none",
-												fontWeight: "bold",
-											}}
-											onClick={() => removeItem(i.id)}>
-											<FaTrash />
-										</button>
-									</div>
-								</div>
-
-								<hr />
-							</div>
-						);
-					})}
-					<div className='link-container' onClick={closeSidebar}>
-						<Link
-							to='/our-products'
-							className='link-btn btn-primary'
-							onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-							{chosenLanguage === "Arabic"
-								? "مواصلة التسوق"
-								: "Continue Shopping"}
-						</Link>
-						{checkingAvailability.indexOf(false) !== -1 ? null : (
+								);
+							})}
+						<div className='link-container' onClick={closeSidebar}>
 							<Link
-								to='/cart'
+								to='/our-products'
 								className='link-btn btn-primary'
 								onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-								{chosenLanguage === "Arabic" ? "الدفع" : "Check Out"}
+								{chosenLanguage === "Arabic"
+									? "مواصلة التسوق"
+									: "Continue Shopping"}
 							</Link>
-						)}
+							{checkingAvailability.indexOf(false) !== -1 ? null : (
+								<Link
+									to='/cart'
+									className='link-btn btn-primary'
+									onClick={() =>
+										window.scrollTo({ top: 0, behavior: "smooth" })
+									}>
+									{chosenLanguage === "Arabic" ? "الدفع" : "Check Out"}
+								</Link>
+							)}
+						</div>
 					</div>
-				</div>
+				)}
 			</SideWrapper>
 		);
 	};
+	const storeLogo = logoImage;
+	var index = storeLogo.indexOf("upload");
 
-	console.log(checkingAvailability, "available");
+	var finalLogoUrl =
+		storeLogo.substr(0, index + 6) +
+		"/e_bgremoval" +
+		storeLogo.substr(index + 6);
 
 	return (
 		<Nav
 			className=' navbar  navbar-expand-sm'
 			style={{ backgroundColor: "	white" }}>
+			<div className='logo-type ml-5 logoWrapper'>
+				<Link
+					to='/'
+					onClick={() => {
+						window.scrollTo({ top: 0, behavior: "smooth" });
+					}}>
+					<div className='infiniteAppsLogo'>
+						<img className='imgLogo' src={finalLogoUrl} alt='Infinite Apps' />
+					</div>
+					{/* <div
+						className='logo-type ml-1'
+						style={{ color: "black", fontSize: "18px" }}>
+						{onlineStoreName} <br />
+					</div> */}
+				</Link>
+			</div>
 			{isSidebarOpen ? <DarkBackground isSidebarOpen={isSidebarOpen} /> : null}
 			<div
 				className='collapse navbar-collapse '
@@ -328,8 +440,8 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 					<li className='nav-item'>
 						<Link
 							className='nav-link'
-							style={isActive(history, "/home")}
-							to='/home'
+							style={isActive(history, "/")}
+							to='/'
 							onClick={() => {
 								window.scrollTo({ top: 0, behavior: "smooth" });
 							}}>
@@ -410,7 +522,7 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 						</Link>
 					</li>
 
-					{isAuthenticated() && isAuthenticated().user.role === 0 && (
+					{/* {isAuthenticated() && isAuthenticated().user.role === 0 && (
 						<li className='nav-item ml-5'>
 							<Link
 								className='nav-link'
@@ -423,9 +535,9 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 								{chosenLanguage === "Arabic" ? "حسابي" : "My Dasboard/Account"}
 							</Link>
 						</li>
-					)}
+					)} */}
 
-					{isAuthenticated() && isAuthenticated().user.role === 1 && (
+					{/* {isAuthenticated() && isAuthenticated().user.role === 1 && (
 						<li className='nav-item'>
 							<Link
 								className='nav-link'
@@ -450,8 +562,8 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 								Owner Dashboard
 							</Link>
 						</li>
-					)}
-					{isAuthenticated() && isAuthenticated().user.role === 2 && (
+					)} */}
+					{/* {isAuthenticated() && isAuthenticated().user.role === 2 && (
 						<li className='nav-item'>
 							<Link
 								className='nav-link'
@@ -476,7 +588,7 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 								Stylist Dashboard
 							</Link>
 						</li>
-					)}
+					)} */}
 				</ul>
 			</div>
 			<span
@@ -520,32 +632,54 @@ const Nav = styled.nav`
 	top: 0;
 	z-index: 120;
 
+	.infiniteAppsLogo {
+		display: block;
+		width: 50px;
+		height: 50px;
+		margin-top: 0px;
+		margin-bottom: 0px;
+		margin-left: 0px;
+		border-radius: 15px;
+	}
+
+	.imgLogo {
+		width: 70px;
+		height: 70px;
+		margin-top: 0px;
+		margin-bottom: 0px;
+		margin-left: 0px;
+	}
+
 	li a {
 		font-size: 0.95rem;
+		transition: 0.3s;
+		color: darkGrey;
 	}
-	.nav-link {
-		color: black !important;
-	}
+
 	li {
 		margin: 0px 12px 0px 0px;
 	}
 
 	li a:hover {
-		background: #ffc4c4;
-		color: black !important;
-		outline-color: var(--darkGrey);
-		transition: var(--mainTransition);
+		text-decoration: underline;
+		transition: 0.3s;
 	}
 
 	.cart-badge {
-		border-radius: 100%;
+		border-radius: 20%;
 		font-size: 13px;
 		font-style: italic;
-		color: black;
+		color: white;
 		text-decoration: none !important;
 		display: block;
 		margin-left: 18px;
 		font-weight: bold;
+		background: darkred;
+		padding: 6px;
+	}
+
+	.nav-item {
+		text-transform: uppercase;
 	}
 
 	@media (max-width: 900px) {

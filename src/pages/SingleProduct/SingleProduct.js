@@ -79,7 +79,7 @@ const SingleProduct = (props) => {
 
 	useEffect(() => {
 		const productId = props.match.params && props.match.params.productId;
-		loadSingleEmployee(productId);
+		loadSingleProduct(productId);
 		// eslint-disable-next-line
 	}, [props, star, modalVisible]);
 
@@ -90,11 +90,13 @@ const SingleProduct = (props) => {
 	};
 
 	const gettingAllColors = () => {
+		setLoading(true);
 		getColors(token).then((data) => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
 				setAllColors(data);
+				setLoading(false);
 			}
 		});
 	};
@@ -104,7 +106,7 @@ const SingleProduct = (props) => {
 		// eslint-disable-next-line
 	}, []);
 
-	const loadSingleEmployee = (productId) => {
+	const loadSingleProduct = (productId) => {
 		setLoading(true);
 		readProduct(productId).then((data) => {
 			if (data.error) {
@@ -216,7 +218,7 @@ const SingleProduct = (props) => {
 		setStar(newRating);
 		// console.table(newRating, name);
 		productStar(name, newRating, token, user.email, user._id).then(() => {
-			// loadSingleEmployee(); // if you want to show updated rating in real time
+			// loadSingleProduct(); // if you want to show updated rating in real time
 		});
 	};
 	let history = useHistory();
@@ -513,6 +515,7 @@ const SingleProduct = (props) => {
 								chosenProductAttributes={chosenProductAttributes}
 								setColorSelected={setColorSelected}
 								colorSelected={colorSelected}
+								loading={loading}
 							/>
 
 							<hr />
@@ -562,9 +565,14 @@ const SingleProduct = (props) => {
 													className='col-md-3 btn btn-outline-primary p-2 mx-auto mt-2'
 													style={{ fontSize: "0.9rem", fontWeight: "bolder" }}
 													onClick={() => {
-														// history.push("/cart");
 														openSidebar();
-														addToCart(Product._id, null, 1, Product);
+														addToCart(
+															Product._id,
+															null,
+															1,
+															Product,
+															chosenProductAttributes,
+														);
 													}}>
 													<span>
 														<i

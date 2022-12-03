@@ -11,7 +11,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { getAllHeros } from "../../Admin/apiAdmin";
 
-const HeroComponent = () => {
+const HeroComponent2 = () => {
 	const [homePage, setHomePage] = useState({});
 
 	const gettingAllHomes = () => {
@@ -43,9 +43,8 @@ const HeroComponent = () => {
 		pauseOnHover: true,
 		adaptiveHeight: true,
 	};
-
 	return (
-		<HeroComponentWrapper className='mx-auto text-center'>
+		<HeroComponent2Wrapper className='mx-auto text-center'>
 			{/* <Slider {...settingsHero}>
 				{homePage && homePage.thumbnail && homePage.thumbnail[0] && (
 					<div className='heroPicMain'>
@@ -105,17 +104,17 @@ const HeroComponent = () => {
 				)}
 			</Slider> */}
 
-			{homePage && homePage.thumbnail && homePage.thumbnail[0] && (
+			{homePage && homePage.thumbnail2 && homePage.thumbnail2[0] && (
 				<div className='heroPicMain'>
 					<Link to='/our-products'>
 						<img
 							src={
 								homePage &&
-								homePage.thumbnail &&
-								homePage.thumbnail[0] &&
-								homePage.thumbnail[0].images &&
-								homePage.thumbnail[0].images[0] &&
-								homePage.thumbnail[0].images[0].url
+								homePage.thumbnail2 &&
+								homePage.thumbnail2[0] &&
+								homePage.thumbnail2[0].images &&
+								homePage.thumbnail2[0].images[0] &&
+								homePage.thumbnail2[0].images[0].url
 							}
 							alt='ShopPhoto'
 							className='mt-3'
@@ -123,13 +122,13 @@ const HeroComponent = () => {
 					</Link>
 				</div>
 			)}
-		</HeroComponentWrapper>
+		</HeroComponent2Wrapper>
 	);
 };
 
-export default HeroComponent;
+export default HeroComponent2;
 
-const HeroComponentWrapper = styled.div`
+const HeroComponent2Wrapper = styled.div`
 	text-align: center;
 	background-image: linear-gradient(white, white);
 

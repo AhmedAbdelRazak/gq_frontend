@@ -258,6 +258,8 @@ const UpdateGenderSingle = ({ match }) => {
 						fromPage='UpdateGender'
 						AdminMenuStatus={AdminMenuStatus}
 						setAdminMenuStatus={setAdminMenuStatus}
+						collapsed={collapsed}
+						setCollapsed={setCollapsed}
 					/>
 				</div>
 				{selectedGender && allGenders && !loading ? (

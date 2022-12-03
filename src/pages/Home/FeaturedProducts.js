@@ -82,21 +82,24 @@ const FeaturedProductsWrapper = styled.div`
 	margin-top: 50px;
 
 	.title {
-		text-align: center;
+		text-align: left;
 		font-size: 2rem;
-		letter-spacing: 7px;
+		/* letter-spacing: 7px; */
 		font-weight: bold;
 		/* color: #ffc4c4; */
-		color: #ff7676;
+		color: darkred;
+		margin-left: 30px;
+		text-transform: uppercase;
 		/* text-shadow: 3px 3px 10px; */
 	}
 
 	.titleArabic {
-		text-align: center;
+		text-align: left;
 		font-size: 2rem;
 		/* letter-spacing: 7px; */
 		font-weight: bold;
-		color: #ffc4c4;
+		color: darkred;
+		margin-left: 30px;
 		font-family: "Droid Arabic Kufi";
 		/* text-shadow: 3px 3px 10px; */
 	}

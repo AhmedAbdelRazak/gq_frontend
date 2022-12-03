@@ -143,7 +143,9 @@ const ColorsAndSizes = ({
 										setColorSelected(true);
 									}}
 									style={isActive(c, clickedLink)}>
-									{allColors[allColors.map((i) => i.hexa).indexOf(c)].color}
+									{allColors &&
+										allColors.length &&
+										allColors[allColors.map((i) => i.hexa).indexOf(c)].color}
 								</div>
 							);
 						})}
@@ -270,6 +272,6 @@ const ColorsAndSizesWrapper = styled.div`
 	.attStyling:hover {
 		cursor: pointer;
 		font-weight: bolder;
-		font-size: 1rem;
+		font-size: 0.9rem;
 	}
 `;

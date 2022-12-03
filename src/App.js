@@ -71,6 +71,7 @@ import AddHeroComp from "./Admin/OnlineStore/AddHeroComp";
 
 import SingleProduct from "./pages/SingleProduct/SingleProduct";
 import ShopPageMain from "./pages/ShopPage/ShopPageMain";
+import Cart from "./Checkout/Cart";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -125,8 +126,7 @@ const App = () => {
 		<BrowserRouter>
 			<ToastContainer />
 
-			{window.location.pathname.includes("admin") ||
-			window.location.pathname === "/" ? null : (
+			{window.location.pathname.includes("admin") ? null : (
 				<>
 					{click && clickMenu ? (
 						<DarkBackground2 setClick={setClick} setClickMenu={setClickMenu} />
@@ -143,16 +143,16 @@ const App = () => {
 					<NavbarBottom chosenLanguage={language} />
 				</>
 			)}
-			{window.location.pathname.includes("admin") ||
-			window.location.pathname === "/" ? null : allAdsCombined &&
+
+			{window.location.pathname.includes("admin") ? null : allAdsCombined &&
 			  allAdsCombined.show_ad ? (
 				<NavbarAds />
 			) : null}
 
 			<Switch>
-				<Route path='/' exact component={Login} />
+				<Route path='/signin' exact component={Login} />
 				<Route
-					path='/home'
+					path='/'
 					exact
 					component={() => <Home chosenLanguage={language} />}
 				/>
@@ -166,6 +166,11 @@ const App = () => {
 					path='/our-products'
 					exact
 					component={() => <ShopPageMain chosenLanguage={language} />}
+				/>
+				<Route
+					path='/cart'
+					exact
+					component={() => <Cart chosenLanguage={language} />}
 				/>
 				<AdminRoute path='/admin/dashboard' exact component={AdminDashboard} />
 				<AdminRoute path='/admin/add-gender' exact component={AddGender} />

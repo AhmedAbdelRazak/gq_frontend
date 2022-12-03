@@ -97,18 +97,6 @@ const Login = ({ history }) => {
 		// eslint-disable-next-line
 	}, []);
 
-	useEffect(() => {
-		const reloadCount = sessionStorage.getItem("reloadCount");
-		if (reloadCount < 2) {
-			sessionStorage.setItem("reloadCount", String(reloadCount + 1));
-			window.location.reload();
-		} else {
-			sessionStorage.removeItem("reloadCount");
-		}
-
-		// eslint-disable-next-line
-	}, []);
-
 	const signinForm = () => (
 		<FormSignin>
 			<div className='container-fluid mx-auto'>

@@ -10,6 +10,7 @@ body {
 	background: white;
 	height: 100%;
 	background-color: #f5f8fa !important;
+	font-family: Roboto, Helvetica, Arial, sans-serif;
 }
 
 ::placeholder {

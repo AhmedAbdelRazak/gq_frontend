@@ -137,12 +137,12 @@ const ShopPageMain = ({ chosenLanguage }) => {
 				All Products: {allProducts && allProducts.length}
 			</h1> */}
 
-			<div className='ml-5 text-center my-3'>
-				<div className='row mx-auto'>
+			<div className='ml-5  my-3 cardWrapper'>
+				<div className='row '>
 					{allProductsAdded &&
 						allProductsAdded.map((product, i) => (
 							<div
-								className='col-lg-3 col-md-6 col-sm-12 mx-auto text-center my-3'
+								className='col-lg-3 col-md-6 col-sm-12 col-6  my-3'
 								// style={{ border: "solid black 1px" }}
 								key={i}>
 								<CardForShop
@@ -165,6 +165,7 @@ const ShopPageMainWrapper = styled.div`
 	min-height: 700px;
 	background: white;
 	transition: 0.3s;
+	overflow: hidden;
 
 	.heroFilter {
 		background: rgb(245, 245, 245);
@@ -218,6 +219,11 @@ const ShopPageMainWrapper = styled.div`
 			/* letter-spacing: 7px; */
 			font-weight: bold;
 			/* text-shadow: 3px 3px 10px; */
+		}
+
+		.cardWrapper {
+			margin-left: 2px !important;
+			margin-right: 2px !important;
 		}
 	}
 `;

@@ -51,8 +51,16 @@ const AddHeroComp = () => {
 			} else {
 				setAllHeroes(data[data.length - 1]);
 				setThumbnail(data[data.length - 1].thumbnail[0]);
-				setThumbnail2(data[data.length - 1].thumbnail2[0]);
-				setThumbnail3(data[data.length - 1].thumbnail3[0]);
+				setThumbnail2(
+					data[data.length - 1].thumbnail2[0]
+						? data[data.length - 1].thumbnail2[0]
+						: [],
+				);
+				setThumbnail3(
+					data[data.length - 1].thumbnail3[0]
+						? data[data.length - 1].thumbnail3[0]
+						: [],
+				);
 				setHyperLink(data[data.length - 1].hyper_link);
 				setHyperLink2(data[data.length - 1].hyper_link2);
 				setHyperLink3(data[data.length - 1].hyper_link3);
@@ -124,6 +132,8 @@ const AddHeroComp = () => {
 			}
 		}
 	};
+
+	console.log(thumbnail2, "thumbnail2");
 
 	const fileUploadAndResizeThumbNail3 = (e) => {
 		// console.log(e.target.files);

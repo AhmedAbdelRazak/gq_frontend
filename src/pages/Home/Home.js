@@ -9,6 +9,7 @@ import FeaturedProducts from "./FeaturedProducts";
 import OurBrandsComp from "./OurBrandsComp";
 import MostViewedProducts from "./MostViewedProducts";
 import GenderLinks from "./GenderLinks";
+import HeroComponent2 from "./HeroComponent2";
 
 const Home = ({ chosenLanguage }) => {
 	// eslint-disable-next-line
@@ -80,7 +81,9 @@ const Home = ({ chosenLanguage }) => {
 				categories={allCategories}
 			/>
 
-			<div className='text-center my-5'>
+			<HeroComponent2 />
+
+			<div className='my-5'>
 				<FeaturedProducts
 					allProducts={allProducts}
 					chosenLanguage={chosenLanguage}

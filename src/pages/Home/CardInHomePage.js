@@ -9,6 +9,7 @@ import { Carousel } from "react-responsive-carousel";
 import { showAverageRating2 } from "../SingleProduct/Rating";
 import { useCartContext } from "../../Checkout/cart_context";
 import { viewsCounter } from "../../apiCore";
+import { DollarCircleFilled } from "@ant-design/icons";
 
 const CardInHomePage = ({
 	product,
@@ -47,6 +48,13 @@ const CardInHomePage = ({
 		}
 	};
 
+	var chosenProductAttributes = product.productAttributes[0];
+
+	const productPriceAfterDsicount =
+		product && product.productAttributes.map((i) => i.priceAfterDiscount)[0];
+	const productPrice =
+		product && product.productAttributes.map((i) => i.price)[0];
+
 	const showAddToCartBtn = (showAddToCartButton) => {
 		return (
 			<Fragment>
@@ -58,7 +66,15 @@ const CardInHomePage = ({
 									{showAddToCartButton && (
 										<span onClick={openSidebar}>
 											<span
-												onClick={() => addToCart(product._id, null, 1, product)}
+												onClick={() =>
+													addToCart(
+														product._id,
+														null,
+														1,
+														product,
+														chosenProductAttributes,
+													)
+												}
 												className='btn btn-warning mt-2 mb-2 card-btn-1  cartoptions2'>
 												أضف إلى السلة
 											</span>
@@ -82,9 +98,17 @@ const CardInHomePage = ({
 									{showAddToCartButton && (
 										<span onClick={openSidebar}>
 											<span
-												onClick={() => addToCart(product._id, null, 1, product)}
+												onClick={() =>
+													addToCart(
+														product._id,
+														null,
+														1,
+														product,
+														chosenProductAttributes,
+													)
+												}
 												className='btn btn-warning mt-2 mb-2 card-btn-1  cartoptions'>
-												Add to cart
+												Add to Cart
 											</span>
 										</span>
 									)}
@@ -94,7 +118,7 @@ const CardInHomePage = ({
 									<button
 										className='btn btn-warning mt-2 mb-2 card-btn-1 cartoptions'
 										disabled>
-										Add to cart
+										Add to Cart
 									</button>
 								</Fragment>
 							)}
@@ -156,7 +180,7 @@ const CardInHomePage = ({
 	};
 
 	const ShowImage = ({ item }) => (
-		<div className='product-img' style={{ borderRadius: "50%" }}>
+		<div className='product-img'>
 			{item &&
 				item.thumbnailImage &&
 				item.thumbnailImage[0] &&
@@ -176,7 +200,12 @@ const CardInHomePage = ({
 								alt={item.productName}
 								src={i.url}
 								key={i.public_id}
-								style={{ height: "300px", width: "300px", objectFit: "cover" }}
+								style={{
+									height: "50vh",
+									width: "100%",
+									objectFit: "cover",
+									minHeight: "400px",
+								}}
 							/>
 						))}
 					</Carousel>
@@ -190,36 +219,10 @@ const CardInHomePage = ({
 	return (
 		<ProductWrapper className='my-3'>
 			<Fragment>
-				<div
-					className='card '
-					style={{ borderRadius: "2%", backgroundColor: "white" }}>
+				<div className='card ' style={{ backgroundColor: "white" }}>
 					<div className='card-body  '>
 						{shouldRedirect(redirect)}
-						<div className='card-img-top center img'>
-							{product && product.ratings && product.ratings.length > 0 ? (
-								<div className='mb-3'>{showAverageRating2(product)}</div>
-							) : (
-								<div
-									className='mb-2'
-									style={{
-										fontSize: "0.75rem",
-										fontStyle: "italic",
-										fontWeight: "bold",
-										color: "black",
-									}}>
-									{chosenLanguage === "Arabic" ? (
-										<span
-											style={{
-												fontFamily: "Droid Arabic Kufi",
-												letterSpacing: "0px",
-											}}>
-											لا يوجد تقييم
-										</span>
-									) : (
-										"No Ratings"
-									)}
-								</div>
-							)}
+						<div className='card-img-top center'>
 							<ImageFeat>
 								<Link
 									to={`/product/${product.category.categorySlug}/${product.slug}/${product._id}`}
@@ -230,19 +233,6 @@ const CardInHomePage = ({
 									<ShowImage item={product} />
 								</Link>
 							</ImageFeat>
-						</div>
-						<div className='mt-2 mb-3 productname'>
-							{chosenLanguage === "Arabic" ? (
-								<span
-									style={{
-										fontFamily: "Droid Arabic Kufi",
-										letterSpacing: "0px",
-									}}>
-									{product.productName_Arabic}
-								</span>
-							) : (
-								product.productName
-							)}
 						</div>
 
 						<div className='col-md-5 mx-auto'>
@@ -258,6 +248,76 @@ const CardInHomePage = ({
 					</div>
 				</div>
 			</Fragment>
+
+			<div className='mt-2 mb-4 productname' style={{ maxWidth: "90%" }}>
+				<div className='row'>
+					<div className='col-md-9 productname col-7'>
+						{productPrice <= productPriceAfterDsicount ? null : (
+							<div className='float-left'>
+								<span style={{ color: "goldenrod", fontSize: "20px" }}>
+									<DollarCircleFilled />{" "}
+								</span>
+								<span
+									className=''
+									style={{ fontWeight: "bold", color: "darkred" }}>
+									{(
+										100 -
+										((productPriceAfterDsicount / productPrice) * 100).toFixed(
+											2,
+										)
+									).toFixed(2)}
+									%
+								</span>
+							</div>
+						)}
+						<br />
+						<br />
+						{chosenLanguage === "Arabic" ? (
+							<div
+								className=''
+								style={{
+									fontFamily: "Droid Arabic Kufi",
+									letterSpacing: "0px",
+								}}>
+								{product.productName_Arabic}
+							</div>
+						) : (
+							<div className='float-left'> {product.productName} </div>
+						)}
+					</div>
+					<div className='col-md-3 col-5'>
+						{productPrice <= productPriceAfterDsicount ? (
+							<span style={{ fontWeight: "bold" }}>{productPrice} L.E.</span>
+						) : (
+							<span>
+								<div className='ml-2 mt-2' style={{ fontWeight: "bold" }}>
+									{productPriceAfterDsicount} L.E.
+								</div>
+								<div className='mt-2'>
+									<s style={{ fontWeight: "bold", color: "red" }}>
+										{productPrice} L.E.
+									</s>
+								</div>
+							</span>
+						)}
+					</div>
+				</div>
+
+				{product && product.ratings && product.ratings.length > 0 ? (
+					<div className='mb-3'>{showAverageRating2(product)}</div>
+				) : (
+					<div
+						className='mb-2'
+						style={{
+							fontSize: "0.75rem",
+							fontStyle: "italic",
+							fontWeight: "bold",
+							color: "black",
+						}}>
+						{chosenLanguage === "Arabic" ? null : null}
+					</div>
+				)}
+			</div>
 		</ProductWrapper>
 	);
 };
@@ -266,7 +326,7 @@ export default CardInHomePage;
 
 const ProductWrapper = styled.div`
 	.card {
-		text-align: center;
+		/* text-align: center; */
 		/* box-shadow: 2.5px 2.5px 1.5px 0px rgba(0, 0, 0, 0.3); */
 		transition: var(--mainTransition);
 		min-height: 500px;
@@ -294,13 +354,30 @@ const ProductWrapper = styled.div`
 	.productname {
 		font-size: 14px;
 		font-weight: bold;
-		text-align: center;
 		text-transform: capitalize;
 	}
 
 	.cartoptions2 {
 		font-family: "Droid Arabic Kufi";
 		letter-spacing: 0px;
+		background-color: #cacaca;
+		transition: 0.3s;
+	}
+	.cartoptions {
+		background-color: #cacaca;
+		border: none;
+		transition: 0.3s;
+	}
+
+	.cartoptions:hover {
+		background-color: goldenrod;
+		border: none;
+		transition: 0.3s;
+	}
+	.cartoptions2:hover {
+		background-color: goldenrod;
+		border: none;
+		transition: 0.3s;
 	}
 
 	@media (max-width: 680px) {

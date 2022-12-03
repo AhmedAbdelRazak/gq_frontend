@@ -47,18 +47,24 @@ export const CartProvider = ({ children }) => {
 	};
 
 	// add to cart
-	const addToCart = (id, color, amount, product) => {
-		dispatch({ type: ADD_TO_CART, payload: { id, color, amount, product } });
+	const addToCart = (id, color, amount, product, chosenProductAttributes) => {
+		dispatch({
+			type: ADD_TO_CART,
+			payload: { id, color, amount, product, chosenProductAttributes },
+		});
 		// console.log(product, "product from cart_context");
 	};
 	// remove item
-	const removeItem = (id) => {
-		dispatch({ type: REMOVE_CART_ITEM, payload: id });
+	const removeItem = (id, size, color) => {
+		dispatch({ type: REMOVE_CART_ITEM, payload: { id, size, color } });
 	};
 	// toggle amount
-	const toggleAmount = (id, value) => {
+	const toggleAmount = (id, value, chosenAttribute, newMax) => {
 		// console.log(id, value);
-		dispatch({ type: TOGGLE_CART_ITEM_AMOUNT, payload: { id, value } });
+		dispatch({
+			type: TOGGLE_CART_ITEM_AMOUNT,
+			payload: { id, value, chosenAttribute, newMax },
+		});
 	};
 	// clear cart
 	const clearCart = () => {
@@ -66,15 +72,28 @@ export const CartProvider = ({ children }) => {
 	};
 
 	// change color
-	const changeColor = (id, color) => {
+	const changeColor = (
+		id,
+		color,
+		size,
+		chosenColorImage,
+		quantity,
+		prevColor,
+	) => {
 		// console.log(id, value);
-		dispatch({ type: CHANGE_COLOR, payload: { id, color } });
+		dispatch({
+			type: CHANGE_COLOR,
+			payload: { id, color, size, chosenColorImage, quantity, prevColor },
+		});
 	};
 
-	// change color
-	const changeSize = (id, size) => {
+	// change Size
+	const changeSize = (id, size, color, quantity, prevSize) => {
 		// console.log(id, value);
-		dispatch({ type: CHANGE_SIZE, payload: { id, size } });
+		dispatch({
+			type: CHANGE_SIZE,
+			payload: { id, size, color, quantity, prevSize },
+		});
 	};
 
 	const addShipmentFee = (ShippingPrice) => {
