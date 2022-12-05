@@ -49,13 +49,14 @@ const MainReports = () => {
 	const [modalVisible, setModalVisible] = useState(false);
 	// eslint-disable-next-line
 	const [allOrders, setAllOrders] = useState([]);
+	const [requiredSKU, setRequiredSKU] = useState("");
 	const [day1, setDay1] = useState(
 		new Date().toDateString("en-US", {
 			timeZone: "Africa/Cairo",
 		}),
 	);
 	const [day2, setDay2] = useState(
-		new Date(new Date().setDate(new Date().getDate() - 15)),
+		new Date(new Date().setDate(new Date().getDate() - 7)),
 	);
 	const [allColors, setAllColors] = useState([]);
 
@@ -968,6 +969,8 @@ const MainReports = () => {
 						setDay2={setDay2}
 						modalVisible={modalVisible}
 						setModalVisible={setModalVisible}
+						setRequiredSKU={setRequiredSKU}
+						requiredSKU={requiredSKU}
 					/>
 					<h3 className='mx-auto text-center' style={{ fontWeight: "bold" }}>
 						SALES REPORT <br />

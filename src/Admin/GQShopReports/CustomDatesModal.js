@@ -17,6 +17,10 @@ const CustomDatesModal = ({
 	setModalVisible,
 	setRequiredSKU,
 }) => {
+	console.log(
+		moment(new Date().toISOString()).utcOffset(120).format("YYYY-MM-DD HH:mm"),
+		"jklsjdkfljskldfjksldjfksl",
+	);
 	const mainForm = () => {
 		return (
 			<div className='mx-auto text-center'>
@@ -34,7 +38,7 @@ const CustomDatesModal = ({
 					max
 					size='small'
 					showToday={true}
-					defaultValue={moment(new Date(day2))}
+					defaultValue={moment(new Date(day2).toISOString()).utcOffset(120)}
 					placeholder='Please pick the desired schedule date'
 					style={{
 						height: "auto",
@@ -60,7 +64,7 @@ const CustomDatesModal = ({
 					max
 					size='small'
 					showToday={true}
-					defaultValue={moment(new Date(day1))}
+					defaultValue={moment(new Date(day1).toISOString()).utcOffset(120)}
 					placeholder='Please pick the desired schedule date'
 					style={{
 						height: "auto",

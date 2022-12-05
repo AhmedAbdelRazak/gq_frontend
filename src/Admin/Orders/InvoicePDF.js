@@ -181,16 +181,9 @@ const InvoicePDF = (props) => {
 				<div className='borderTop'></div>
 				<div className='row mt-2'>
 					<div className='col-3 mx-auto mt-5'>
-						<h1>G&Q</h1>
-						<div className='mt-3'>Egypt</div>
-						<div className=''>
-							{updateSingleOrder.customerDetails &&
-								updateSingleOrder.customerDetails.state}
-						</div>
-						<div className=''>
-							{updateSingleOrder.customerDetails &&
-								updateSingleOrder.customerDetails.phone}
-						</div>
+						<h1 style={{ textTransform: "uppercase" }}>
+							{updateSingleOrder.orderSource}
+						</h1>
 					</div>
 					<div className='col-3 mx-auto'>
 						<img
@@ -251,29 +244,38 @@ const InvoicePDF = (props) => {
 				</div>
 				<div className='row'>
 					<div className='col-8'>
-						<h4>Vendor</h4>
+						<h5 style={{ fontSize: "1.3rem", fontWeight: "bolder" }}>Vendor</h5>
 						<br />
-						<h5 style={{ textTransform: "capitalize" }}>
-							G&Q
-							<br />
-							{updateSingleOrder.orderSource}
+						<div style={{ textTransform: "capitalize", fontSize: "1rem" }}>
+							<span style={{ textTransform: "uppercase" }}>
+								{updateSingleOrder.orderSource}
+							</span>
 							<br />
 							Egypt
 							<br />
 							Alexandria
 							<br />
+							Order Taker:{" "}
+							<span style={{ fontWeight: "bold" }}>
+								{" "}
+								{updateSingleOrder &&
+									updateSingleOrder.employeeData &&
+									updateSingleOrder.employeeData.name}
+							</span>
 							<br />
 							+(20) 120 854 3945
 							<br />
 							<span style={{ textTransform: "lowercase" }}>
 								gqcanihelpyou@gmail.com
 							</span>
-						</h5>
+						</div>
 					</div>
 					<div className='col-4'>
-						<h4>Ship to</h4>
+						<h5 style={{ fontSize: "1.3rem", fontWeight: "bolder" }}>
+							Ship to
+						</h5>
 						<br />
-						<h5 style={{ textTransform: "capitalize" }}>
+						<div style={{ textTransform: "capitalize", fontSize: "1rem" }}>
 							{updateSingleOrder.customerDetails &&
 								updateSingleOrder.customerDetails.fullName}
 							<br />
@@ -285,7 +287,7 @@ const InvoicePDF = (props) => {
 							<br />
 							{updateSingleOrder.customerDetails &&
 								updateSingleOrder.customerDetails.phone}
-						</h5>
+						</div>
 					</div>
 				</div>
 				<br />
@@ -412,10 +414,13 @@ const InvoicePDF = (props) => {
 					<div
 						className='col-6'
 						style={{ color: "#868686", fontSize: "1.1rem" }}>
-						Thank you for shopping at <strong>G&Q</strong>
-						<br /> <br /> To contact us, please visit our customer care help
-						pages on the website at www.gqshop/help.com <br /> <br /> we look
-						forward to welcoming you back soon.
+						Thank you for shopping at{" "}
+						<strong style={{ textTransform: "uppercase" }}>
+							{updateSingleOrder.orderSource}
+						</strong>
+						<br /> To contact us, please call us on our customer service phone
+						number 01208543945 <br /> we look forward to welcoming you back
+						soon.
 					</div>
 					<div
 						dir='rtl'
@@ -425,9 +430,12 @@ const InvoicePDF = (props) => {
 							fontSize: "1.1rem",
 							textAlign: "right",
 						}}>
-						شكرا على تسوقك من جى اند كیو
-						<br /> <br /> للتواصل معنا، یرجى زیارة صفحة خدمة الزبائن على موقعنا
-						www.gqshop/help.com <br /> <br /> نتطلع لزیارتك القادمة.
+						شكرا على تسوقك من{" "}
+						<span style={{ textTransform: "uppercase", fontWeight: "bold" }}>
+							{updateSingleOrder.orderSource}
+						</span>
+						<br /> للتواصل معنا ، يرجى الاتصال بنا على هاتف خدمة العملاء رقم
+						01208543945 <br /> نتطلع لزیارتك القادمة.
 					</div>
 					<div className='col-6'></div>
 					<div
@@ -449,8 +457,8 @@ const InvoicePDF = (props) => {
 						</div>
 						إذا رغبت بإرجاع طلبك مقابل استرداد المبلغ المدفوع أو استبدالھ
 						بمنتجات معینة فإنھ لدیك مھلھ یوم من تاریخ الفاتورة لعمل ذلك. تتطلب
-						عملیة الإرجاع ھذه توافر شرطان أساسیان: <br /> <br /> 1. إرجاع المنتج
-						بنفس الحالة التي تم توصیلھ بھا وبغلافھ الأصلي
+						عملیة الإرجاع ھذه توافر شرطان أساسیان: <br /> 1. إرجاع المنتج بنفس
+						الحالة التي تم توصیلھ بھا وبغلافھ الأصلي
 						<br /> 2. إحضار الفاتورة الخاصة بالمنتج یرجى العلم بأن المھلة
 						الزمنیة ھي بحسب القوانین المعمول بھا داخل بلدك وفي حالات العروض
 						ستطبق الشروط الخاصة بالعروض. ولا یتم استرداد كلا من رسوم الشحن ورسوم
