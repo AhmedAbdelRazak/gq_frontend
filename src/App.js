@@ -129,6 +129,7 @@ const App = () => {
 		} else {
 			return null;
 		}
+
 		gettingAllAds();
 		// eslint-disable-next-line
 	}, []);
@@ -136,7 +137,8 @@ const App = () => {
 	return (
 		<BrowserRouter>
 			<ToastContainer />
-			{window.location.pathname.includes("admin") ? null : (
+			{window.location.pathname.includes("admin") ||
+			window.location.pathname === "/" ? null : (
 				<>
 					{click && clickMenu ? (
 						<DarkBackground2 setClick={setClick} setClickMenu={setClickMenu} />
@@ -160,9 +162,9 @@ const App = () => {
 			) : null}
 
 			<Switch>
-				<Route path='/signin' exact component={Login} />
+				<Route path='/' exact component={Login} />
 				<Route
-					path='/'
+					path='/home'
 					exact
 					component={() => <Home chosenLanguage={language} />}
 				/>
