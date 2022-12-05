@@ -75,9 +75,7 @@ const OperationsReport = () => {
 	const [postsPerPage, setPostsPerPage] = useState(100);
 
 	const [day1, setDay1] = useState(
-		new Date().toDateString("en-US", {
-			timeZone: "Africa/Cairo",
-		}),
+		new Date(new Date().setDate(new Date().getDate() + 2)),
 	);
 	const [day2, setDay2] = useState(
 		new Date(new Date().setDate(new Date().getDate() - 90)),

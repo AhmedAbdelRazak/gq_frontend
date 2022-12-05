@@ -16,6 +16,7 @@ import {
 	getSubCategories,
 	cloudinaryUpload1,
 	updateProduct,
+	getStores,
 } from "../../apiAdmin";
 import { isAuthenticated } from "../../../auth";
 // eslint-disable-next-line
@@ -85,6 +86,8 @@ const UpdateProductSingle = ({ match }) => {
 	const [productAttributesFinal, setProductAttributesFinal] = useState([]);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
+	const [allStore, setAllStores] = useState([]);
+	const [storeName, setStoreName] = useState("");
 
 	let productAttributes = [];
 
@@ -121,7 +124,10 @@ const UpdateProductSingle = ({ match }) => {
 						.description_Arabic,
 				);
 				setChosenSubcategories(
-					data.filter((e) => e._id === match.params.productId)[0].subcategory,
+					data.filter((e) => e._id === match.params.productId)[0].subcategory &&
+						data
+							.filter((e) => e._id === match.params.productId)[0]
+							.subcategory.map((iii) => iii._id),
 				);
 				setChosenCategory(
 					data.filter((e) => e._id === match.params.productId)[0].category,
@@ -177,6 +183,9 @@ const UpdateProductSingle = ({ match }) => {
 					data.filter((e) => e._id === match.params.productId)[0]
 						.featuredProduct,
 				);
+				setStoreName(
+					data.filter((e) => e._id === match.params.productId)[0].storeName,
+				);
 				setProductAttributesFinal(
 					data.filter((e) => e._id === match.params.productId)[0]
 						.productAttributes,
@@ -209,7 +218,17 @@ const UpdateProductSingle = ({ match }) => {
 		});
 	};
 
-	console.log(featured, "Featured");
+	console.log(chosenSubcategories, "Featured");
+
+	const loadAllStores = () => {
+		getStores(token).then((data2) => {
+			if (data2.error) {
+				console.log(data2.error);
+			} else {
+				setAllStores(data2);
+			}
+		});
+	};
 
 	const gettingAllCategories = () => {
 		getCategories(user._id, token).then((data) => {
@@ -246,6 +265,7 @@ const UpdateProductSingle = ({ match }) => {
 		gettingAllCategories();
 		gettingAllSubcategories();
 		gettingAllGenders();
+		loadAllStores();
 
 		// eslint-disable-next-line
 	}, [match.params.productId, variablesSubmit]);
@@ -291,6 +311,10 @@ const UpdateProductSingle = ({ match }) => {
 		setChosenGender(e.target.value);
 	};
 
+	const handleChangeStoreName = (e) => {
+		setStoreName(e.target.value);
+	};
+
 	const CategorySubcategoryEntry = () => {
 		return (
 			<form className='formwrapper ml-5 py-4 mt-4' style={{ maxWidth: "80%" }}>
@@ -322,6 +346,7 @@ const UpdateProductSingle = ({ match }) => {
 					<select
 						name='category'
 						className='form-control'
+						style={{ textTransform: "uppercase" }}
 						onChange={handleCategoryChange}>
 						<option>
 							{chosenCategory ? chosenCategory.categoryName : "Please select"}{" "}
@@ -339,7 +364,7 @@ const UpdateProductSingle = ({ match }) => {
 						<label>Sub Category</label>
 						<Select
 							mode='multiple'
-							style={{ width: "100%" }}
+							style={{ width: "100%", textTransform: "uppercase" }}
 							placeholder='Please Select a subcategory'
 							value={chosenSubcategories}
 							onChange={(value) => setChosenSubcategories(value)}>
@@ -354,6 +379,24 @@ const UpdateProductSingle = ({ match }) => {
 						</Select>
 					</div>
 				)}
+				<div className='form-group  '>
+					<label>Store Name</label>
+					<select
+						name='storeName'
+						className='form-control'
+						style={{ textTransform: "uppercase" }}
+						onChange={handleChangeStoreName}>
+						<option>
+							{storeName ? storeName.storeName : "Please select"}{" "}
+						</option>
+						{allStore.length > 0 &&
+							allStore.map((c) => (
+								<option key={c._id} value={c._id}>
+									{c.storeName}
+								</option>
+							))}
+					</select>
+				</div>
 			</form>
 		);
 	};
@@ -656,6 +699,7 @@ const UpdateProductSingle = ({ match }) => {
 			relatedProducts: [],
 			shipping: shipping,
 			addVariables: addVariables,
+			storeName: storeName,
 			clearance: clearance,
 			productAttributes: addVariables ? productAttributesFinal : [],
 			activeProduct: activeProduct,

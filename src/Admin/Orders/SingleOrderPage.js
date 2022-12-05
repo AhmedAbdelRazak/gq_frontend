@@ -41,6 +41,8 @@ const SingleOrderPage = (props) => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
+				setLoading(true);
+
 				setSingleOrder(data);
 				setUpdateSingleOrder(data);
 				setUpdateCustomerDetails(data.customerDetails);
@@ -361,6 +363,17 @@ const SingleOrderPage = (props) => {
 									}}>
 									{updateSingleOrder.invoiceNumber}
 								</span>
+							</h5>
+							<h5
+								style={{
+									fontWeight: "bold",
+									textAlign: "center",
+									marginBottom: "20px",
+								}}>
+								<Link
+									to={`/admin/single-order/invoice/${updateSingleOrder._id}`}>
+									Display Invoice
+								</Link>
 							</h5>
 
 							<div style={{ fontSize: "1.25rem", fontWeight: "bolder" }}>

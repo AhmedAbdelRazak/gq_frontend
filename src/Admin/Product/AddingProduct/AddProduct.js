@@ -13,6 +13,7 @@ import {
 	getColors,
 	getGenders,
 	getListOfSubs,
+	getStores,
 	getSubCategories,
 } from "../../apiAdmin";
 import BasicDataForm from "./BasicDataForm";
@@ -100,6 +101,8 @@ const AddProduct = () => {
 	const [inheritPrice, setInheritPrice] = useState(false);
 	const [inheritParentSKU, setInheritParentSKU] = useState(false);
 	const [allColors, setAllColors] = useState([]);
+	const [allStore, setAllStores] = useState([]);
+	const [storeName, setStoreName] = useState("");
 
 	let productAttributes = [];
 
@@ -142,6 +145,16 @@ const AddProduct = () => {
 			/>
 		</React.Fragment>
 	);
+
+	const loadAllStores = () => {
+		getStores(token).then((data2) => {
+			if (data2.error) {
+				console.log(data2.error);
+			} else {
+				setAllStores(data2);
+			}
+		});
+	};
 
 	const gettingAllCategories = () => {
 		getCategories(user._id, token).then((data) => {
@@ -188,6 +201,7 @@ const AddProduct = () => {
 		gettingAllSubcategories();
 		gettingAllGenders();
 		gettingAllColors();
+		loadAllStores();
 		// eslint-disable-next-line
 	}, []);
 
@@ -206,6 +220,10 @@ const AddProduct = () => {
 
 	const handleChangeGender = (e) => {
 		setChosenGender(e.target.value);
+	};
+
+	const handleChangeStoreName = (e) => {
+		setStoreName(e.target.value);
 	};
 
 	const CategorySubcategoryEntry = () => {
@@ -266,6 +284,22 @@ const AddProduct = () => {
 						</Select>
 					</div>
 				)}
+				<div className='form-group '>
+					<label>Store Name</label>
+					<select
+						name='storeName'
+						className='form-control'
+						onChange={handleChangeStoreName}>
+						<option>Please select</option>
+						{allStore &&
+							allStore.length > 0 &&
+							allStore.map((c) => (
+								<option key={c._id} value={c._id}>
+									{c.storeName}
+								</option>
+							))}
+					</select>
+				</div>
 			</form>
 		);
 	};
@@ -665,6 +699,7 @@ const AddProduct = () => {
 			updatedByEmployee: user._id,
 			quantity: addVariables ? 0 : stock,
 			thumbnailImage: addThumbnail,
+			storeName: storeName,
 			relatedProducts: [],
 			shipping: shipping,
 			addVariables: addVariables,
@@ -793,7 +828,18 @@ const AddProduct = () => {
 					MSRP: inheritPrice ? parentPrice1 : 0,
 					WholeSalePrice: inheritPrice ? parentPrice4 : 0,
 					DropShippingPrice: inheritPrice ? parentPrice5 : 0,
-					productImages: [],
+					productImages:
+						productAttributesFinal &&
+						productAttributesFinal.length > 0 &&
+						combinationsOfColorSizes[i - 1][ii - 1] ===
+							productAttributesFinal[i] &&
+						productAttributesFinal[i].size &&
+						combinationsOfColorSizes[i - 1][ii] === productAttributesFinal[i] &&
+						productAttributesFinal[i].color &&
+						productAttributesFinal[i].productImages &&
+						productAttributesFinal[i].productImages.length > 0
+							? productAttributesFinal[i].productImages
+							: [],
 					SubSKU: inheritParentSKU
 						? productSKU +
 						  "-" +

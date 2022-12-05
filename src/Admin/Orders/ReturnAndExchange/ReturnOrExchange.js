@@ -179,6 +179,7 @@ const ReturnOrExchange = () => {
 		window.scrollTo({ top: 0, behavior: "smooth" });
 
 		const singleOrderModified =
+			updateSingleOrder &&
 			updateSingleOrder.exchangedProductQtyWithVariables &&
 			updateSingleOrder.exchangedProductQtyWithVariables.length > 0 &&
 			updateSingleOrder.returnedItems &&

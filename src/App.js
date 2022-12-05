@@ -72,6 +72,8 @@ import AddHeroComp from "./Admin/OnlineStore/AddHeroComp";
 import SingleProduct from "./pages/SingleProduct/SingleProduct";
 import ShopPageMain from "./pages/ShopPage/ShopPageMain";
 import Cart from "./Checkout/Cart";
+import InvoicePDF from "./Admin/Orders/InvoicePDF";
+import { isAuthenticated } from "./auth";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -118,6 +120,15 @@ const App = () => {
 	};
 
 	useEffect(() => {
+		if (
+			isAuthenticated() &&
+			isAuthenticated().user &&
+			!window.location.pathname.includes("admin")
+		) {
+			window.location.href = `${process.env.REACT_APP_MAIN_URL}/admin/dashboard`;
+		} else {
+			return null;
+		}
 		gettingAllAds();
 		// eslint-disable-next-line
 	}, []);
@@ -125,7 +136,6 @@ const App = () => {
 	return (
 		<BrowserRouter>
 			<ToastContainer />
-
 			{window.location.pathname.includes("admin") ? null : (
 				<>
 					{click && clickMenu ? (
@@ -296,6 +306,11 @@ const App = () => {
 					path='/admin/single-order/:orderId'
 					exact
 					component={SingleOrderPage}
+				/>
+				<AdminRoute
+					path='/admin/single-order/invoice/:orderId'
+					exact
+					component={InvoicePDF}
 				/>
 				<AdminRoute
 					path='/admin/exchange-order/:orderId'

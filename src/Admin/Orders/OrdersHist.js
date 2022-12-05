@@ -67,7 +67,7 @@ const OrdersHist = () => {
 	const [postsPerPage, setPostsPerPage] = useState(80);
 	const [allProducts, setAllProducts] = useState([]);
 	const [day1, setDay1] = useState(
-		new Date(new Date().setDate(new Date().getDate() + 1)),
+		new Date(new Date().setDate(new Date().getDate() + 2)),
 	);
 	const [day2, setDay2] = useState(
 		new Date(new Date().setDate(new Date().getDate() - 45)),

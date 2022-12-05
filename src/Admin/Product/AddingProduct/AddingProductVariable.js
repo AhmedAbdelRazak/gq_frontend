@@ -42,9 +42,6 @@ const AddingProductVariable = ({
 	productAttributes,
 	addThumbnail,
 	setAddThumbnail,
-	inheritParentSKU,
-	setInheritParentSKU,
-	productSKU,
 }) => {
 	const { user, token } = isAuthenticated();
 	const [allColors, setAllColors] = useState([]);
@@ -288,24 +285,6 @@ const AddingProductVariable = ({
 					checked={addVariables === true ? true : false}
 				/>
 			</div>
-
-			{clickedVariableLink === "VariableSkus" ? (
-				<div className='form-group mt-4'>
-					<label
-						className='text-muted'
-						style={{ fontWeight: "bold", fontSize: "13px" }}>
-						Inherit From Parent SKU
-					</label>
-					<input
-						type='checkbox'
-						className='ml-2 mt-2'
-						onChange={() => {
-							setInheritParentSKU(!inheritParentSKU);
-						}}
-						checked={inheritParentSKU === true ? true : false}
-					/>
-				</div>
-			) : null}
 
 			<form className=''>
 				{clickedVariableLink === "SizesColorsImages" ? (

@@ -32,6 +32,8 @@ const BasicDataForm = ({
 	setParentPrice5,
 	inheritPrice,
 	setInheritPrice,
+	inheritParentSKU,
+	setInheritParentSKU,
 }) => {
 	const handleChange1 = (e) => {
 		setProductName(e.target.value);
@@ -211,7 +213,7 @@ const BasicDataForm = ({
 					</div>
 				</div>
 
-				<div className='col-md-3 mx-auto mt-4'>
+				<div className='col-md-3 mx-auto my-4'>
 					<div className='form-group'>
 						<label
 							className='text-muted mx-2'
@@ -228,6 +230,21 @@ const BasicDataForm = ({
 							required
 						/>
 					</div>
+				</div>
+				<div className='col-md-3 mx-auto my-4'>
+					<label
+						className='text-muted'
+						style={{ fontWeight: "bold", fontSize: "13px" }}>
+						Inherit From Parent SKU
+					</label>
+					<input
+						type='checkbox'
+						className='ml-2 mt-2'
+						onChange={() => {
+							setInheritParentSKU(!inheritParentSKU);
+						}}
+						checked={inheritParentSKU === true ? true : false}
+					/>
 				</div>
 			</div>
 			<div className='row'>

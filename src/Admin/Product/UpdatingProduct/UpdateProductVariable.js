@@ -183,6 +183,7 @@ const UpdatingProductVariable = ({
 		}
 	};
 
+	// eslint-disable-next-line
 	const fileUploadAndResizeThumbNail = (e) => {
 		// console.log(e.target.files);
 		let files = e.target.files;
@@ -213,24 +214,24 @@ const UpdatingProductVariable = ({
 		}
 	};
 
-	const FileUploadThumbnail = () => {
-		return (
-			<>
-				<label
-					className='btn btn-info btn-raised'
-					style={{ cursor: "pointer", fontSize: "0.95rem" }}>
-					Add Product Thumbnail (Main Image)
-					<input
-						type='file'
-						hidden
-						accept='images/*'
-						onChange={fileUploadAndResizeThumbNail}
-						required
-					/>
-				</label>
-			</>
-		);
-	};
+	// const FileUploadThumbnail = () => {
+	// 	return (
+	// 		<>
+	// 			<label
+	// 				className='btn btn-info btn-raised'
+	// 				style={{ cursor: "pointer", fontSize: "0.95rem" }}>
+	// 				Add Product Thumbnail (Main Image)
+	// 				<input
+	// 					type='file'
+	// 					hidden
+	// 					accept='images/*'
+	// 					onChange={fileUploadAndResizeThumbNail}
+	// 					required
+	// 				/>
+	// 			</label>
+	// 		</>
+	// 	);
+	// };
 
 	const handleImageRemove = (public_id) => {
 		// console.log("remove image", public_id);
@@ -393,7 +394,7 @@ const UpdatingProductVariable = ({
 
 				{clickedVariableLink === "SizesColorsImages" ? (
 					<div className='mt-5'>
-						{variablesSubmit ? (
+						{/* {variablesSubmit ? (
 							<div className='m-3 col-4'>
 								<div className='col-10'>
 									{addThumbnail &&
@@ -432,7 +433,7 @@ const UpdatingProductVariable = ({
 								</div>
 								{FileUploadThumbnail()}
 							</div>
-						) : null}
+						) : null} */}
 
 						<div className='row'>
 							{chosenColors &&
