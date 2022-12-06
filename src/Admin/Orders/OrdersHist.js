@@ -67,10 +67,14 @@ const OrdersHist = () => {
 	const [postsPerPage, setPostsPerPage] = useState(80);
 	const [allProducts, setAllProducts] = useState([]);
 	const [day1, setDay1] = useState(
-		new Date(new Date().setDate(new Date().getDate() + 2)),
+		new Date(
+			new Date().toLocaleString("en-US", {
+				timeZone: "Africa/Cairo",
+			}),
+		),
 	);
 	const [day2, setDay2] = useState(
-		new Date(new Date().setDate(new Date().getDate() - 45)),
+		new Date(new Date().setDate(new Date().getDate() - 30)),
 	);
 	const [chosenCard, setChosenCard] = useState("OrdersCountCard");
 
@@ -79,13 +83,29 @@ const OrdersHist = () => {
 	const { user, token } = isAuthenticated();
 
 	// eslint-disable-next-line
-	var today = new Date().toDateString("en-US", {
-		timeZone: "Africa/Cairo",
-	});
+	var today = new Date(
+		new Date().toLocaleString("en-US", {
+			timeZone: "Africa/Cairo",
+		}),
+	);
 
-	var yesterday = new Date();
-	var last7Days = new Date();
-	var last90Days = new Date();
+	var yesterday = new Date(
+		new Date().toLocaleString("en-US", {
+			timeZone: "Africa/Cairo",
+		}),
+	);
+
+	var last7Days = new Date(
+		new Date().toLocaleString("en-US", {
+			timeZone: "Africa/Cairo",
+		}),
+	);
+
+	var last90Days = new Date(
+		new Date().toLocaleString("en-US", {
+			timeZone: "Africa/Cairo",
+		}),
+	);
 
 	yesterday.setDate(yesterday.getDate() - 1);
 	last7Days.setDate(last7Days.getDate() - 7);
@@ -422,7 +442,6 @@ const OrdersHist = () => {
 							</th>
 							<th scope='col'>Governorate</th>
 							{/* <th scope='col'>City</th> */}
-							<th scope='col'>Carrier</th>
 							<th scope='col'>Tracking #</th>
 							<th scope='col'>Quantity</th>
 							<th scope='col' style={{ width: "8%" }}>
@@ -526,9 +545,7 @@ const OrdersHist = () => {
 									<td>{s.employeeData.name}</td>
 									<td>{s.customerDetails.state}</td>
 									{/* <td>{s.customerDetails.cityName}</td> */}
-									<td style={{ width: "8%" }}>
-										{s.chosenShippingOption[0].carrierName}
-									</td>
+
 									<td style={{ width: "8%" }}>
 										{s.trackingNumber ? s.trackingNumber : "Not Added"}
 									</td>

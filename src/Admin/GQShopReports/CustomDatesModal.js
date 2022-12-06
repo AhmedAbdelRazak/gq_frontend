@@ -17,10 +17,6 @@ const CustomDatesModal = ({
 	setModalVisible,
 	setRequiredSKU,
 }) => {
-	console.log(
-		moment(new Date().toISOString()).utcOffset(120).format("YYYY-MM-DD HH:mm"),
-		"jklsjdkfljskldfjksldjfksl",
-	);
 	const mainForm = () => {
 		return (
 			<div className='mx-auto text-center'>

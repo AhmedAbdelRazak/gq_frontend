@@ -346,9 +346,10 @@ const InvoicePDF = (props) => {
 							<div className='row'>
 								<div className='col-6'>Subtotal</div>
 								<div className='col-5'>
-									{Number(updateSingleOrder.totalAmountAfterDiscount).toFixed(
-										2,
-									)}{" "}
+									{Number(
+										Number(updateSingleOrder.totalAmountAfterDiscount) -
+											Number(updateSingleOrder.shippingFees),
+									).toFixed(2)}{" "}
 									L.E.
 								</div>
 							</div>
@@ -378,7 +379,9 @@ const InvoicePDF = (props) => {
 								<div className='col-6'>Cash on delivery surcharge</div>
 								<div className='col-5'>
 									{Number(
-										updateSingleOrder.totalAmountAfterDiscount * 0.01,
+										(Number(updateSingleOrder.totalAmountAfterDiscount) -
+											Number(updateSingleOrder.shippingFees)) *
+											0.01,
 									).toFixed(2)}{" "}
 									L.E.
 								</div>
@@ -398,8 +401,9 @@ const InvoicePDF = (props) => {
 									}}>
 									{Number(
 										Number(updateSingleOrder.totalAmountAfterDiscount) +
-											Number(updateSingleOrder.shippingFees) +
-											Number(updateSingleOrder.totalAmountAfterDiscount * 0.01),
+											(Number(updateSingleOrder.totalAmountAfterDiscount) -
+												Number(updateSingleOrder.shippingFees)) *
+												0.01,
 									).toFixed(2)}{" "}
 									L.E.
 								</div>

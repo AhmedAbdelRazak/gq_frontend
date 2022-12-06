@@ -51,9 +51,11 @@ const MainReports = () => {
 	const [allOrders, setAllOrders] = useState([]);
 	const [requiredSKU, setRequiredSKU] = useState("");
 	const [day1, setDay1] = useState(
-		new Date().toDateString("en-US", {
-			timeZone: "Africa/Cairo",
-		}),
+		new Date(
+			new Date().toLocaleString("en-US", {
+				timeZone: "Africa/Cairo",
+			}),
+		),
 	);
 	const [day2, setDay2] = useState(
 		new Date(new Date().setDate(new Date().getDate() - 7)),
@@ -63,19 +65,40 @@ const MainReports = () => {
 	const { user, token } = isAuthenticated();
 
 	// eslint-disable-next-line
-	var today = new Date().toDateString("en-US", {
-		timeZone: "Africa/Cairo",
-	});
+	var today = new Date(
+		new Date().toLocaleString("en-US", {
+			timeZone: "Africa/Cairo",
+		}),
+	);
 
-	var yesterday = new Date();
-	var last7Days = new Date();
-	var last30Days = new Date();
-	var last90Days = new Date();
+	var yesterday = new Date(
+		new Date().toLocaleString("en-US", {
+			timeZone: "Africa/Cairo",
+		}),
+	);
+
+	var last7Days = new Date(
+		new Date().toLocaleString("en-US", {
+			timeZone: "Africa/Cairo",
+		}),
+	);
+	var last30Days = new Date(
+		new Date().toLocaleString("en-US", {
+			timeZone: "Africa/Cairo",
+		}),
+	);
+	var last90Days = new Date(
+		new Date().toLocaleString("en-US", {
+			timeZone: "Africa/Cairo",
+		}),
+	);
 
 	yesterday.setDate(yesterday.getDate() - 1);
 	last7Days.setDate(last7Days.getDate() - 7);
 	last30Days.setDate(last30Days.getDate() - 30);
-	last90Days.setDate(last90Days.getDate() - 120);
+	last90Days.setDate(last90Days.getDate() - 200);
+
+	// var todayTimeZone = moment(new Date().toISOString()).utcOffset(120)._i;
 
 	const loadOrders = () => {
 		function sortOrdersAscendingly(a, b) {
@@ -753,11 +776,6 @@ const MainReports = () => {
 		}, {});
 
 	State_TotalAmount.sort(sortTopOrdersStates);
-
-	console.log(
-		State_TotalAmount.sort(sortTopOrdersStates),
-		"CustomerDetails_TotalAmount",
-	);
 
 	var treeMapStates1 = {
 		series: State_TotalAmount.map((i) => {

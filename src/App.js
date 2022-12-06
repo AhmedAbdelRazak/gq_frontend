@@ -73,6 +73,7 @@ import SingleProduct from "./pages/SingleProduct/SingleProduct";
 import ShopPageMain from "./pages/ShopPage/ShopPageMain";
 import Cart from "./Checkout/Cart";
 import InvoicePDF from "./Admin/Orders/InvoicePDF";
+// eslint-disable-next-line
 import { isAuthenticated } from "./auth";
 
 const App = () => {

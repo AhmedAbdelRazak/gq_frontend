@@ -48,12 +48,14 @@ const AdminDashboard = () => {
 	const [modalVisible3, setModalVisible3] = useState(false);
 	// eslint-disable-next-line
 	const [day1, setDay1] = useState(
-		new Date().toDateString("en-US", {
-			timeZone: "Africa/Cairo",
-		}),
+		new Date(
+			new Date().toLocaleString("en-US", {
+				timeZone: "Africa/Cairo",
+			}),
+		),
 	);
 	const [day2, setDay2] = useState(
-		new Date(new Date().setDate(new Date().getDate() - 10)),
+		new Date(new Date().setDate(new Date().getDate() - 7)),
 	);
 	const [clickedProduct, setClickedProduct] = useState({});
 
@@ -108,19 +110,38 @@ const AdminDashboard = () => {
 		// eslint-disable-next-line
 	}, []);
 
-	var today = new Date().toDateString("en-US", {
-		timeZone: "Africa/Cairo",
-	});
+	var today = new Date(
+		new Date().toLocaleString("en-US", {
+			timeZone: "Africa/Cairo",
+		}),
+	);
 
-	var yesterday = new Date();
-	var last7Days = new Date();
-	var last30Days = new Date();
-	var last90Days = new Date();
+	var yesterday = new Date(
+		new Date().toLocaleString("en-US", {
+			timeZone: "Africa/Cairo",
+		}),
+	);
+
+	var last7Days = new Date(
+		new Date().toLocaleString("en-US", {
+			timeZone: "Africa/Cairo",
+		}),
+	);
+	var last30Days = new Date(
+		new Date().toLocaleString("en-US", {
+			timeZone: "Africa/Cairo",
+		}),
+	);
+	var last90Days = new Date(
+		new Date().toLocaleString("en-US", {
+			timeZone: "Africa/Cairo",
+		}),
+	);
 
 	yesterday.setDate(yesterday.getDate() - 1);
 	last7Days.setDate(last7Days.getDate() - 10);
 	last30Days.setDate(last30Days.getDate() - 30);
-	last90Days.setDate(last90Days.getDate() - 45);
+	last90Days.setDate(last90Days.getDate() - 60);
 
 	// console.log(yesterday, "yesterday");
 
