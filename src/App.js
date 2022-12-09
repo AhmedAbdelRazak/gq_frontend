@@ -75,6 +75,10 @@ import Cart from "./Checkout/Cart";
 import InvoicePDF from "./Admin/Orders/InvoicePDF";
 // eslint-disable-next-line
 import { isAuthenticated } from "./auth";
+import CheckoutMain from "./Checkout/CheckoutForm/CheckoutMain";
+import GenderNav from "./Navbar/GenderNav";
+import UserDashboard from "./pages/User/UserDashboard";
+import PrivateRoute from "./auth/PrivateRoute";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -121,15 +125,15 @@ const App = () => {
 	};
 
 	useEffect(() => {
-		if (
-			isAuthenticated() &&
-			isAuthenticated().user &&
-			!window.location.pathname.includes("admin")
-		) {
-			window.location.href = `${process.env.REACT_APP_MAIN_URL}/admin/dashboard`;
-		} else {
-			return null;
-		}
+		// if (
+		// 	isAuthenticated() &&
+		// 	isAuthenticated().user &&
+		// 	!window.location.pathname.includes("admin")
+		// ) {
+		// 	window.location.href = `${process.env.REACT_APP_MAIN_URL}/admin/dashboard`;
+		// } else {
+		// 	return null;
+		// }
 
 		gettingAllAds();
 		// eslint-disable-next-line
@@ -138,8 +142,7 @@ const App = () => {
 	return (
 		<BrowserRouter>
 			<ToastContainer />
-			{window.location.pathname.includes("admin") ||
-			window.location.pathname === "/" ? null : (
+			{window.location.pathname.includes("admin") ? null : (
 				<>
 					{click && clickMenu ? (
 						<DarkBackground2 setClick={setClick} setClickMenu={setClickMenu} />
@@ -159,13 +162,17 @@ const App = () => {
 
 			{window.location.pathname.includes("admin") ? null : allAdsCombined &&
 			  allAdsCombined.show_ad ? (
-				<NavbarAds />
+				<>
+					<GenderNav />
+					<NavbarAds />
+				</>
 			) : null}
 
 			<Switch>
-				<Route path='/' exact component={Login} />
+				<Route path='/signin' exact component={Login} />
+
 				<Route
-					path='/home'
+					path='/'
 					exact
 					component={() => <Home chosenLanguage={language} />}
 				/>
@@ -185,6 +192,9 @@ const App = () => {
 					exact
 					component={() => <Cart chosenLanguage={language} />}
 				/>
+				<Route path='/checkout' exact component={CheckoutMain} />
+				<PrivateRoute path='/user/dashboard' exact component={UserDashboard} />
+
 				<AdminRoute path='/admin/dashboard' exact component={AdminDashboard} />
 				<AdminRoute path='/admin/add-gender' exact component={AddGender} />
 				<AdminRoute

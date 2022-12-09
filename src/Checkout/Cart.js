@@ -22,6 +22,7 @@ const Cart = ({ chosenLanguage }) => {
 
 	const {
 		cart,
+		// eslint-disable-next-line
 		clearCart,
 		removeItem,
 		toggleAmount,
@@ -404,8 +405,9 @@ const Cart = ({ chosenLanguage }) => {
 								style={{ borderRadius: "10px" }}>
 								continue shopping
 							</Link>
-							<button
+							<Link
 								type='button'
+								to='/checkout'
 								style={{
 									background: "#007db5",
 									color: "white",
@@ -413,9 +415,10 @@ const Cart = ({ chosenLanguage }) => {
 									borderRadius: "10px",
 								}}
 								className='link-btn clear-btn'
-								onClick={clearCart}>
+								// onClick={clearCart}
+							>
 								Continue To Check Out
-							</button>
+							</Link>
 						</div>
 					</div>
 					<div className='cellPhoneLayout mt-5'>
@@ -653,18 +656,20 @@ const Cart = ({ chosenLanguage }) => {
 								style={{ borderRadius: "10px" }}>
 								continue shopping
 							</Link>
-							<button
+							<Link
 								type='button'
-								className='link-btn clear-btn mr-1'
+								to='/checkout'
 								style={{
 									background: "#007db5",
 									color: "white",
 									textTransform: "uppercase",
 									borderRadius: "10px",
 								}}
-								onClick={clearCart}>
+								className='link-btn clear-btn'
+								// onClick={clearCart}
+							>
 								Continue To Check Out
-							</button>
+							</Link>
 						</div>
 					</div>
 				</>

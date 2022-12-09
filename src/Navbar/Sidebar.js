@@ -154,7 +154,7 @@ const Sidebar = ({
 							}}>
 							<Link
 								className='nav-link fontawesome-icons '
-								to='/user-dashboard/last-purchase'
+								to='/user/dashboard'
 								onClick={() => {
 									setClickMenu(false);
 									setClick(false);

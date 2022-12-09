@@ -35,11 +35,13 @@ const DisplayImages = ({
 								alt={Product.productName}
 								src={i}
 								key={ii}
-								style={{
-									borderRadius: "15px",
-									// height: "100%",
-									// objectFit: "cover",
-								}}
+								style={
+									{
+										// borderRadius: "15px",
+										// height: "100%",
+										// objectFit: "cover",
+									}
+								}
 							/>
 						))}
 				</Carousel>
@@ -56,7 +58,7 @@ const DisplayImages = ({
 										className='fa fa-heart text-danger  Like'
 										style={{
 											padding: "8px",
-											borderRadius: "50%",
+											// borderRadius: "50%",
 											fontSize: "2rem",
 										}}
 									/>{" "}
@@ -65,7 +67,7 @@ const DisplayImages = ({
 							<strong
 								className=''
 								style={{
-									fontStyle: "italic",
+									// fontStyle: "italic",
 									fontSize: "0.8rem",
 									textDecoration: "underline",
 								}}>
@@ -82,8 +84,8 @@ const DisplayImages = ({
 									<i
 										className='fa fa-heart  Like'
 										style={{
-											padding: "8px",
-											borderRadius: "50%",
+											padding: "6px",
+											// borderRadius: "50%",
 											fontSize: "1.7rem",
 										}}
 									/>{" "}
@@ -97,10 +99,10 @@ const DisplayImages = ({
 					)}
 				</Like>
 				<div
-					className='ml-auto p-2 '
+					className='ml-auto p-3 '
 					style={{
 						color: "black",
-						fontStyle: "italic",
+						// fontStyle: "italic",
 						fontWeight: "bold",
 						textAlign: "center",
 						marginTop: "16px",
@@ -112,8 +114,8 @@ const DisplayImages = ({
 							fontSize: "24px",
 						}}>
 						{" "}
-						{Product.viewsCount} Views
 					</i>
+					{Product.viewsCount} Views
 				</div>
 			</div>
 		</div>
@@ -124,6 +126,8 @@ export default DisplayImages;
 
 const Like = styled.div`
 	cursor: pointer;
+	font-family: Roboto, Helvetica, Arial, sans-serif !important;
+
 	.Like {
 		background: #ededed;
 		text-decoration: none;

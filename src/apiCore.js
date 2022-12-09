@@ -516,3 +516,51 @@ export const gettingAllProducts = (
 		}
 	});
 };
+
+export const createOrder = (token, createOrderData, userId) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/order/create-by-customer/${userId}`,
+		{
+			method: "POST",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify({ order: createOrderData }),
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const ordersLength = (token) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/order/length-by-customer`, {
+		method: "GET",
+		headers: {
+			Accept: "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const readUser = (userId, token) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/user/${userId}`, {
+		method: "GET",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};

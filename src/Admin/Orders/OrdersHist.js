@@ -67,11 +67,7 @@ const OrdersHist = () => {
 	const [postsPerPage, setPostsPerPage] = useState(80);
 	const [allProducts, setAllProducts] = useState([]);
 	const [day1, setDay1] = useState(
-		new Date(
-			new Date().toLocaleString("en-US", {
-				timeZone: "Africa/Cairo",
-			}),
-		),
+		new Date(new Date().setDate(new Date().getDate() + 3)),
 	);
 	const [day2, setDay2] = useState(
 		new Date(new Date().setDate(new Date().getDate() - 30)),
@@ -542,7 +538,17 @@ const OrdersHist = () => {
 									<td style={{ textTransform: "uppercase" }}>
 										{s.orderSource}
 									</td>
-									<td>{s.employeeData.name}</td>
+									<td
+										style={{
+											background:
+												s.employeeData === "Online Order" ? "#ffc994" : "",
+										}}>
+										{s.employeeData.name
+											? s.employeeData.name
+											: s.employeeData === "Online Order"
+											? "Online Self Service"
+											: ""}
+									</td>
 									<td>{s.customerDetails.state}</td>
 									{/* <td>{s.customerDetails.cityName}</td> */}
 

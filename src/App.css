@@ -29,6 +29,7 @@ body {
 	--mainTransition: all 0.3s ease-in-out;
 	--mainSpacing: 0.3rem;
 	--mainRed: #c40000;
+	--orangePrimary: darkgrey;
 	--clr-primary-1: hsl(22, 28%, 21%);
 	--clr-primary-2: hsl(22, 28%, 29%);
 	--clr-primary-3: hsl(22, 28%, 37%);

@@ -8,7 +8,7 @@ const Footer = () => {
 		<Wrapper>
 			<h5>
 				&copy; {new Date().getFullYear()}
-				<span> GQ Online Shop </span>
+				<span> ACE Online Shop </span>
 				{"    "}
 			</h5>
 			<h5>All rights reserved</h5>

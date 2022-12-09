@@ -316,9 +316,7 @@ const SingleProduct = (props) => {
 			<>
 				{Product && Product.comments && !loading ? (
 					<>
-						<h5
-							className='mt-5 mb-3'
-							style={{ fontWeight: "bold", fontStyle: "italic" }}>
+						<h5 className='mt-5 mb-3' style={{ fontWeight: "bold" }}>
 							Your Feedback Is Important To Us!!
 						</h5>
 						<form onSubmit={addComment}>
@@ -477,7 +475,7 @@ const SingleProduct = (props) => {
 
 						<div
 							className='col-md-5 mx-auto mt-3'
-							style={{ border: "1px solid lightgrey", borderRadius: "15px" }}>
+							style={{ border: "1px solid white" }}>
 							<h3
 								className='text-title mb-4 my-3'
 								style={{
@@ -485,7 +483,7 @@ const SingleProduct = (props) => {
 									textAlign: "center",
 									padding: "8px",
 									color: "grey",
-									fontStyle: "italic",
+									// fontStyle: "italic",
 									textTransform: "capitalize",
 								}}>
 								Product Name: {Product.productName}
@@ -496,7 +494,7 @@ const SingleProduct = (props) => {
 										className='mt-2'
 										style={{
 											fontSize: "0.75rem",
-											fontStyle: "italic",
+											// fontStyle: "italic",
 											fontWeight: "bold",
 											color: "black",
 										}}>
@@ -639,9 +637,7 @@ const SingleProduct = (props) => {
 											okButtonProps={{ style: { display: "none" } }}
 											cancelButtonProps={{ style: { display: "none" } }}
 											onCancel={() => setModalVisible(false)}>
-											<h5
-												className='mt-4 mb-2'
-												style={{ fontWeight: "bold", fontStyle: "italic" }}>
+											<h5 className='mt-4 mb-2' style={{ fontWeight: "bold" }}>
 												Please Leave a Rating
 											</h5>
 											<StarRating
@@ -709,15 +705,17 @@ const SingleProduct = (props) => {
 export default SingleProduct;
 
 const SingleEmp = styled.div`
+	background: white !important;
 	width: 90%;
 	margin-top: 5px;
+	font-family: font-family: Roboto, Helvetica, Arial, sans-serif !important;
 	/* .carousel-slider {
 		width: 75%;
 	} */
 
 	.carousel-root {
 		border: 1px solid lightgrey;
-		border-radius: 15px;
+		/* border-radius: 15px; */
 		object-fit: cover;
 		/* max-height: 60%; */
 		/* box-shadow: 3px 2px 3px 2px rgba(0, 0, 0, 0.5); */
@@ -741,6 +739,9 @@ const SingleEmp = styled.div`
 	}
 
 	@media (max-width: 1000px) {
+		padding: 50px !important;
+		width: 100%;
+
 		.slider img {
 			width: 90%;
 			height: 400px !important;

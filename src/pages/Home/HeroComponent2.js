@@ -106,6 +106,7 @@ const HeroComponent2 = () => {
 
 			{homePage && homePage.thumbnail2 && homePage.thumbnail2[0] && (
 				<div className='heroPicMain'>
+					<h3 className='mx-auto text-center'>Main Section</h3>
 					<Link to='/our-products'>
 						<img
 							src={
@@ -178,6 +179,12 @@ const HeroComponent2Wrapper = styled.div`
 		margin-top: 10px;
 	}
 
+	h3 {
+		color: darkred;
+		font-weight: bold;
+		text-transform: uppercase;
+	}
+
 	@media (max-width: 1000px) {
 		.heroPicMain {
 			height: 100%;
@@ -189,7 +196,7 @@ const HeroComponent2Wrapper = styled.div`
 
 		.heroPicMain img {
 			width: 100%; /* width of container */
-			height: 300px; /* height of container */
+			height: 100vh; /* height of container */
 			object-fit: cover;
 			/* border: 5px solid black; */
 			margin-right: 500px;

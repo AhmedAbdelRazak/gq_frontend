@@ -66,9 +66,11 @@ const CreateNewOrder = () => {
 	const [collapsed, setCollapsed] = useState(false);
 	const [freeShipping, setFreeShipping] = useState(false);
 	const [orderCreationDate, setOrderCreationDate] = useState(
-		new Date().toLocaleDateString("en-US", {
-			timeZone: "Africa/Cairo",
-		}),
+		new Date(
+			new Date().toLocaleString("en-US", {
+				timeZone: "Africa/Cairo",
+			}),
+		),
 	);
 	const [customerDetails, setCustomerDetails] = useState({
 		fullName: "",
@@ -1163,9 +1165,11 @@ const CreateNewOrder = () => {
 		// 	return toast.error("No Enough Stock Available 'No Variable Products'");
 		// }
 
-		var today = new Date().toDateString("en-US", {
-			timeZone: "Africa/Cairo",
-		});
+		var today = new Date(
+			new Date().toLocaleString("en-US", {
+				timeZone: "Africa/Cairo",
+			}),
+		);
 
 		//In Processing, Ready To Ship, Shipped, Delivered
 		const createOrderData = {
@@ -1208,6 +1212,7 @@ const CreateNewOrder = () => {
 			appliedShippingFees: AppliedshippingFee,
 			totalAmountAfterExchange: 0,
 			exchangeTrackingNumber: "Not Added",
+			paymentStatus: "Pay On Delivery",
 			onHoldStatus:
 				availableVariables() && ArraysValidation === false
 					? "On Hold"

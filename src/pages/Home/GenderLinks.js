@@ -134,7 +134,7 @@ const GenderLinksWrapper = styled.div`
 			/* font-weight: bold; */
 			letter-spacing: 3px;
 			/* text-shadow: 1px 4px 3px rgba(0, 0, 0, 0.5); */
-			color: #330000;
+			color: black !important;
 			display: none;
 		}
 
@@ -153,7 +153,7 @@ const GenderLinksWrapper = styled.div`
 		/* letter-spacing: 7px; */
 		font-weight: bold;
 		/* color: #ffc4c4; */
-		color: darkred;
+		color: black;
 		text-transform: uppercase;
 		/* text-shadow: 3px 3px 10px; */
 	}
@@ -165,7 +165,7 @@ const GenderLinksWrapper = styled.div`
 		font-weight: bold;
 		color: #ffc4c4;
 		font-family: "Droid Arabic Kufi";
-		color: darkred;
+		color: black;
 
 		/* text-shadow: 3px 3px 10px; */
 	}

@@ -65,7 +65,7 @@ const CategoryWrapperComp = ({ chosenLanguage, categories }) => {
 export default CategoryWrapperComp;
 
 const CategoriesPics = styled.div`
-    margin-top: 70px;
+    margin-top: 5px;
 	/* background-image: linear-gradient(white, #ececec); */
 	/* background-image: linear-gradient(white, #e2fff8); */
     
@@ -138,7 +138,7 @@ const CategoriesPics = styled.div`
 		margin: auto !important;
 	}
 	.row {
-		margin-left: 40px;
+		margin-left: 15px;
 	}
 		img {
 			/* box-shadow: 1px 1px 2.5px 2.5px rgba(0, 0, 0, 0.3); */
@@ -178,13 +178,21 @@ const CategoriesPics = styled.div`
 			font-size: 1rem;
 			text-align: center;
 			margin-bottom: 7px;
-			/* font-style: italic; */
-			/* font-weight: bold; */
-			/* letter-spacing: 3px; */
-			/* text-shadow: 1px 4px 3px rgba(0, 0, 0, 0.5); */
-			color: #330000;
+			color: black;
 			display: none;
 		}
+
+		.CategoryTextArabic {
+		font-size: 1rem;
+		color: black;
+	}
+
+	.titleOurCategories ,  .titleOurCategories2{
+		color: black;
+		text-align: center !important;
+		font-size: 1.4rem !important;
+
+	}
 
 		img:hover {
 		border-radius: 10px 10px;
@@ -196,19 +204,8 @@ const CategoriesPics = styled.div`
 
 	
 
-		/* .hamadaTest {
-			position: absolute;
-			min-width: 145px;
-			top: 109px;
-			left: 20px;
-			background: black;
-			color: white;
-			font-size: 14px;
-			padding: 5px 10px;
-			display: block;
-			/* border-radius: 10px; */
-			/* border: white 2px solid; */
-		} */
+		
+		} 
 	
 
 

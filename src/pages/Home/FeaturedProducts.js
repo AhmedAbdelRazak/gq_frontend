@@ -124,14 +124,15 @@ const FeaturedProductsWrapper = styled.div`
 		}
 
 		.title {
-			font-size: 1rem;
+			font-size: 1.4rem;
+			text-align: center;
 			font-weight: bold;
 			/* text-shadow: 3px 3px 10px; */
 		}
 
 		.titleArabic {
 			text-align: center;
-			font-size: 1.2rem;
+			font-size: 1.4rem;
 			/* letter-spacing: 7px; */
 			font-weight: bold;
 			/* text-shadow: 3px 3px 10px; */

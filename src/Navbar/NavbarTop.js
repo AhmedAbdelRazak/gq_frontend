@@ -402,18 +402,28 @@ const NavbarTop = ({
 							);
 						})}
 						<div className='link-container' onClick={closeSidebar}>
-							<Link
-								to='/our-products'
-								className='link-btn btn-primary'
-								onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-								continue shopping
-							</Link>
-							<Link
-								to='/cart'
-								className='link-btn btn-primary'
-								onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-								Check Out
-							</Link>
+							<div className='link-btn-wrapper'>
+								<Link
+									to='/our-products'
+									className='link-btn btn-block w-75 mx-auto text-center py-2'
+									onClick={() =>
+										window.scrollTo({ top: 0, behavior: "smooth" })
+									}>
+									continue shopping
+								</Link>
+							</div>
+
+							<br />
+							<div className='link-btn-wrapper'>
+								<Link
+									to='/cart'
+									className='link-btn btn-block w-75 mx-auto text-center py-2'
+									onClick={() =>
+										window.scrollTo({ top: 0, behavior: "smooth" })
+									}>
+									Check Out
+								</Link>
+							</div>
 						</div>
 					</div>
 				)}
@@ -476,8 +486,8 @@ const NavbarTop = ({
 					{isAuthenticated() && isAuthenticated().user.role === 0 && (
 						<li className='nav-item'>
 							<Link
-								className='nav-link mt-2'
-								to='/user-dashboard/last-purchase'
+								className='nav-link'
+								to='/user/dashboard'
 								onClick={() => {
 									window.scrollTo({ top: 0, behavior: "smooth" });
 								}}
@@ -488,6 +498,25 @@ const NavbarTop = ({
 									marginRight: "20px",
 									// fontStyle: "italic",
 								}}>
+								<svg
+									className='Styles__AccountIcon-d7nzgu-1 pWXnP'
+									width='17'
+									height='17'
+									style={{ marginRight: "5px", marginBottom: "2px" }}
+									viewBox='0 0 20 20'
+									fill='none'
+									xmlns='http://www.w3.org/2000/svg'
+									role='img'
+									aria-labelledby='00ea8e94-2216-4b64-acff-4d2fb3126ffb'>
+									<title id='00ea8e94-2216-4b64-acff-4d2fb3126ffb'>
+										Account
+									</title>
+									<path
+										fill-rule='evenodd'
+										clip-rule='evenodd'
+										d='M13.5 4.79092C13.5 2.53192 11.4849 0.700012 9 0.700012L8.782 0.704731C6.39831 0.808141 4.5 2.59836 4.5 4.79092V5.6091C4.5 7.8681 6.5151 9.70001 9 9.70001L9.218 9.69529C11.6017 9.59188 13.5 7.80166 13.5 5.6091V4.79092ZM8.84702 2.20332L9.014 2.19901L9.18583 2.20488C10.7822 2.28873 12 3.44567 12 4.79092V5.6091L11.9946 5.76395C11.9049 7.04676 10.7094 8.12918 9.15298 8.1967L8.96754 8.20036L8.78519 8.19546C7.21783 8.1113 6 6.95435 6 5.6091V4.79092L6.0054 4.63607C6.09507 3.35326 7.29059 2.27084 8.84702 2.20332ZM15.3594 12.6468C13.6548 12.1815 11.3274 11.7 9 11.7C6.6726 11.7 4.3452 12.1815 2.6406 12.6468C1.0773 13.0725 0 14.4972 0 16.1172V18H18V16.1172L17.9949 15.9238C17.913 14.3848 16.8602 13.0555 15.3594 12.6468ZM3.03471 14.0941C5.07704 13.5366 7.12428 13.2 9 13.2C10.8757 13.2 12.923 13.5366 14.9644 14.0939L15.1214 14.1434C15.9428 14.4386 16.5 15.2247 16.5 16.1172V16.499H1.5V16.1172L1.50646 15.9512C1.57496 15.0735 2.1823 14.3262 3.03471 14.0941Z'
+										fill='black'></path>
+								</svg>
 								Hello {isAuthenticated().user.name}
 							</Link>
 						</li>
@@ -714,6 +743,11 @@ const Nav = styled.nav`
 		cursor: pointer;
 	}
 
+	.link-container {
+		margin: auto;
+		text-align: center;
+	}
+
 	/* .imgLogo {
 			width: 150px;
 			height: 79px;
@@ -899,24 +933,19 @@ const SideWrapperCart = styled.nav`
 		text-decoration: none;
 	}
 
-	.link-container {
-		display: flex;
-		justify-content: space-between;
-		margin-top: 1.5rem;
-		margin-left: 5px;
-		margin-right: 5px;
-	}
 	.link-btn {
 		background: transparent;
 		border-color: transparent;
 		text-transform: capitalize;
 		padding: 0.25rem 0.5rem;
-		background: var(--clr-primary-5);
+		background: grey;
 		color: var(--clr-white);
 		border-radius: var(--radius);
 		letter-spacing: var(--spacing);
 		font-weight: 400;
+		text-align: center;
 		cursor: pointer;
+		width: 75% !important;
 	}
 
 	.cellPhoneLayout {

@@ -378,24 +378,28 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 								);
 							})}
 						<div className='link-container' onClick={closeSidebar}>
-							<Link
-								to='/our-products'
-								className='link-btn btn-primary'
-								onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-								{chosenLanguage === "Arabic"
-									? "مواصلة التسوق"
-									: "Continue Shopping"}
-							</Link>
-							{checkingAvailability.indexOf(false) !== -1 ? null : (
+							<div className='link-btn-wrapper'>
 								<Link
-									to='/cart'
-									className='link-btn btn-primary'
+									to='/our-products'
+									className='link-btn btn-block w-75 mx-auto text-center py-2'
 									onClick={() =>
 										window.scrollTo({ top: 0, behavior: "smooth" })
 									}>
-									{chosenLanguage === "Arabic" ? "الدفع" : "Check Out"}
+									continue shopping
 								</Link>
-							)}
+							</div>
+
+							<br />
+							<div className='link-btn-wrapper'>
+								<Link
+									to='/cart'
+									className='link-btn btn-block w-75 mx-auto text-center py-2'
+									onClick={() =>
+										window.scrollTo({ top: 0, behavior: "smooth" })
+									}>
+									Check Out
+								</Link>
+							</div>
 						</div>
 					</div>
 				)}
@@ -731,23 +735,23 @@ const SideWrapper = styled.nav`
 	}
 
 	.link-container {
-		display: flex;
-		justify-content: space-between;
-		margin-top: 3rem;
-		margin-left: 10px;
-		margin-right: 10px;
+		margin: auto;
+		text-align: center;
 	}
+
 	.link-btn {
 		background: transparent;
 		border-color: transparent;
 		text-transform: capitalize;
 		padding: 0.25rem 0.5rem;
-		background: var(--clr-primary-5);
+		background: grey;
 		color: var(--clr-white);
 		border-radius: var(--radius);
 		letter-spacing: var(--spacing);
 		font-weight: 400;
+		text-align: center;
 		cursor: pointer;
+		width: 75% !important;
 	}
 
 	.cellPhoneLayout {

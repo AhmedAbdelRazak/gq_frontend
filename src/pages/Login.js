@@ -91,29 +91,30 @@ const Login = ({ history }) => {
 	};
 
 	useEffect(() => {
+		window.scrollTo({ top: 150, behavior: "smooth" });
 		ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS_MEASUREMENTID);
 		// To Report Page View
 		ReactGA.pageview(window.location.pathname + window.location.search);
 		// eslint-disable-next-line
 	}, []);
 
-	useEffect(() => {
-		const reloadCount = sessionStorage.getItem("reloadCount");
-		if (reloadCount < 2) {
-			sessionStorage.setItem("reloadCount", String(reloadCount + 1));
-			window.location.reload();
-		} else {
-			sessionStorage.removeItem("reloadCount");
-		}
-		// eslint-disable-next-line
-	}, []);
+	// useEffect(() => {
+	// 	const reloadCount = sessionStorage.getItem("reloadCount");
+	// 	if (reloadCount < 2) {
+	// 		sessionStorage.setItem("reloadCount", String(reloadCount + 1));
+	// 		window.location.reload();
+	// 	} else {
+	// 		sessionStorage.removeItem("reloadCount");
+	// 	}
+	// 	// eslint-disable-next-line
+	// }, []);
 
 	const signinForm = () => (
 		<FormSignin>
 			<div className='container-fluid mx-auto'>
 				<div className='mx-auto text-center'>
 					<h1>
-						<span className='storeName'>GQ Shop System</span>
+						<span className='storeName'>ACE Online Shop</span>
 					</h1>
 				</div>
 				<div className=' mx-auto'>

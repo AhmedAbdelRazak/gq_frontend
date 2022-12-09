@@ -162,7 +162,7 @@ const ReturnOrExchange = () => {
 		var exchangedAmount = updateSingleOrder.freeShipping
 			? updateSingleOrder.exchangedProductQtyWithVariables
 					.map((i) => Number(i.OrderedQty) * Number(i.pickedPrice))
-					.reduce((a, b) => a + b, 0)
+					.reduce((a, b) => a + b, 0) + Number(pickedPrice)
 			: updateSingleOrder.exchangedProductQtyWithVariables
 					.map((i) => Number(i.OrderedQty) * Number(i.pickedPrice))
 					.reduce((a, b) => a + b, 0) +

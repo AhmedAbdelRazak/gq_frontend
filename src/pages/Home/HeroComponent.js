@@ -190,7 +190,7 @@ const HeroComponentWrapper = styled.div`
 
 		.heroPicMain img {
 			width: 100%; /* width of container */
-			height: 300px; /* height of container */
+			height: 100vh; /* height of container */
 			object-fit: cover;
 			/* border: 5px solid black; */
 			margin-right: 500px;
