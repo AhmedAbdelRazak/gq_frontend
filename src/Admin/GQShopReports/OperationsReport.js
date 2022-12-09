@@ -88,6 +88,8 @@ const OperationsReport = () => {
 		timeZone: "Africa/Cairo",
 	});
 
+	var today2 = new Date(new Date().setDate(new Date().getDate() + 1));
+
 	var yesterday = new Date();
 	var last7Days = new Date();
 	var last30Days = new Date();
@@ -96,7 +98,7 @@ const OperationsReport = () => {
 	yesterday.setDate(yesterday.getDate() - 1);
 	last7Days.setDate(last7Days.getDate() - 7);
 	last30Days.setDate(last30Days.getDate() - 30);
-	last90Days.setDate(last90Days.getDate() - 90);
+	last90Days.setDate(last90Days.getDate() - 200);
 
 	const loadOrders = () => {
 		function sortOrdersAscendingly(a, b) {
@@ -1253,7 +1255,7 @@ const OperationsReport = () => {
 									onClick={() => {
 										setSelectedFilter("SelectAll");
 										setDay2(last90Days);
-										setDay1(today);
+										setDay1(today2);
 										setRequiredSKU("");
 									}}>
 									Select All
@@ -1264,7 +1266,7 @@ const OperationsReport = () => {
 									onClick={() => {
 										setSelectedFilter("Today");
 										setDay2(today);
-										setDay1(today);
+										setDay1(today2);
 										setRequiredSKU("");
 									}}>
 									Today
@@ -1286,7 +1288,7 @@ const OperationsReport = () => {
 									onClick={() => {
 										setSelectedFilter("Last7Days");
 										setDay2(last7Days);
-										setDay1(today);
+										setDay1(today2);
 										setRequiredSKU("");
 									}}>
 									Last 7 Days
@@ -1297,7 +1299,7 @@ const OperationsReport = () => {
 									onClick={() => {
 										setSelectedFilter("Last30Days");
 										setDay2(last30Days);
-										setDay1(today);
+										setDay1(today2);
 										setRequiredSKU("");
 									}}>
 									Last 30 Days

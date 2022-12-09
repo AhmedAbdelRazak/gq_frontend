@@ -48,11 +48,7 @@ const AdminDashboard = () => {
 	const [modalVisible3, setModalVisible3] = useState(false);
 	// eslint-disable-next-line
 	const [day1, setDay1] = useState(
-		new Date(
-			new Date().toLocaleString("en-US", {
-				timeZone: "Africa/Cairo",
-			}),
-		),
+		new Date(new Date().setDate(new Date().getDate() + 1)),
 	);
 	const [day2, setDay2] = useState(
 		new Date(new Date().setDate(new Date().getDate() - 7)),
@@ -116,6 +112,8 @@ const AdminDashboard = () => {
 		}),
 	);
 
+	var today2 = new Date(new Date().setDate(new Date().getDate() + 1));
+
 	var yesterday = new Date(
 		new Date().toLocaleString("en-US", {
 			timeZone: "Africa/Cairo",
@@ -139,9 +137,9 @@ const AdminDashboard = () => {
 	);
 
 	yesterday.setDate(yesterday.getDate() - 1);
-	last7Days.setDate(last7Days.getDate() - 10);
+	last7Days.setDate(last7Days.getDate() - 7);
 	last30Days.setDate(last30Days.getDate() - 30);
-	last90Days.setDate(last90Days.getDate() - 60);
+	last90Days.setDate(last90Days.getDate() - 45);
 
 	// console.log(yesterday, "yesterday");
 
@@ -866,7 +864,7 @@ const AdminDashboard = () => {
 															setDay1(today);
 														} else if (e.target.value === "Today") {
 															setDay2(today);
-															setDay1(today);
+															setDay1(today2);
 														} else if (e.target.value === "Yesterday") {
 															setDay2(yesterday);
 															setDay1(yesterday);

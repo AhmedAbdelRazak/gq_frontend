@@ -71,6 +71,8 @@ const MainReports = () => {
 		}),
 	);
 
+	var today2 = new Date(new Date().setDate(new Date().getDate() + 1));
+
 	var yesterday = new Date(
 		new Date().toLocaleString("en-US", {
 			timeZone: "Africa/Cairo",
@@ -926,7 +928,7 @@ const MainReports = () => {
 							onClick={() => {
 								setSelectedFilter("Today");
 								setDay2(today);
-								setDay1(today);
+								setDay1(today2);
 							}}>
 							Today
 						</span>
