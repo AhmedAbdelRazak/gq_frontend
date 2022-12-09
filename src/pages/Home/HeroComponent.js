@@ -181,17 +181,16 @@ const HeroComponentWrapper = styled.div`
 
 	@media (max-width: 1000px) {
 		.heroPicMain {
-			height: 100%;
-			width: 110vw;
+			width: 100%;
 			opacity: 1;
 			align: center;
 			/* border-radius: 5%; */
 		}
 
 		.heroPicMain img {
-			width: 100%; /* width of container */
-			height: 100vh; /* height of container */
-			object-fit: cover;
+			width: 130vw; /* width of container */
+			/* height of container */
+			object-fit: cover !important;
 			/* border: 5px solid black; */
 			margin-right: 500px;
 			/* border-radius: 3%; */
