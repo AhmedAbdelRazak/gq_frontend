@@ -3,6 +3,7 @@
 import React, { useState, Fragment } from "react";
 import { Link, Redirect } from "react-router-dom";
 import styled from "styled-components";
+// eslint-disable-next-line
 import { updateItem, removeItem } from "../../cartHelpers";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
@@ -124,6 +125,7 @@ const CardForShop = ({
 		);
 	};
 
+	// eslint-disable-next-line
 	const showStock = (quantity) => {
 		return quantity > 0 ? null : (
 			<span className='badge badge-danger badge-pill stockStatus'>
@@ -140,6 +142,7 @@ const CardForShop = ({
 		}
 	};
 
+	// eslint-disable-next-line
 	const showCartUpdateOptions = (cartUpdate) => {
 		return (
 			cartUpdate && (
@@ -156,20 +159,6 @@ const CardForShop = ({
 						/>
 					</div>
 				</div>
-			)
-		);
-	};
-	const showRemoveButton = (showRemoveProductButton) => {
-		return (
-			showRemoveProductButton && (
-				<button
-					onClick={() => {
-						removeItem(product._id);
-						setRun(!run); // run useEffect in parent Cart
-					}}
-					className='btn btn-outline-danger mt-2 mb-2'>
-					Remove Product
-				</button>
 			)
 		);
 	};
@@ -219,7 +208,7 @@ const CardForShop = ({
 	return (
 		<CardForShopWrapper className='my-3'>
 			<Fragment>
-				<div className='card ' style={{ backgroundColor: "white" }}>
+				<div className='card ' style={{ backgroundColor: "" }}>
 					<div className='card-body  '>
 						{shouldRedirect(redirect)}
 						<div className='card-img-top center'>
@@ -234,87 +223,82 @@ const CardForShop = ({
 								</Link>
 							</ImageFeat>
 						</div>
-
-						<div className='col-md-5 mx-auto'>
-							{showStock(product.quantity)}
-						</div>
-
 						<div>
 							{/* {showViewButton(showViewProductButton)} */}
 							{showAddToCartBtn(showAddToCartButton)}
 						</div>
-						{showRemoveButton(showRemoveProductButton)}
-						{showCartUpdateOptions(cartUpdate)}
+					</div>
+					<div className=' productname ml-2'>
+						<div className='row'>
+							<div className='col-md-9 productname col-7'>
+								{productPrice <= productPriceAfterDsicount ? null : (
+									<div className=''>
+										<span style={{ color: "goldenrod", fontSize: "20px" }}>
+											<DollarCircleFilled />{" "}
+										</span>
+										<span
+											className=''
+											style={{ fontWeight: "bold", color: "darkred" }}>
+											{(
+												100 -
+												(
+													(productPriceAfterDsicount / productPrice) *
+													100
+												).toFixed(2)
+											).toFixed(2)}
+											%
+										</span>
+									</div>
+								)}
+								{chosenLanguage === "Arabic" ? (
+									<div
+										style={{
+											fontFamily: "Droid Arabic Kufi",
+											letterSpacing: "0px",
+										}}>
+										{product.productName_Arabic}
+									</div>
+								) : (
+									<div className=''> {product.productName} </div>
+								)}
+							</div>
+							<div className='col-md-3 col-5'>
+								{productPrice <= productPriceAfterDsicount ? (
+									<span style={{ fontWeight: "bold" }}>
+										{productPrice} L.E.
+									</span>
+								) : (
+									<span>
+										<div className='ml-2 mt-2' style={{ fontWeight: "bold" }}>
+											{productPriceAfterDsicount} L.E.
+										</div>
+										<div>
+											<s style={{ fontWeight: "bold", color: "red" }}>
+												{productPrice} L.E.
+											</s>
+										</div>
+									</span>
+								)}
+							</div>
+						</div>
+
+						{product && product.ratings && product.ratings.length > 0 ? (
+							<div className='mb-3'>{showAverageRating2(product)}</div>
+						) : (
+							<div
+								className='mb-2'
+								style={{
+									fontSize: "0.75rem",
+									fontStyle: "italic",
+									fontWeight: "bold",
+									color: "black",
+								}}>
+								{chosenLanguage === "Arabic" ? null : null}
+							</div>
+						)}
 					</div>
 				</div>
 			</Fragment>
-
-			<div className='mt-2 mb-4 productname ml-2'>
-				<div className='row'>
-					<div className='col-md-9 productname col-7'>
-						{productPrice <= productPriceAfterDsicount ? null : (
-							<div className=''>
-								<span style={{ color: "goldenrod", fontSize: "20px" }}>
-									<DollarCircleFilled />{" "}
-								</span>
-								<span
-									className=''
-									style={{ fontWeight: "bold", color: "darkred" }}>
-									{(
-										100 -
-										((productPriceAfterDsicount / productPrice) * 100).toFixed(
-											2,
-										)
-									).toFixed(2)}
-									%
-								</span>
-							</div>
-						)}
-						{chosenLanguage === "Arabic" ? (
-							<div
-								style={{
-									fontFamily: "Droid Arabic Kufi",
-									letterSpacing: "0px",
-								}}>
-								{product.productName_Arabic}
-							</div>
-						) : (
-							<div className=''> {product.productName} </div>
-						)}
-					</div>
-					<div className='col-md-3 col-5'>
-						{productPrice <= productPriceAfterDsicount ? (
-							<span style={{ fontWeight: "bold" }}>{productPrice} L.E.</span>
-						) : (
-							<span>
-								<div className='ml-2 mt-2' style={{ fontWeight: "bold" }}>
-									{productPriceAfterDsicount} L.E.
-								</div>
-								<div>
-									<s style={{ fontWeight: "bold", color: "red" }}>
-										{productPrice} L.E.
-									</s>
-								</div>
-							</span>
-						)}
-					</div>
-				</div>
-
-				{product && product.ratings && product.ratings.length > 0 ? (
-					<div className='mb-3'>{showAverageRating2(product)}</div>
-				) : (
-					<div
-						className='mb-2'
-						style={{
-							fontSize: "0.75rem",
-							fontStyle: "italic",
-							fontWeight: "bold",
-							color: "black",
-						}}>
-						{chosenLanguage === "Arabic" ? null : null}
-					</div>
-				)}
-			</div>
 		</CardForShopWrapper>
 	);
 };
@@ -322,14 +306,13 @@ const CardForShop = ({
 export default CardForShop;
 
 const CardForShopWrapper = styled.div`
-	overflow: hidden;
-
 	.card {
 		text-align: center;
 		/* box-shadow: 2.5px 2.5px 1.5px 0px rgba(0, 0, 0, 0.3); */
 		transition: var(--mainTransition);
 		min-height: 500px;
 		width: 94%;
+		border: 1px white solid !important;
 	}
 	.card:hover {
 		box-shadow: 2.5px 2.5px 1.5px 0px rgba(0, 0, 0, 0.3);
@@ -408,7 +391,7 @@ const ImageFeat = styled.div`
 	@media (max-width: 680px) {
 		img {
 			width: 100% !important;
-			height: 20vh !important;
+			min-height: 300px !important;
 		}
 	}
 `;

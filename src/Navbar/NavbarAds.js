@@ -94,7 +94,7 @@ const NavbarAdsWrapper = styled.nav`
 		color: #000;
 
 		font-weight: bold;
-		font-style: italic;
+		/* font-style: italic; */
 		text-align: center;
 		font-size: 0.82rem;
 	}
@@ -103,7 +103,7 @@ const NavbarAdsWrapper = styled.nav`
 		.mainMessages {
 			color: #000;
 			font-weight: bold;
-			font-style: italic;
+			/* font-style: italic; */
 			text-align: center;
 			font-size: 0.75rem;
 		}
@@ -116,7 +116,7 @@ const NavbarAdsWrapper = styled.nav`
 		.mainMessages {
 			color: #000;
 			font-weight: bold;
-			font-style: italic;
+			/* font-style: italic; */
 			text-align: center;
 			font-size: 0.75rem;
 		}

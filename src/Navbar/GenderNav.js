@@ -15,7 +15,9 @@ const GenderNav = () => {
 			} else {
 				//Gender Unique
 				var genderUnique = data
-					.filter((i) => i.activeProduct === true)
+					.filter(
+						(i) => i.activeProduct === true && i.storeName.storeName === "ace",
+					)
 					.map((ii) => ii.gender);
 
 				let uniqueGenders = [
@@ -34,13 +36,20 @@ const GenderNav = () => {
 	}, []);
 
 	return (
-		<GenderNavWrapper>
+		<GenderNavWrapper
+			style={{ display: allGenders.length === 1 ? "none" : "" }}>
 			<div className='row mx-auto'>
 				{allGenders &&
 					allGenders.map((g, i) => {
 						return (
 							<div
-								className='col-4 mx-auto genderItem'
+								className={
+									allGenders.length === 2
+										? "col-6 mx-auto genderItem"
+										: allGenders.length === 2
+										? "col-4 mx-auto genderItem"
+										: "col-6 mx-auto genderItem"
+								}
 								key={i}
 								style={{ textTransform: "uppercase" }}>
 								<Link

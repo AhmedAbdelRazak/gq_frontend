@@ -51,11 +51,7 @@ const MainReports = () => {
 	const [allOrders, setAllOrders] = useState([]);
 	const [requiredSKU, setRequiredSKU] = useState("");
 	const [day1, setDay1] = useState(
-		new Date(
-			new Date().toLocaleString("en-US", {
-				timeZone: "Africa/Cairo",
-			}),
-		),
+		new Date(new Date().setDate(new Date().getDate() + 1)),
 	);
 	const [day2, setDay2] = useState(
 		new Date(new Date().setDate(new Date().getDate() - 7)),
@@ -65,25 +61,14 @@ const MainReports = () => {
 	const { user, token } = isAuthenticated();
 
 	// eslint-disable-next-line
-	var today = new Date(
-		new Date().toLocaleString("en-US", {
-			timeZone: "Africa/Cairo",
-		}),
-	);
+	var today = new Date();
 
 	var today2 = new Date(new Date().setDate(new Date().getDate() + 1));
 
-	var yesterday = new Date(
-		new Date().toLocaleString("en-US", {
-			timeZone: "Africa/Cairo",
-		}),
-	);
+	var yesterday = new Date();
 
-	var last7Days = new Date(
-		new Date().toLocaleString("en-US", {
-			timeZone: "Africa/Cairo",
-		}),
-	);
+	var last7Days = new Date();
+
 	var last30Days = new Date(
 		new Date().toLocaleString("en-US", {
 			timeZone: "Africa/Cairo",
@@ -172,16 +157,20 @@ const MainReports = () => {
 	var OrdersDates_TotalAmount = [];
 	allOrders &&
 		allOrders.reduce(function (res, value) {
-			if (!res[value.orderCreationDate]) {
-				res[value.orderCreationDate] = {
-					orderCreationDate: value.orderCreationDate,
+			if (!res[new Date(value.orderCreationDate).toLocaleDateString()]) {
+				res[new Date(value.orderCreationDate).toLocaleDateString()] = {
+					orderCreationDate: new Date(
+						value.orderCreationDate,
+					).toLocaleDateString(),
 					totalAmountAfterDiscount: 0,
 				};
-				OrdersDates_TotalAmount.push(res[value.orderCreationDate]);
+				OrdersDates_TotalAmount.push(
+					res[new Date(value.orderCreationDate).toLocaleDateString()],
+				);
 			}
-			res[value.orderCreationDate].totalAmountAfterDiscount += Number(
-				value.totalAmountAfterDiscount,
-			);
+			res[
+				new Date(value.orderCreationDate).toLocaleDateString()
+			].totalAmountAfterDiscount += Number(value.totalAmountAfterDiscount);
 			return res;
 		}, {});
 
@@ -298,14 +287,20 @@ const MainReports = () => {
 	var OrdersDates_OrdersCount = [];
 	allOrders &&
 		allOrders.reduce(function (res, value) {
-			if (!res[value.orderCreationDate]) {
-				res[value.orderCreationDate] = {
-					orderCreationDate: value.orderCreationDate,
+			if (!res[new Date(value.orderCreationDate).toLocaleDateString()]) {
+				res[new Date(value.orderCreationDate).toLocaleDateString()] = {
+					orderCreationDate: new Date(
+						value.orderCreationDate,
+					).toLocaleDateString(),
 					ordersCount: 0,
 				};
-				OrdersDates_OrdersCount.push(res[value.orderCreationDate]);
+				OrdersDates_OrdersCount.push(
+					res[new Date(value.orderCreationDate).toLocaleDateString()],
+				);
 			}
-			res[value.orderCreationDate].ordersCount += 1;
+			res[
+				new Date(value.orderCreationDate).toLocaleDateString()
+			].ordersCount += 1;
 			return res;
 		}, {});
 
@@ -918,7 +913,7 @@ const MainReports = () => {
 							onClick={() => {
 								setSelectedFilter("SelectAll");
 								setDay2(last90Days);
-								setDay1(today);
+								setDay1(today2);
 							}}>
 							Select All
 						</span>
@@ -948,7 +943,7 @@ const MainReports = () => {
 							onClick={() => {
 								setSelectedFilter("Last7Days");
 								setDay2(last7Days);
-								setDay1(today);
+								setDay1(today2);
 							}}>
 							Last 7 Days
 						</span>
@@ -958,7 +953,7 @@ const MainReports = () => {
 							onClick={() => {
 								setSelectedFilter("Last30Days");
 								setDay2(last30Days);
-								setDay1(today);
+								setDay1(today2);
 							}}>
 							Last 30 Days
 						</span>

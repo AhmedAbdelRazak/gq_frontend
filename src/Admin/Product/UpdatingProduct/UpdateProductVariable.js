@@ -60,8 +60,8 @@ const UpdatingProductVariable = ({
 			for (let i = 0; i < files.length; i++) {
 				Resizer.imageFileResizer(
 					files[i],
-					720,
-					720,
+					800,
+					954,
 					"JPEG",
 					100,
 					0,
@@ -192,8 +192,8 @@ const UpdatingProductVariable = ({
 			for (let i = 0; i < files.length; i++) {
 				Resizer.imageFileResizer(
 					files[i],
-					720,
-					720,
+					800,
+					954,
 					"JPEG",
 					100,
 					0,

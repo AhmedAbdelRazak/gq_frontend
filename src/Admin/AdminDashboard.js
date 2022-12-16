@@ -114,6 +114,8 @@ const AdminDashboard = () => {
 
 	var today2 = new Date(new Date().setDate(new Date().getDate() + 1));
 
+	// var yesterday = new Date();
+
 	var yesterday = new Date(
 		new Date().toLocaleString("en-US", {
 			timeZone: "Africa/Cairo",
@@ -861,19 +863,19 @@ const AdminDashboard = () => {
 													onChange={(e) => {
 														if (e.target.value === "SelectAll") {
 															setDay2(last90Days);
-															setDay1(today);
+															setDay1(today2);
 														} else if (e.target.value === "Today") {
 															setDay2(today);
-															setDay1(today2);
+															setDay1(today);
 														} else if (e.target.value === "Yesterday") {
 															setDay2(yesterday);
 															setDay1(yesterday);
 														} else if (e.target.value === "Last7Days") {
 															setDay2(last7Days);
-															setDay1(today);
+															setDay1(today2);
 														} else if (e.target.value === "Last30Days") {
 															setDay2(last30Days);
-															setDay1(today);
+															setDay1(today2);
 														} else {
 														}
 													}}
@@ -1121,7 +1123,7 @@ const AdminDashboard = () => {
 												onChange={(e) => {
 													if (e.target.value === "SelectAll") {
 														setDay2(last90Days);
-														setDay1(today);
+														setDay1(today2);
 													} else if (e.target.value === "Today") {
 														setDay2(today);
 														setDay1(today);
@@ -1130,10 +1132,10 @@ const AdminDashboard = () => {
 														setDay1(yesterday);
 													} else if (e.target.value === "Last7Days") {
 														setDay2(last7Days);
-														setDay1(today);
+														setDay1(today2);
 													} else if (e.target.value === "Last30Days") {
 														setDay2(last30Days);
-														setDay1(today);
+														setDay1(today2);
 													} else {
 													}
 												}}
@@ -1219,7 +1221,7 @@ const AdminDashboard = () => {
 												onChange={(e) => {
 													if (e.target.value === "SelectAll") {
 														setDay2(last90Days);
-														setDay1(today);
+														setDay1(today2);
 													} else if (e.target.value === "Today") {
 														setDay2(today);
 														setDay1(today);
@@ -1228,10 +1230,10 @@ const AdminDashboard = () => {
 														setDay1(yesterday);
 													} else if (e.target.value === "Last7Days") {
 														setDay2(last7Days);
-														setDay1(today);
+														setDay1(today2);
 													} else if (e.target.value === "Last30Days") {
 														setDay2(last30Days);
-														setDay1(today);
+														setDay1(today2);
 													} else {
 													}
 												}}

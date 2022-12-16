@@ -329,7 +329,9 @@ const ExchangeList = () => {
 										<td>{s.totalAmountAfterDiscount.toFixed(0)} L.E.</td>
 										<td>{s.totalAmountAfterExchange} L.E.</td>
 										<td style={{ background: "#003456", color: "white" }}>
-											{s.totalAmountAfterExchange - s.totalAmountAfterDiscount}{" "}
+											{Number(
+												s.totalAmountAfterExchange - s.totalAmountAfterDiscount,
+											).toFixed(2)}{" "}
 											L.E.
 										</td>
 

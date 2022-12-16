@@ -121,6 +121,8 @@ const MultipleImageCard = ({
 						) : null}
 					</div>
 					<div className='text-muted fs-7'>
+						Width: 800px, Height: 954px;
+						<br />
 						Set the product thumbnail image. Only *.png, *.jpg and *.jpeg image
 						files are accepted
 					</div>

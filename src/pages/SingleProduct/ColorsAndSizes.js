@@ -22,7 +22,7 @@ const isActive = (c, sureClickedLink) => {
 			background: c,
 			textTransform: "uppercase",
 			transition: "0.3s",
-			fontSize: "1.04rem",
+			fontSize: "0.9rem",
 			border: "1px lightgrey solid",
 			borderRadius: "10px",
 			boxShadow: "1px 2px 1px 2px rgba(0,0,0,0.1)",
@@ -41,6 +41,7 @@ const isActive = (c, sureClickedLink) => {
 					? "white"
 					: "black",
 			background: c,
+			fontSize: "0.75rem",
 			textTransform: "uppercase",
 			transition: "0.3s",
 		};
@@ -58,7 +59,7 @@ const isActive2 = (s, sureClickedLink) => {
 			background: "#d8ebff",
 			textTransform: "uppercase",
 			transition: "0.3s",
-			fontSize: "1.04rem",
+			fontSize: "0.9rem",
 			border: "1px lightgrey solid",
 			borderRadius: "10px",
 			boxShadow: "1px 2px 1px 2px rgba(0,0,0,0.1)",
@@ -70,6 +71,7 @@ const isActive2 = (s, sureClickedLink) => {
 			color: "black",
 			background: "#d8ebff",
 			textTransform: "uppercase",
+			fontSize: "0.85rem",
 			transition: "0.3s",
 		};
 	}

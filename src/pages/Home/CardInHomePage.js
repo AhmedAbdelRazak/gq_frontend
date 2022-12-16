@@ -331,6 +331,7 @@ const ProductWrapper = styled.div`
 		transition: var(--mainTransition);
 		min-height: 500px;
 		width: 90%;
+		border: 1px white solid;
 	}
 	.card:hover {
 		box-shadow: 2.5px 2.5px 1.5px 0px rgba(0, 0, 0, 0.3);

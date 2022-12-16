@@ -328,39 +328,35 @@ export const gettingAllProducts = (
 		if (data.error) {
 			console.log(data.error);
 		} else {
+			const requiredProducts = data.filter(
+				(i) => i.activeProduct === true && i.storeName.storeName === "ace",
+			);
 			if (filterBy === "gender") {
 				setAllProducts(
-					data
-						.filter((i) => i.activeProduct === true)
-						.filter(
-							(iii) =>
-								iii.gender.genderName.toLowerCase() ===
-								urlFilters.toLowerCase(),
-						),
+					requiredProducts.filter(
+						(iii) =>
+							iii.gender.genderName.toLowerCase() === urlFilters.toLowerCase(),
+					),
 				);
 			} else if (filterBy === "category") {
 				setAllProducts(
-					data
-						.filter((i) => i.activeProduct === true)
-						.filter(
-							(iii) =>
-								iii.category.categorySlug.toLowerCase() ===
-								urlFilters.toLowerCase(),
-						),
+					requiredProducts.filter(
+						(iii) =>
+							iii.category.categorySlug.toLowerCase() ===
+							urlFilters.toLowerCase(),
+					),
 				);
 			} else if (filterBy === "subcategory") {
 				setAllProducts(
-					data
-						.filter((i) => i.activeProduct === true)
-						.filter(
-							(iii) =>
-								iii.subcategory
-									.map((iiii) => iiii.SubcategorySlug)
-									.indexOf(urlFilters.toLowerCase()) !== -1,
-						),
+					requiredProducts.filter(
+						(iii) =>
+							iii.subcategory
+								.map((iiii) => iiii.SubcategorySlug)
+								.indexOf(urlFilters.toLowerCase()) !== -1,
+					),
 				);
 			} else {
-				setAllProducts(data.filter((i) => i.activeProduct === true));
+				setAllProducts(requiredProducts);
 			}
 
 			//Categories Unique
@@ -377,8 +373,7 @@ export const gettingAllProducts = (
 
 			if (filterBy === "gender") {
 				// eslint-disable-next-line
-				var categoriesArray = data
-					.filter((i) => i.activeProduct === true)
+				var categoriesArray = requiredProducts
 					.filter(
 						(iii) =>
 							iii.gender.genderName.toLowerCase() === urlFilters.toLowerCase(),
@@ -394,8 +389,7 @@ export const gettingAllProducts = (
 				setAllCategories(uniqueCategories);
 			} else if (filterBy === "category") {
 				// eslint-disable-next-line
-				var categoriesArray = data
-					.filter((i) => i.activeProduct === true)
+				var categoriesArray = requiredProducts
 					.filter(
 						(iii) =>
 							iii.category.categorySlug.toLowerCase() ===
@@ -412,8 +406,7 @@ export const gettingAllProducts = (
 				setAllCategories(uniqueCategories);
 			} else if (filterBy === "subcategory") {
 				// eslint-disable-next-line
-				var categoriesArray = data
-					.filter((i) => i.activeProduct === true)
+				var categoriesArray = requiredProducts
 					.filter(
 						(iii) =>
 							iii.subcategory
@@ -431,13 +424,13 @@ export const gettingAllProducts = (
 				setAllCategories(uniqueCategories);
 			} else {
 				// eslint-disable-next-line
-				var categoriesArray = data
-					.filter((i) => i.activeProduct === true)
-					.map((ii) => ii.category);
+				var categoriesArray =
+					requiredProducts && requiredProducts.map((ii) => ii.category);
 
 				let uniqueCategories = [
 					...new Map(
-						categoriesArray.map((item) => [item["categoryName"], item]),
+						categoriesArray &&
+							categoriesArray.map((item) => [item["categoryName"], item]),
 					).values(),
 				];
 				setAllCategories(uniqueCategories);
@@ -446,9 +439,8 @@ export const gettingAllProducts = (
 			///
 
 			//Subcategories Unique
-			var SubcategoriesArray = data
-				.filter((i) => i.activeProduct === true)
-				.map((ii) => ii.subcategory);
+			var SubcategoriesArray =
+				requiredProducts && requiredProducts.map((ii) => ii.subcategory);
 
 			var mergedSubcategories = [].concat.apply([], SubcategoriesArray);
 			let uniqueSubcategories = [
@@ -459,21 +451,21 @@ export const gettingAllProducts = (
 			setAllSubcategories(uniqueSubcategories);
 
 			//Gender Unique
-			var genderUnique = data
-				.filter((i) => i.activeProduct === true)
-				.map((ii) => ii.gender);
+			var genderUnique =
+				requiredProducts && requiredProducts.map((ii) => ii.gender);
 
 			let uniqueGenders = [
 				...new Map(
-					genderUnique.map((item) => [item["genderName"], item]),
+					genderUnique &&
+						genderUnique.map((item) => [item["genderName"], item]),
 				).values(),
 			];
 			setAllGenders(uniqueGenders);
 
 			//Unique Sizes
-			const allSizes = data
-				.filter((i) => i.activeProduct === true)
-				.map((i) => i.productAttributes.map((ii) => ii.size));
+			const allSizes =
+				requiredProducts &&
+				requiredProducts.map((i) => i.productAttributes.map((ii) => ii.size));
 
 			var mergedSizes = [].concat.apply([], allSizes);
 
@@ -483,9 +475,9 @@ export const gettingAllProducts = (
 			setAllSizes(uniqueSizes);
 
 			//Unique Colors
-			const allColorsCombined = data
-				.filter((i) => i.activeProduct === true)
-				.map((i) => i.productAttributes.map((ii) => ii.color));
+			const allColorsCombined =
+				requiredProducts &&
+				requiredProducts.map((i) => i.productAttributes.map((ii) => ii.color));
 
 			var mergedColors = [].concat.apply([], allColorsCombined);
 
@@ -496,14 +488,18 @@ export const gettingAllProducts = (
 			setAllProductColors(uniqueColors);
 
 			//Unique Prices
-			const allPricesCombined = data
-				.filter((i) => i.activeProduct === true)
-				.map((i) => i.productAttributes.map((ii) => ii.priceAfterDiscount));
+			const allPricesCombined =
+				requiredProducts &&
+				requiredProducts.map((i) =>
+					i.productAttributes.map((ii) => ii.priceAfterDiscount),
+				);
 
 			var mergedPrices = [].concat.apply([], allPricesCombined);
 
 			let uniquePrices = [
-				...new Map(mergedPrices.map((item) => [item, item])).values(),
+				...new Map(
+					mergedPrices && mergedPrices.map((item) => [item, item]),
+				).values(),
 			];
 
 			setMinPrice(Math.min(...uniquePrices));

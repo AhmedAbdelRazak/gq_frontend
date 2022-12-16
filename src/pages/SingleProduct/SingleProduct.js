@@ -475,7 +475,8 @@ const SingleProduct = (props) => {
 
 						<div
 							className='col-md-5 mx-auto mt-3'
-							style={{ border: "1px solid white" }}>
+							// style={{ border: "1px solid white" }}
+						>
 							<h3
 								className='text-title mb-4 my-3'
 								style={{
@@ -706,15 +707,15 @@ export default SingleProduct;
 
 const SingleEmp = styled.div`
 	background: white !important;
-	width: 90%;
-	margin-top: 5px;
+	width: 95%;
+	/* margin-top: 5px; */
 	font-family: font-family: Roboto, Helvetica, Arial, sans-serif !important;
 	/* .carousel-slider {
 		width: 75%;
 	} */
 
 	.carousel-root {
-		border: 1px solid lightgrey;
+		/* border: 1px solid lightgrey; */
 		/* border-radius: 15px; */
 		object-fit: cover;
 		/* max-height: 60%; */
@@ -732,6 +733,15 @@ const SingleEmp = styled.div`
 	.carousel-root .thumb {
 		margin-top: 20px !important;
 		padding: 0px !important;
+	}
+
+	 .selected  {
+		border: 2px lightgrey solid !important;
+	}
+
+	.slide {
+		border: 1px white solid !important;
+
 	}
 
 	.buttons:hover {
