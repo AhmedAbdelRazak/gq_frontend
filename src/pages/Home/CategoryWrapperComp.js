@@ -6,7 +6,7 @@ import styled from "styled-components";
 
 const CategoryWrapperComp = ({ chosenLanguage, categories }) => {
 	return (
-		<CategoriesPics>
+		<CategoriesPics className='mt-5'>
 			<div
 				className={
 					chosenLanguage === "Arabic"
@@ -22,13 +22,11 @@ const CategoryWrapperComp = ({ chosenLanguage, categories }) => {
 					{chosenLanguage === "Arabic" ? "الفئات المتاحة" : "Our Categories"}{" "}
 				</h1>
 			</div>
-			<div className='row'>
+			<div className='row mx-auto text-center'>
 				{categories &&
 					categories.map((i, c) => {
 						return (
-							<div
-								className='col-lg-1 col-md-4 col-sm-6 col-6 mx-5 categoriesWrapper'
-								key={c}>
+							<div className='col-lg-4 col-md-4 col-sm-6 col-6 mx-auto' key={c}>
 								<Link
 									to={`/our-products?filterby=category&categoryName=${i.categorySlug}`}
 									className='imgAndCategoryName'
@@ -134,17 +132,18 @@ const CategoriesPics = styled.div`
 
 
 	@media (max-width: 900px) {
-		.categoriesWrapper {
-		margin: auto !important;
-	}
+		text-align: center;
+
 	.row {
-		margin-left: 15px;
+		margin: auto !important;
+
 	}
 		img {
 			/* box-shadow: 1px 1px 2.5px 2.5px rgba(0, 0, 0, 0.3); */
 			border: 2px white solid;
 			border-radius: 10px 10px;
 			transition: 1s;
+			margin: 0px !important;
 		}
 		.CategoryText {
 			font-size: 1.1rem;
@@ -171,8 +170,8 @@ const CategoriesPics = styled.div`
 			border: 2px white solid;
 			border-radius: 10px 10px;
 			transition: 1s;
-			width: 175px !important;
-			height: 175px !important;
+			width: 160px !important;
+			height: 160px !important;
 		}
 		.CategoryText {
 			font-size: 1rem;
@@ -191,6 +190,7 @@ const CategoriesPics = styled.div`
 		color: black;
 		text-align: center !important;
 		font-size: 1.4rem !important;
+		margin-left: 0px !important;
 
 	}
 

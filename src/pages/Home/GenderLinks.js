@@ -15,7 +15,7 @@ const GenderLinks = ({ allGenders }) => {
 							return (
 								<div
 									key={i}
-									className='col-lg-4 col-md-4 col-sm-6 col-4 mx-auto'>
+									className='col-lg-4 col-md-4 col-sm-6 col-6 mx-auto'>
 									<Link
 										to={`/our-products?filterby=gender&gendername=${g.genderName}`}>
 										<img
@@ -118,6 +118,11 @@ const GenderLinksWrapper = styled.div`
 	}
 	}
 	@media (max-width: 700px) {
+		.row {
+		margin: auto !important;
+
+	}
+		
 		img {
 			/* box-shadow: 1px 1px 2.5px 2.5px rgba(0, 0, 0, 0.3); */
 			border: 2px white solid;
@@ -149,7 +154,7 @@ const GenderLinksWrapper = styled.div`
 	.title {
 		text-align: center;
 		font-size: 1.4rem;
-		margin-left: 35px;
+		margin-left: 0px !important;
 		/* letter-spacing: 7px; */
 		font-weight: bold;
 		/* color: #ffc4c4; */

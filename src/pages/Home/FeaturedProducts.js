@@ -55,7 +55,11 @@ const FeaturedProducts = ({ allProducts, chosenLanguage }) => {
 					chosenLanguage === "Arabic" ? "titleArabic mb-2" : "title mb-2"
 				}>
 				<h1
-					style={{ fontWeight: "bolder", fontSize: "1.4rem" }}
+					style={{
+						fontWeight: "bolder",
+						fontSize: "1.4rem",
+						marginLeft: "35px",
+					}}
 					className={chosenLanguage === "Arabic" ? "titleArabic" : "title"}>
 					{chosenLanguage === "Arabic" ? "منتجات مميزة" : "Featured Products"}{" "}
 				</h1>
@@ -87,10 +91,11 @@ const FeaturedProductsWrapper = styled.div`
 		text-align: left;
 		font-size: 2rem;
 		/* letter-spacing: 7px; */
+		margin-left: 35px;
 		font-weight: bold;
 		/* color: #ffc4c4; */
 		color: darkred;
-		margin-left: 30px;
+		margin-left: 0px;
 		text-transform: uppercase;
 		/* text-shadow: 3px 3px 10px; */
 	}
@@ -98,10 +103,11 @@ const FeaturedProductsWrapper = styled.div`
 	.titleArabic {
 		text-align: left;
 		font-size: 2rem;
+		margin-left: 35px;
 		/* letter-spacing: 7px; */
 		font-weight: bold;
 		color: darkred;
-		margin-left: 30px;
+		margin-left: 0px;
 		font-family: "Droid Arabic Kufi";
 		/* text-shadow: 3px 3px 10px; */
 	}
@@ -123,6 +129,10 @@ const FeaturedProductsWrapper = styled.div`
 	@media (max-width: 1200px) {
 		.ProductSlider {
 			padding: 0px 10px 0px 10px;
+		}
+
+		h1 {
+			margin: auto !important;
 		}
 
 		.title {

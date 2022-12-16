@@ -393,19 +393,19 @@ const ProductWrapper = styled.div`
 		}
 
 		.cartoptions {
-			font-size: 14px;
+			font-size: 12px;
 			display: block;
 			border-radius: 0px !important;
 		}
 
 		.cartoptions2 {
-			font-size: 14px;
+			font-size: 12px;
 			display: block;
 			border-radius: 0px !important;
 		}
 
 		.productname {
-			font-size: 12px;
+			font-size: 10px;
 		}
 	}
 `;

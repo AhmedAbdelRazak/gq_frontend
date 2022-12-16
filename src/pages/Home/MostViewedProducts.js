@@ -18,7 +18,10 @@ const MostViewedProducts = ({ chosenLanguage }) => {
 			} else {
 				setProductsByMostViews(
 					data
-						.filter((i) => i.activeProduct === true)
+						.filter(
+							(i) =>
+								i.activeProduct === true && i.storeName.storeName === "ace",
+						)
 						.map((ii) => {
 							return {
 								...ii,
@@ -30,6 +33,8 @@ const MostViewedProducts = ({ chosenLanguage }) => {
 			setLoading(false);
 		});
 	};
+
+	console.log(productsByMostViews, "productsByMostViews");
 
 	useEffect(() => {
 		loadFilteredResultsMostViewed();
