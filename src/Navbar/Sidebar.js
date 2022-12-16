@@ -30,6 +30,9 @@ const Sidebar = ({
 									<Link
 										to={`/our-products?filterby=gender&gendername=${g.genderName}`}
 										className='genderItem'
+										style={{
+											margin: allGenders.length === 2 ? "0px 20px" : "0px 15px",
+										}}
 										key={i}
 										onClick={() => {
 											setClickMenu(false);
@@ -325,7 +328,6 @@ const SideWrapper = styled.nav`
 	}
 
 	.genderItem {
-		margin: 0px 12px;
 		font-weight: bold;
 		text-transform: uppercase;
 		color: darkgrey;

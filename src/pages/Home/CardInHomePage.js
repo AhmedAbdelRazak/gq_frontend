@@ -246,78 +246,80 @@ const CardInHomePage = ({
 						{showRemoveButton(showRemoveProductButton)}
 						{showCartUpdateOptions(cartUpdate)}
 					</div>
+					<div className='mt-2 mb-4 productname' style={{ maxWidth: "90%" }}>
+						<div className='row'>
+							<div className='col-md-9 productname col-7'>
+								{productPrice <= productPriceAfterDsicount ? null : (
+									<div className='float-left'>
+										<span style={{ color: "goldenrod", fontSize: "20px" }}>
+											<DollarCircleFilled />{" "}
+										</span>
+										<span
+											className=''
+											style={{ fontWeight: "bold", color: "darkred" }}>
+											{(
+												100 -
+												(
+													(productPriceAfterDsicount / productPrice) *
+													100
+												).toFixed(2)
+											).toFixed(2)}
+											%
+										</span>
+									</div>
+								)}
+								<br />
+								<br />
+								{chosenLanguage === "Arabic" ? (
+									<div
+										className=''
+										style={{
+											fontFamily: "Droid Arabic Kufi",
+											letterSpacing: "0px",
+										}}>
+										{product.productName_Arabic}
+									</div>
+								) : (
+									<div className='float-left'> {product.productName} </div>
+								)}
+							</div>
+							<div className='col-md-3 col-5'>
+								{productPrice <= productPriceAfterDsicount ? (
+									<span style={{ fontWeight: "bold" }}>
+										{productPrice} L.E.
+									</span>
+								) : (
+									<span>
+										<div className='ml-2 mt-2' style={{ fontWeight: "bold" }}>
+											{productPriceAfterDsicount} L.E.
+										</div>
+										<div className='mt-2'>
+											<s style={{ fontWeight: "bold", color: "red" }}>
+												{productPrice} L.E.
+											</s>
+										</div>
+									</span>
+								)}
+							</div>
+						</div>
+
+						{product && product.ratings && product.ratings.length > 0 ? (
+							<div className='mb-3'>{showAverageRating2(product)}</div>
+						) : (
+							<div
+								className='mb-2'
+								style={{
+									fontSize: "0.75rem",
+									fontStyle: "italic",
+									fontWeight: "bold",
+									color: "black",
+								}}>
+								{chosenLanguage === "Arabic" ? null : null}
+							</div>
+						)}
+					</div>
 				</div>
 			</Fragment>
-
-			<div className='mt-2 mb-4 productname' style={{ maxWidth: "90%" }}>
-				<div className='row'>
-					<div className='col-md-9 productname col-7'>
-						{productPrice <= productPriceAfterDsicount ? null : (
-							<div className='float-left'>
-								<span style={{ color: "goldenrod", fontSize: "20px" }}>
-									<DollarCircleFilled />{" "}
-								</span>
-								<span
-									className=''
-									style={{ fontWeight: "bold", color: "darkred" }}>
-									{(
-										100 -
-										((productPriceAfterDsicount / productPrice) * 100).toFixed(
-											2,
-										)
-									).toFixed(2)}
-									%
-								</span>
-							</div>
-						)}
-						<br />
-						<br />
-						{chosenLanguage === "Arabic" ? (
-							<div
-								className=''
-								style={{
-									fontFamily: "Droid Arabic Kufi",
-									letterSpacing: "0px",
-								}}>
-								{product.productName_Arabic}
-							</div>
-						) : (
-							<div className='float-left'> {product.productName} </div>
-						)}
-					</div>
-					<div className='col-md-3 col-5'>
-						{productPrice <= productPriceAfterDsicount ? (
-							<span style={{ fontWeight: "bold" }}>{productPrice} L.E.</span>
-						) : (
-							<span>
-								<div className='ml-2 mt-2' style={{ fontWeight: "bold" }}>
-									{productPriceAfterDsicount} L.E.
-								</div>
-								<div className='mt-2'>
-									<s style={{ fontWeight: "bold", color: "red" }}>
-										{productPrice} L.E.
-									</s>
-								</div>
-							</span>
-						)}
-					</div>
-				</div>
-
-				{product && product.ratings && product.ratings.length > 0 ? (
-					<div className='mb-3'>{showAverageRating2(product)}</div>
-				) : (
-					<div
-						className='mb-2'
-						style={{
-							fontSize: "0.75rem",
-							fontStyle: "italic",
-							fontWeight: "bold",
-							color: "black",
-						}}>
-						{chosenLanguage === "Arabic" ? null : null}
-					</div>
-				)}
-			</div>
 		</ProductWrapper>
 	);
 };
@@ -392,10 +394,14 @@ const ProductWrapper = styled.div`
 
 		.cartoptions {
 			font-size: 14px;
+			display: block;
+			border-radius: 0px !important;
 		}
 
 		.cartoptions2 {
 			font-size: 14px;
+			display: block;
+			border-radius: 0px !important;
 		}
 
 		.productname {
@@ -405,10 +411,11 @@ const ProductWrapper = styled.div`
 `;
 
 const ImageFeat = styled.div`
-	@media (max-width: 680px) {
+	@media (max-width: 750px) {
 		.product-imgs {
-			width: 130px !important;
-			height: 130px !important;
+			width: 100% !important;
+			height: 100% !important;
+			min-height: 250px !important;
 		}
 	}
 `;

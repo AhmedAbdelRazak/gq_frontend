@@ -355,7 +355,7 @@ const Cart = ({ chosenLanguage }) => {
 			</Helmet>
 			{cart.length === 0 ? (
 				<div
-					className='text-center'
+					className='text-center emptyCart'
 					style={{
 						fontSize: "2rem",
 						fontWeight: "bold",
@@ -369,6 +369,7 @@ const Cart = ({ chosenLanguage }) => {
 						style={{
 							fontSize: "1.5rem",
 							fontWeight: "bold",
+							// background: "grey",
 						}}>
 						Continue Shopping
 					</Link>
@@ -402,7 +403,7 @@ const Cart = ({ chosenLanguage }) => {
 							<Link
 								to='/our-products'
 								className='link-btn btn-primary'
-								style={{ borderRadius: "10px" }}>
+								style={{ borderRadius: "10px", background: "grey" }}>
 								continue shopping
 							</Link>
 							<Link
@@ -653,7 +654,10 @@ const Cart = ({ chosenLanguage }) => {
 							<Link
 								to='/our-products'
 								className='link-btn btn-primary ml-1'
-								style={{ borderRadius: "10px" }}>
+								style={{
+									borderRadius: "10px",
+									background: "grey",
+								}}>
 								continue shopping
 							</Link>
 							<Link
@@ -738,6 +742,12 @@ const CartV2Styling = styled.div`
 	}
 
 	@media (max-width: 770px) {
+		.emptyCart {
+			margin: auto !important;
+			padding-top: 70px;
+			text-transform: uppercase;
+		}
+
 		.link-container {
 			display: flex;
 			justify-content: space-between;

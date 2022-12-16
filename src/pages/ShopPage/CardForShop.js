@@ -375,10 +375,14 @@ const CardForShopWrapper = styled.div`
 
 		.cartoptions {
 			font-size: 14px;
+			display: block;
+			border-radius: 0px !important;
 		}
 
 		.cartoptions2 {
 			font-size: 14px;
+			display: block;
+			border-radius: 0px !important;
 		}
 
 		.productname {
@@ -388,10 +392,11 @@ const CardForShopWrapper = styled.div`
 `;
 
 const ImageFeat = styled.div`
-	@media (max-width: 680px) {
-		img {
+	@media (max-width: 750px) {
+		.product-imgs {
 			width: 100% !important;
-			min-height: 300px !important;
+			height: 100% !important;
+			min-height: 250px !important;
 		}
 	}
 `;

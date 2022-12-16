@@ -45,68 +45,13 @@ const HeroComponent2 = () => {
 	};
 	return (
 		<HeroComponent2Wrapper className='mx-auto text-center'>
-			{/* <Slider {...settingsHero}>
-				{homePage && homePage.thumbnail && homePage.thumbnail[0] && (
-					<div className='heroPicMain'>
-						<Link to={homePage.hyper_link}>
-							<img
-								src={
-									homePage &&
-									homePage.thumbnail &&
-									homePage.thumbnail[0] &&
-									homePage.thumbnail[0].images &&
-									homePage.thumbnail[0].images[0] &&
-									homePage.thumbnail[0].images[0].url
-								}
-								alt='ShopPhoto'
-								className='mt-3'
-							/>
-						</Link>
-					</div>
-				)}
-
-				{homePage && homePage.thumbnail2 && homePage.thumbnail2[0] && (
-					<div className='heroPicMain'>
-						<Link to={homePage.hyper_link2}>
-							<img
-								src={
-									homePage &&
-									homePage.thumbnail2 &&
-									homePage.thumbnail2[0] &&
-									homePage.thumbnail2[0].images &&
-									homePage.thumbnail2[0].images[0] &&
-									homePage.thumbnail2[0].images[0].url
-								}
-								alt='ShopPhoto'
-								className='mt-3'
-							/>
-						</Link>
-					</div>
-				)}
-
-				{homePage && homePage.thumbnail3 && homePage.thumbnail3[0] && (
-					<div className='heroPicMain'>
-						<Link to={homePage.hyper_link3}>
-							<img
-								src={
-									homePage &&
-									homePage.thumbnail3 &&
-									homePage.thumbnail3[0] &&
-									homePage.thumbnail3[0].images &&
-									homePage.thumbnail3[0].images[0] &&
-									homePage.thumbnail3[0].images[0].url
-								}
-								alt='ShopPhoto'
-								className='mt-3'
-							/>
-						</Link>
-					</div>
-				)}
-			</Slider> */}
-
 			{homePage && homePage.thumbnail2 && homePage.thumbnail2[0] && (
 				<div className='heroPicMain'>
-					<h3 className='mx-auto text-center'>Main Section</h3>
+					<h3
+						className='mx-auto text-center'
+						style={{ fontWeight: "bolder", fontSize: "1.4rem" }}>
+						Main Section
+					</h3>
 					<Link to='/our-products'>
 						<img
 							src={

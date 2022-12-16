@@ -392,6 +392,7 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 							<br />
 							<div className='link-btn-wrapper'>
 								<Link
+									style={{ background: "#007db5" }}
 									to='/cart'
 									className='link-btn btn-block w-75 mx-auto text-center py-2'
 									onClick={() =>

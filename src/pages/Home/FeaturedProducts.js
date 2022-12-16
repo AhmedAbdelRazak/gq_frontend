@@ -54,7 +54,9 @@ const FeaturedProducts = ({ allProducts, chosenLanguage }) => {
 				className={
 					chosenLanguage === "Arabic" ? "titleArabic mb-2" : "title mb-2"
 				}>
-				<h1 className={chosenLanguage === "Arabic" ? "titleArabic" : "title"}>
+				<h1
+					style={{ fontWeight: "bolder", fontSize: "1.4rem" }}
+					className={chosenLanguage === "Arabic" ? "titleArabic" : "title"}>
 					{chosenLanguage === "Arabic" ? "منتجات مميزة" : "Featured Products"}{" "}
 				</h1>
 			</div>

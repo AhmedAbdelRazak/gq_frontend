@@ -147,8 +147,8 @@ const GenderLinksWrapper = styled.div`
 	}
 
 	.title {
-		text-align: left;
-		font-size: 2rem;
+		text-align: center;
+		font-size: 1.4rem;
 		margin-left: 35px;
 		/* letter-spacing: 7px; */
 		font-weight: bold;
@@ -159,8 +159,8 @@ const GenderLinksWrapper = styled.div`
 	}
 
 	.titleArabic {
-		text-align: left;
-		font-size: 2rem;
+		text-align: center;
+		font-size: 1.4rem;
 		/* letter-spacing: 7px; */
 		font-weight: bold;
 		color: #ffc4c4;

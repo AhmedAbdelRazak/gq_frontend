@@ -14,6 +14,7 @@ const OurBrandsComp = ({ chosenLanguage, allSubcategories }) => {
 						: "titleOurCategories mb-3"
 				}>
 				<h1
+					style={{ fontWeight: "bolder", fontSize: "1.4rem" }}
 					className={
 						chosenLanguage === "Arabic"
 							? "titleOurCategories2 text-center"
@@ -63,6 +64,8 @@ export default OurBrandsComp;
 const OurBrandsCompWrapper = styled.div`
 	margin-top: 70px;
 	background-image: linear-gradient(white, #ececec);
+	text-transform: uppercase;
+
 	/* background-image: linear-gradient(white, #e2fff8); */
 
 	img {
