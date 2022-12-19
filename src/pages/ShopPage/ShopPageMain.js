@@ -176,6 +176,12 @@ const ShopPageMainWrapper = styled.div`
 		margin: auto 20px;
 	}
 
+	.cardWrapper {
+		margin-right: 20px;
+		margin-left: 20px;
+		padding: 0px !important;
+	}
+
 	.heroFilter {
 		background: rgb(245, 245, 245);
 		min-height: 200px;

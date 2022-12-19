@@ -28,6 +28,8 @@ const DisplayImages = ({
 					dynamicHeight={true}
 					showThumbs={true}
 					thumbWidth={50}
+					preventMovementUntilSwipeScrollTolerance={true}
+					swipeScrollTolerance={50}
 					autoFocus={true}>
 					{chosenImages &&
 						chosenImages.map((i, ii) => (
@@ -46,6 +48,7 @@ const DisplayImages = ({
 						))}
 				</Carousel>
 			)}
+
 			<div className='row mr-3'>
 				<div className='col-5 mx-auto'>
 					<Like>

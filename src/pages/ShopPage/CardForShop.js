@@ -207,12 +207,10 @@ const CardForShop = ({
 		product && product.productAttributes.map((i) => i.price)[0];
 
 	return (
-		<CardForShopWrapper>
+		<CardForShopWrapper show={i}>
 			<Fragment>
 				<div className='card '>
-					<div
-						className='card-body  '
-						style={{ marginLeft: i % 2 === 0 ? "" : "5px" }}>
+					<div className='card-body  '>
 						{shouldRedirect(redirect)}
 						<div className='card-img-top center'>
 							<ImageFeat>
@@ -316,9 +314,11 @@ const CardForShopWrapper = styled.div`
 		/* box-shadow: 2.5px 2.5px 1.5px 0px rgba(0, 0, 0, 0.3); */
 		transition: var(--mainTransition);
 		min-height: 500px;
-		width: 94%;
+		width: 100%;
 		border: 1px white solid !important;
+		margin-top: 50px;
 	}
+
 	.card:hover {
 		box-shadow: 2.5px 2.5px 1.5px 0px rgba(0, 0, 0, 0.3);
 		cursor: pointer;
@@ -336,6 +336,8 @@ const CardForShopWrapper = styled.div`
 	.card-body {
 		font-weight: bold;
 		letter-spacing: 2px;
+		padding: 0px !important;
+		width: 100%;
 	}
 
 	.productname {
@@ -384,6 +386,7 @@ const CardForShopWrapper = styled.div`
 		.card-body {
 			padding: 0px !important;
 			width: 100%;
+			margin-left: ${(props) => (props.show % 2 === 0 ? "" : "5px")};
 		}
 
 		.cartoptions {

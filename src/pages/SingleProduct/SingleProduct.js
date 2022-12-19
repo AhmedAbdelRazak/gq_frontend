@@ -460,7 +460,7 @@ const SingleProduct = (props) => {
 			) : (
 				<>
 					<div className='row'>
-						<div className='col-md-7 text-center  mt-3'>
+						<div className='col-md-7 text-center imageWrapper  mt-3'>
 							<DisplayImages
 								Product={Product}
 								chosenImages={chosenImages}
@@ -728,10 +728,11 @@ const SingleEmp = styled.div`
 		background-color: black !important;
 	} */
 	.slider img {
-		width: 98%;
-		height: 600px !important;
+		width: 100%;
+		height: 75%;
 		object-fit: cover !important;
 	}
+	
 
 	.carousel-root .thumb {
 		margin-top: 20px !important;
@@ -760,15 +761,15 @@ const SingleEmp = styled.div`
 			height: 100% !important;
 			object-fit: cover !important;
 			z-index: -1;
-
 		}
 		.carousel-root .thumb {
 		margin-top: 0px !important;
 		padding: 0px !important;
 	}
-		ul  {
-			margin-right: 20px !important;
+		.thumbs  {
+			right: 30px !important;
 		}
+		
 		h3 {
 			font-size: 15px;
 		}
@@ -800,11 +801,6 @@ const ProductWrapperRelated = styled.div`
 		/* letter-spacing: 7px; */
 		font-weight: bold;
 		text-shadow: 3px 3px 10px;
-	}
-
-	.images {
-		margin-left: 20px;
-		margin-bottom: 30px;
 	}
 
 	.ProductSlider {
