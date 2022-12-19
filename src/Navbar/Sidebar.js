@@ -156,7 +156,7 @@ const Sidebar = ({
 								window.scrollTo({ top: 0, behavior: "smooth" });
 							}}>
 							<Link
-								className='nav-link fontawesome-icons '
+								className='nav-link fontawesome-icons myAccount '
 								to='/user/dashboard'
 								onClick={() => {
 									setClickMenu(false);
@@ -175,13 +175,13 @@ const Sidebar = ({
 									window.scrollTo({ top: 0, behavior: "smooth" });
 								}}>
 								<Link
-									className='nav-link fontawesome-icons '
+									className='nav-link fontawesome-icons myAccount '
 									to='/admin/dashboard'
 									onClick={() => {
 										setClickMenu(false);
 										setClick(false);
 									}}>
-									Owner Dashboard
+									Admin Dashboard
 								</Link>
 							</li>
 							<li
@@ -190,13 +190,13 @@ const Sidebar = ({
 									window.scrollTo({ top: 0, behavior: "smooth" });
 								}}>
 								<Link
-									className='nav-link fontawesome-icons'
-									to='/user-dashboard/last-purchase'
+									className='nav-link fontawesome-icons myAccount'
+									to='/user/dashboard'
 									onClick={() => {
 										setClickMenu(false);
 										setClick(false);
 									}}>
-									Owner Regular Account
+									My Account/Dashboard
 								</Link>
 							</li>
 						</>
@@ -246,7 +246,7 @@ const Sidebar = ({
 							}}>
 							<span>
 								<span
-									className='signoutbutton nav-link mt-3'
+									className='signoutbutton nav-link mt-3 '
 									style={{
 										cursor: "pointer",
 										// margin: 10,
@@ -262,7 +262,7 @@ const Sidebar = ({
 											localStorage.removeItem("order");
 										})
 									}>
-									Signout
+									<span className='myAccount'>Signout</span>
 								</span>
 							</span>
 						</li>
@@ -370,5 +370,15 @@ const SideWrapper = styled.nav`
 	}
 	@media (min-width: 680px) {
 		display: none;
+	}
+
+	@media (max-width: 700px) {
+		.sidebar-link {
+			font-size: 0.8rem;
+		}
+
+		.myAccount {
+			font-size: 0.8rem;
+		}
 	}
 `;

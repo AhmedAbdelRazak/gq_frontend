@@ -486,6 +486,7 @@ const SingleProduct = (props) => {
 									color: "grey",
 									// fontStyle: "italic",
 									textTransform: "capitalize",
+									fontWeight: "bold",
 								}}>
 								Product Name: {Product.productName}
 								{Product && Product.ratings && Product.ratings.length > 0 ? (
@@ -518,29 +519,31 @@ const SingleProduct = (props) => {
 							/>
 
 							<hr />
-							<p
-								className='text-capitalize text-title mt-4'
-								style={{ color: "#0052a5" }}>
-								A little bit about "{Product.productName}":{" "}
-							</p>
+							<div className='productDescriptionWrapper'>
+								<p
+									className='text-capitalize text-title mt-4'
+									style={{ color: "#0052a5" }}>
+									A little bit about "{Product.productName}":{" "}
+								</p>
 
-							<p
-								className='single-Product-Description-Style'
-								style={{ fontSize: "0.85rem" }}>
-								<span className=''>
-									{Product &&
-										Product.description &&
-										selectedFeedbackComments(
-											Product && Product.description,
-										).map((cc, ii) => {
-											return (
-												<div key={ii} className='ml-3 my-2'>
-													<strong>{cc}</strong>
-												</div>
-											);
-										})}
-								</span>
-							</p>
+								<p
+									className='single-Product-Description-Style'
+									style={{ fontSize: "0.85rem" }}>
+									<span className=''>
+										{Product &&
+											Product.description &&
+											selectedFeedbackComments(
+												Product && Product.description,
+											).map((cc, ii) => {
+												return (
+													<div key={ii} className='ml-3 my-2'>
+														<strong>{cc}</strong>
+													</div>
+												);
+											})}
+									</span>
+								</p>
+							</div>
 
 							<br />
 							<br />
@@ -749,14 +752,33 @@ const SingleEmp = styled.div`
 	}
 
 	@media (max-width: 1000px) {
-		padding: 50px !important;
+		padding: 0px !important;
 		width: 100%;
 
 		.slider img {
-			width: 90%;
-			height: 400px !important;
+			width: 100%;
+			height: 100% !important;
 			object-fit: cover !important;
+			z-index: -1;
+
 		}
+		.carousel-root .thumb {
+		margin-top: 0px !important;
+		padding: 0px !important;
+	}
+		ul  {
+			margin-right: 20px !important;
+		}
+		h3 {
+			font-size: 15px;
+		}
+		.productDescriptionWrapper {
+			margin-left: 10px;
+		}
+		.control-dots {
+			display: none !important;
+		}
+		
 	}
 `;
 

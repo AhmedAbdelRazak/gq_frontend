@@ -47,11 +47,11 @@ const HeroComponent2 = () => {
 		<HeroComponent2Wrapper className='mx-auto text-center mt-5'>
 			{homePage && homePage.thumbnail2 && homePage.thumbnail2[0] && (
 				<div className='heroPicMain'>
-					<h3
+					{/* <h3
 						className='mx-auto text-center'
 						style={{ fontWeight: "bolder", fontSize: "1.4rem" }}>
 						Main Section
-					</h3>
+					</h3> */}
 					<Link to='/our-products'>
 						<img
 							src={

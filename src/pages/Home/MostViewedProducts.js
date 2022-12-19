@@ -97,6 +97,7 @@ const MostViewedProducts = ({ chosenLanguage }) => {
 								productsByMostViews.map((product, i) => (
 									<div className='img-fluid images ' key={i}>
 										<CardInHomePage
+											i={i}
 											product={product}
 											key={i}
 											chosenLanguage={chosenLanguage}
@@ -123,6 +124,7 @@ const MostViewedProductsWrapper = styled.div`
 		font-weight: bold;
 		/* color: #ffc4c4; */
 		color: darkred;
+		text-transform: uppercase;
 		/* text-shadow: 3px 3px 10px; */
 	}
 

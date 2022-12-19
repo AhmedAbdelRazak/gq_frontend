@@ -14,6 +14,7 @@ import { DollarCircleFilled } from "@ant-design/icons";
 
 const CardForShop = ({
 	product,
+	i,
 	chosenLanguage,
 	// eslint-disable-next-line
 	showViewProductButton = true,
@@ -206,10 +207,12 @@ const CardForShop = ({
 		product && product.productAttributes.map((i) => i.price)[0];
 
 	return (
-		<CardForShopWrapper className='my-3'>
+		<CardForShopWrapper>
 			<Fragment>
-				<div className='card ' style={{ backgroundColor: "" }}>
-					<div className='card-body  '>
+				<div className='card '>
+					<div
+						className='card-body  '
+						style={{ marginLeft: i % 2 === 0 ? "" : "5px" }}>
 						{shouldRedirect(redirect)}
 						<div className='card-img-top center'>
 							<ImageFeat>
@@ -227,75 +230,77 @@ const CardForShop = ({
 							{/* {showViewButton(showViewProductButton)} */}
 							{showAddToCartBtn(showAddToCartButton)}
 						</div>
-					</div>
-					<div className=' productname ml-2'>
-						<div className='row'>
-							<div className='col-md-9 productname col-7'>
-								{productPrice <= productPriceAfterDsicount ? null : (
-									<div className=''>
-										<span style={{ color: "goldenrod", fontSize: "20px" }}>
-											<DollarCircleFilled />{" "}
-										</span>
-										<span
-											className=''
-											style={{ fontWeight: "bold", color: "darkred" }}>
-											{(
-												100 -
-												(
-													(productPriceAfterDsicount / productPrice) *
-													100
-												).toFixed(2)
-											).toFixed(2)}
-											%
-										</span>
-									</div>
-								)}
-								{chosenLanguage === "Arabic" ? (
-									<div
-										style={{
-											fontFamily: "Droid Arabic Kufi",
-											letterSpacing: "0px",
-										}}>
-										{product.productName_Arabic}
-									</div>
-								) : (
-									<div className=''> {product.productName} </div>
-								)}
-							</div>
-							<div className='col-md-3 col-5'>
-								{productPrice <= productPriceAfterDsicount ? (
-									<span style={{ fontWeight: "bold" }}>
-										{productPrice} L.E.
-									</span>
-								) : (
-									<span>
-										<div className='ml-2 mt-2' style={{ fontWeight: "bold" }}>
-											{productPriceAfterDsicount} L.E.
+						<div className=' productname ml-2'>
+							<div className='row'>
+								<div className='col-md-8 productname col-7'>
+									{productPrice <= productPriceAfterDsicount ? null : (
+										<div className='' style={{ fontWeight: "bold" }}>
+											<span
+												style={{
+													color: "goldenrod",
+													fontSize: "20px",
+												}}>
+												<DollarCircleFilled />{" "}
+											</span>
+											<span className='' style={{ color: "darkred" }}>
+												{(
+													100 -
+													(
+														(productPriceAfterDsicount / productPrice) *
+														100
+													).toFixed(2)
+												).toFixed(0)}
+												% OFF
+											</span>
 										</div>
-										<div>
-											<s style={{ fontWeight: "bold", color: "red" }}>
-												{productPrice} L.E.
-											</s>
+									)}
+									{chosenLanguage === "Arabic" ? (
+										<div
+											style={{
+												fontFamily: "Droid Arabic Kufi",
+												letterSpacing: "0px",
+											}}>
+											{product.productName_Arabic}
 										</div>
-									</span>
-								)}
+									) : (
+										<div className=''> {product.productName} </div>
+									)}
+								</div>
+								<div className='col-md-4 col-5'>
+									{productPrice <= productPriceAfterDsicount ? (
+										<span style={{ fontWeight: "bold" }}>
+											{productPrice} L.E.
+										</span>
+									) : (
+										<span>
+											<div className='mt-2'>
+												<s style={{ fontWeight: "bold", color: "red" }}>
+													{productPrice} L.E.
+												</s>
+											</div>
+											<div style={{ fontWeight: "bold" }}>
+												{productPriceAfterDsicount} L.E.
+											</div>
+										</span>
+									)}
+								</div>
 							</div>
-						</div>
 
-						{product && product.ratings && product.ratings.length > 0 ? (
-							<div className='mb-3'>{showAverageRating2(product)}</div>
-						) : (
-							<div
-								className='mb-2'
-								style={{
-									fontSize: "0.75rem",
-									fontStyle: "italic",
-									fontWeight: "bold",
-									color: "black",
-								}}>
-								{chosenLanguage === "Arabic" ? null : null}
-							</div>
-						)}
+							{product && product.ratings && product.ratings.length > 0 ? (
+								<div className='mb-3'>{showAverageRating2(product)}</div>
+							) : (
+								<div
+									className='mb-2'
+									style={{
+										fontSize: "0.75rem",
+										fontStyle: "italic",
+										// fontWeight: "bold",
+										color: "black",
+									}}>
+									{chosenLanguage === "Arabic" ? null : null}
+								</div>
+							)}
+						</div>
 					</div>
 				</div>
 			</Fragment>
@@ -307,7 +312,7 @@ export default CardForShop;
 
 const CardForShopWrapper = styled.div`
 	.card {
-		text-align: center;
+		/* text-align: center; */
 		/* box-shadow: 2.5px 2.5px 1.5px 0px rgba(0, 0, 0, 0.3); */
 		transition: var(--mainTransition);
 		min-height: 500px;
@@ -338,6 +343,8 @@ const CardForShopWrapper = styled.div`
 		font-weight: bold;
 		/* text-align: center; */
 		text-transform: capitalize;
+		letter-spacing: 0px;
+		font-weight: normal;
 	}
 
 	.cartoptions2 {
@@ -369,7 +376,13 @@ const CardForShopWrapper = styled.div`
 			height: 100%;
 		} */
 		.card {
-			min-height: 450px;
+			min-height: 420px;
+			width: 100%;
+			margin: 0px !important;
+		}
+
+		.card-body {
+			padding: 0px !important;
 			width: 100%;
 		}
 

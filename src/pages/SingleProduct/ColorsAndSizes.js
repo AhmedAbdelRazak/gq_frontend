@@ -93,7 +93,7 @@ const ColorsAndSizes = ({
 	return (
 		<ColorsAndSizesWrapper>
 			<div className='text-capitalize text-title' style={{ color: "#0052a5" }}>
-				Choose a Color:
+				<span className='chooseColor'>Choose a Color:</span>
 				<div className='my-2 mx-5 text-center row'>
 					{allAddedColors &&
 						allAddedColors.map((c, i) => {
@@ -154,7 +154,7 @@ const ColorsAndSizes = ({
 				</div>
 			</div>
 			<div className='text-capitalize text-title' style={{ color: "#0052a5" }}>
-				Choose a Size:
+				<span className='chooseSize'>Choose a Size:</span>
 				<div className='my-2 mx-5 text-center row'>
 					{allSizes &&
 						allSizes.map((s, i) => {
@@ -253,7 +253,9 @@ const ColorsAndSizes = ({
 					</p>
 				</>
 			) : null}
-			<p className='text-capitalize text-title' style={{ color: "#0052a5" }}>
+			<p
+				className='text-capitalize text-title chooseSize'
+				style={{ color: "#0052a5" }}>
 				Product SKU:{" "}
 				<span style={{ color: "black", textTransform: "uppercase" }}>
 					{Product.productSKU}
@@ -275,5 +277,14 @@ const ColorsAndSizesWrapper = styled.div`
 		cursor: pointer;
 		font-weight: bolder;
 		font-size: 0.9rem;
+	}
+
+	@media (max-width: 1000px) {
+		.chooseColor {
+			margin-left: 10px !important;
+		}
+		.chooseSize {
+			margin-left: 10px !important;
+		}
 	}
 `;

@@ -46,76 +46,74 @@ const DisplayImages = ({
 						))}
 				</Carousel>
 			)}
-			<div className='d-flex mx-3'>
-				<Like>
-					{likee ? (
-						<>
-							<ToastContainer className='toast-top-left' />
+			<div className='row mr-3'>
+				<div className='col-5 mx-auto'>
+					<Like>
+						{likee ? (
+							<>
+								<ToastContainer className='toast-top-left' />
 
-							<h5 onClick={likeToggle} className='mt-4 '>
-								<h5 onClick={likeToggle2}>
-									<i
-										className='fa fa-heart text-danger  Like'
-										style={{
-											padding: "8px",
-											// borderRadius: "50%",
-											fontSize: "2rem",
-										}}
-									/>{" "}
+								<h5 onClick={likeToggle} className=' '>
+									<h5 onClick={likeToggle2}>
+										<i
+											className='fa fa-heart text-danger  Like'
+											style={{
+												padding: "8px",
+												// borderRadius: "50%",
+												fontSize: "2rem",
+											}}
+										/>{" "}
+									</h5>
 								</h5>
-							</h5>
-							<strong
-								className=''
+								<strong
+									className=''
+									style={{
+										// fontStyle: "italic",
+										fontSize: "0.8rem",
+										textDecoration: "underline",
+									}}>
+									{" "}
+									<Link to='/user-dashboard/wishlist'>
+										Added to your Wish List
+									</Link>
+								</strong>
+							</>
+						) : (
+							<div className=''>
+								<h5 onClick={likeToggle} className=' '>
+									<h5 onClick={likeToggle2}>
+										<i
+											className='fa fa-heart  Like'
+											style={{
+												padding: "4px",
+												// borderRadius: "50%",
+												fontSize: "1.6rem",
+											}}
+										/>{" "}
+										{shouldRedirect2(redirect2)}
+										<span style={{ fontSize: "1rem", fontWeight: "bold" }}>
+											Wish List
+										</span>
+									</h5>
+								</h5>
+							</div>
+						)}
+					</Like>
+				</div>
+
+				<div className='col-5 mx-auto'>
+					<ViewsCount>
+						<div className=''>
+							<i
+								className='fa fa-street-view'
 								style={{
-									// fontStyle: "italic",
-									fontSize: "0.8rem",
-									textDecoration: "underline",
+									fontSize: "24px",
 								}}>
 								{" "}
-								<Link to='/user-dashboard/wishlist'>
-									Added to your Wish List
-								</Link>
-							</strong>
-						</>
-					) : (
-						<div className='viewsLikes'>
-							<h5 onClick={likeToggle} className='mt-4 '>
-								<h5 onClick={likeToggle2}>
-									<i
-										className='fa fa-heart  Like'
-										style={{
-											padding: "6px",
-											// borderRadius: "50%",
-											fontSize: "1.7rem",
-										}}
-									/>{" "}
-									{shouldRedirect2(redirect2)}
-									<span style={{ fontSize: "1rem", fontWeight: "bold" }}>
-										Wish List
-									</span>
-								</h5>
-							</h5>
+							</i>
+							<span className='viewsCountText'>{Product.viewsCount} Views</span>
 						</div>
-					)}
-				</Like>
-				<div
-					className='ml-auto p-3 '
-					style={{
-						color: "black",
-						// fontStyle: "italic",
-						fontWeight: "bold",
-						textAlign: "center",
-						marginTop: "16px",
-						fontSize: "1.2rem",
-					}}>
-					<i
-						className='fa fa-street-view'
-						style={{
-							fontSize: "24px",
-						}}>
-						{" "}
-					</i>
-					{Product.viewsCount} Views
+					</ViewsCount>
 				</div>
 			</div>
 		</div>
@@ -133,5 +131,36 @@ const Like = styled.div`
 		text-decoration: none;
 		color: var(--darkGrey);
 		outline-color: var(--darkGrey);
+	}
+
+	@media (max-width: 1000px) {
+		span {
+			font-size: 11px !important;
+		}
+
+		i {
+			font-size: 1.1rem !important;
+		}
+	}
+`;
+
+const ViewsCount = styled.div`
+	span {
+		font-weight: bold;
+	}
+	@media (max-width: 1000px) {
+		div {
+			padding: 0px !important;
+			text-align: right !important;
+		}
+
+		span {
+			font-size: 11px !important;
+			font-weight: bold;
+		}
+
+		i {
+			font-size: 1.1rem !important;
+		}
 	}
 `;

@@ -115,7 +115,7 @@ const ShopPageMain = ({ chosenLanguage }) => {
 					<h2>All products</h2>
 				</div>
 			</div>
-			<span>
+			<span className='filters_desktop'>
 				<MainFilter
 					clickedItem={clickedItem}
 					setClickedItem={setClickedItem}
@@ -137,21 +137,20 @@ const ShopPageMain = ({ chosenLanguage }) => {
 				All Products: {allProducts && allProducts.length}
 			</h1> */}
 
-			<div className='ml-5  my-3 cardWrapper'>
+			<div className='cardWrapper'>
 				<div className='row '>
-					{allProductsAdded &&
-						allProductsAdded.map((product, i) => (
-							<div
-								className='col-lg-3 col-md-6 col-sm-12 col-6  my-3'
-								// style={{ border: "solid black 1px" }}
-								key={i}>
+					<div className='grid-container'>
+						{allProductsAdded &&
+							allProductsAdded.map((product, i) => (
 								<CardForShop
+									i={i}
 									product={product}
 									key={i}
 									chosenLanguage={chosenLanguage}
 								/>
-							</div>
-						))}
+							))}
+					</div>
+
 					<hr />
 				</div>
 			</div>
@@ -166,6 +165,16 @@ const ShopPageMainWrapper = styled.div`
 	background: white;
 	transition: 0.3s;
 	overflow: hidden;
+
+	.filters_desktop {
+		display: block;
+	}
+
+	.grid-container {
+		display: grid;
+		grid-template-columns: 25% 25% 25% 25%;
+		margin: auto 20px;
+	}
 
 	.heroFilter {
 		background: rgb(245, 245, 245);
@@ -222,8 +231,18 @@ const ShopPageMainWrapper = styled.div`
 		}
 
 		.cardWrapper {
-			margin-left: 2px !important;
-			margin-right: 2px !important;
+			margin: 50px auto !important;
+			padding: 0px !important;
+		}
+
+		.grid-container {
+			display: grid;
+			grid-template-columns: 50% 49%;
+			margin: auto 20px;
+		}
+
+		.filters_desktop {
+			display: none;
 		}
 	}
 `;

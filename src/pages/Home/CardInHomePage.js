@@ -3,7 +3,6 @@
 import React, { useState, Fragment } from "react";
 import { Link, Redirect } from "react-router-dom";
 import styled from "styled-components";
-import { updateItem, removeItem } from "../../cartHelpers";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
 import { showAverageRating2 } from "../SingleProduct/Rating";
@@ -14,6 +13,7 @@ import { DollarCircleFilled } from "@ant-design/icons";
 const CardInHomePage = ({
 	product,
 	chosenLanguage,
+	i,
 	// eslint-disable-next-line
 	showViewProductButton = true,
 	showAddToCartButton = true,
@@ -25,7 +25,6 @@ const CardInHomePage = ({
 }) => {
 	// eslint-disable-next-line
 	const [redirect, setRedirect] = useState(false);
-	const [count, setCount] = useState(product.count);
 	// eslint-disable-next-line
 	const [viewsCounterr, setViewsCounterr] = useState(0);
 
@@ -129,56 +128,6 @@ const CardInHomePage = ({
 		);
 	};
 
-	const showStock = (quantity) => {
-		return quantity > 0 ? null : (
-			<span className='badge badge-danger badge-pill stockStatus'>
-				Sold Out{" "}
-			</span>
-		);
-	};
-
-	const handleChange = (productId) => (event) => {
-		setRun(!run); // run useEffect in parent Cart
-		setCount(event.target.value < 1 ? "" : event.target.value);
-		if (event.target.value >= 1) {
-			updateItem(productId, event.target.value);
-		}
-	};
-
-	const showCartUpdateOptions = (cartUpdate) => {
-		return (
-			cartUpdate && (
-				<div>
-					<div className='input-group mb-3 '>
-						<div className='input-group-prepend'>
-							<span className='input-group-text'>Adjust Quantity</span>
-						</div>
-						<input
-							type='number'
-							className='form-control'
-							value={count}
-							onChange={handleChange(product._id)}
-						/>
-					</div>
-				</div>
-			)
-		);
-	};
-	const showRemoveButton = (showRemoveProductButton) => {
-		return (
-			showRemoveProductButton && (
-				<button
-					onClick={() => {
-						removeItem(product._id);
-						setRun(!run); // run useEffect in parent Cart
-					}}
-					className='btn btn-outline-danger mt-2 mb-2'>
-					Remove Product
-				</button>
-			)
-		);
-	};
-
 	const ShowImage = ({ item }) => (
 		<div className='product-img'>
 			{item &&
@@ -196,12 +145,11 @@ const CardInHomePage = ({
 						showThumbs={false}>
 						{item.thumbnailImage[0].images.map((i) => (
 							<img
-								className=' rounded mx-auto d-block product-imgs'
+								className=' rounded  d-block product-imgs'
 								alt={item.productName}
 								src={i.url}
 								key={i.public_id}
 								style={{
-									height: "50vh",
 									width: "100%",
 									objectFit: "cover",
 									minHeight: "400px",
@@ -219,8 +167,8 @@ const CardInHomePage = ({
 	return (
 		<ProductWrapper className='my-3'>
 			<Fragment>
-				<div className='card ' style={{ backgroundColor: "white" }}>
-					<div className='card-body  '>
+				<div className='card '>
+					<div className='card-body  ' style={{ marginLeft: "5px" }}>
 						{shouldRedirect(redirect)}
 						<div className='card-img-top center'>
 							<ImageFeat>
@@ -234,89 +182,81 @@ const CardInHomePage = ({
 								</Link>
 							</ImageFeat>
 						</div>
-
-						<div className='col-md-5 mx-auto'>
-							{showStock(product.quantity)}
-						</div>
-
 						<div>
 							{/* {showViewButton(showViewProductButton)} */}
 							{showAddToCartBtn(showAddToCartButton)}
 						</div>
-						{showRemoveButton(showRemoveProductButton)}
-						{showCartUpdateOptions(cartUpdate)}
-					</div>
-					<div className='mt-2 mb-4 productname' style={{ maxWidth: "90%" }}>
-						<div className='row'>
-							<div className='col-md-9 productname col-7'>
-								{productPrice <= productPriceAfterDsicount ? null : (
-									<div className='float-left'>
-										<span style={{ color: "goldenrod", fontSize: "20px" }}>
-											<DollarCircleFilled />{" "}
-										</span>
-										<span
-											className=''
-											style={{ fontWeight: "bold", color: "darkred" }}>
-											{(
-												100 -
-												(
-													(productPriceAfterDsicount / productPrice) *
-													100
-												).toFixed(2)
-											).toFixed(2)}
-											%
-										</span>
-									</div>
-								)}
-								<br />
-								<br />
-								{chosenLanguage === "Arabic" ? (
-									<div
-										className=''
-										style={{
-											fontFamily: "Droid Arabic Kufi",
-											letterSpacing: "0px",
-										}}>
-										{product.productName_Arabic}
-									</div>
-								) : (
-									<div className='float-left'> {product.productName} </div>
-								)}
-							</div>
-							<div className='col-md-3 col-5'>
-								{productPrice <= productPriceAfterDsicount ? (
-									<span style={{ fontWeight: "bold" }}>
-										{productPrice} L.E.
-									</span>
-								) : (
-									<span>
-										<div className='ml-2 mt-2' style={{ fontWeight: "bold" }}>
-											{productPriceAfterDsicount} L.E.
+						<div className=' productname ml-2'>
+							<div className='row'>
+								<div className='col-md-8 productname col-7'>
+									{productPrice <= productPriceAfterDsicount ? null : (
+										<div className='' style={{ fontWeight: "bold" }}>
+											<span
+												style={{
+													color: "goldenrod",
+													fontSize: "20px",
+												}}>
+												<DollarCircleFilled />{" "}
+											</span>
+											<span className='' style={{ color: "darkred" }}>
+												{(
+													100 -
+													(
+														(productPriceAfterDsicount / productPrice) *
+														100
+													).toFixed(2)
+												).toFixed(0)}
+												% OFF
+											</span>
 										</div>
-										<div className='mt-2'>
-											<s style={{ fontWeight: "bold", color: "red" }}>
-												{productPrice} L.E.
-											</s>
+									)}
+									{chosenLanguage === "Arabic" ? (
+										<div
+											style={{
+												fontFamily: "Droid Arabic Kufi",
+												letterSpacing: "0px",
+											}}>
+											{product.productName_Arabic}
 										</div>
-									</span>
-								)}
+									) : (
+										<div className=''> {product.productName} </div>
+									)}
+								</div>
+								<div className='col-md-4 col-5'>
+									{productPrice <= productPriceAfterDsicount ? (
+										<span style={{ fontWeight: "bold" }}>
+											{productPrice} L.E.
+										</span>
+									) : (
+										<span>
+											<div className='mt-2'>
+												<s style={{ fontWeight: "bold", color: "red" }}>
+													{productPrice} L.E.
+												</s>
+											</div>
+											<div style={{ fontWeight: "bold" }}>
+												{productPriceAfterDsicount} L.E.
+											</div>
+										</span>
+									)}
+								</div>
 							</div>
-						</div>
 
-						{product && product.ratings && product.ratings.length > 0 ? (
-							<div className='mb-3'>{showAverageRating2(product)}</div>
-						) : (
-							<div
-								className='mb-2'
-								style={{
-									fontSize: "0.75rem",
-									fontStyle: "italic",
-									fontWeight: "bold",
-									color: "black",
-								}}>
-								{chosenLanguage === "Arabic" ? null : null}
-							</div>
-						)}
+							{product && product.ratings && product.ratings.length > 0 ? (
+								<div className='mb-3'>{showAverageRating2(product)}</div>
+							) : (
+								<div
+									className='mb-2'
+									style={{
+										fontSize: "0.75rem",
+										fontStyle: "italic",
+										// fontWeight: "bold",
+										color: "black",
+									}}>
+									{chosenLanguage === "Arabic" ? null : null}
+								</div>
+							)}
+						</div>
 					</div>
 				</div>
 			</Fragment>
@@ -332,8 +272,8 @@ const ProductWrapper = styled.div`
 		/* box-shadow: 2.5px 2.5px 1.5px 0px rgba(0, 0, 0, 0.3); */
 		transition: var(--mainTransition);
 		min-height: 500px;
-		width: 90%;
-		border: 1px white solid;
+		width: 94%;
+		border: 1px white solid !important;
 	}
 	.card:hover {
 		box-shadow: 2.5px 2.5px 1.5px 0px rgba(0, 0, 0, 0.3);
@@ -345,7 +285,7 @@ const ProductWrapper = styled.div`
 
 	/*To zoom in into the picture when hovering */
 	.card:hover .card-img-top {
-		transform: scale(1.05);
+		transform: scale(1);
 		opacity: 0.4;
 	}
 
@@ -357,7 +297,10 @@ const ProductWrapper = styled.div`
 	.productname {
 		font-size: 14px;
 		font-weight: bold;
+		/* text-align: center; */
 		text-transform: capitalize;
+		letter-spacing: 0px;
+		font-weight: normal;
 	}
 
 	.cartoptions2 {
@@ -389,23 +332,30 @@ const ProductWrapper = styled.div`
 			height: 100%;
 		} */
 		.card {
-			min-height: 440px;
+			min-height: 420px;
+			width: 100%;
+			margin: 0px !important;
+		}
+
+		.card-body {
+			padding: 0px !important;
+			width: 100%;
 		}
 
 		.cartoptions {
-			font-size: 12px;
+			font-size: 14px;
 			display: block;
 			border-radius: 0px !important;
 		}
 
 		.cartoptions2 {
-			font-size: 12px;
+			font-size: 14px;
 			display: block;
 			border-radius: 0px !important;
 		}
 
 		.productname {
-			font-size: 10px;
+			font-size: 12px;
 		}
 	}
 `;

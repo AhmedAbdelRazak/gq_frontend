@@ -43,6 +43,7 @@ const FeaturedProducts = ({ allProducts, chosenLanguage }) => {
 					autoplaySpeed: 5000,
 					pauseOnHover: true,
 					adaptiveHeight: true,
+					// variableWidth: true,
 				},
 			},
 		],
@@ -68,8 +69,9 @@ const FeaturedProducts = ({ allProducts, chosenLanguage }) => {
 				<Slider {...settings} className='mb-5'>
 					{allFeaturedProducts &&
 						allFeaturedProducts.map((product, i) => (
-							<div className='img-fluid images ' key={i}>
+							<div className='images' key={i}>
 								<CardInHomePage
+									i={i}
 									product={product}
 									key={i}
 									chosenLanguage={chosenLanguage}
@@ -121,6 +123,17 @@ const FeaturedProductsWrapper = styled.div`
 		padding: 0px 100px 0px 100px;
 	}
 
+	.slick-slide {
+		margin: 0 0px;
+		padding: 0px !important;
+	}
+
+	/* the parent */
+	.slick-list {
+		margin: 0 0px;
+		padding: 0px !important;
+	}
+
 	@media (max-width: 1400px) {
 		.ProductSlider {
 			padding: 0px;
@@ -128,7 +141,7 @@ const FeaturedProductsWrapper = styled.div`
 	}
 	@media (max-width: 1200px) {
 		.ProductSlider {
-			padding: 0px 10px 0px 10px;
+			padding: 0px 0px 0px 0px;
 		}
 
 		h1 {
