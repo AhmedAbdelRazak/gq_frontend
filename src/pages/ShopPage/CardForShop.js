@@ -425,18 +425,6 @@ const CardForShopWrapper = styled.div`
 			margin-left: ${(props) => (props.show % 2 === 0 ? "" : "5px")};
 		}
 
-		.cartoptions {
-			font-size: 14px;
-			display: block;
-			border-radius: 0px !important;
-		}
-
-		.cartoptions2 {
-			font-size: 14px;
-			display: block;
-			border-radius: 0px !important;
-		}
-
 		.productname {
 			font-size: 12px;
 		}

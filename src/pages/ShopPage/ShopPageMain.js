@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { getColors, gettingAllProducts } from "../../apiCore";
 import MainFilter from "./Filters/MainFilter";
 import CardForShop from "./CardForShop";
+import { FilterTwoTone } from "@ant-design/icons";
 
 const ShopPageMain = ({ chosenLanguage }) => {
 	const [allProducts, setAllProducts] = useState([]);
@@ -133,6 +134,20 @@ const ShopPageMain = ({ chosenLanguage }) => {
 					maxPrice={maxPrice}
 				/>
 			</span>
+			<div className='filtersPhone'>
+				FILTERS:{" "}
+				<svg
+					width='24px'
+					height='24px'
+					viewBox='0 0 24 24'
+					version='1.1'
+					role='img'>
+					<path
+						d='M3,16.75 L3,15.25 L11.5805101,15.2501592 C11.9237855,13.6774884 13.3243842,12.5 15,12.5 C16.6756158,12.5 18.0762145,13.6774884 18.4194899,15.2501592 L21,15.25 L21,16.75 L18.4192733,16.7508322 C18.0756259,18.3230064 16.6752637,19.5 15,19.5 C13.3247363,19.5 11.9243741,18.3230064 11.5807267,16.7508322 L3,16.75 Z M15,14 C13.8954305,14 13,14.8954305 13,16 C13,17.1045695 13.8954305,18 15,18 C16.1045695,18 17,17.1045695 17,16 C17,14.8954305 16.1045695,14 15,14 Z M3,8.75 L3,7.25 L5.58051014,7.25015916 C5.92378549,5.67748844 7.32438416,4.5 9,4.5 C10.6756158,4.5 12.0762145,5.67748844 12.4194899,7.25015916 L21,7.25 L21,8.75 L12.4192733,8.75083217 C12.0756259,10.3230064 10.6752637,11.5 9,11.5 C7.32473626,11.5 5.92437411,10.3230064 5.58072667,8.75083217 L3,8.75 Z M9,6 C7.8954305,6 7,6.8954305 7,8 C7,9.1045695 7.8954305,10 9,10 C10.1045695,10 11,9.1045695 11,8 C11,6.8954305 10.1045695,6 9,6 Z'
+						id='Combined-Shape'></path>
+				</svg>
+			</div>
+
 			{/* <h1 className='my-5'>
 				All Products: {allProducts && allProducts.length}
 			</h1> */}
@@ -168,6 +183,10 @@ const ShopPageMainWrapper = styled.div`
 
 	.filters_desktop {
 		display: block;
+	}
+
+	.filtersPhone {
+		display: none;
 	}
 
 	.grid-container {
@@ -237,7 +256,7 @@ const ShopPageMainWrapper = styled.div`
 		}
 
 		.cardWrapper {
-			margin: 50px auto !important;
+			margin: 30px auto !important;
 			padding: 0px !important;
 		}
 
@@ -247,8 +266,19 @@ const ShopPageMainWrapper = styled.div`
 			margin: auto 20px;
 		}
 
+		.heroFilter {
+			min-height: 165px;
+		}
+
 		.filters_desktop {
 			display: none;
+		}
+
+		.filtersPhone {
+			display: block;
+			margin-top: 10px;
+			margin-left: 14px;
+			font-weight: bolder;
 		}
 	}
 `;

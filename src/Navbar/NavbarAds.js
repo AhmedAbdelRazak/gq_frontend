@@ -122,6 +122,7 @@ const NavbarAdsWrapper = styled.nav`
 		}
 		.slick-dots li button:before {
 			font-size: 10px;
+			display: none;
 		}
 	}
 `;
