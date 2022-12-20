@@ -711,6 +711,7 @@ export default SingleProduct;
 const SingleEmp = styled.div`
 	background: white !important;
 	width: 95%;
+	overflow-x: hidden;
 	/* margin-top: 5px; */
 	font-family: font-family: Roboto, Helvetica, Arial, sans-serif !important;
 	/* .carousel-slider {

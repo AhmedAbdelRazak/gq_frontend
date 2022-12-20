@@ -10,7 +10,7 @@ import { Carousel } from "react-responsive-carousel";
 import { showAverageRating2 } from "../SingleProduct/Rating";
 import { useCartContext } from "../../Checkout/cart_context";
 import { viewsCounter } from "../../apiCore";
-import { DollarCircleFilled } from "@ant-design/icons";
+import { ShoppingCartOutlined } from "@ant-design/icons";
 
 const CardForShop = ({
 	product,
@@ -52,6 +52,7 @@ const CardForShop = ({
 
 	var chosenProductAttributes = product.productAttributes[0];
 
+	// eslint-disable-next-line
 	const showAddToCartBtn = (showAddToCartButton) => {
 		return (
 			<Fragment>
@@ -148,7 +149,7 @@ const CardForShop = ({
 		return (
 			cartUpdate && (
 				<div>
-					<div className='input-group mb-3 '>
+					<div className='input-group mb-3'>
 						<div className='input-group-prepend'>
 							<span className='input-group-text'>Adjust Quantity</span>
 						</div>
@@ -165,7 +166,16 @@ const CardForShop = ({
 	};
 
 	const ShowImage = ({ item }) => (
-		<div className='product-img'>
+		<div className='product-wrapper'>
+			<span onClick={openSidebar}>
+				<span
+					onClick={() =>
+						addToCart(product._id, null, 1, product, chosenProductAttributes)
+					}
+					className='btn'>
+					<ShoppingCartOutlined />
+				</span>
+			</span>
 			{item &&
 				item.thumbnailImage &&
 				item.thumbnailImage[0] &&
@@ -180,18 +190,25 @@ const CardForShop = ({
 						showIndicators={false}
 						showThumbs={false}>
 						{item.thumbnailImage[0].images.map((i) => (
-							<img
-								className=' rounded mx-auto d-block product-imgs'
-								alt={item.productName}
-								src={i.url}
-								key={i.public_id}
-								style={{
-									height: "50vh",
-									width: "100%",
-									objectFit: "cover",
-									minHeight: "400px",
-								}}
-							/>
+							<Link
+								to={`/product/${product.category.categorySlug}/${product.slug}/${product._id}`}
+								onClick={() => {
+									window.scrollTo({ top: 0, behavior: "smooth" });
+									SettingViews();
+								}}>
+								<img
+									className=' rounded mx-auto d-block product-imgs'
+									alt={item.productName}
+									src={i.url}
+									key={i.public_id}
+									style={{
+										height: "50vh",
+										width: "100%",
+										objectFit: "cover",
+										minHeight: "400px",
+									}}
+								/>
+							</Link>
 						))}
 					</Carousel>
 				)}
@@ -214,20 +231,13 @@ const CardForShop = ({
 						{shouldRedirect(redirect)}
 						<div className='card-img-top center'>
 							<ImageFeat>
-								<Link
-									to={`/product/${product.category.categorySlug}/${product.slug}/${product._id}`}
-									onClick={() => {
-										window.scrollTo({ top: 0, behavior: "smooth" });
-										SettingViews();
-									}}>
-									<ShowImage item={product} />
-								</Link>
+								<ShowImage item={product} />
 							</ImageFeat>
 						</div>
-						<div>
-							{/* {showViewButton(showViewProductButton)} */}
+						{/* <div>
+							{showViewButton(showViewProductButton)}
 							{showAddToCartBtn(showAddToCartButton)}
-						</div>
+						</div> */}
 						<div className=' productname ml-2'>
 							<div className='row'>
 								<div className='col-md-8 productname col-7'>
@@ -235,12 +245,14 @@ const CardForShop = ({
 										<div className='' style={{ fontWeight: "bold" }}>
 											<span
 												style={{
-													color: "goldenrod",
-													fontSize: "20px",
+													color: "darkred",
+													fontSize: "10px",
 												}}>
-												<DollarCircleFilled />{" "}
+												<i className='fa fa-tag' aria-hidden='true'></i>{" "}
 											</span>
-											<span className='' style={{ color: "darkred" }}>
+											<span
+												className='discountText'
+												style={{ color: "darkred" }}>
 												{(
 													100 -
 													(
@@ -258,10 +270,13 @@ const CardForShop = ({
 												fontFamily: "Droid Arabic Kufi",
 												letterSpacing: "0px",
 											}}>
-											{product.productName_Arabic}
+											{product.productName_Arabic.slice(0, 20)}
 										</div>
 									) : (
-										<div className=''> {product.productName} </div>
+										<div className=''>
+											{" "}
+											{product.productName.slice(0, 20)}..{" "}
+										</div>
 									)}
 								</div>
 								<div className='col-md-4 col-5'>
@@ -338,6 +353,7 @@ const CardForShopWrapper = styled.div`
 		letter-spacing: 2px;
 		padding: 0px !important;
 		width: 100%;
+		margin-left: 7px;
 	}
 
 	.productname {
@@ -372,13 +388,33 @@ const CardForShopWrapper = styled.div`
 		transition: 0.3s;
 	}
 
+	.product-wrapper {
+		position: relative;
+	}
+
+	.product-wrapper .btn {
+		position: absolute;
+		top: 2%;
+		left: 87%;
+		z-index: 100;
+	}
+	.product-wrapper .btn svg {
+		position: absolute;
+		font-size: 30px;
+		top: 0%;
+		padding: 5px 5px;
+		border-radius: 15px;
+		color: black;
+		background: white;
+	}
+
 	@media (max-width: 680px) {
 		/* .card {
 			width: 100%;
 			height: 100%;
 		} */
 		.card {
-			min-height: 420px;
+			min-height: 330px;
 			width: 100%;
 			margin: 0px !important;
 		}
@@ -404,6 +440,9 @@ const CardForShopWrapper = styled.div`
 		.productname {
 			font-size: 12px;
 		}
+		.discountText {
+			font-size: 9px !important;
+		}
 	}
 `;
 
@@ -413,6 +452,18 @@ const ImageFeat = styled.div`
 			width: 100% !important;
 			height: 100% !important;
 			min-height: 250px !important;
+		}
+		.product-wrapper .btn {
+			position: absolute;
+			top: 3%;
+			left: 73%;
+			z-index: 100;
+			font-size: 18px;
+		}
+		.product-wrapper .btn svg {
+			position: absolute;
+			font-size: 30px;
+			top: 0%;
 		}
 	}
 `;

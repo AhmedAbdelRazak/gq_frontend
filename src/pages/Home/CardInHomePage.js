@@ -8,7 +8,7 @@ import { Carousel } from "react-responsive-carousel";
 import { showAverageRating2 } from "../SingleProduct/Rating";
 import { useCartContext } from "../../Checkout/cart_context";
 import { viewsCounter } from "../../apiCore";
-import { DollarCircleFilled } from "@ant-design/icons";
+import { ShoppingCartOutlined } from "@ant-design/icons";
 
 const CardInHomePage = ({
 	product,
@@ -54,6 +54,7 @@ const CardInHomePage = ({
 	const productPrice =
 		product && product.productAttributes.map((i) => i.price)[0];
 
+	// eslint-disable-next-line
 	const showAddToCartBtn = (showAddToCartButton) => {
 		return (
 			<Fragment>
@@ -129,7 +130,16 @@ const CardInHomePage = ({
 	};
 
 	const ShowImage = ({ item }) => (
-		<div className='product-img'>
+		<div className='product-wrapper'>
+			<span onClick={openSidebar}>
+				<span
+					onClick={() =>
+						addToCart(product._id, null, 1, product, chosenProductAttributes)
+					}
+					className='btn'>
+					<ShoppingCartOutlined />
+				</span>
+			</span>
 			{item &&
 				item.thumbnailImage &&
 				item.thumbnailImage[0] &&
@@ -144,17 +154,25 @@ const CardInHomePage = ({
 						showIndicators={false}
 						showThumbs={false}>
 						{item.thumbnailImage[0].images.map((i) => (
-							<img
-								className=' rounded  d-block product-imgs'
-								alt={item.productName}
-								src={i.url}
-								key={i.public_id}
-								style={{
-									width: "100%",
-									objectFit: "cover",
-									minHeight: "400px",
-								}}
-							/>
+							<Link
+								to={`/product/${product.category.categorySlug}/${product.slug}/${product._id}`}
+								onClick={() => {
+									window.scrollTo({ top: 0, behavior: "smooth" });
+									SettingViews();
+								}}>
+								<img
+									className=' rounded mx-auto d-block product-imgs'
+									alt={item.productName}
+									src={i.url}
+									key={i.public_id}
+									style={{
+										height: "50vh",
+										width: "100%",
+										objectFit: "cover",
+										minHeight: "400px",
+									}}
+								/>
+							</Link>
 						))}
 					</Carousel>
 				)}
@@ -182,10 +200,10 @@ const CardInHomePage = ({
 								</Link>
 							</ImageFeat>
 						</div>
-						<div>
-							{/* {showViewButton(showViewProductButton)} */}
+						{/* <div>
+							{showViewButton(showViewProductButton)}
 							{showAddToCartBtn(showAddToCartButton)}
-						</div>
+						</div> */}
 						<div className=' productname ml-2'>
 							<div className='row'>
 								<div className='col-md-8 productname col-7'>
@@ -193,12 +211,14 @@ const CardInHomePage = ({
 										<div className='' style={{ fontWeight: "bold" }}>
 											<span
 												style={{
-													color: "goldenrod",
-													fontSize: "20px",
+													color: "darkred",
+													fontSize: "10px",
 												}}>
-												<DollarCircleFilled />{" "}
+												<i className='fa fa-tag' aria-hidden='true'></i>{" "}
 											</span>
-											<span className='' style={{ color: "darkred" }}>
+											<span
+												className='discountText'
+												style={{ color: "darkred" }}>
 												{(
 													100 -
 													(
@@ -216,10 +236,13 @@ const CardInHomePage = ({
 												fontFamily: "Droid Arabic Kufi",
 												letterSpacing: "0px",
 											}}>
-											{product.productName_Arabic}
+											{product.productName_Arabic.slice(0, 20)}
 										</div>
 									) : (
-										<div className=''> {product.productName} </div>
+										<div className=''>
+											{" "}
+											{product.productName.slice(0, 20)}..{" "}
+										</div>
 									)}
 								</div>
 								<div className='col-md-4 col-5'>
@@ -272,9 +295,11 @@ const ProductWrapper = styled.div`
 		/* box-shadow: 2.5px 2.5px 1.5px 0px rgba(0, 0, 0, 0.3); */
 		transition: var(--mainTransition);
 		min-height: 500px;
-		width: 94%;
+		width: 100%;
 		border: 1px white solid !important;
+		margin-top: 50px;
 	}
+
 	.card:hover {
 		box-shadow: 2.5px 2.5px 1.5px 0px rgba(0, 0, 0, 0.3);
 		cursor: pointer;
@@ -292,6 +317,9 @@ const ProductWrapper = styled.div`
 	.card-body {
 		font-weight: bold;
 		letter-spacing: 2px;
+		padding: 0px !important;
+		width: 100%;
+		margin-left: 7px;
 	}
 
 	.productname {
@@ -326,13 +354,33 @@ const ProductWrapper = styled.div`
 		transition: 0.3s;
 	}
 
+	.product-wrapper {
+		position: relative;
+	}
+
+	.product-wrapper .btn {
+		position: absolute;
+		top: 2%;
+		left: 87%;
+		z-index: 100;
+	}
+	.product-wrapper .btn svg {
+		position: absolute;
+		font-size: 30px;
+		top: 0%;
+		padding: 5px 5px;
+		border-radius: 15px;
+		color: black;
+		background: white;
+	}
+
 	@media (max-width: 680px) {
 		/* .card {
 			width: 100%;
 			height: 100%;
 		} */
 		.card {
-			min-height: 420px;
+			min-height: 330px;
 			width: 100%;
 			margin: 0px !important;
 		}
@@ -340,6 +388,7 @@ const ProductWrapper = styled.div`
 		.card-body {
 			padding: 0px !important;
 			width: 100%;
+			margin-left: ${(props) => (props.show % 2 === 0 ? "" : "5px")};
 		}
 
 		.cartoptions {
@@ -357,6 +406,9 @@ const ProductWrapper = styled.div`
 		.productname {
 			font-size: 12px;
 		}
+		.discountText {
+			font-size: 9px !important;
+		}
 	}
 `;
 
@@ -366,6 +418,18 @@ const ImageFeat = styled.div`
 			width: 100% !important;
 			height: 100% !important;
 			min-height: 250px !important;
+		}
+		.product-wrapper .btn {
+			position: absolute;
+			top: 3%;
+			left: 73%;
+			z-index: 100;
+			font-size: 18px;
+		}
+		.product-wrapper .btn svg {
+			position: absolute;
+			font-size: 30px;
+			top: 0%;
 		}
 	}
 `;
