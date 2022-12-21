@@ -51,6 +51,7 @@ const FiltersModal = ({
 						<option value='Delivered'>Delivered</option>
 						<option value='Return'>Returns</option>
 						<option value='Exchanged'>Exchange</option>
+						<option value='Cancelled'>Cancelled</option>
 					</select>
 				</div>
 			</div>

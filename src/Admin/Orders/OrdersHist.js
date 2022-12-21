@@ -176,6 +176,17 @@ const OrdersHist = () => {
 							.filter((i) => i.status === "Delivered")
 							.sort(sortOrdersAscendingly),
 					);
+				} else if (selectedFilter === "Cancelled") {
+					setAllOrders(
+						data
+							.filter((i) => i.status === "Cancelled")
+							.sort(sortOrdersAscendingly),
+					);
+					setExcelDataSet(
+						data
+							.filter((i) => i.status === "Cancelled")
+							.sort(sortOrdersAscendingly),
+					);
 				} else if (selectedFilter === "NoInvoice") {
 					setAllOrders(
 						data
@@ -345,6 +356,7 @@ const OrdersHist = () => {
 				row.invoiceNumber.toString().toLowerCase().indexOf(q) > -1 ||
 				row.OTNumber.toString().toLowerCase().indexOf(q) > -1 ||
 				row.trackingNumber.toString().toLowerCase().indexOf(q) > -1 ||
+				row.orderSource.toString().toLowerCase().indexOf(q) > -1 ||
 				row.chosenShippingOption[0].carrierName
 					.toString()
 					.toLowerCase()

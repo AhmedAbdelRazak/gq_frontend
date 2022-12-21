@@ -516,6 +516,48 @@ const SingleOrderPage = (props) => {
 							<div className='col-md-4 mx-auto text-center'>
 								<hr />
 							</div>
+							{singleOrder.returnedItems.length === 0 &&
+							(singleOrder.status.includes("Return") ||
+								singleOrder.status.includes("Returned")) ? (
+								<>
+									<div
+										style={{
+											fontSize: "1.25rem",
+											fontWeight: "bolder",
+											marginTop: "30px",
+										}}>
+										Order Return Details:
+									</div>
+									<div
+										className='row my-3'
+										style={{ border: "lightgrey solid 2px" }}>
+										<div
+											className='col-md-3 mx-auto my-3'
+											style={{ fontWeight: "bold" }}>
+											Refund Number: {singleOrder.refundNumber}
+										</div>
+										<div
+											className='col-md-3 mx-auto my-3'
+											style={{ fontWeight: "bold" }}>
+											Refund Method: {singleOrder.refundMethod}
+										</div>
+										<div
+											className='col-md-3 mx-auto my-3'
+											style={{ fontWeight: "bold" }}>
+											Reason For Return: {singleOrder.reasonForReturn}
+										</div>
+										<div
+											className='col-md-3 mx-auto my-3'
+											style={{ fontWeight: "bold" }}>
+											Return Date:{" "}
+											{new Date(singleOrder.returnDate).toDateString()}
+										</div>
+									</div>
+								</>
+							) : null}
+							<div className='col-md-4 mx-auto text-center'>
+								<hr />
+							</div>
 							<div
 								style={{
 									fontSize: "1.25rem",
@@ -969,6 +1011,16 @@ const SingleOrderPage = (props) => {
 								</>
 							)}
 
+							{singleOrder.returnedItems.length === 0 &&
+							(singleOrder.status.includes("Return") ||
+								singleOrder.status.includes("Returned")) ? (
+								<div className='mt-2' style={{ fontSize: "1.2rem" }}>
+									Refund Amount:{" "}
+									<strong style={{ color: "darkblue" }}>
+										{singleOrder.returnAmount} L.E.
+									</strong>
+								</div>
+							) : null}
 							<div className='col-md-5 mx-auto text-center my-5'>
 								<button
 									className='btn btn-success btn-block mb-3 mx-auto text-center'

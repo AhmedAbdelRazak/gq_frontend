@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { getColors, gettingAllProducts } from "../../apiCore";
 import MainFilter from "./Filters/MainFilter";
 import CardForShop from "./CardForShop";
-import { FilterTwoTone } from "@ant-design/icons";
+// import { FilterTwoTone } from "@ant-design/icons";
 
 const ShopPageMain = ({ chosenLanguage }) => {
 	const [allProducts, setAllProducts] = useState([]);
