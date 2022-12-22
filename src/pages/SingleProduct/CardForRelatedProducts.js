@@ -3,15 +3,18 @@
 import React, { useState, Fragment } from "react";
 import { Link, Redirect } from "react-router-dom";
 import styled from "styled-components";
-import { addItem, updateItem, removeItem } from "../../cartHelpers";
-import { views, viewsCounter } from "../../apiCore";
+// eslint-disable-next-line
+import { updateItem, removeItem } from "../../cartHelpers";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
-import { showAverageRating2 } from "../SingleProduct/Rating";
-import { useCartContext } from "../../checkout/cart_context";
+import { showAverageRating2 } from "./Rating";
+import { useCartContext } from "../../Checkout/cart_context";
+import { viewsCounter } from "../../apiCore";
+import { ShoppingCartOutlined } from "@ant-design/icons";
 
 const CardForRelatedProducts = ({
 	product,
+	i,
 	chosenLanguage,
 	// eslint-disable-next-line
 	showViewProductButton = true,
@@ -22,54 +25,24 @@ const CardForRelatedProducts = ({
 	run = undefined,
 	// changeCartSize
 }) => {
+	// eslint-disable-next-line
 	const [redirect, setRedirect] = useState(false);
 	const [count, setCount] = useState(product.count);
-	// eslint-disable-next-line
-	const [viewss, setViewss] = useState(0);
 	// eslint-disable-next-line
 	const [viewsCounterr, setViewsCounterr] = useState(0);
 
 	const SettingViews = () => {
 		const productId = product && product._id;
-		const viewsLength = product && product.views && product.views.length + 1;
+		const viewsLength =
+			product && product.viewsCount >= 1 ? product.viewsCount + 1 : 1;
 
-		views(productId).then((data) => {
-			setViewss(data.views.length);
-		});
 		viewsCounter(productId, viewsLength).then((data) => {
-			setViewsCounterr(data.views.length);
+			setViewsCounterr(data);
 		});
 		// window.scrollTo(0, 0);
 	};
 
 	const { addToCart, openSidebar } = useCartContext();
-
-	// eslint-disable-next-line
-	const showViewButton = (showViewProductButton) => {
-		return (
-			showViewProductButton && (
-				<Link
-					to={`/product/${
-						product && product.category && product.category.categorySlug
-					}/${product.slug}/${product._id}`}
-					className='mr-2'
-					onClick={() => {
-						window.scrollTo(0, 0);
-					}}>
-					<button className='btn btn-outline-primary mt-2 mb-2 card-btn-1 viewproduct'>
-						View Product
-					</button>
-				</Link>
-			)
-		);
-	};
-	// eslint-disable-next-line
-	const addToCarts = () => {
-		// console.log('added');
-		addItem(product, setRedirect(true));
-
-		// window.scrollTo(0, 0);
-	};
 
 	const shouldRedirect = (redirect) => {
 		if (redirect) {
@@ -77,6 +50,9 @@ const CardForRelatedProducts = ({
 		}
 	};
 
+	var chosenProductAttributes = product.productAttributes[0];
+
+	// eslint-disable-next-line
 	const showAddToCartBtn = (showAddToCartButton) => {
 		return (
 			<Fragment>
@@ -88,7 +64,15 @@ const CardForRelatedProducts = ({
 									{showAddToCartButton && (
 										<span onClick={openSidebar}>
 											<span
-												onClick={() => addToCart(product._id, null, 1, product)}
+												onClick={() =>
+													addToCart(
+														product._id,
+														null,
+														1,
+														product,
+														chosenProductAttributes,
+													)
+												}
 												className='btn btn-warning mt-2 mb-2 card-btn-1  cartoptions2'>
 												أضف إلى السلة
 											</span>
@@ -112,9 +96,17 @@ const CardForRelatedProducts = ({
 									{showAddToCartButton && (
 										<span onClick={openSidebar}>
 											<span
-												onClick={() => addToCart(product._id, null, 1, product)}
+												onClick={() =>
+													addToCart(
+														product._id,
+														null,
+														1,
+														product,
+														chosenProductAttributes,
+													)
+												}
 												className='btn btn-warning mt-2 mb-2 card-btn-1  cartoptions'>
-												Add to cart
+												Add to Cart
 											</span>
 										</span>
 									)}
@@ -124,7 +116,7 @@ const CardForRelatedProducts = ({
 									<button
 										className='btn btn-warning mt-2 mb-2 card-btn-1 cartoptions'
 										disabled>
-										Add to cart
+										Add to Cart
 									</button>
 								</Fragment>
 							)}
@@ -135,12 +127,9 @@ const CardForRelatedProducts = ({
 		);
 	};
 
+	// eslint-disable-next-line
 	const showStock = (quantity) => {
-		return quantity > 0 ? (
-			<span className='badge badge-primary badge-pill stockStatus'>
-				In Stock{" "}
-			</span>
-		) : (
+		return quantity > 0 ? null : (
 			<span className='badge badge-danger badge-pill stockStatus'>
 				Sold Out{" "}
 			</span>
@@ -155,11 +144,12 @@ const CardForRelatedProducts = ({
 		}
 	};
 
+	// eslint-disable-next-line
 	const showCartUpdateOptions = (cartUpdate) => {
 		return (
 			cartUpdate && (
 				<div>
-					<div className='input-group mb-3 '>
+					<div className='input-group mb-3'>
 						<div className='input-group-prepend'>
 							<span className='input-group-text'>Adjust Quantity</span>
 						</div>
@@ -174,60 +164,141 @@ const CardForRelatedProducts = ({
 			)
 		);
 	};
-	const showRemoveButton = (showRemoveProductButton) => {
-		return (
-			showRemoveProductButton && (
-				<button
-					onClick={() => {
-						removeItem(product._id);
-						setRun(!run); // run useEffect in parent Cart
-					}}
-					className='btn btn-outline-danger mt-2 mb-2'>
-					Remove Product
-				</button>
-			)
-		);
-	};
 
 	const ShowImage = ({ item }) => (
-		<div className='product-img' style={{ borderRadius: "50%" }}>
-			{item && item.images && (
-				<Carousel
-					showArrows={false}
-					dynamicHeight={true}
-					autoPlay
-					infiniteLoop
-					interval={5000}
-					showStatus={false}
-					showIndicators={false}
-					showThumbs={false}>
-					{item.images.map((i) => (
-						<img
-							className=' rounded mx-auto d-block product-imgs'
-							alt={item.productName}
-							src={i.url}
-							key={i.public_id}
-							style={{ height: "300px", width: "300px", objectFit: "cover" }}
-						/>
-					))}
-				</Carousel>
-			)}
+		<div className='product-wrapper'>
+			<span onClick={openSidebar}>
+				<span
+					onClick={() =>
+						addToCart(product._id, null, 1, product, chosenProductAttributes)
+					}
+					className='btn'>
+					<ShoppingCartOutlined />
+				</span>
+			</span>
+			{item &&
+				item.thumbnailImage &&
+				item.thumbnailImage[0] &&
+				item.thumbnailImage[0].images && (
+					<Carousel
+						showArrows={false}
+						dynamicHeight={true}
+						autoPlay
+						infiniteLoop
+						interval={5000}
+						showStatus={false}
+						showIndicators={false}
+						showThumbs={false}>
+						{item.thumbnailImage[0].images.map((i) => (
+							<Link
+								to={`/product/${product.category.categorySlug}/${product.slug}/${product._id}`}
+								onClick={() => {
+									window.scrollTo({ top: 0, behavior: "smooth" });
+									SettingViews();
+								}}>
+								<img
+									className=' rounded mx-auto d-block product-imgs'
+									alt={item.productName}
+									src={i.url}
+									key={i.public_id}
+									style={{
+										height: "50vh",
+										width: "100%",
+										objectFit: "cover",
+										minHeight: "400px",
+									}}
+								/>
+							</Link>
+						))}
+					</Carousel>
+				)}
 		</div>
 	);
-
 	// eslint-disable-next-line
 	const productNameModified =
 		product && product.productName && product.productName.split(" ").join("-");
 
+	const productPriceAfterDsicount =
+		product && product.productAttributes.map((i) => i.priceAfterDiscount)[0];
+	const productPrice =
+		product && product.productAttributes.map((i) => i.price)[0];
+
 	return (
-		<ProductWrapper className='my-3'>
+		<CardForRelatedProductsWrapper show={i}>
 			<Fragment>
-				<div
-					className='card '
-					style={{ borderRadius: "5%", backgroundColor: "white" }}>
+				<div className='card '>
 					<div className='card-body  '>
 						{shouldRedirect(redirect)}
-						<div className='card-img-top center img'>
+						<div className='card-img-top center'>
+							<ImageFeat>
+								<ShowImage item={product} />
+							</ImageFeat>
+						</div>
+						{/* <div>
+							{showViewButton(showViewProductButton)}
+							{showAddToCartBtn(showAddToCartButton)}
+						</div> */}
+						<div className=' productname ml-2'>
+							<div className='row'>
+								<div className='col-md-8 productname col-7'>
+									{productPrice <= productPriceAfterDsicount ? null : (
+										<div className='' style={{ fontWeight: "bold" }}>
+											<span
+												style={{
+													color: "darkred",
+													fontSize: "10px",
+												}}>
+												<i className='fa fa-tag' aria-hidden='true'></i>{" "}
+											</span>
+											<span
+												className='discountText'
+												style={{ color: "darkred" }}>
+												{(
+													100 -
+													(
+														(productPriceAfterDsicount / productPrice) *
+														100
+													).toFixed(2)
+												).toFixed(0)}
+												% OFF
+											</span>
+										</div>
+									)}
+									{chosenLanguage === "Arabic" ? (
+										<div
+											style={{
+												fontFamily: "Droid Arabic Kufi",
+												letterSpacing: "0px",
+											}}>
+											{product.productName_Arabic.slice(0, 20)}
+										</div>
+									) : (
+										<div className=''>
+											{" "}
+											{product.productName.slice(0, 20)}..{" "}
+										</div>
+									)}
+								</div>
+								<div className='col-md-4 col-5'>
+									{productPrice <= productPriceAfterDsicount ? (
+										<span style={{ fontWeight: "bold" }}>
+											{productPrice} L.E.
+										</span>
+									) : (
+										<span>
+											<div className='mt-2'>
+												<s style={{ fontWeight: "bold", color: "red" }}>
+													{productPrice} L.E.
+												</s>
+											</div>
+											<div style={{ fontWeight: "bold" }}>
+												{productPriceAfterDsicount} L.E.
+											</div>
+										</span>
+									)}
+								</div>
+							</div>
+
 							{product && product.ratings && product.ratings.length > 0 ? (
 								<div className='mb-3'>{showAverageRating2(product)}</div>
 							) : (
@@ -236,113 +307,35 @@ const CardForRelatedProducts = ({
 									style={{
 										fontSize: "0.75rem",
 										fontStyle: "italic",
-										fontWeight: "bold",
+										// fontWeight: "bold",
 										color: "black",
 									}}>
-									{chosenLanguage === "Arabic" ? "لا يوجد تقييم" : "No Ratings"}
+									{chosenLanguage === "Arabic" ? null : null}
 								</div>
 							)}
-							<ImageFeat>
-								<Link
-									to={`/product/${
-										product && product.category && product.category.categorySlug
-									}/${product.slug}/${product._id}`}
-									onClick={() => {
-										window.scrollTo({ top: 0, behavior: "smooth" });
-										SettingViews();
-									}}>
-									<ShowImage item={product} />
-								</Link>
-							</ImageFeat>
 						</div>
-						<div
-							className='mt-2 mb-3 productname'
-							style={{
-								fontSize: "15px",
-								fontWeight: "bold",
-								textAlign: "center",
-								textTransform: "capitalize",
-							}}>
-							{chosenLanguage === "Arabic"
-								? product.productName_Arabic
-								: product.productName}
-						</div>
-
-						<div className='row my-2'>
-							{product.price > product.priceAfterDiscount ? (
-								<div
-									className='productprice col-md-5 mx-auto'
-									style={{
-										fontSize: "15px",
-										fontWeight: "bold",
-										textAlign: "center",
-									}}>
-									<span className='productprice'>
-										Price: <s style={{ color: "red" }}>{product.price} KD</s>{" "}
-										{product.priceAfterDiscount} KD
-									</span>
-								</div>
-							) : (
-								<div
-									className='productprice col-md-5 mx-auto'
-									style={{
-										fontSize: "15px",
-										fontWeight: "bold",
-										textAlign: "center",
-									}}>
-									Price: {product.price} KD
-								</div>
-							)}
-							<div className='col-md-3 mx-auto'>
-								{showStock(product.quantity)}
-							</div>
-						</div>
-
-						<div onClick={SettingViews}>
-							{/* {showViewButton(showViewProductButton)} */}
-							{showAddToCartBtn(showAddToCartButton)}
-						</div>
-						{showRemoveButton(showRemoveProductButton)}
-						{showCartUpdateOptions(cartUpdate)}
 					</div>
 				</div>
 			</Fragment>
-		</ProductWrapper>
+		</CardForRelatedProductsWrapper>
 	);
 };
 
 export default CardForRelatedProducts;
 
-const ProductWrapper = styled.div`
-	.cards {
-		text-align: center;
-		box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.3);
-		transition: var(--mainTransition);
-		height: 100%;
-		width: 90%;
-		-webkit-animation: fadein 3s; /* Safari, Chrome and Opera > 12.1 */
-		-moz-animation: fadein 3s; /* Firefox < 16 */
-		-ms-animation: fadein 3s; /* Internet Explorer */
-		-o-animation: fadein 3s; /* Opera < 12.1 */
-		animation: fadein 3s;
-		@keyframes fadein {
-			from {
-				opacity: 0;
-			}
-			to {
-				opacity: 1;
-			}
-		}
-	}
+const CardForRelatedProductsWrapper = styled.div`
 	.card {
-		text-align: center;
-		box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.3);
+		/* text-align: center; */
+		/* box-shadow: 2.5px 2.5px 1.5px 0px rgba(0, 0, 0, 0.3); */
 		transition: var(--mainTransition);
-		height: 100%;
-		width: 90%;
+		min-height: 500px;
+		width: 100%;
+		border: 1px white solid !important;
+		margin-top: 50px;
 	}
+
 	.card:hover {
-		box-shadow: 7px 10px 5px 0px rgba(0, 0, 0, 0.5);
+		box-shadow: 2.5px 2.5px 1.5px 0px rgba(0, 0, 0, 0.3);
 		cursor: pointer;
 	}
 	.card-img-top {
@@ -351,17 +344,68 @@ const ProductWrapper = styled.div`
 
 	/*To zoom in into the picture when hovering */
 	.card:hover .card-img-top {
-		transform: scale(1.1);
-		opacity: 0.7;
+		transform: scale(1);
+		opacity: 0.4;
 	}
 
 	.card-body {
 		font-weight: bold;
 		letter-spacing: 2px;
+		padding: 0px !important;
+		width: 100%;
+		margin-left: 7px;
 	}
 
 	.productname {
 		font-size: 14px;
+		font-weight: bold;
+		/* text-align: center; */
+		text-transform: capitalize;
+		letter-spacing: 0px;
+		font-weight: normal;
+	}
+
+	.cartoptions2 {
+		font-family: "Droid Arabic Kufi";
+		letter-spacing: 0px;
+		background-color: #cacaca;
+		transition: 0.3s;
+	}
+	.cartoptions {
+		background-color: #cacaca;
+		border: none;
+		transition: 0.3s;
+	}
+
+	.cartoptions:hover {
+		background-color: goldenrod;
+		border: none;
+		transition: 0.3s;
+	}
+	.cartoptions2:hover {
+		background-color: goldenrod;
+		border: none;
+		transition: 0.3s;
+	}
+
+	.product-wrapper {
+		position: relative;
+	}
+
+	.product-wrapper .btn {
+		position: absolute;
+		top: 2%;
+		left: 87%;
+		z-index: 100;
+	}
+	.product-wrapper .btn svg {
+		position: absolute;
+		font-size: 30px;
+		top: 0%;
+		padding: 5px 5px;
+		border-radius: 15px;
+		color: black;
+		background: white;
 	}
 
 	@media (max-width: 680px) {
@@ -369,30 +413,45 @@ const ProductWrapper = styled.div`
 			width: 100%;
 			height: 100%;
 		} */
-		.productname {
-			font-size: 12px !important;
+		.card {
+			min-height: 330px;
+			width: 100%;
+			margin: 0px !important;
 		}
 
-		.productprice {
-			font-size: 11px !important;
+		.card-body {
+			padding: 0px !important;
+			width: 100%;
+			margin-left: ${(props) => (props.show % 2 === 0 ? "" : "5px")};
 		}
-		.stockStatus {
-			font-size: 10px;
-		}
-		.cartoptions {
+
+		.productname {
 			font-size: 12px;
 		}
-		.viewproduct {
-			font-size: 12px;
+		.discountText {
+			font-size: 9px !important;
 		}
 	}
 `;
 
 const ImageFeat = styled.div`
-	@media (max-width: 680px) {
+	@media (max-width: 750px) {
 		.product-imgs {
-			width: 130px !important;
-			height: 130px !important;
+			width: 100% !important;
+			height: 100% !important;
+			min-height: 250px !important;
+		}
+		.product-wrapper .btn {
+			position: absolute;
+			top: 3%;
+			left: 73%;
+			z-index: 100;
+			font-size: 18px;
+		}
+		.product-wrapper .btn svg {
+			position: absolute;
+			font-size: 30px;
+			top: 0%;
 		}
 	}
 `;

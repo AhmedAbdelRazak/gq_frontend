@@ -709,6 +709,14 @@ const AddProduct = () => {
 			activeProduct: activeProduct,
 			chosenSeason: chosenSeason,
 			featuredProduct: featured,
+			policy: "",
+			policy_Arabic: "",
+			DNA: "",
+			DNA_Arabic: "",
+			Specs: "",
+			Specs_Arabic: "",
+			fitCare: "",
+			fitCare_Arabic: "",
 		};
 
 		createProduct(user._id, token, values).then((data) => {

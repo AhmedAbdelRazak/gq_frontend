@@ -32,7 +32,10 @@ import { Helmet } from "react-helmet";
 import DisplayImages from "./DisplayImages";
 import HistoricalComments from "./HistoricalComments";
 import ColorsAndSizes from "./ColorsAndSizes";
-// import CardForRelatedProducts from "./CardForRelatedProducts";
+import CardForRelatedProducts from "./CardForRelatedProducts";
+import "antd/dist/antd.css";
+import { Collapse } from "antd";
+const { Panel } = Collapse;
 
 const SingleProduct = (props) => {
 	const [Product, setProduct] = useState({});
@@ -147,13 +150,30 @@ const SingleProduct = (props) => {
 				];
 				setAllSizes(uniqueSizesArray);
 
-				//AllSizes
+				//AllColors
 				var colorsArray = data.productAttributes.map((i) => i.color);
 
 				let uniqueColorArray = [
 					...new Map(colorsArray.map((item) => [item, item])).values(),
 				];
-				setAllAddedColors(uniqueColorArray);
+
+				var colorsAndImages = data.productAttributes.map((i) => {
+					return {
+						color: i.color,
+						productImages:
+							data.productAttributes[uniqueColorArray.indexOf(i.color)]
+								.productImages,
+					};
+				});
+
+				let uniqueColorArrayFinal = [
+					...new Map(
+						colorsAndImages.map((item) => [item["color"], item]),
+					).values(),
+				];
+
+				console.log(uniqueColorArrayFinal, "uniqueColorArrayFinal");
+				setAllAddedColors(uniqueColorArrayFinal);
 
 				//consolidating All Images
 				var imagesArray = data.productAttributes.map((i) =>
@@ -488,7 +508,7 @@ const SingleProduct = (props) => {
 									textTransform: "capitalize",
 									fontWeight: "bold",
 								}}>
-								Product Name: {Product.productName}
+								{Product.productName}
 								{Product && Product.ratings && Product.ratings.length > 0 ? (
 									showAverageRating(Product)
 								) : (
@@ -517,33 +537,161 @@ const SingleProduct = (props) => {
 								colorSelected={colorSelected}
 								loading={loading}
 							/>
-
-							<hr />
-							<div className='productDescriptionWrapper'>
-								<p
-									className='text-capitalize text-title mt-4'
-									style={{ color: "#0052a5" }}>
-									A little bit about "{Product.productName}":{" "}
-								</p>
-
-								<p
+							{Product && Product.policy ? (
+								<div
 									className='single-Product-Description-Style'
-									style={{ fontSize: "0.85rem" }}>
+									style={{
+										fontSize: "0.85rem",
+										padding: "20px",
+										background: "rgb(245, 245, 245)",
+										borderRadius: "5px",
+										margin: "10px 5px",
+									}}>
 									<span className=''>
 										{Product &&
-											Product.description &&
-											selectedFeedbackComments(
-												Product && Product.description,
-											).map((cc, ii) => {
-												return (
-													<div key={ii} className='ml-3 my-2'>
-														<strong>{cc}</strong>
-													</div>
-												);
-											})}
+											Product.policy &&
+											selectedFeedbackComments(Product && Product.policy).map(
+												(cc, ii) => {
+													return (
+														<div key={ii} className='ml-3 my-2'>
+															<strong>{cc}</strong>
+														</div>
+													);
+												},
+											)}
 									</span>
-								</p>
-							</div>
+								</div>
+							) : null}
+
+							<hr />
+							<Collapse
+								style={{ background: "#fafafa", margin: "0px 10px 0px 0px" }}
+								accordion>
+								<Panel
+									collapsible
+									style={{ marginBottom: "5px" }}
+									header={
+										<span style={{ fontWeight: "bold", color: "black" }}>
+											Product Description
+										</span>
+									}>
+									<div className='productDescriptionWrapper'>
+										<p
+											className='single-Product-Description-Style'
+											style={{ fontSize: "0.85rem" }}>
+											<span className=''>
+												{Product &&
+													Product.description &&
+													selectedFeedbackComments(
+														Product && Product.description,
+													).map((cc, ii) => {
+														return (
+															<div key={ii} className='ml-3 my-2'>
+																<>{cc}</>
+															</div>
+														);
+													})}
+											</span>
+										</p>
+									</div>
+								</Panel>
+
+								{Product && Product.DNA ? (
+									<Panel
+										collapsible
+										showArrow={true}
+										style={{ marginBottom: "5px" }}
+										header={
+											<span style={{ fontWeight: "bold", color: "black" }}>
+												Product DNA
+											</span>
+										}>
+										<div className='productDescriptionWrapper'>
+											<p
+												className='single-Product-Description-Style'
+												style={{ fontSize: "0.85rem" }}>
+												<span className=''>
+													{Product &&
+														Product.DNA &&
+														selectedFeedbackComments(
+															Product && Product.DNA,
+														).map((cc, ii) => {
+															return (
+																<div key={ii} className='ml-3 my-2'>
+																	<>{cc}</>
+																</div>
+															);
+														})}
+												</span>
+											</p>
+										</div>
+									</Panel>
+								) : null}
+
+								{Product && Product.Specs ? (
+									<Panel
+										collapsible
+										showArrow={true}
+										style={{ marginBottom: "5px" }}
+										header={
+											<span style={{ fontWeight: "bold", color: "black" }}>
+												Product Specs
+											</span>
+										}>
+										<div className='productDescriptionWrapper'>
+											<p
+												className='single-Product-Description-Style'
+												style={{ fontSize: "0.85rem" }}>
+												<span className=''>
+													{Product &&
+														Product.Specs &&
+														selectedFeedbackComments(
+															Product && Product.Specs,
+														).map((cc, ii) => {
+															return (
+																<div key={ii} className='ml-3 my-2'>
+																	<>{cc}</>
+																</div>
+															);
+														})}
+												</span>
+											</p>
+										</div>
+									</Panel>
+								) : null}
+
+								{Product && Product.fitCare ? (
+									<Panel
+										collapsible
+										showArrow={true}
+										style={{ marginBottom: "5px" }}
+										header={
+											<span style={{ fontWeight: "bold", color: "black" }}>
+												Fit & Care
+											</span>
+										}>
+										<div className='productDescriptionWrapper'>
+											<p
+												className='single-Product-Description-Style'
+												style={{ fontSize: "0.85rem" }}>
+												<span className=''>
+													{Product &&
+														Product.fitCare &&
+														selectedFeedbackComments(
+															Product && Product.fitCare,
+														).map((cc, ii) => {
+															return (
+																<div key={ii} className='ml-3 my-2'>
+																	<>{cc}</>
+																</div>
+															);
+														})}
+												</span>
+											</p>
+										</div>
+									</Panel>
+								) : null}
+							</Collapse>
 
 							<br />
 							<br />
@@ -672,25 +820,30 @@ const SingleProduct = (props) => {
 							</div>
 						</div>
 					</div>
-					{/* {relatedProducts && relatedProducts.length > 0 ? (
+					{relatedProducts && relatedProducts.length > 0 ? (
 						<ProductWrapperRelated>
 							<React.Fragment>
-								<div className='title mb-2'>
-									<h1 className='title'>Products You May Like!</h1>
+								<div className='title'>
+									<h1 className='title'>You May Also Like!</h1>
 								</div>
 							</React.Fragment>
-							<div className='container-fluid my-3 ProductSlider'>
+							<div className='container-fluid my-1 ProductSlider'>
 								<Slider {...settings} className='mb-5'>
 									{relatedProducts &&
 										relatedProducts.map((product, i) => (
 											<div className='img-fluid images ' key={i}>
-												<CardForRelatedProducts product={product} key={i} />
+												<CardForRelatedProducts
+													i={i}
+													product={product}
+													key={i}
+													// chosenLanguage={chosenLanguage}
+												/>
 											</div>
 										))}
 								</Slider>
 							</div>
 						</ProductWrapperRelated>
-					) : null} */}
+					) : null}
 					<div className='p-5'>
 						<HistoricalComments
 							loading={loading}
@@ -728,9 +881,14 @@ const SingleEmp = styled.div`
 	/* .control-dots li {
 		background-color: black !important;
 	} */
+
+	.slider-wrapper {
+		width: 55%;
+		height: 55%;
+	}
 	.slider img {
 		width: 100%;
-		height: 75%;
+		height: 100%;
 		object-fit: cover !important;
 	}
 	
@@ -780,6 +938,11 @@ const SingleEmp = styled.div`
 		.control-dots {
 			display: none !important;
 		}
+
+		.slider-wrapper {
+		width: 100%;
+		height: 100%;
+	}
 		
 	}
 `;
@@ -791,9 +954,10 @@ const ProductWrapperRelated = styled.div`
 	.title {
 		text-align: center;
 		font-size: 2rem;
-		letter-spacing: 7px;
+		/* letter-spacing: 1px; */
 		font-weight: bold;
-		text-shadow: 3px 3px 10px;
+		text-transform: uppercase;
+		/* text-shadow: 3px 3px 10px; */
 	}
 
 	.titleArabic {
@@ -806,6 +970,16 @@ const ProductWrapperRelated = styled.div`
 
 	.ProductSlider {
 		padding: 0px 100px 0px 100px;
+	}
+
+	.slider-wrapper {
+		width: 100% !important;
+		height: 100% !important;
+	}
+	.slider img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover !important;
 	}
 
 	@media (max-width: 1400px) {

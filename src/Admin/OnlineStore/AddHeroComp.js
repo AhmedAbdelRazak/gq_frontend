@@ -24,6 +24,9 @@ const AddHeroComp = () => {
 	const [thumbnail, setThumbnail] = useState([]);
 	const [thumbnail2, setThumbnail2] = useState([]);
 	const [thumbnail3, setThumbnail3] = useState([]);
+	const [thumbnail_Phone, setThumbnail_Phone] = useState([]);
+	const [thumbnail2_Phone, setThumbnail2_Phone] = useState([]);
+	const [thumbnail3_Phone, setThumbnail3_Phone] = useState([]);
 	// eslint-disable-next-line
 	const [allHeroes, setAllHeroes] = useState([]);
 	const [hyper_link, setHyperLink] = useState("");
@@ -61,6 +64,19 @@ const AddHeroComp = () => {
 						? data[data.length - 1].thumbnail3[0]
 						: [],
 				);
+
+				setThumbnail_Phone(data[data.length - 1].thumbnail_Phone[0]);
+				setThumbnail2_Phone(
+					data[data.length - 1].thumbnail2_Phone[0]
+						? data[data.length - 1].thumbnail2_Phone[0]
+						: [],
+				);
+				setThumbnail3_Phone(
+					data[data.length - 1].thumbnail3_Phone[0]
+						? data[data.length - 1].thumbnail3_Phone[0]
+						: [],
+				);
+
 				setHyperLink(data[data.length - 1].hyper_link);
 				setHyperLink2(data[data.length - 1].hyper_link2);
 				setHyperLink3(data[data.length - 1].hyper_link3);
@@ -133,8 +149,6 @@ const AddHeroComp = () => {
 		}
 	};
 
-	console.log(thumbnail2, "thumbnail2");
-
 	const fileUploadAndResizeThumbNail3 = (e) => {
 		// console.log(e.target.files);
 		let files = e.target.files;
@@ -165,6 +179,105 @@ const AddHeroComp = () => {
 		}
 	};
 
+	const fileUploadAndResizeThumbNail_Phone = (e) => {
+		// console.log(e.target.files);
+		let files = e.target.files;
+		let allUploadedFiles = thumbnail_Phone;
+		if (files) {
+			for (let i = 0; i < files.length; i++) {
+				Resizer.imageFileResizer(
+					files[i],
+					3800,
+					1700,
+					"JPEG",
+					100,
+					0,
+					(uri) => {
+						cloudinaryUpload1(user._id, token, { image: uri })
+							.then((data) => {
+								allUploadedFiles.push(data);
+
+								setThumbnail_Phone({
+									...thumbnail_Phone,
+									images: allUploadedFiles,
+								});
+							})
+							.catch((err) => {
+								console.log("CLOUDINARY UPLOAD ERR", err);
+							});
+					},
+					"base64",
+				);
+			}
+		}
+	};
+
+	const fileUploadAndResizeThumbNail2_Phone = (e) => {
+		// console.log(e.target.files);
+		let files = e.target.files;
+		let allUploadedFiles = thumbnail2_Phone;
+		if (files) {
+			for (let i = 0; i < files.length; i++) {
+				Resizer.imageFileResizer(
+					files[i],
+					3800,
+					1700,
+					"JPEG",
+					100,
+					0,
+					(uri) => {
+						cloudinaryUpload1(user._id, token, { image: uri })
+							.then((data) => {
+								allUploadedFiles.push(data);
+
+								setThumbnail2_Phone({
+									...thumbnail2_Phone,
+									images: allUploadedFiles,
+								});
+							})
+							.catch((err) => {
+								console.log("CLOUDINARY UPLOAD ERR", err);
+							});
+					},
+					"base64",
+				);
+			}
+		}
+	};
+
+	const fileUploadAndResizeThumbNail3_Phone = (e) => {
+		// console.log(e.target.files);
+		let files = e.target.files;
+		let allUploadedFiles = thumbnail3_Phone;
+		if (files) {
+			for (let i = 0; i < files.length; i++) {
+				Resizer.imageFileResizer(
+					files[i],
+					3800,
+					1700,
+					"JPEG",
+					100,
+					0,
+					(uri) => {
+						cloudinaryUpload1(user._id, token, { image: uri })
+							.then((data) => {
+								allUploadedFiles.push(data);
+
+								setThumbnail3_Phone({
+									...thumbnail3_Phone,
+									images: allUploadedFiles,
+								});
+							})
+							.catch((err) => {
+								console.log("CLOUDINARY UPLOAD ERR", err);
+							});
+					},
+					"base64",
+				);
+			}
+		}
+	};
+
 	const FileUploadThumbnail = () => {
 		return (
 			<>
@@ -175,12 +288,30 @@ const AddHeroComp = () => {
 					setThumbnail={setThumbnail}
 					setThumbnail2={setThumbnail2}
 					setThumbnail3={setThumbnail3}
+					thumbnail_Phone={thumbnail_Phone}
+					thumbnail2_Phone={thumbnail2_Phone}
+					thumbnail3_Phone={thumbnail3_Phone}
+					setThumbnail_Phone={setThumbnail_Phone}
+					setThumbnail2_Phone={setThumbnail2_Phone}
+					setThumbnail3_Phone={setThumbnail3_Phone}
 					handleImageRemove={handleImageRemove}
 					handleImageRemove2={handleImageRemove2}
 					handleImageRemove3={handleImageRemove3}
+					handleImageRemove_Phone={handleImageRemove_Phone}
+					handleImageRemove2_Phone={handleImageRemove2_Phone}
+					handleImageRemove3_Phone={handleImageRemove3_Phone}
 					fileUploadAndResizeThumbNail={fileUploadAndResizeThumbNail}
 					fileUploadAndResizeThumbNail2={fileUploadAndResizeThumbNail2}
 					fileUploadAndResizeThumbNail3={fileUploadAndResizeThumbNail3}
+					fileUploadAndResizeThumbNail_Phone={
+						fileUploadAndResizeThumbNail_Phone
+					}
+					fileUploadAndResizeThumbNail2_Phone={
+						fileUploadAndResizeThumbNail2_Phone
+					}
+					fileUploadAndResizeThumbNail3_Phone={
+						fileUploadAndResizeThumbNail3_Phone
+					}
 				/>
 			</>
 		);
@@ -280,6 +411,100 @@ const AddHeroComp = () => {
 			});
 	};
 
+	const handleImageRemove_Phone = (public_id) => {
+		setLoading(true);
+		// console.log("remove image", public_id);
+		axios
+			.post(
+				`${process.env.REACT_APP_API_URL}/admin/removeimage/${user._id}`,
+				{ public_id },
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				},
+			)
+			.then((res) => {
+				setLoading(false);
+				// eslint-disable-next-line
+				const { images } = thumbnail_Phone;
+				// let filteredImages = images.filter((item) => {
+				// 	return item.public_id !== public_id;
+				// });
+				setThumbnail_Phone([]);
+				setTimeout(function () {}, 1000);
+			})
+			.catch((err) => {
+				console.log(err);
+				setLoading(false);
+				setTimeout(function () {}, 1000);
+			});
+	};
+
+	const handleImageRemove2_Phone = (public_id) => {
+		setLoading(true);
+		// console.log("remove image", public_id);
+		axios
+			.post(
+				`${process.env.REACT_APP_API_URL}/admin/removeimage/${user._id}`,
+				{ public_id },
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				},
+			)
+			.then((res) => {
+				setLoading(false);
+				// eslint-disable-next-line
+				const { images } = thumbnail2_Phone;
+				// let filteredImages = images.filter((item) => {
+				// 	return item.public_id !== public_id;
+				// });
+				setThumbnail2_Phone([]);
+				setTimeout(function () {}, 1000);
+			})
+			.catch((err) => {
+				console.log(err);
+				setLoading(false);
+				setTimeout(function () {
+					window.location.reload(false);
+				}, 1000);
+			});
+	};
+
+	const handleImageRemove3_Phone = (public_id) => {
+		setLoading(true);
+		// console.log("remove image", public_id);
+		axios
+			.post(
+				`${process.env.REACT_APP_API_URL}/admin/removeimage/${user._id}`,
+				{ public_id },
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				},
+			)
+			.then((res) => {
+				setLoading(false);
+				// eslint-disable-next-line
+				const { images } = thumbnail3_Phone;
+				// let filteredImages = images.filter((item) => {
+				// 	return item.public_id !== public_id;
+				// });
+				setThumbnail3_Phone([]);
+				setTimeout(function () {}, 1000);
+			})
+			.catch((err) => {
+				console.log(err);
+				setLoading(false);
+				setTimeout(function () {
+					window.location.reload(false);
+				}, 1000);
+			});
+	};
+
 	const clickSubmit = (e) => {
 		e.preventDefault();
 
@@ -288,6 +513,9 @@ const AddHeroComp = () => {
 			thumbnail,
 			thumbnail2,
 			thumbnail3,
+			thumbnail_Phone,
+			thumbnail2_Phone,
+			thumbnail3_Phone,
 			hyper_link,
 			hyper_link2,
 			hyper_link3,

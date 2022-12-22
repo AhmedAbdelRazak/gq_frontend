@@ -79,6 +79,8 @@ import CheckoutMain from "./Checkout/CheckoutForm/CheckoutMain";
 import GenderNav from "./Navbar/GenderNav";
 import UserDashboard from "./pages/User/UserDashboard";
 import PrivateRoute from "./auth/PrivateRoute";
+import ProductList from "./Admin/OnlineStore/ProductSpecsUpdate/ProductList";
+import UpdateSpecs from "./Admin/OnlineStore/ProductSpecsUpdate/UpdateSpecs";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -215,6 +217,12 @@ const App = () => {
 				/>
 
 				<AdminRoute path='/admin/add-category' exact component={AddCategory} />
+				<AdminRoute path='/admin/product-specs' exact component={ProductList} />
+				<AdminRoute
+					path='/admin/update-specs/:productId'
+					exact
+					component={UpdateSpecs}
+				/>
 
 				<AdminRoute
 					path='/admin/update-category'

@@ -6,6 +6,7 @@ import HeroComponent from "./HeroComponent";
 import { getProducts } from "../../apiCore";
 import CategoryWrapperComp from "./CategoryWrapperComp";
 import FeaturedProducts from "./FeaturedProducts";
+// eslint-disable-next-line
 import OurBrandsComp from "./OurBrandsComp";
 import MostViewedProducts from "./MostViewedProducts";
 import GenderLinks from "./GenderLinks";
@@ -15,6 +16,7 @@ const Home = ({ chosenLanguage }) => {
 	// eslint-disable-next-line
 	const [allProducts, setAllProducts] = useState([]);
 	const [allCategories, setAllCategories] = useState([]);
+	// eslint-disable-next-line
 	const [allSubcategories, setAllSubcategories] = useState([]);
 	const [allGenders, setAllGenders] = useState([]);
 
@@ -100,18 +102,16 @@ const Home = ({ chosenLanguage }) => {
 				/>
 			</div>
 
-			<div className='text-center my-5'>
+			{/* <div className='text-center my-5'>
 				<OurBrandsComp
 					chosenLanguage={chosenLanguage}
 					allSubcategories={allSubcategories}
 				/>
-			</div>
-			<br />
+			</div> */}
 			<hr />
 			<br />
 			<MostViewedProducts chosenLanguage={chosenLanguage} />
 
-			<br />
 			<hr />
 			<br />
 		</HomeWrapper>

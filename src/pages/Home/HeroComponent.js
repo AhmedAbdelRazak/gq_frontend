@@ -106,7 +106,7 @@ const HeroComponent = () => {
 			</Slider> */}
 
 			{homePage && homePage.thumbnail && homePage.thumbnail[0] && (
-				<div className='heroPicMain'>
+				<div className='heroPicMain deskTopBanner'>
 					<Link to='/our-products'>
 						<img
 							src={
@@ -116,6 +116,25 @@ const HeroComponent = () => {
 								homePage.thumbnail[0].images &&
 								homePage.thumbnail[0].images[0] &&
 								homePage.thumbnail[0].images[0].url
+							}
+							alt='ShopPhoto'
+							className='mt-3'
+						/>
+					</Link>
+				</div>
+			)}
+
+			{homePage && homePage.thumbnail_Phone && homePage.thumbnail_Phone[0] && (
+				<div className='heroPicMain phoneBanner'>
+					<Link to='/our-products'>
+						<img
+							src={
+								homePage &&
+								homePage.thumbnail_Phone &&
+								homePage.thumbnail_Phone[0] &&
+								homePage.thumbnail_Phone[0].images &&
+								homePage.thumbnail_Phone[0].images[0] &&
+								homePage.thumbnail_Phone[0].images[0].url
 							}
 							alt='ShopPhoto'
 							className='mt-3'
@@ -179,6 +198,14 @@ const HeroComponentWrapper = styled.div`
 		margin-top: 10px;
 	}
 
+	.deskTopBanner img {
+		display: block;
+	}
+
+	.phoneBanner img {
+		display: none;
+	}
+
 	@media (max-width: 1000px) {
 		.heroPicMain {
 			width: 100%;
@@ -187,13 +214,13 @@ const HeroComponentWrapper = styled.div`
 			/* border-radius: 5%; */
 		}
 
-		.heroPicMain img {
-			width: 130vw; /* width of container */
-			/* height of container */
+		.deskTopBanner img {
+			display: none;
+		}
+
+		.phoneBanner img {
 			object-fit: cover !important;
-			/* border: 5px solid black; */
-			margin-right: 500px;
-			/* border-radius: 3%; */
+			display: block;
 		}
 
 		.slick-next {

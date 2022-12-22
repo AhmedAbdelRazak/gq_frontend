@@ -87,7 +87,17 @@ const UpdateProductSingle = ({ match }) => {
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
 	const [allStore, setAllStores] = useState([]);
+	const [relatedProducts, setRelatedProducts] = useState([]);
 	const [storeName, setStoreName] = useState("");
+
+	const [policy, setPolicy] = useState("");
+	const [policy_Arabic, setPolicy_Arabic] = useState("");
+	const [DNA, setDNA] = useState("");
+	const [DNA_Arabic, setDNA_Arabic] = useState("");
+	const [Specs, setSpecs] = useState("");
+	const [Specs_Arabic, setSpecs_Arabic] = useState("");
+	const [fitCare, setFitCare] = useState("");
+	const [fitCare_Arabic, setFitCare_Arabic] = useState("");
 
 	let productAttributes = [];
 
@@ -214,11 +224,39 @@ const UpdateProductSingle = ({ match }) => {
 						setSubsOptions(data);
 					}
 				});
+
+				setPolicy(
+					data.filter((e) => e._id === match.params.productId)[0].policy,
+				);
+				setPolicy_Arabic(
+					data.filter((e) => e._id === match.params.productId)[0].policy_Arabic,
+				);
+				setDNA(data.filter((e) => e._id === match.params.productId)[0].DNA);
+				setDNA_Arabic(
+					data.filter((e) => e._id === match.params.productId)[0].DNA_Arabic,
+				);
+				setSpecs(data.filter((e) => e._id === match.params.productId)[0].Specs);
+				setSpecs_Arabic(
+					data.filter((e) => e._id === match.params.productId)[0].Specs_Arabic,
+				);
+				setFitCare(
+					data.filter((e) => e._id === match.params.productId)[0].fitCare,
+				);
+				setFitCare_Arabic(
+					data.filter((e) => e._id === match.params.productId)[0]
+						.fitCare_Arabic,
+				);
+
+				setRelatedProducts(
+					data.filter((e) => e._id === match.params.productId)[0]
+						.relatedProducts &&
+						data
+							.filter((e) => e._id === match.params.productId)[0]
+							.relatedProducts.map((i) => i._id),
+				);
 			}
 		});
 	};
-
-	console.log(chosenSubcategories, "Featured");
 
 	const loadAllStores = () => {
 		getStores(token).then((data2) => {
@@ -696,7 +734,8 @@ const UpdateProductSingle = ({ match }) => {
 			updatedByEmployee: user._id,
 			quantity: addVariables ? 0 : stock,
 			thumbnailImage: addThumbnail,
-			relatedProducts: [],
+			relatedProducts:
+				relatedProducts && relatedProducts.length > 0 ? relatedProducts : [],
 			shipping: shipping,
 			addVariables: addVariables,
 			storeName: storeName,
@@ -706,6 +745,14 @@ const UpdateProductSingle = ({ match }) => {
 			chosenSeason: chosenSeason,
 			featuredProduct: featured,
 			activeBackorder: activeBackorder,
+			policy: policy ? policy : "",
+			policy_Arabic: policy_Arabic ? policy_Arabic : "",
+			DNA: DNA ? DNA : DNA,
+			DNA_Arabic: DNA_Arabic ? DNA_Arabic : "",
+			Specs: Specs ? Specs : "",
+			Specs_Arabic: Specs_Arabic ? Specs_Arabic : "",
+			fitCare: fitCare ? fitCare : fitCare,
+			fitCare_Arabic: fitCare_Arabic ? fitCare_Arabic : "",
 		};
 		updateProduct(match.params.productId, user._id, token, {
 			product: values,

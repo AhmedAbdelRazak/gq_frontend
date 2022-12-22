@@ -46,7 +46,7 @@ const HeroComponent2 = () => {
 	return (
 		<HeroComponent2Wrapper className='mx-auto text-center mt-5'>
 			{homePage && homePage.thumbnail2 && homePage.thumbnail2[0] && (
-				<div className='heroPicMain'>
+				<div className='heroPicMain deskTopBanner'>
 					{/* <h3
 						className='mx-auto text-center'
 						style={{ fontWeight: "bolder", fontSize: "1.4rem" }}>
@@ -68,6 +68,27 @@ const HeroComponent2 = () => {
 					</Link>
 				</div>
 			)}
+
+			{homePage &&
+				homePage.thumbnail2_Phone &&
+				homePage.thumbnail2_Phone[0] && (
+					<div className='heroPicMain phoneBanner'>
+						<Link to='/our-products'>
+							<img
+								src={
+									homePage &&
+									homePage.thumbnail2_Phone &&
+									homePage.thumbnail2_Phone[0] &&
+									homePage.thumbnail2_Phone[0].images &&
+									homePage.thumbnail2_Phone[0].images[0] &&
+									homePage.thumbnail2_Phone[0].images[0].url
+								}
+								alt='ShopPhoto'
+								className='mt-3'
+							/>
+						</Link>
+					</div>
+				)}
 		</HeroComponent2Wrapper>
 	);
 };
@@ -124,6 +145,14 @@ const HeroComponent2Wrapper = styled.div`
 		margin-top: 10px;
 	}
 
+	.deskTopBanner img {
+		display: block;
+	}
+
+	.phoneBanner img {
+		display: none;
+	}
+
 	@media (max-width: 1000px) {
 		.heroPicMain {
 			width: 100%;
@@ -132,13 +161,13 @@ const HeroComponent2Wrapper = styled.div`
 			/* border-radius: 5%; */
 		}
 
-		.heroPicMain img {
-			width: 130vw; /* width of container */
-			/* height of container */
+		.deskTopBanner img {
+			display: none;
+		}
+
+		.phoneBanner img {
 			object-fit: cover !important;
-			/* border: 5px solid black; */
-			margin-right: 500px;
-			/* border-radius: 3%; */
+			display: block;
 		}
 
 		.slick-next {

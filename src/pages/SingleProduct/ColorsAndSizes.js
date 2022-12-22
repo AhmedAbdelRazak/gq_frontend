@@ -19,7 +19,7 @@ const isActive = (c, sureClickedLink) => {
 				c === "#006200"
 					? "white"
 					: "black",
-			background: c,
+			// background: c,
 			textTransform: "uppercase",
 			transition: "0.3s",
 			fontSize: "0.9rem",
@@ -40,9 +40,10 @@ const isActive = (c, sureClickedLink) => {
 				c === "#006200"
 					? "white"
 					: "black",
-			background: c,
+			// background: c,
 			fontSize: "0.75rem",
 			textTransform: "uppercase",
+			border: "1px lightgrey solid",
 			transition: "0.3s",
 		};
 	}
@@ -69,10 +70,11 @@ const isActive2 = (s, sureClickedLink) => {
 	} else {
 		return {
 			color: "black",
-			background: "#d8ebff",
+			// background: "#d8ebff",
 			textTransform: "uppercase",
 			fontSize: "0.85rem",
 			transition: "0.3s",
+			border: "1px black solid",
 		};
 	}
 };
@@ -90,6 +92,7 @@ const ColorsAndSizes = ({
 }) => {
 	const [clickedLink, setClickedLink] = useState("");
 	const [clickedLink2, setClickedLink2] = useState("");
+
 	return (
 		<ColorsAndSizesWrapper>
 			<div className='text-capitalize text-title' style={{ color: "#0052a5" }}>
@@ -99,23 +102,23 @@ const ColorsAndSizes = ({
 						allAddedColors.map((c, i) => {
 							return (
 								<div
-									className='mx-2 p-2 my-2 col-xl-2 col-lg-2 col-md-2 col-sm-2 col-5 attStyling'
+									className='mx-2 p-1 my-2 col-xl-2 col-lg-2 col-md-2 col-sm-2 col-3 attStyling imgWrapper'
 									key={i}
 									onClick={() => {
 										var images = Product.productAttributes.filter(
-											(im) => im.color === c,
+											(im) => im.color === c.color,
 										);
 										if (chosenProductAttributes.SubSKUSize) {
 											var chosenAttribute = images.filter(
 												(ca) =>
-													ca.color.toLowerCase() === c.toLowerCase() &&
+													ca.color.toLowerCase() === c.color.toLowerCase() &&
 													ca.size.toLowerCase() ===
 														chosenProductAttributes.SubSKUSize.toLowerCase(),
 											)[0];
 
 											setChosenProductAttributes({
 												...chosenProductAttributes,
-												SubSKUColor: c,
+												SubSKUColor: c.color,
 												SubSKU: chosenAttribute.SubSKU,
 												OrderedQty: 1,
 												productSubSKUImage: images[0].productImages.map(
@@ -134,20 +137,29 @@ const ColorsAndSizes = ({
 										} else {
 											setChosenProductAttributes({
 												...chosenProductAttributes,
-												SubSKUColor: c,
+												SubSKUColor: c.color,
 											});
 										}
 
 										setChosenImages(
 											images[0].productImages.map((ii) => ii.url),
 										);
-										setClickedLink(c);
+										setClickedLink(c.color);
 										setColorSelected(true);
 									}}
-									style={isActive(c, clickedLink)}>
-									{allColors &&
+									style={isActive(c.color, clickedLink)}>
+									{/* {allColors &&
 										allColors.length &&
-										allColors[allColors.map((i) => i.hexa).indexOf(c)].color}
+										allColors[allColors.map((i) => i.hexa).indexOf(c.color)]
+											.color} */}
+
+									{c.productImages && c.productImages.length > 0 ? (
+										<img
+											style={{ height: "75%", width: "75%" }}
+											src={c.productImages[0].url}
+											alt='ACE'
+										/>
+									) : null}
 								</div>
 							);
 						})}
@@ -216,7 +228,7 @@ const ColorsAndSizes = ({
 					{chosenProductAttributes.SubSKURetailerPrice >
 					chosenProductAttributes.pickedPrice ? (
 						<p
-							className='text-capitalize text-title'
+							className='text-capitalize text-title chooseSize'
 							style={{ color: "#0052a5" }}>
 							Item Price:{" "}
 							<s style={{ color: "red", fontWeight: "bold" }}>
@@ -226,7 +238,7 @@ const ColorsAndSizes = ({
 						</p>
 					) : (
 						<p
-							className='text-capitalize text-title'
+							className='text-capitalize text-title chooseSize'
 							style={{ color: "#0052a5" }}>
 							Item Price: {chosenProductAttributes.pickedPrice} L.E.
 						</p>
@@ -239,7 +251,7 @@ const ColorsAndSizes = ({
 			chosenProductAttributes.pickedPrice ? (
 				<>
 					<p
-						className='text-capitalize text-title'
+						className='text-capitalize text-title chooseSize'
 						style={{ color: "#0052a5" }}>
 						Availability:{" "}
 						{chosenProductAttributes.quantity > 0 ? (
@@ -271,6 +283,11 @@ const ColorsAndSizesWrapper = styled.div`
 	.fa-check {
 		color: darkgreen;
 		font-size: 1rem;
+	}
+
+	.imgWrapper {
+		width: 50% !important;
+		height: 50% !important;
 	}
 
 	.attStyling:hover {

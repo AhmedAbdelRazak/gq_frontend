@@ -306,12 +306,17 @@ const items = [
 			<Link to='/admin/online-store-management'>Online Store Properties</Link>,
 			"/admin/online-store-management",
 		),
-		getItem("Online Store Report", "/admin/online-store-report"),
+		getItem(
+			<Link to='/admin/product-specs'>Product Specs</Link>,
+			"/admin/product-specs",
+		),
 		getItem("Coupons", "/admin/add-expenses"),
 		getItem(
 			<Link to='/admin/add-hero-comp'>Add Hero Component</Link>,
 			"/admin/add-hero-comp",
 		),
+		getItem("Online Store Report", "/admin/online-store-report"),
+
 		getItem("Top Ads", "sub40", <RadiusBottomleftOutlined />, [
 			getItem(
 				<Link to='/admin/add-top-ads'>Add Top Ads</Link>,
@@ -537,6 +542,8 @@ const AdminMenu = ({
 						? "/admin/gq-reports/operations"
 						: fromPage === "ExchangeList"
 						? "/admin/exchange-list"
+						: fromPage === "ProductSpecs"
+						? "/admin/product-specs"
 						: "/admin/dashboard"
 				}
 				defaultOpenKeys={[
