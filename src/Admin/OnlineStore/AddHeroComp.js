@@ -53,7 +53,11 @@ const AddHeroComp = () => {
 			if (data.error) {
 			} else {
 				setAllHeroes(data[data.length - 1]);
-				setThumbnail(data[data.length - 1].thumbnail[0]);
+				setThumbnail(
+					data[data.length - 1].thumbnail[0]
+						? data[data.length - 1].thumbnail[0]
+						: [],
+				);
 				setThumbnail2(
 					data[data.length - 1].thumbnail2[0]
 						? data[data.length - 1].thumbnail2[0]
@@ -65,7 +69,11 @@ const AddHeroComp = () => {
 						: [],
 				);
 
-				setThumbnail_Phone(data[data.length - 1].thumbnail_Phone[0]);
+				setThumbnail_Phone(
+					data[data.length - 1].thumbnail_Phone[0]
+						? data[data.length - 1].thumbnail_Phone[0]
+						: [],
+				);
 				setThumbnail2_Phone(
 					data[data.length - 1].thumbnail2_Phone[0]
 						? data[data.length - 1].thumbnail2_Phone[0]
@@ -588,7 +596,7 @@ const AddHeroComp = () => {
 			</div>
 
 			<button className='btn btn-outline-primary mb-3'>
-				Add Home Page Main Images
+				Update Home Page Banners
 			</button>
 		</form>
 	);

@@ -193,9 +193,7 @@ const ImageCardHero = ({
 								<div className='image-input-wrapper w-180px h-180px'></div>
 								<div className='col-12'>
 									{thumbnail3 &&
-										thumbnail3.length > 0 &&
 										thumbnail3.images &&
-										thumbnail3.images[0] &&
 										thumbnail3.images.map((image) => {
 											return (
 												<div className='m-3 col-6 '>
@@ -411,9 +409,7 @@ const ImageCardHero = ({
 								<div className='image-input-wrapper w-180px h-180px'></div>
 								<div className='col-12'>
 									{thumbnail3_Phone &&
-										thumbnail3_Phone.length > 0 &&
 										thumbnail3_Phone.images &&
-										thumbnail3_Phone.images[0] &&
 										thumbnail3_Phone.images.map((image) => {
 											return (
 												<div className='m-3 col-6 '>
