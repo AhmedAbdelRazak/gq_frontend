@@ -11,6 +11,7 @@ import OurBrandsComp from "./OurBrandsComp";
 import MostViewedProducts from "./MostViewedProducts";
 import GenderLinks from "./GenderLinks";
 import HeroComponent2 from "./HeroComponent2";
+import HeroComponent3 from "./HeroComponent3";
 
 const Home = ({ chosenLanguage }) => {
 	// eslint-disable-next-line
@@ -88,19 +89,21 @@ const Home = ({ chosenLanguage }) => {
 
 			<GenderLinks allGenders={allGenders} />
 
-			<CategoryWrapperComp
-				chosenLanguage={chosenLanguage}
-				categories={allCategories}
-			/>
-
-			<HeroComponent2 />
-
 			<div className='my-5'>
 				<FeaturedProducts
 					allProducts={allProducts}
 					chosenLanguage={chosenLanguage}
 				/>
 			</div>
+			<hr />
+			<br />
+			<HeroComponent2 />
+			<hr />
+			<br />
+			<CategoryWrapperComp
+				chosenLanguage={chosenLanguage}
+				categories={allCategories}
+			/>
 
 			{/* <div className='text-center my-5'>
 				<OurBrandsComp
@@ -111,7 +114,9 @@ const Home = ({ chosenLanguage }) => {
 			<hr />
 			<br />
 			<MostViewedProducts chosenLanguage={chosenLanguage} />
-
+			<hr />
+			<br />
+			<HeroComponent3 />
 			<hr />
 			<br />
 		</HomeWrapper>

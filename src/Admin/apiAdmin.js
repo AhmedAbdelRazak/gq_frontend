@@ -1,5 +1,7 @@
 /** @format */
 
+import axios from "axios";
+
 /**Gender */
 export const createGender = (userId, token, gender) => {
 	return fetch(`${process.env.REACT_APP_API_URL}/gender/create/${userId}`, {
@@ -1112,3 +1114,60 @@ export const getAllHeros = (token) => {
 };
 
 // End of Ads Management
+
+export const getCoupons = async () =>
+	await axios.get(`${process.env.REACT_APP_API_URL}/coupons`);
+
+export const createCoupon = (userId, token, name, expiry, discount) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/coupon/create/${userId}`, {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify(name, expiry, discount),
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+};
+
+export const removeCoupon = (couponId, userId, token) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/coupon/${couponId}/${userId}`,
+		{
+			method: "DELETE",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const aceOrders = (userId, token, day1, day2) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/ace/orderslist/dates/${day1}/${day2}/${userId}`,
+		{
+			method: "GET",
+			headers: {
+				Accept: "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			// body: JSON.stringify(today),
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};

@@ -274,7 +274,7 @@ const CheckoutCartItems = ({ chosenLanguage }) => {
 						</div>
 					);
 				})}
-				<div className='Totals'>Total Amount: {total_amount} L.E.</div>
+				<div className='Totals'>Subtotal: {total_amount} L.E.</div>
 				<div className='link-container my-5'>
 					<Link
 						to='/our-products'

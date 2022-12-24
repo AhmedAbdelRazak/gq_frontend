@@ -11,7 +11,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { getAllHeros } from "../../Admin/apiAdmin";
 
-const HeroComponent = () => {
+const HeroComponent3 = () => {
 	const [homePage, setHomePage] = useState({});
 
 	const gettingAllHomes = () => {
@@ -43,79 +43,24 @@ const HeroComponent = () => {
 		pauseOnHover: true,
 		adaptiveHeight: true,
 	};
-
 	return (
-		<HeroComponentWrapper className='mx-auto text-center'>
-			{/* <Slider {...settingsHero}>
-				{homePage && homePage.thumbnail && homePage.thumbnail[0] && (
-					<div className='heroPicMain'>
-						<Link to={homePage.hyper_link}>
-							<img
-								src={
-									homePage &&
-									homePage.thumbnail &&
-									homePage.thumbnail[0] &&
-									homePage.thumbnail[0].images &&
-									homePage.thumbnail[0].images[0] &&
-									homePage.thumbnail[0].images[0].url
-								}
-								alt='ShopPhoto'
-								className='mt-3'
-							/>
-						</Link>
-					</div>
-				)}
-
-				{homePage && homePage.thumbnail2 && homePage.thumbnail2[0] && (
-					<div className='heroPicMain'>
-						<Link to={homePage.hyper_link2}>
-							<img
-								src={
-									homePage &&
-									homePage.thumbnail2 &&
-									homePage.thumbnail2[0] &&
-									homePage.thumbnail2[0].images &&
-									homePage.thumbnail2[0].images[0] &&
-									homePage.thumbnail2[0].images[0].url
-								}
-								alt='ShopPhoto'
-								className='mt-3'
-							/>
-						</Link>
-					</div>
-				)}
-
-				{homePage && homePage.thumbnail3 && homePage.thumbnail3[0] && (
-					<div className='heroPicMain'>
-						<Link to={homePage.hyper_link3}>
-							<img
-								src={
-									homePage &&
-									homePage.thumbnail3 &&
-									homePage.thumbnail3[0] &&
-									homePage.thumbnail3[0].images &&
-									homePage.thumbnail3[0].images[0] &&
-									homePage.thumbnail3[0].images[0].url
-								}
-								alt='ShopPhoto'
-								className='mt-3'
-							/>
-						</Link>
-					</div>
-				)}
-			</Slider> */}
-
-			{homePage && homePage.thumbnail && homePage.thumbnail[0] && (
+		<HeroComponent3Wrapper className='mx-auto text-center mt-5'>
+			{homePage && homePage.thumbnail3 && homePage.thumbnail3[0] && (
 				<div className='heroPicMain deskTopBanner'>
+					{/* <h3
+						className='mx-auto text-center'
+						style={{ fontWeight: "bolder", fontSize: "1.4rem" }}>
+						Main Section
+					</h3> */}
 					<Link to='/our-products'>
 						<img
 							src={
 								homePage &&
-								homePage.thumbnail &&
-								homePage.thumbnail[0] &&
-								homePage.thumbnail[0].images &&
-								homePage.thumbnail[0].images[0] &&
-								homePage.thumbnail[0].images[0].url
+								homePage.thumbnail3 &&
+								homePage.thumbnail3[0] &&
+								homePage.thumbnail3[0].images &&
+								homePage.thumbnail3[0].images[0] &&
+								homePage.thumbnail3[0].images[0].url
 							}
 							alt='ShopPhoto'
 							className='mt-3'
@@ -124,31 +69,33 @@ const HeroComponent = () => {
 				</div>
 			)}
 
-			{homePage && homePage.thumbnail_Phone && homePage.thumbnail_Phone[0] && (
-				<div className='heroPicMain phoneBanner'>
-					<Link to='/our-products'>
-						<img
-							src={
-								homePage &&
-								homePage.thumbnail_Phone &&
-								homePage.thumbnail_Phone[0] &&
-								homePage.thumbnail_Phone[0].images &&
-								homePage.thumbnail_Phone[0].images[0] &&
-								homePage.thumbnail_Phone[0].images[0].url
-							}
-							alt='ShopPhoto'
-							className='mt-3'
-						/>
-					</Link>
-				</div>
-			)}
-		</HeroComponentWrapper>
+			{homePage &&
+				homePage.thumbnail3_Phone &&
+				homePage.thumbnail3_Phone[0] && (
+					<div className='heroPicMain phoneBanner'>
+						<Link to='/our-products'>
+							<img
+								src={
+									homePage &&
+									homePage.thumbnail3_Phone &&
+									homePage.thumbnail3_Phone[0] &&
+									homePage.thumbnail3_Phone[0].images &&
+									homePage.thumbnail3_Phone[0].images[0] &&
+									homePage.thumbnail3_Phone[0].images[0].url
+								}
+								alt='ShopPhoto'
+								className='mt-3'
+							/>
+						</Link>
+					</div>
+				)}
+		</HeroComponent3Wrapper>
 	);
 };
 
-export default HeroComponent;
+export default HeroComponent3;
 
-const HeroComponentWrapper = styled.div`
+const HeroComponent3Wrapper = styled.div`
 	text-align: center;
 	background-image: linear-gradient(white, white);
 

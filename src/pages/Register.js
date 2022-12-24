@@ -122,7 +122,7 @@ const Register = () => {
 							// border: "solid 3px grey",
 							background: "white",
 							borderRadius: "10px",
-							boxShadow: "5px 5px 5px 5px rgba(0, 0, 0, 0.2)",
+							// boxShadow: "5px 5px 5px 5px rgba(0, 0, 0, 0.2)",
 						}}>
 						<h1 className='mb-3'>
 							Account <span className='text-primary'>Register</span>
@@ -198,7 +198,7 @@ const Register = () => {
 									fontStyle: "italic",
 									fontSize: "1rem",
 								}}>
-								<Link to='/login' className='btn btn-sm btn-outline-primary'>
+								<Link to='/signin' className='btn btn-sm btn-outline-primary'>
 									Login Here
 								</Link>
 							</strong>
@@ -231,13 +231,7 @@ const Register = () => {
 				<link rel='canonical' href='http://infinite-apps.com' />
 			</Helmet>
 			<br />
-			<div className='mx-auto text-center'>
-				<img
-					src='https://res.cloudinary.com/infiniteapps/image/upload/v1640714861/KuwaitDemo/1640714860747.jpg'
-					alt='Infinite-Apps'
-					className='imgLogo'
-				/>
-			</div>
+
 			<ToastContainer />
 
 			{signUpForm()}
@@ -271,7 +265,7 @@ const FormSignup = styled.div`
 		outline: none;
 		border: 1px solid var(--primaryColor);
 
-		box-shadow: 5px 8px 3px 0px rgba(0, 0, 0, 0.3);
+		box-shadow: 2px 5px 1px 0px rgba(0, 0, 0, 0.3);
 		transition: 0.3s;
 		font-weight: bold;
 	}
@@ -318,7 +312,7 @@ const WholeSignup = styled.div`
 		color: black;
 		font-weight: bold;
 		font-size: 1.3rem;
-		text-shadow: 2px 2px 4px rgb(0, 0, 0, 0.1);
+		/* text-shadow: 2px 2px 4px rgb(0, 0, 0, 0.1); */
 		letter-spacing: 2px;
 	}
 	.kokoko2 {
@@ -326,7 +320,7 @@ const WholeSignup = styled.div`
 		color: black;
 		font-weight: bold;
 		font-size: 1.3rem;
-		text-shadow: 2px 2px 4px rgb(0, 0, 0, 0.1);
+		/* text-shadow: 2px 2px 4px rgb(0, 0, 0, 0.1); */
 		letter-spacing: 2px;
 	}
 	.kokoko3 {
@@ -334,7 +328,7 @@ const WholeSignup = styled.div`
 		color: black;
 		font-weight: bold;
 		font-size: 1.3rem;
-		text-shadow: 2px 2px 4px rgb(0, 0, 0, 0.1);
+		/* text-shadow: 2px 2px 4px rgb(0, 0, 0, 0.1); */
 		letter-spacing: 2px;
 	}
 	@media (max-width: 1000px) {

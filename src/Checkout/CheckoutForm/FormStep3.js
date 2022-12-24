@@ -9,6 +9,9 @@ const FormStep3 = ({
 	total_amount,
 	total_items,
 	shippingFee,
+	appliedCoupon,
+	couponApplied,
+	appliedCouponName,
 }) => {
 	const overAllReviewPayOnDelivery = () => {
 		return (
@@ -28,13 +31,54 @@ const FormStep3 = ({
 				<div>COD: {Number(total_amount * 0.01).toFixed(2)} L.E. (1%) </div>
 				<div>Subtotal: {total_amount} L.E. </div>
 				<br />
-				<div>
-					Total Amount Due:{" "}
-					{Number(total_amount) +
-						Number(shippingFee) +
-						Number(Number(total_amount * 0.01).toFixed(2))}{" "}
-					L.E.{" "}
-				</div>
+				{couponApplied ? (
+					<>
+						{appliedCoupon && appliedCoupon.name && appliedCoupon.expiry ? (
+							<div className='mt-1'>
+								{new Date(appliedCoupon.expiry).setHours(0, 0, 0, 0) >=
+								new Date().setHours(0, 0, 0, 0) ? (
+									<div style={{ fontWeight: "bold", fontSize: "1rem" }}>
+										Total Amount Due:{" "}
+										<s style={{ color: "red", marginRight: "10px" }}>
+											{" "}
+											{Number(total_amount) +
+												Number(shippingFee) +
+												Number(Number(total_amount * 0.01).toFixed(2))}{" "}
+											L.E.{" "}
+										</s>
+										{Number(
+											Number(total_amount) +
+												Number(shippingFee) +
+												Number(Number(total_amount * 0.01).toFixed(2)) -
+												((Number(total_amount) +
+													Number(shippingFee) +
+													Number(Number(total_amount * 0.01).toFixed(2))) *
+													Number(appliedCoupon.discount)) /
+													100,
+										).toFixed(2)}{" "}
+										L.E.{" "}
+									</div>
+								) : (
+									<div style={{ fontWeight: "bold", fontSize: "1rem" }}>
+										Total Amount Due:{" "}
+										{Number(total_amount) +
+											Number(shippingFee) +
+											Number(Number(total_amount * 0.01).toFixed(2))}{" "}
+										L.E.{" "}
+									</div>
+								)}
+							</div>
+						) : (
+							<div style={{ fontWeight: "bold", fontSize: "1rem" }}>
+								Total Amount Due:{" "}
+								{Number(total_amount) +
+									Number(shippingFee) +
+									Number(Number(total_amount * 0.01).toFixed(2))}{" "}
+								L.E.{" "}
+							</div>
+						)}
+					</>
+				) : null}
 			</div>
 		);
 	};

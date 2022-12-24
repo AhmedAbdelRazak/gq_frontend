@@ -2,12 +2,19 @@
 
 import React from "react";
 import styled from "styled-components";
+import CouponComp from "../CouponComp";
 
 const FormStep1 = ({
 	customerDetails,
 	handleChange,
 	setCustomerDetails,
 	alreadySetLoyaltyPointsManagement,
+	appliedCoupon,
+	setAppliedCoupon,
+	handleAppliedCoupon,
+	appliedCouponName,
+	couponApplied,
+	setCouponApplied,
 }) => {
 	var payOnDelivery_OnlineLogic =
 		alreadySetLoyaltyPointsManagement.activatePayOnDelivery &&
@@ -32,7 +39,7 @@ const FormStep1 = ({
 				className='mx-auto customerDetailsWrapper'
 				style={{
 					background: "white",
-					padding: "50px 70px",
+					padding: "0px 40px",
 					borderRadius: "10px",
 				}}>
 				<h5 className='mb-4'>Customer Information</h5>
@@ -157,6 +164,16 @@ const FormStep1 = ({
 
 	return (
 		<FormStep1Wrapper>
+			<div>
+				<CouponComp
+					appliedCoupon={appliedCoupon}
+					setAppliedCoupon={setAppliedCoupon}
+					handleAppliedCoupon={handleAppliedCoupon}
+					appliedCouponName={appliedCouponName}
+					couponApplied={couponApplied}
+					setCouponApplied={setCouponApplied}
+				/>
+			</div>
 			<div>{customerDetailsForm()}</div>
 			<br />
 		</FormStep1Wrapper>

@@ -53,6 +53,9 @@ const CheckoutMain = ({ match }) => {
 	});
 	const [chosenShippingOption, setChosenShippingOption] = useState({});
 	const [allShippingOptions, setAllShippingOptions] = useState([]);
+	const [appliedCoupon, setAppliedCoupon] = useState("");
+	const [appliedCouponName, setAppliedCouponName] = useState("");
+	const [couponApplied, setCouponApplied] = useState(false);
 	const [
 		// eslint-disable-next-line
 		alreadySetLoyaltyPointsManagement,
@@ -252,6 +255,10 @@ const CheckoutMain = ({ match }) => {
 		);
 	};
 
+	const handleAppliedCoupon = (event) => {
+		setAppliedCouponName(event.target.value);
+	};
+
 	// eslint-disable-next-line
 	let shippingFee =
 		chosenShippingOption.length > 0 &&
@@ -282,6 +289,13 @@ const CheckoutMain = ({ match }) => {
 					setCustomerDetails={setCustomerDetails}
 					handleChange={handleChange}
 					alreadySetLoyaltyPointsManagement={alreadySetLoyaltyPointsManagement}
+					appliedCoupon={appliedCoupon}
+					setAppliedCoupon={setAppliedCoupon}
+					setAppliedCouponName={setAppliedCouponName}
+					appliedCouponName={appliedCouponName}
+					handleAppliedCoupon={handleAppliedCoupon}
+					couponApplied={couponApplied}
+					setCouponApplied={setCouponApplied}
 				/>
 			),
 		},
@@ -297,6 +311,13 @@ const CheckoutMain = ({ match }) => {
 					chosenCity={chosenCity}
 					allShippingOptions={allShippingOptions}
 					shippingFee={shippingFee}
+					setAppliedCouponName={setAppliedCouponName}
+					appliedCouponName={appliedCouponName}
+					appliedCoupon={appliedCoupon}
+					setAppliedCoupon={setAppliedCoupon}
+					handleAppliedCoupon={handleAppliedCoupon}
+					couponApplied={couponApplied}
+					setCouponApplied={setCouponApplied}
 				/>
 			),
 		},
@@ -320,6 +341,11 @@ const CheckoutMain = ({ match }) => {
 					total_amount={total_amount}
 					total_items={total_items}
 					shippingFee={shippingFee}
+					appliedCoupon={appliedCoupon}
+					couponApplied={couponApplied}
+					setAppliedCoupon={setAppliedCoupon}
+					handleAppliedCoupon={handleAppliedCoupon}
+					appliedCouponName={appliedCouponName}
 				/>
 			),
 		},
@@ -411,6 +437,29 @@ const CheckoutMain = ({ match }) => {
 			}),
 		);
 
+		const totalAmountAfterDiscounting = () => {
+			if (
+				couponApplied &&
+				appliedCoupon &&
+				appliedCoupon.name &&
+				appliedCoupon.expiry &&
+				new Date(appliedCoupon.expiry).setHours(0, 0, 0, 0) >=
+					new Date().setHours(0, 0, 0, 0)
+			) {
+				return Number(
+					Number(total_amount) +
+						Number(shippingFee) +
+						-(
+							(Number(total_amount) + Number(shippingFee)) *
+							Number(appliedCoupon.discount)
+						) /
+							100,
+				).toFixed(2);
+			} else {
+				return Number(total_amount) + Number(shippingFee);
+			}
+		};
+
 		//In Processing, Ready To Ship, Shipped, Delivered
 		const createOrderData = {
 			productsNoVariable: [],
@@ -420,7 +469,10 @@ const CheckoutMain = ({ match }) => {
 			status: "On Hold",
 			totalAmount: Number(total_amount) + Number(shippingFee),
 			// Number(Number(total_amount * 0.01).toFixed(2))
-			totalAmountAfterDiscount: Number(total_amount) + Number(shippingFee),
+			totalAmountAfterDiscount:
+				totalAmountAfterDiscounting() && totalAmountAfterDiscounting() !== 0
+					? totalAmountAfterDiscounting()
+					: Number(total_amount) + Number(shippingFee),
 			// Number(Number(total_amount * 0.01).toFixed(2))
 			totalOrderedQty: Number(total_items),
 			orderTakerDiscount: "",
@@ -430,6 +482,7 @@ const CheckoutMain = ({ match }) => {
 			sendSMS: false,
 			trackingNumber: "Not Added",
 			invoiceNumber: "Not Added",
+			appliedCoupon: appliedCoupon,
 			OTNumber: `OT${new Date(orderCreationDate).getFullYear()}${
 				new Date(orderCreationDate).getMonth() + 1
 			}${new Date(orderCreationDate).getDate()}000${lengthOfOrders + 1}`,

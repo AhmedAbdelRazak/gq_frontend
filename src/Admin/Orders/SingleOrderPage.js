@@ -418,6 +418,19 @@ const SingleOrderPage = (props) => {
 										{updateSingleOrder.customerDetails.orderComment}
 									</strong>
 								</div>
+								{updateSingleOrder &&
+								updateSingleOrder.appliedCoupon &&
+								updateSingleOrder.appliedCoupon.name ? (
+									<div className='col-md-6 mx-auto'>
+										Applied Coupon:{" "}
+										<strong style={{ color: "darkblue" }}>
+											{updateSingleOrder.appliedCoupon.name}{" "}
+											<span style={{ color: "green" }}>
+												({updateSingleOrder.appliedCoupon.discount}% OFF)
+											</span>
+										</strong>
+									</div>
+								) : null}
 							</div>
 							<div className='col-md-4 mx-auto text-center'>
 								<hr />

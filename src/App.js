@@ -81,6 +81,8 @@ import UserDashboard from "./pages/User/UserDashboard";
 import PrivateRoute from "./auth/PrivateRoute";
 import ProductList from "./Admin/OnlineStore/ProductSpecsUpdate/ProductList";
 import UpdateSpecs from "./Admin/OnlineStore/ProductSpecsUpdate/UpdateSpecs";
+import CouponManagement from "./Admin/OnlineStore/CouponManagement";
+import AceOrdersList from "./Admin/OnlineStore/AceOrdersList";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -217,6 +219,11 @@ const App = () => {
 				/>
 
 				<AdminRoute path='/admin/add-category' exact component={AddCategory} />
+				<AdminRoute
+					path='/admin/coupon-management'
+					exact
+					component={CouponManagement}
+				/>
 				<AdminRoute path='/admin/product-specs' exact component={ProductList} />
 				<AdminRoute
 					path='/admin/update-specs/:productId'
@@ -323,6 +330,11 @@ const App = () => {
 				/>
 
 				<AdminRoute path='/admin/orders-hist' exact component={OrdersHist} />
+				<AdminRoute
+					path='/admin/ace-orders-list'
+					exact
+					component={AceOrdersList}
+				/>
 				<AdminRoute
 					path='/admin/single-order/:orderId'
 					exact

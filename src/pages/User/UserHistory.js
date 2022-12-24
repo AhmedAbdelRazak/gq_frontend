@@ -8,9 +8,7 @@ const UserHistory = ({ currentPosts }) => {
 			<table
 				className='table table-bordered table-md-responsive table-hover text-center'
 				style={{ fontSize: "0.75rem" }}>
-				<thead
-					className=''
-					style={{ background: "darkred", color: "lightgrey" }}>
+				<thead className='' style={{ background: "lightgrey", color: "black" }}>
 					<tr>
 						{/* <th scope='col'>Order #</th> */}
 						<th scope='col'>Purchase Date</th>
@@ -63,6 +61,8 @@ const UserHistory = ({ currentPosts }) => {
 													? "#d8ffff"
 													: s.status === "Exchange - In Processing"
 													? "#d8ebff"
+													: s.status === "Delivered" || s.status === "Shipped"
+													? "darkgreen"
 													: "#ffffd8",
 											color:
 												s.status === "Delivered" || s.status === "Shipped"
@@ -76,7 +76,7 @@ const UserHistory = ({ currentPosts }) => {
 
 									<td style={{ width: "11%" }}>{s.customerDetails.fullName}</td>
 									<td>{s.customerDetails.phone}</td>
-									<td>{s.totalAmountAfterDiscount.toFixed(0)} L.E.</td>
+									<td>{Number(s.totalAmountAfterDiscount).toFixed(0)} L.E.</td>
 
 									<td>{s.customerDetails.state}</td>
 									{/* <td>{s.customerDetails.cityName}</td> */}

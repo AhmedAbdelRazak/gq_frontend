@@ -100,9 +100,8 @@ const HeroComponent2Wrapper = styled.div`
 	background-image: linear-gradient(white, white);
 
 	.heroPicMain img {
-		height: 100%;
-		width: 100%;
 		text-align: center;
+		margin: auto;
 		object-fit: cover !important;
 		/* border-radius: 5%; */
 	}

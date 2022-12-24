@@ -310,12 +310,18 @@ const items = [
 			<Link to='/admin/product-specs'>Product Specs</Link>,
 			"/admin/product-specs",
 		),
-		getItem("Coupons", "/admin/add-expenses"),
+		getItem(
+			<Link to='/admin/coupon-management'>Coupons</Link>,
+			"/admin/coupon-management",
+		),
 		getItem(
 			<Link to='/admin/add-hero-comp'>Add Hero Component</Link>,
 			"/admin/add-hero-comp",
 		),
-		getItem("Online Store Report", "/admin/online-store-report"),
+		getItem(
+			<Link to='/admin/ace-orders-list'>Ace Store Sales Report</Link>,
+			"/admin/ace-orders-list",
+		),
 
 		getItem("Top Ads", "sub40", <RadiusBottomleftOutlined />, [
 			getItem(
@@ -544,6 +550,10 @@ const AdminMenu = ({
 						? "/admin/exchange-list"
 						: fromPage === "ProductSpecs"
 						? "/admin/product-specs"
+						: fromPage === "CouponManagement"
+						? "/admin/coupon-management"
+						: fromPage === "AceStoreSales"
+						? "/admin/ace-orders-list"
 						: "/admin/dashboard"
 				}
 				defaultOpenKeys={[

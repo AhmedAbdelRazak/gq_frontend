@@ -2,6 +2,7 @@
 // eslint-disable-next-line
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import CouponComp from "../CouponComp";
 // import { states } from "./Utils";
 
 const FormStep2 = ({
@@ -13,6 +14,13 @@ const FormStep2 = ({
 	chosenCity,
 	allShippingOptions,
 	shippingFee,
+	appliedCoupon,
+	setAppliedCoupon,
+	handleAppliedCoupon,
+	setAppliedCouponName,
+	appliedCouponName,
+	couponApplied,
+	setCouponApplied,
 }) => {
 	const customerDetailsForm = () => {
 		return (
@@ -20,7 +28,7 @@ const FormStep2 = ({
 				className='mx-auto customerDetailsWrapper'
 				style={{
 					background: "white",
-					padding: "50px 200px",
+					padding: "0px 200px",
 					borderRadius: "10px",
 				}}>
 				<h4 className='mb-4'>Shipping Information</h4>
@@ -117,6 +125,17 @@ const FormStep2 = ({
 
 	return (
 		<FormStep2Wrapper>
+			<div>
+				<CouponComp
+					appliedCoupon={appliedCoupon}
+					setAppliedCoupon={setAppliedCoupon}
+					handleAppliedCoupon={handleAppliedCoupon}
+					setAppliedCouponName={setAppliedCouponName}
+					appliedCouponName={appliedCouponName}
+					couponApplied={couponApplied}
+					setCouponApplied={setCouponApplied}
+				/>
+			</div>
 			<div>{customerDetailsForm()}</div>
 		</FormStep2Wrapper>
 	);

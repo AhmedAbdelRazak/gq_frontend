@@ -524,7 +524,6 @@ const SingleProduct = (props) => {
 									</div>
 								)}
 							</h3>
-							<hr />
 							<ColorsAndSizes
 								Product={Product}
 								allColors={allColors}

@@ -7,18 +7,18 @@ import AdminMenu from "../AdminMenu/AdminMenu";
 import Navbar from "../AdminNavMenu/Navbar";
 import CountUp from "react-countup";
 import {
+	aceOrders,
 	getProducts,
 	listOfOrdersFiltered,
 	// eslint-disable-next-line
 	listOrders,
-	listOrdersDates,
 	removeOrder,
 } from "../apiAdmin";
 import { Link } from "react-router-dom";
 import DarkBG from "../AdminMenu/DarkBG";
 import { toast } from "react-toastify";
 import { GroupOutlined } from "@ant-design/icons";
-import FiltersModal from "./UpdateModals/FiltersModal";
+// import FiltersModal from "./FiltersModal";
 import Pagination from "./Pagination";
 import OrdersCountCards from "../CardsBreakDown/OrdersCountCards";
 import OrdersQtyCard from "../CardsBreakDown/OrdersQtyCard";
@@ -51,7 +51,7 @@ const isActive = (clickedLink, sureClickedLink) => {
 	}
 };
 
-const OrdersHist = () => {
+const AceOrdersList = () => {
 	const [allOrders, setAllOrders] = useState([]);
 	// eslint-disable-next-line
 	const [allOrdersFiltered, setAllOrdersFiltered] = useState([]);
@@ -70,7 +70,7 @@ const OrdersHist = () => {
 		new Date(new Date().setDate(new Date().getDate() + 3)),
 	);
 	const [day2, setDay2] = useState(
-		new Date(new Date().setDate(new Date().getDate() - 30)),
+		new Date(new Date().setDate(new Date().getDate() - 45)),
 	);
 	const [chosenCard, setChosenCard] = useState("OrdersCountCard");
 
@@ -126,7 +126,7 @@ const OrdersHist = () => {
 			return comparison;
 		}
 
-		listOrdersDates(user._id, token, day1, day2).then((data) => {
+		aceOrders(user._id, token, day1, day2).then((data) => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
@@ -720,7 +720,7 @@ const OrdersHist = () => {
 	};
 
 	return (
-		<OrdersHistWrapper show={AdminMenuStatus}>
+		<AceOrdersListWrapper show={AdminMenuStatus}>
 			{allOrders.length === 0 && allProducts.length === 0 ? (
 				<div
 					style={{
@@ -739,7 +739,7 @@ const OrdersHist = () => {
 					<div className='grid-container'>
 						<div className=''>
 							<AdminMenu
-								fromPage='OrdersHist'
+								fromPage='AceStoreSales'
 								AdminMenuStatus={AdminMenuStatus}
 								setAdminMenuStatus={setAdminMenuStatus}
 								collapsed={collapsed}
@@ -747,13 +747,13 @@ const OrdersHist = () => {
 							/>
 						</div>
 						<div className='mainContent'>
-							<Navbar fromPage='OrdersHist' pageScrolled={pageScrolled} />
-							<FiltersModal
+							<Navbar fromPage='AceStoreSales' pageScrolled={pageScrolled} />
+							{/* <FiltersModal
 								selectedFilter={selectedFilter}
 								setSelectedFilter={setSelectedFilter}
 								modalVisible={modalVisible}
 								setModalVisible={setModalVisible}
-							/>
+							/> */}
 							<div
 								style={{
 									background: "white",
@@ -922,13 +922,13 @@ const OrdersHist = () => {
 					</div>
 				</>
 			)}
-		</OrdersHistWrapper>
+		</AceOrdersListWrapper>
 	);
 };
 
-export default OrdersHist;
+export default AceOrdersList;
 
-const OrdersHistWrapper = styled.div`
+const AceOrdersListWrapper = styled.div`
 	min-height: 880px;
 	/* overflow-x: hidden; */
 	/* background: #ededed; */

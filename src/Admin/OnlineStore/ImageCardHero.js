@@ -98,8 +98,9 @@ const ImageCardHero = ({
 								) : null}
 							</div>
 							<div className='text-muted fs-7'>
-								Image Size should be 3800*1700. Set the Home Page Main thumbnail
-								image 1. Only *.png, *.jpg and *.jpeg image files are accepted
+								Image Size should be Width: 1920px ; Height: 809px. Set the Home
+								Page Main thumbnail image 1. Only *.png, *.jpg and *.jpeg image
+								files are accepted
 							</div>
 						</div>
 					</div>
@@ -170,8 +171,9 @@ const ImageCardHero = ({
 								) : null}
 							</div>
 							<div className='text-muted fs-7'>
-								Image Size should be 3800*1700. Set the Home Page Main thumbnail
-								image 1. Only *.png, *.jpg and *.jpeg image files are accepted
+								Image Size should be Width: 1920px ; Height: 809px. Set the Home
+								Page Main thumbnail image 1. Only *.png, *.jpg and *.jpeg image
+								files are accepted
 							</div>
 						</div>
 					</div>
@@ -242,8 +244,9 @@ const ImageCardHero = ({
 								) : null}
 							</div>
 							<div className='text-muted fs-7'>
-								Set the Home Page Main thumbnail image 3. Only *.png, *.jpg and
-								*.jpeg image files are accepted
+								Set the Home Page Main thumbnail image 3 (Width: 1920px ;
+								Height: 809px). Only *.png, *.jpg and *.jpeg image files are
+								accepted
 							</div>
 						</div>
 					</div>

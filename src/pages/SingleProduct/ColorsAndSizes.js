@@ -286,8 +286,8 @@ const ColorsAndSizesWrapper = styled.div`
 	}
 
 	.imgWrapper {
-		width: 50% !important;
-		height: 50% !important;
+		width: 50%;
+		height: 50%;
 	}
 
 	.attStyling:hover {
@@ -296,12 +296,25 @@ const ColorsAndSizesWrapper = styled.div`
 		font-size: 0.9rem;
 	}
 
+	.chooseColor {
+		font-weight: bold;
+	}
+	.chooseSize {
+		font-weight: bold;
+	}
+
 	@media (max-width: 1000px) {
 		.chooseColor {
 			margin-left: 10px !important;
 		}
 		.chooseSize {
 			margin-left: 10px !important;
+		}
+
+		.imgWrapper img {
+			width: 60% !important;
+			height: 60% !important;
+			object-fit: cover;
 		}
 	}
 `;
