@@ -105,8 +105,8 @@ const AddHeroComp = () => {
 			for (let i = 0; i < files.length; i++) {
 				Resizer.imageFileResizer(
 					files[i],
-					3800,
-					1700,
+					1920,
+					809,
 					"JPEG",
 					100,
 					0,
@@ -135,8 +135,8 @@ const AddHeroComp = () => {
 			for (let i = 0; i < files.length; i++) {
 				Resizer.imageFileResizer(
 					files[i],
-					3800,
-					1700,
+					1920,
+					809,
 					"JPEG",
 					100,
 					0,
@@ -165,8 +165,8 @@ const AddHeroComp = () => {
 			for (let i = 0; i < files.length; i++) {
 				Resizer.imageFileResizer(
 					files[i],
-					3800,
-					1700,
+					1920,
+					809,
 					"JPEG",
 					100,
 					0,
@@ -195,8 +195,8 @@ const AddHeroComp = () => {
 			for (let i = 0; i < files.length; i++) {
 				Resizer.imageFileResizer(
 					files[i],
-					3800,
-					1700,
+					720,
+					720,
 					"JPEG",
 					100,
 					0,
@@ -228,8 +228,8 @@ const AddHeroComp = () => {
 			for (let i = 0; i < files.length; i++) {
 				Resizer.imageFileResizer(
 					files[i],
-					3800,
-					1700,
+					720,
+					720,
 					"JPEG",
 					100,
 					0,
@@ -261,8 +261,8 @@ const AddHeroComp = () => {
 			for (let i = 0; i < files.length; i++) {
 				Resizer.imageFileResizer(
 					files[i],
-					3800,
-					1700,
+					720,
+					720,
 					"JPEG",
 					100,
 					0,

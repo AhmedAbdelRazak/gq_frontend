@@ -588,3 +588,151 @@ export const readSingleUserHistory = (userPhone, userId, token) => {
 		})
 		.catch((err) => console.log(err));
 };
+
+export const generatingTokenPaymob = (setPaymobtoken) => {
+	//generate token
+	const options = {
+		method: "POST",
+		headers: { accept: "application/json", "content-type": "application/json" },
+		body: JSON.stringify({
+			api_key: process.env.REACT_APP_API_KEY,
+		}),
+	};
+
+	fetch(process.env.REACT_APP_GENERATE_TOKEN_POINT, options)
+		.then((response) => response.json())
+		.then((response) => {
+			// console.log(response, "response");
+			//create order
+			const options2 = {
+				method: "POST",
+				headers: {
+					accept: "application/json",
+					"content-type": "application/json",
+				},
+				body: JSON.stringify({
+					auth_token: response.token,
+					delivery_needed: true,
+					amount_cents: 1000,
+					currency: "EGP",
+					api_key: process.env.REACT_APP_API_KEY,
+					items: [
+						{
+							name: "ASC1515",
+							amount_cents: "500000",
+							description: "Smart Watch",
+							quantity: "1",
+						},
+						{
+							name: "ERT6565",
+							amount_cents: "200000",
+							description: "Power Bank",
+							quantity: "1",
+						},
+					],
+					shipping_data: {
+						apartment: "803",
+						email: "claudette09@exa.com",
+						floor: "42",
+						first_name: "Test",
+						street: "Ethan Land",
+						building: "8028",
+						phone_number: "+86(8)9135210487",
+						postal_code: "01898",
+						extra_description: "8 Ram , 128 Giga",
+						city: "Jaskolskiburgh",
+						country: "CR",
+						last_name: "Account",
+						state: "Utah",
+					},
+					shipping_details: {
+						notes: " test",
+						number_of_packages: 1,
+						weight: 1,
+						weight_unit: "Kilogram",
+						length: 1,
+						width: 1,
+						height: 1,
+						contents: "product of some sorts",
+					},
+				}),
+			};
+
+			fetch(`${process.env.REACT_APP_CREATE_PAYMENT_POINT}`, options2)
+				.then((response2) => response2.json())
+				.then((response2) => {
+					// console.log(response2, "response 2");
+
+					//get payment token
+					const options3 = {
+						method: "POST",
+						headers: {
+							accept: "application/json",
+							"content-type": "application/json",
+						},
+
+						body: JSON.stringify({
+							auth_token: response.token,
+							amount_cents: 1000,
+							expiration: 3600,
+							order_id: response2.id,
+							currency: "EGP",
+							integration_id: process.env.REACT_APP_INTEGRATION_ID,
+							billing_data: {
+								apartment: "803",
+								email: "claudette09@exa.com",
+								floor: "42",
+								first_name: "Test",
+								street: "Ethan Land",
+								building: "8028",
+								phone_number: "+86(8)9135210487",
+								shipping_method: "PKG",
+								postal_code: "01898",
+								city: "Jaskolskiburgh",
+								country: "CR",
+								last_name: "Account",
+								state: "Utah",
+							},
+							lock_order_when_paid: false,
+						}),
+					};
+
+					fetch(`${process.env.REACT_APP_CREATE_PAYMENT_KEYS}`, options3)
+						.then((response3) => response3.json())
+						.then((response3) => {
+							// console.log(response3, "response 3");
+							setPaymobtoken(response3.token);
+						})
+						.catch((err) => console.error(err));
+
+					//end of get payment token
+				})
+				.catch((err) => console.error(err));
+
+			//end of create order
+		})
+		.catch((err) => console.error(err));
+
+	//end of generate token
+};
+
+export const createOrderPaymob = (token) => {
+	const options = {
+		method: "POST",
+		headers: { accept: "application/json", "content-type": "application/json" },
+		body: JSON.stringify({
+			auth_token: token,
+			delivery_needed: true,
+			amount_cents: 100,
+			currency: "EGY",
+			api_key: process.env.REACT_APP_API_KEY,
+		}),
+	};
+
+	fetch(`${process.env.REACT_APP_CREATE_PAYMENT_POINT}`, options)
+		.then((response) => response.json())
+		.then((response) => {
+			console.log(response);
+		})
+		.catch((err) => console.error(err));
+};

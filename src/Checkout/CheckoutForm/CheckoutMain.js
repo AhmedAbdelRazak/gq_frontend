@@ -16,6 +16,7 @@ import { Link, Redirect } from "react-router-dom";
 import {
 	allLoyaltyPointsAndStoreStatus,
 	createOrder,
+	generatingTokenPaymob,
 	getShippingOptions,
 	ordersLength,
 	readUser,
@@ -55,6 +56,7 @@ const CheckoutMain = ({ match }) => {
 	const [allShippingOptions, setAllShippingOptions] = useState([]);
 	const [appliedCoupon, setAppliedCoupon] = useState("");
 	const [appliedCouponName, setAppliedCouponName] = useState("");
+	const [paymobToken, setPaymobtoken] = useState("");
 	const [couponApplied, setCouponApplied] = useState(false);
 	const [
 		// eslint-disable-next-line
@@ -204,9 +206,12 @@ const CheckoutMain = ({ match }) => {
 	useEffect(() => {
 		gettingAllShippingOptions();
 		gettingPreviousLoyaltyPointsManagement();
+		generatingTokenPaymob(setPaymobtoken);
 
 		// eslint-disable-next-line
 	}, []);
+
+	console.log(paymobToken, "paymobtoken");
 
 	const handleChange = (name) => (e) => {
 		const value = e.target.value;
@@ -525,6 +530,140 @@ const CheckoutMain = ({ match }) => {
 			});
 	};
 
+	// eslint-disable-next-line
+	const CreatingOrderPaid = (e) => {
+		e.preventDefault();
+		window.scrollTo({ top: 0, behavior: "smooth" });
+
+		ordersLength().then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setLengthOfOrders(data);
+			}
+		});
+
+		if (
+			!customerDetails.fullName ||
+			!customerDetails.phone ||
+			!customerDetails.state ||
+			!customerDetails.address ||
+			!customerDetails.cityName ||
+			!customerDetails.carrierName ||
+			customerDetails.carrierName === "No Shipping Carrier" ||
+			customerDetails.cityName === "Unavailable"
+		) {
+			setCurrent(1);
+			return toast.error("Please Add All Required Info");
+		}
+
+		if (cart.length === 0) {
+			return toast.error("Please Add Products To The Order");
+		}
+		if (customerDetails.phone.length < 11) {
+			setCurrent(1);
+			return toast.error("Phone Should Be 11 Digits");
+		}
+
+		if (notAvailableStock) {
+			return toast.error("Not Enough Stock for the product you picked");
+		}
+
+		var today = new Date(
+			new Date().toLocaleString("en-US", {
+				timeZone: "Africa/Cairo",
+			}),
+		);
+
+		const totalAmountAfterDiscounting = () => {
+			if (
+				couponApplied &&
+				appliedCoupon &&
+				appliedCoupon.name &&
+				appliedCoupon.expiry &&
+				new Date(appliedCoupon.expiry).setHours(0, 0, 0, 0) >=
+					new Date().setHours(0, 0, 0, 0)
+			) {
+				return Number(
+					Number(total_amount) +
+						Number(shippingFee) +
+						-(
+							(Number(total_amount) + Number(shippingFee)) *
+							Number(appliedCoupon.discount)
+						) /
+							100,
+				).toFixed(2);
+			} else {
+				return Number(total_amount) + Number(shippingFee);
+			}
+		};
+
+		//In Processing, Ready To Ship, Shipped, Delivered
+		const createOrderData = {
+			productsNoVariable: [],
+			chosenProductQtyWithVariables: [chosenProductQtyWithVariables],
+			customerDetails: customerDetails,
+			totalOrderQty: Number(total_items),
+			status: "On Hold",
+			totalAmount: Number(total_amount) + Number(shippingFee),
+			// Number(Number(total_amount * 0.01).toFixed(2))
+			totalAmountAfterDiscount:
+				totalAmountAfterDiscounting() && totalAmountAfterDiscounting() !== 0
+					? totalAmountAfterDiscounting()
+					: Number(total_amount) + Number(shippingFee),
+			// Number(Number(total_amount * 0.01).toFixed(2))
+			totalOrderedQty: Number(total_items),
+			orderTakerDiscount: "",
+			employeeData: "Online Order",
+			chosenShippingOption: chosenShippingOption,
+			orderSource: "ace",
+			sendSMS: false,
+			trackingNumber: "Not Added",
+			invoiceNumber: "Not Added",
+			appliedCoupon: appliedCoupon,
+			OTNumber: `OT${new Date(orderCreationDate).getFullYear()}${
+				new Date(orderCreationDate).getMonth() + 1
+			}${new Date(orderCreationDate).getDate()}000${lengthOfOrders + 1}`,
+			returnStatus: "Not Returned",
+			shipDate: today,
+			returnDate: today,
+			exchangedProductQtyWithVariables: [],
+			exhchangedProductsNoVariable: [],
+			freeShipping: false,
+			orderCreationDate: orderCreationDate,
+			shippingFees: Number(shippingFee).toFixed(2),
+			appliedShippingFees: true,
+			totalAmountAfterExchange: 0,
+			exchangeTrackingNumber: "Not Added",
+			onHoldStatus: "Not On Hold",
+			paymentStatus:
+				customerDetails.payOnDelivery && !customerDetails.payOnline
+					? "Pay On Delivery"
+					: customerDetails.payOnline
+					? "Paid Online"
+					: "Pay On Delivery",
+			forAI: {
+				...forAI,
+				OTNumber: `OT${new Date(orderCreationDate).getFullYear()}${
+					new Date(orderCreationDate).getMonth() + 1
+				}${new Date(orderCreationDate).getDate()}000${lengthOfOrders + 1}`,
+			},
+		};
+
+		createOrder(token, createOrderData, user._id)
+			.then((response) => {
+				clearCart();
+				toast.success("Payment on delivery order was successfully placed");
+				setTimeout(function () {
+					window.location.reload(false);
+				}, 1500);
+			})
+
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+
 	const RedirectToHome = () => {
 		return <Redirect to='/user/dashboard' />;
 	};
@@ -635,24 +774,51 @@ const CheckoutMain = ({ match }) => {
 							</Button>
 						)}
 
-						{current === 3 && !loading && (
-							<Button
-								// disabled={dataEnter1()}
-								type='primary'
-								className='Buttons'
-								style={{
-									width: "20%",
-									fontWeight: "bold",
-									fontSize: "0.9rem",
-									background: "#005fbb",
-								}}
-								onClick={(e) => {
-									CreatingOrder(e);
-									window.scrollTo({ top: 0, behavior: "smooth" });
-								}}>
-								Order Now
-							</Button>
-						)}
+						{current === 3 &&
+							!loading &&
+							customerDetails.payOnDelivery &&
+							!customerDetails.payOnline && (
+								<Button
+									// disabled={dataEnter1()}
+									type='primary'
+									className='Buttons'
+									style={{
+										width: "20%",
+										fontWeight: "bold",
+										fontSize: "0.9rem",
+										background: "#005fbb",
+									}}
+									onClick={(e) => {
+										CreatingOrder(e);
+										window.scrollTo({ top: 0, behavior: "smooth" });
+									}}>
+									Order Now
+								</Button>
+							)}
+
+						{current === 3 &&
+							!loading &&
+							!customerDetails.payOnDelivery &&
+							customerDetails.payOnline && (
+								<Button
+									// disabled={dataEnter1()}
+									type='primary'
+									className='Buttons'
+									style={{
+										width: "20%",
+										fontWeight: "bold",
+										fontSize: "0.9rem",
+										background: "#005fbb",
+									}}
+									onClick={(e) => {
+										window.location.replace(
+											`${process.env.REACT_APP_IFRAME_LINK}${paymobToken}`,
+										);
+										window.scrollTo({ top: 0, behavior: "smooth" });
+									}}>
+									Pay Now
+								</Button>
+							)}
 					</div>
 				</div>
 

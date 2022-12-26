@@ -59,6 +59,7 @@ const AceOrdersList = () => {
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [offset, setOffset] = useState(0);
 	const [pageScrolled, setPageScrolled] = useState(false);
+	// eslint-disable-next-line
 	const [modalVisible, setModalVisible] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
 	// eslint-disable-next-line
