@@ -589,7 +589,13 @@ export const readSingleUserHistory = (userPhone, userId, token) => {
 		.catch((err) => console.log(err));
 };
 
-export const generatingTokenPaymob = (setPaymobtoken) => {
+export const generatingTokenPaymob = (
+	setPaymobtoken,
+	setPayMobPaymentData,
+	customerDetails,
+	totalAmountAfterDiscounting2,
+	cart,
+) => {
 	//generate token
 	const options = {
 		method: "POST",
@@ -613,40 +619,39 @@ export const generatingTokenPaymob = (setPaymobtoken) => {
 				body: JSON.stringify({
 					auth_token: response.token,
 					delivery_needed: true,
-					amount_cents: 1000,
+					amount_cents: totalAmountAfterDiscounting2() * 100,
 					currency: "EGP",
 					api_key: process.env.REACT_APP_API_KEY,
-					items: [
-						{
-							name: "ASC1515",
-							amount_cents: "500000",
-							description: "Smart Watch",
-							quantity: "1",
-						},
-						{
-							name: "ERT6565",
-							amount_cents: "200000",
-							description: "Power Bank",
-							quantity: "1",
-						},
-					],
+					items: cart.map((i) => {
+						return {
+							name: i.name,
+							amount_cents: i.priceAfterDiscount,
+							description:
+								i.chosenProductAttributes.size +
+								" " +
+								i.chosenProductAttributes.SubSKU,
+							quantity: i.amount,
+						};
+					}),
 					shipping_data: {
-						apartment: "803",
-						email: "claudette09@exa.com",
-						floor: "42",
-						first_name: "Test",
-						street: "Ethan Land",
-						building: "8028",
-						phone_number: "+86(8)9135210487",
-						postal_code: "01898",
+						apartment: "Unknown",
+						email: customerDetails.email
+							? customerDetails.email
+							: "Unknown@unknown.com",
+						floor: "12",
+						first_name: customerDetails.fullName,
+						street: customerDetails.address,
+						building: "Unknown",
+						phone_number: customerDetails.phone,
+						postal_code: "unknown",
 						extra_description: "8 Ram , 128 Giga",
-						city: "Jaskolskiburgh",
-						country: "CR",
-						last_name: "Account",
-						state: "Utah",
+						city: customerDetails.cityName,
+						country: "EG",
+						last_name: customerDetails.fullName,
+						state: customerDetails.state,
 					},
 					shipping_details: {
-						notes: " test",
+						notes: " Aramex",
 						number_of_packages: 1,
 						weight: 1,
 						weight_unit: "Kilogram",
@@ -662,7 +667,7 @@ export const generatingTokenPaymob = (setPaymobtoken) => {
 				.then((response2) => response2.json())
 				.then((response2) => {
 					// console.log(response2, "response 2");
-
+					setPayMobPaymentData(response2);
 					//get payment token
 					const options3 = {
 						method: "POST",
@@ -673,25 +678,27 @@ export const generatingTokenPaymob = (setPaymobtoken) => {
 
 						body: JSON.stringify({
 							auth_token: response.token,
-							amount_cents: 1000,
+							amount_cents: totalAmountAfterDiscounting2() * 100,
 							expiration: 3600,
 							order_id: response2.id,
 							currency: "EGP",
 							integration_id: process.env.REACT_APP_INTEGRATION_ID,
 							billing_data: {
-								apartment: "803",
-								email: "claudette09@exa.com",
-								floor: "42",
-								first_name: "Test",
-								street: "Ethan Land",
-								building: "8028",
-								phone_number: "+86(8)9135210487",
-								shipping_method: "PKG",
-								postal_code: "01898",
-								city: "Jaskolskiburgh",
-								country: "CR",
-								last_name: "Account",
-								state: "Utah",
+								apartment: "Unknown",
+								email: customerDetails.email
+									? customerDetails.email
+									: "Unknown@unknown.com",
+								floor: "12",
+								first_name: customerDetails.fullName,
+								street: customerDetails.address,
+								building: "Unknown",
+								phone_number: customerDetails.phone,
+								postal_code: "unknown",
+								extra_description: "8 Ram , 128 Giga",
+								city: customerDetails.cityName,
+								country: "EG",
+								last_name: customerDetails.fullName,
+								state: customerDetails.state,
 							},
 							lock_order_when_paid: false,
 						}),
@@ -714,25 +721,4 @@ export const generatingTokenPaymob = (setPaymobtoken) => {
 		.catch((err) => console.error(err));
 
 	//end of generate token
-};
-
-export const createOrderPaymob = (token) => {
-	const options = {
-		method: "POST",
-		headers: { accept: "application/json", "content-type": "application/json" },
-		body: JSON.stringify({
-			auth_token: token,
-			delivery_needed: true,
-			amount_cents: 100,
-			currency: "EGY",
-			api_key: process.env.REACT_APP_API_KEY,
-		}),
-	};
-
-	fetch(`${process.env.REACT_APP_CREATE_PAYMENT_POINT}`, options)
-		.then((response) => response.json())
-		.then((response) => {
-			console.log(response);
-		})
-		.catch((err) => console.error(err));
 };

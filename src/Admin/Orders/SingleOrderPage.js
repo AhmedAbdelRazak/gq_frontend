@@ -164,6 +164,8 @@ const SingleOrderPage = (props) => {
 		// eslint-disable-next-line
 	}, []);
 
+	console.log(updateSingleOrder, "order");
+
 	return (
 		<SingleOrderPageWrapper show={AdminMenuStatus}>
 			{!collapsed ? (
@@ -364,6 +366,25 @@ const SingleOrderPage = (props) => {
 									{updateSingleOrder.invoiceNumber}
 								</span>
 							</h5>
+							{updateSingleOrder.paymentStatus === "Paid Online" && (
+								<h5
+									style={{
+										fontWeight: "bold",
+										textAlign: "center",
+										marginBottom: "20px",
+									}}>
+									Payment Status:{" "}
+									<span
+										style={{
+											color:
+												updateSingleOrder.paymentStatus === "Paid Online"
+													? "darkgreen"
+													: "darkgreen",
+										}}>
+										{updateSingleOrder.paymentStatus}
+									</span>
+								</h5>
+							)}
 							<h5
 								style={{
 									fontWeight: "bold",

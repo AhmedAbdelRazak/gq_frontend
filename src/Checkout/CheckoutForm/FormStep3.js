@@ -50,9 +50,7 @@ const FormStep3 = ({
 											Number(total_amount) +
 												Number(shippingFee) +
 												Number(Number(total_amount * 0.01).toFixed(2)) -
-												((Number(total_amount) +
-													Number(shippingFee) +
-													Number(Number(total_amount * 0.01).toFixed(2))) *
+												(Number(total_amount) *
 													Number(appliedCoupon.discount)) /
 													100,
 										).toFixed(2)}{" "}
@@ -78,15 +76,21 @@ const FormStep3 = ({
 							</div>
 						)}
 					</>
-				) : null}
+				) : (
+					<div style={{ fontWeight: "bold", fontSize: "1rem" }}>
+						Total Amount Due:{" "}
+						{Number(total_amount) +
+							Number(shippingFee) +
+							Number(Number(total_amount * 0.01).toFixed(2))}{" "}
+						L.E.{" "}
+					</div>
+				)}
 			</div>
 		);
 	};
 	return (
 		<FormStep3Wrapper>
-			{customerDetails.payOnDelivery && !customerDetails.payOnline ? (
-				<div>{overAllReviewPayOnDelivery()}</div>
-			) : null}
+			<div>{overAllReviewPayOnDelivery()}</div>
 		</FormStep3Wrapper>
 	);
 };

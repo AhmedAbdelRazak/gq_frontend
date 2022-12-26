@@ -143,6 +143,19 @@ const App = () => {
 		// eslint-disable-next-line
 	}, []);
 
+	useEffect(() => {
+		if (window.location.pathname.includes("/checkout")) {
+			return;
+		} else {
+			localStorage.removeItem("PaidNow");
+			localStorage.removeItem("storedData");
+			localStorage.removeItem("chosenShippingOption");
+			localStorage.removeItem("orderDataStored");
+		}
+
+		// eslint-disable-next-line
+	}, []);
+
 	return (
 		<BrowserRouter>
 			<ToastContainer />

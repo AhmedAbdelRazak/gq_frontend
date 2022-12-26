@@ -821,7 +821,17 @@ const OrdersList = () => {
 											<td style={{ textTransform: "uppercase" }}>
 												{s.orderSource}
 											</td>
-											<td>{s.employeeData.name}</td>
+											<td
+												style={{
+													background:
+														s.employeeData === "Online Order" ? "#ffc994" : "",
+												}}>
+												{s.employeeData.name
+													? s.employeeData.name
+													: s.employeeData === "Online Order"
+													? "Online Self Service"
+													: ""}
+											</td>
 											<td>{s.customerDetails.state}</td>
 											{/* <td>{s.customerDetails.cityName}</td> */}
 											<td style={{ width: "8%" }}>

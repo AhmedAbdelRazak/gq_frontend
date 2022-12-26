@@ -57,6 +57,7 @@ const CheckoutMain = ({ match }) => {
 	const [appliedCoupon, setAppliedCoupon] = useState("");
 	const [appliedCouponName, setAppliedCouponName] = useState("");
 	const [paymobToken, setPaymobtoken] = useState("");
+	const [payMobPaymentData, setPayMobPaymentData] = useState("");
 	const [couponApplied, setCouponApplied] = useState(false);
 	const [
 		// eslint-disable-next-line
@@ -113,6 +114,29 @@ const CheckoutMain = ({ match }) => {
 						fullName: user.name,
 						phone: user.email,
 					});
+				}
+				if (localStorage.getItem("PaidNow")) {
+					setCurrent(3);
+					const addedCustomerDetails = JSON.parse(
+						localStorage.getItem("storedData"),
+					);
+					const addedShippingOptions = JSON.parse(
+						localStorage.getItem("chosenShippingOption"),
+					);
+					setCustomerDetails({
+						fullName: addedCustomerDetails.fullName,
+						phone: addedCustomerDetails.phone,
+						address: addedCustomerDetails.address,
+						email: addedCustomerDetails.email,
+						state: addedCustomerDetails.state,
+						city: addedCustomerDetails.city,
+						cityName: addedCustomerDetails.cityName,
+						carrierName: "Aramex Express",
+						orderComment: addedCustomerDetails.orderComment,
+						payOnline: addedCustomerDetails.payOnline,
+						payOnDelivery: addedCustomerDetails.payOnDelivery,
+					});
+					setChosenShippingOption(addedShippingOptions);
 				}
 			}
 		});
@@ -197,21 +221,86 @@ const CheckoutMain = ({ match }) => {
 									lastinHistory.customerDetails.state,
 							});
 						}
+
+						if (localStorage.getItem("PaidNow")) {
+							setCurrent(3);
+							const addedCustomerDetails = JSON.parse(
+								localStorage.getItem("storedData"),
+							);
+							const addedShippingOptions = JSON.parse(
+								localStorage.getItem("chosenShippingOption"),
+							);
+							setCustomerDetails({
+								fullName: addedCustomerDetails.fullName,
+								phone: addedCustomerDetails.phone,
+								address: addedCustomerDetails.address,
+								email: addedCustomerDetails.email,
+								state: addedCustomerDetails.state,
+								city: addedCustomerDetails.city,
+								cityName: addedCustomerDetails.cityName,
+								carrierName: "Aramex Express",
+								orderComment: addedCustomerDetails.orderComment,
+								payOnline: addedCustomerDetails.payOnline,
+								payOnDelivery: addedCustomerDetails.payOnDelivery,
+							});
+							setChosenShippingOption(addedShippingOptions);
+						}
 					});
 				}
 			}
 		});
 	};
 
+	// eslint-disable-next-line
+	let shippingFee =
+		chosenShippingOption.length > 0 &&
+		customerDetails.carrierName &&
+		customerDetails.city &&
+		customerDetails.state &&
+		customerDetails.cityName
+			? chosenShippingOption
+					.map((i) => i.chosenShippingData)[0]
+					.filter((ii) => ii.governorate === customerDetails.state)[0]
+					.shippingPrice_Client
+			: 0;
+
+	const totalAmountAfterDiscounting2 = () => {
+		const totalWithCOD = Number(total_amount) + Number(shippingFee);
+		if (
+			couponApplied &&
+			appliedCoupon &&
+			appliedCoupon.name &&
+			appliedCoupon.expiry &&
+			new Date(appliedCoupon.expiry).setHours(0, 0, 0, 0) >=
+				new Date().setHours(0, 0, 0, 0)
+		) {
+			return Number(
+				Number(totalWithCOD) -
+					(Number(total_amount) * Number(appliedCoupon.discount)) / 100,
+			).toFixed(2);
+		} else {
+			return Number(totalWithCOD);
+		}
+	};
+
 	useEffect(() => {
 		gettingAllShippingOptions();
 		gettingPreviousLoyaltyPointsManagement();
-		generatingTokenPaymob(setPaymobtoken);
 
 		// eslint-disable-next-line
 	}, []);
 
-	console.log(paymobToken, "paymobtoken");
+	useEffect(() => {
+		generatingTokenPaymob(
+			setPaymobtoken,
+			setPayMobPaymentData,
+			customerDetails,
+			totalAmountAfterDiscounting2,
+			cart,
+		);
+
+		// eslint-disable-next-line
+	}, [appliedCoupon, current]);
 
 	const handleChange = (name) => (e) => {
 		const value = e.target.value;
@@ -263,19 +352,6 @@ const CheckoutMain = ({ match }) => {
 	const handleAppliedCoupon = (event) => {
 		setAppliedCouponName(event.target.value);
 	};
-
-	// eslint-disable-next-line
-	let shippingFee =
-		chosenShippingOption.length > 0 &&
-		customerDetails.carrierName &&
-		customerDetails.city &&
-		customerDetails.state &&
-		customerDetails.cityName
-			? chosenShippingOption
-					.map((i) => i.chosenShippingData)[0]
-					.filter((ii) => ii.governorate === customerDetails.state)[0]
-					.shippingPrice_Client
-			: 0;
 
 	const steps = [
 		{
@@ -454,11 +530,7 @@ const CheckoutMain = ({ match }) => {
 				return Number(
 					Number(total_amount) +
 						Number(shippingFee) +
-						-(
-							(Number(total_amount) + Number(shippingFee)) *
-							Number(appliedCoupon.discount)
-						) /
-							100,
+						-(Number(total_amount) * Number(appliedCoupon.discount)) / 100,
 				).toFixed(2);
 			} else {
 				return Number(total_amount) + Number(shippingFee);
@@ -503,6 +575,7 @@ const CheckoutMain = ({ match }) => {
 			totalAmountAfterExchange: 0,
 			exchangeTrackingNumber: "Not Added",
 			onHoldStatus: "Not On Hold",
+			paymobData: payMobPaymentData,
 			paymentStatus: customerDetails.payOnDelivery
 				? "Pay On Delivery"
 				: customerDetails.payOnline
@@ -530,133 +603,39 @@ const CheckoutMain = ({ match }) => {
 			});
 	};
 
+	var today = new Date(
+		new Date().toLocaleString("en-US", {
+			timeZone: "Africa/Cairo",
+		}),
+	);
+
 	// eslint-disable-next-line
 	const CreatingOrderPaid = (e) => {
-		e.preventDefault();
+		const orderDataStoredLocalStor = JSON.parse(
+			localStorage.getItem("orderDataStored"),
+		);
+
+		console.log(orderDataStoredLocalStor);
+
 		window.scrollTo({ top: 0, behavior: "smooth" });
-
-		ordersLength().then((data) => {
-			if (data.error) {
-				console.log(data.error);
-			} else {
-				setLengthOfOrders(data);
-			}
-		});
-
-		if (
-			!customerDetails.fullName ||
-			!customerDetails.phone ||
-			!customerDetails.state ||
-			!customerDetails.address ||
-			!customerDetails.cityName ||
-			!customerDetails.carrierName ||
-			customerDetails.carrierName === "No Shipping Carrier" ||
-			customerDetails.cityName === "Unavailable"
-		) {
-			setCurrent(1);
-			return toast.error("Please Add All Required Info");
-		}
 
 		if (cart.length === 0) {
 			return toast.error("Please Add Products To The Order");
-		}
-		if (customerDetails.phone.length < 11) {
-			setCurrent(1);
-			return toast.error("Phone Should Be 11 Digits");
 		}
 
 		if (notAvailableStock) {
 			return toast.error("Not Enough Stock for the product you picked");
 		}
 
-		var today = new Date(
-			new Date().toLocaleString("en-US", {
-				timeZone: "Africa/Cairo",
-			}),
-		);
-
-		const totalAmountAfterDiscounting = () => {
-			if (
-				couponApplied &&
-				appliedCoupon &&
-				appliedCoupon.name &&
-				appliedCoupon.expiry &&
-				new Date(appliedCoupon.expiry).setHours(0, 0, 0, 0) >=
-					new Date().setHours(0, 0, 0, 0)
-			) {
-				return Number(
-					Number(total_amount) +
-						Number(shippingFee) +
-						-(
-							(Number(total_amount) + Number(shippingFee)) *
-							Number(appliedCoupon.discount)
-						) /
-							100,
-				).toFixed(2);
-			} else {
-				return Number(total_amount) + Number(shippingFee);
-			}
-		};
-
 		//In Processing, Ready To Ship, Shipped, Delivered
-		const createOrderData = {
-			productsNoVariable: [],
-			chosenProductQtyWithVariables: [chosenProductQtyWithVariables],
-			customerDetails: customerDetails,
-			totalOrderQty: Number(total_items),
-			status: "On Hold",
-			totalAmount: Number(total_amount) + Number(shippingFee),
-			// Number(Number(total_amount * 0.01).toFixed(2))
-			totalAmountAfterDiscount:
-				totalAmountAfterDiscounting() && totalAmountAfterDiscounting() !== 0
-					? totalAmountAfterDiscounting()
-					: Number(total_amount) + Number(shippingFee),
-			// Number(Number(total_amount * 0.01).toFixed(2))
-			totalOrderedQty: Number(total_items),
-			orderTakerDiscount: "",
-			employeeData: "Online Order",
-			chosenShippingOption: chosenShippingOption,
-			orderSource: "ace",
-			sendSMS: false,
-			trackingNumber: "Not Added",
-			invoiceNumber: "Not Added",
-			appliedCoupon: appliedCoupon,
-			OTNumber: `OT${new Date(orderCreationDate).getFullYear()}${
-				new Date(orderCreationDate).getMonth() + 1
-			}${new Date(orderCreationDate).getDate()}000${lengthOfOrders + 1}`,
-			returnStatus: "Not Returned",
-			shipDate: today,
-			returnDate: today,
-			exchangedProductQtyWithVariables: [],
-			exhchangedProductsNoVariable: [],
-			freeShipping: false,
-			orderCreationDate: orderCreationDate,
-			shippingFees: Number(shippingFee).toFixed(2),
-			appliedShippingFees: true,
-			totalAmountAfterExchange: 0,
-			exchangeTrackingNumber: "Not Added",
-			onHoldStatus: "Not On Hold",
-			paymentStatus:
-				customerDetails.payOnDelivery && !customerDetails.payOnline
-					? "Pay On Delivery"
-					: customerDetails.payOnline
-					? "Paid Online"
-					: "Pay On Delivery",
-			forAI: {
-				...forAI,
-				OTNumber: `OT${new Date(orderCreationDate).getFullYear()}${
-					new Date(orderCreationDate).getMonth() + 1
-				}${new Date(orderCreationDate).getDate()}000${lengthOfOrders + 1}`,
-			},
-		};
+		const createOrderData = orderDataStoredLocalStor;
 
 		createOrder(token, createOrderData, user._id)
 			.then((response) => {
 				clearCart();
-				toast.success("Payment on delivery order was successfully placed");
 				setTimeout(function () {
 					window.location.reload(false);
-				}, 1500);
+				}, 2500);
 			})
 
 			.catch((error) => {
@@ -667,6 +646,44 @@ const CheckoutMain = ({ match }) => {
 	const RedirectToHome = () => {
 		return <Redirect to='/user/dashboard' />;
 	};
+
+	useEffect(() => {
+		if (localStorage.getItem("PaidNow")) {
+			setCurrent(3);
+			const addedCustomerDetails = JSON.parse(
+				localStorage.getItem("storedData"),
+			);
+			const addedShippingOptions = JSON.parse(
+				localStorage.getItem("chosenShippingOption"),
+			);
+			setCustomerDetails({
+				fullName: addedCustomerDetails.fullName,
+				phone: addedCustomerDetails.phone,
+				address: addedCustomerDetails.address,
+				email: addedCustomerDetails.email,
+				state: addedCustomerDetails.state,
+				city: addedCustomerDetails.city,
+				cityName: addedCustomerDetails.cityName,
+				carrierName: "Aramex Express",
+				orderComment: addedCustomerDetails.orderComment,
+				payOnline: addedCustomerDetails.payOnline,
+				payOnDelivery: addedCustomerDetails.payOnDelivery,
+			});
+			setChosenShippingOption(addedShippingOptions);
+		} else {
+			return;
+		}
+	}, []);
+
+	useEffect(() => {
+		if (window.location.search.includes("integration_id")) {
+			toast.success("Your order was successfully set");
+			setTimeout(() => {
+				CreatingOrderPaid();
+			}, 2000);
+		}
+		// eslint-disable-next-line
+	}, []);
 
 	return (
 		<CheckoutMainWrapper>
@@ -811,9 +828,97 @@ const CheckoutMain = ({ match }) => {
 										background: "#005fbb",
 									}}
 									onClick={(e) => {
+										ordersLength().then((data) => {
+											if (data.error) {
+												console.log(data.error);
+											} else {
+												setLengthOfOrders(data);
+											}
+										});
+
+										localStorage.setItem("PaidNow", "PaidNow");
+										//Start of created Order On hold
+										const orderDataTobeStored = {
+											productsNoVariable: [],
+											chosenProductQtyWithVariables: [
+												chosenProductQtyWithVariables,
+											],
+											customerDetails: customerDetails,
+											totalOrderQty: Number(total_items),
+											status: "On Hold",
+											totalAmount: Number(total_amount) + Number(shippingFee),
+											// Number(Number(total_amount * 0.01).toFixed(2))
+											totalAmountAfterDiscount:
+												totalAmountAfterDiscounting2() &&
+												totalAmountAfterDiscounting2() !== 0
+													? totalAmountAfterDiscounting2()
+													: Number(total_amount) + Number(shippingFee),
+											// Number(Number(total_amount * 0.01).toFixed(2))
+											totalOrderedQty: Number(total_items),
+											orderTakerDiscount: "",
+											employeeData: "Online Order",
+											chosenShippingOption: chosenShippingOption,
+											orderSource: "ace",
+											sendSMS: false,
+											trackingNumber: "Not Added",
+											invoiceNumber: "Not Added",
+											appliedCoupon: appliedCoupon,
+											OTNumber: `OT${new Date(
+												orderCreationDate,
+											).getFullYear()}${
+												new Date(orderCreationDate).getMonth() + 1
+											}${new Date(orderCreationDate).getDate()}000${
+												lengthOfOrders + 1
+											}`,
+											returnStatus: "Not Returned",
+											shipDate: today,
+											returnDate: today,
+											exchangedProductQtyWithVariables: [],
+											exhchangedProductsNoVariable: [],
+											freeShipping: false,
+											orderCreationDate: orderCreationDate,
+											shippingFees: Number(shippingFee).toFixed(2),
+											appliedShippingFees: true,
+											totalAmountAfterExchange: 0,
+											exchangeTrackingNumber: "Not Added",
+											onHoldStatus: "Not On Hold",
+											paymobData: payMobPaymentData,
+											paymentStatus:
+												customerDetails.payOnDelivery &&
+												!customerDetails.payOnline
+													? "Pay On Delivery"
+													: customerDetails.payOnline
+													? "Paid Online"
+													: "Pay On Delivery",
+											forAI: {
+												...forAI,
+												OTNumber: `OT${new Date(
+													orderCreationDate,
+												).getFullYear()}${
+													new Date(orderCreationDate).getMonth() + 1
+												}${new Date(orderCreationDate).getDate()}000${
+													lengthOfOrders + 1
+												}`,
+											},
+										};
+										localStorage.setItem(
+											"orderDataStored",
+											JSON.stringify(orderDataTobeStored),
+										);
+
+										//end of created Order On hold
+										localStorage.setItem(
+											"storedData",
+											JSON.stringify(customerDetails),
+										);
+										localStorage.setItem(
+											"chosenShippingOption",
+											JSON.stringify(chosenShippingOption),
+										);
 										window.location.replace(
 											`${process.env.REACT_APP_IFRAME_LINK}${paymobToken}`,
 										);
+
 										window.scrollTo({ top: 0, behavior: "smooth" });
 									}}>
 									Pay Now
