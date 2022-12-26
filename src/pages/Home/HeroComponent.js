@@ -153,9 +153,10 @@ const HeroComponentWrapper = styled.div`
 	background-image: linear-gradient(white, white);
 
 	.heroPicMain img {
+		width: 100%;
 		text-align: center;
 		margin: auto;
-		object-fit: cover !important;
+		/* object-fit: cover !important; */
 		/* border-radius: 5%; */
 	}
 
@@ -218,7 +219,9 @@ const HeroComponentWrapper = styled.div`
 		}
 
 		.phoneBanner img {
-			object-fit: cover !important;
+			width: 100%;
+			height: 100%;
+			/* object-fit: cover !important; */
 			display: block;
 		}
 

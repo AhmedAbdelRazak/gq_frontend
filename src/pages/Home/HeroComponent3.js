@@ -72,7 +72,7 @@ const HeroComponent3 = () => {
 			{homePage &&
 				homePage.thumbnail3_Phone &&
 				homePage.thumbnail3_Phone[0] && (
-					<div className='heroPicMain phoneBanner'>
+					<div className=' phoneBanner'>
 						<Link to='/our-products'>
 							<img
 								src={
@@ -100,9 +100,10 @@ const HeroComponent3Wrapper = styled.div`
 	background-image: linear-gradient(white, white);
 
 	.heroPicMain img {
+		width: 100%;
 		text-align: center;
 		margin: auto;
-		object-fit: cover !important;
+		/* object-fit: cover !important; */
 		/* border-radius: 5%; */
 	}
 
@@ -165,7 +166,8 @@ const HeroComponent3Wrapper = styled.div`
 		}
 
 		.phoneBanner img {
-			object-fit: cover !important;
+			width: 100% !important;
+			/* object-fit: cover !important; */
 			display: block;
 		}
 
