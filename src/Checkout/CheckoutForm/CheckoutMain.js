@@ -457,20 +457,38 @@ const CheckoutMain = ({ match }) => {
 	var chosenProductQtyWithVariables = cart.map((i) => {
 		return {
 			SubSKU: i.chosenProductAttributes.SubSKU,
-			OrderedQty: i.amount,
+			OrderedQty: i.amount ? i.amount : i.OrderedQty,
 			productId: i._id,
-			productName: i.name,
-			productMainImage: i.image,
-			productSubSKUImage: i.image,
-			SubSKUPriceAfterDiscount: i.chosenProductAttributes.priceAfterDiscount,
-			SubSKURetailerPrice: i.chosenProductAttributes.price,
-			SubSKUWholeSalePrice: i.chosenProductAttributes.WholeSalePrice,
-			SubSKUDropshippingPrice: i.chosenProductAttributes.DropShippingPrice,
-			pickedPrice: i.chosenProductAttributes.priceAfterDiscount,
-			quantity: i.chosenProductAttributes.quantity,
-			SubSKUColor: i.chosenProductAttributes.color,
-			SubSKUSize: i.chosenProductAttributes.size,
-			SubSKUMSRP: i.chosenProductAttributes.price,
+			productName: i.name ? i.name : i.productName,
+			productMainImage: i.image ? i.image : i.productSubSKUImage,
+			productSubSKUImage: i.image ? i.image : i.productMainImage,
+			SubSKUPriceAfterDiscount: i.chosenProductAttributes.priceAfterDiscount
+				? i.chosenProductAttributes.priceAfterDiscount
+				: i.chosenProductAttributes.SubSKUPriceAfterDiscount,
+			SubSKURetailerPrice: i.chosenProductAttributes.price
+				? i.chosenProductAttributes.price
+				: i.chosenProductAttributes.SubSKURetailerPrice,
+			SubSKUWholeSalePrice: i.chosenProductAttributes.WholeSalePrice
+				? i.chosenProductAttributes.WholeSalePrice
+				: i.chosenProductAttributes.SubSKUWholeSalePrice,
+			SubSKUDropshippingPrice: i.chosenProductAttributes.DropShippingPrice
+				? i.chosenProductAttributes.DropShippingPrice
+				: i.chosenProductAttributes.SubSKUDropshippingPrice,
+			pickedPrice: i.chosenProductAttributes.priceAfterDiscount
+				? i.chosenProductAttributes.priceAfterDiscount
+				: i.chosenProductAttributes.pickedPrice,
+			quantity: i.chosenProductAttributes.quantity
+				? i.chosenProductAttributes.quantity
+				: i.chosenProductAttributes.quantity,
+			SubSKUColor: i.chosenProductAttributes.color
+				? i.chosenProductAttributes.color
+				: i.chosenProductAttributes.SubSKUColor,
+			SubSKUSize: i.chosenProductAttributes.size
+				? i.chosenProductAttributes.size
+				: i.chosenProductAttributes.SubSKUSize,
+			SubSKUMSRP: i.chosenProductAttributes.price
+				? i.chosenProductAttributes.price
+				: i.chosenProductAttributes.SubSKUMSRP,
 		};
 	});
 
@@ -724,7 +742,9 @@ const CheckoutMain = ({ match }) => {
 									!customerDetails.fullName ||
 									(customerDetails.payOnDelivery &&
 										customerDetails.payOnline) ||
-									(!customerDetails.payOnDelivery && !customerDetails.payOnline)
+									(!customerDetails.payOnDelivery &&
+										!customerDetails.payOnline) ||
+									notAvailableStock
 								}
 								type='primary'
 								className='Buttons'

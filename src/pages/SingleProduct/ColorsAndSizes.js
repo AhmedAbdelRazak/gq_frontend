@@ -177,7 +177,7 @@ const ColorsAndSizes = ({
 					Product.sizeChart.chartLength.length > 0 ? (
 						<div
 							onClick={() => setModalVisible2(true)}
-							className='col-md-6 '
+							className='col-md-6 chooseSize'
 							style={{
 								fontWeight: "bolder",
 								textDecoration: "underline",

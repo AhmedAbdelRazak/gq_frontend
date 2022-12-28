@@ -454,6 +454,8 @@ const SingleProduct = (props) => {
 	var titleName =
 		Product && Product.productName && Product.productName.toUpperCase();
 
+	console.log(chosenProductAttributes, "chosenProductAttributes");
+
 	return (
 		<SingleEmp className='mx-auto'>
 			<Helmet>
