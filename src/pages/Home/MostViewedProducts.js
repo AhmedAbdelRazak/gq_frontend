@@ -34,7 +34,7 @@ const MostViewedProducts = ({ chosenLanguage }) => {
 		});
 	};
 
-	console.log(productsByMostViews, "productsByMostViews");
+	// console.log(productsByMostViews, "productsByMostViews");
 
 	useEffect(() => {
 		loadFilteredResultsMostViewed();

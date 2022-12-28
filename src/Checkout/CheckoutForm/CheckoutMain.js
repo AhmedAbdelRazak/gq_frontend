@@ -265,7 +265,7 @@ const CheckoutMain = ({ match }) => {
 			: 0;
 
 	const totalAmountAfterDiscounting2 = () => {
-		const totalWithCOD = Number(total_amount) + Number(shippingFee);
+		const totalWithoutCOD = Number(total_amount) + Number(shippingFee);
 		if (
 			couponApplied &&
 			appliedCoupon &&
@@ -275,13 +275,15 @@ const CheckoutMain = ({ match }) => {
 				new Date().setHours(0, 0, 0, 0)
 		) {
 			return Number(
-				Number(totalWithCOD) -
+				Number(totalWithoutCOD) -
 					(Number(total_amount) * Number(appliedCoupon.discount)) / 100,
 			).toFixed(2);
 		} else {
-			return Number(totalWithCOD);
+			return Number(totalWithoutCOD);
 		}
 	};
+
+	// console.log(totalAmountAfterDiscounting2(), "totalAmountAfterDiscounting2");
 
 	useEffect(() => {
 		gettingAllShippingOptions();
@@ -296,6 +298,7 @@ const CheckoutMain = ({ match }) => {
 			setPayMobPaymentData,
 			customerDetails,
 			totalAmountAfterDiscounting2,
+			total_amount,
 			cart,
 		);
 
@@ -719,7 +722,9 @@ const CheckoutMain = ({ match }) => {
 									!customerDetails.phone ||
 									!customerDetails.address ||
 									!customerDetails.fullName ||
-									(customerDetails.payOnDelivery && customerDetails.payOnline)
+									(customerDetails.payOnDelivery &&
+										customerDetails.payOnline) ||
+									(!customerDetails.payOnDelivery && !customerDetails.payOnline)
 								}
 								type='primary'
 								className='Buttons'
@@ -794,7 +799,9 @@ const CheckoutMain = ({ match }) => {
 						{current === 3 &&
 							!loading &&
 							customerDetails.payOnDelivery &&
-							!customerDetails.payOnline && (
+							!customerDetails.payOnline &&
+							customerDetails.city &&
+							customerDetails.state && (
 								<Button
 									// disabled={dataEnter1()}
 									type='primary'
@@ -816,7 +823,9 @@ const CheckoutMain = ({ match }) => {
 						{current === 3 &&
 							!loading &&
 							!customerDetails.payOnDelivery &&
-							customerDetails.payOnline && (
+							customerDetails.payOnline &&
+							customerDetails.city &&
+							customerDetails.state && (
 								<Button
 									// disabled={dataEnter1()}
 									type='primary'
@@ -928,7 +937,11 @@ const CheckoutMain = ({ match }) => {
 				</div>
 
 				<div className='col-md-4 rightSide mx-auto'>
-					<CheckoutCartItems />
+					<CheckoutCartItems
+						shippingFee={shippingFee}
+						appliedCoupon={appliedCoupon}
+						couponApplied={couponApplied}
+					/>
 				</div>
 			</div>
 		</CheckoutMainWrapper>

@@ -48,6 +48,7 @@ const UpdateProductSingle = ({ match }) => {
 	// eslint-disable-next-line
 	const [loading, setLoading] = useState(true);
 	const [productName, setProductName] = useState("");
+	const [viewsCount, setViewsCount] = useState(0);
 	const [productName_Arabic, setProductName_Arabic] = useState("");
 	const [productSKU, setProductSKU] = useState("");
 	// eslint-disable-next-line
@@ -71,6 +72,7 @@ const UpdateProductSingle = ({ match }) => {
 	const [priceAfterDiscount, setPriceAfterDiscount] = useState("");
 	const [MSRPPriceBasic, setMSRPPriceBasic] = useState("");
 	const [chosenSeason, setChosenSeason] = useState("");
+	const [sizeChart, setSizeChart] = useState("");
 	const [stock, setStock] = useState("");
 	const [chosenSizes, setChosenSizes] = useState([]);
 	const [chosenColors, setChosenColors] = useState([]);
@@ -118,6 +120,9 @@ const UpdateProductSingle = ({ match }) => {
 				setProductName_Arabic(
 					data.filter((e) => e._id === match.params.productId)[0]
 						.productName_Arabic,
+				);
+				setSizeChart(
+					data.filter((e) => e._id === match.params.productId)[0].sizeChart,
 				);
 				setSlug(data.filter((e) => e._id === match.params.productId)[0].slug);
 				setSlug_Arabic(
@@ -168,6 +173,10 @@ const UpdateProductSingle = ({ match }) => {
 
 				setChosenSeason(
 					data.filter((e) => e._id === match.params.productId)[0].chosenSeason,
+				);
+
+				setViewsCount(
+					data.filter((e) => e._id === match.params.productId)[0].viewsCount,
 				);
 
 				setAddVariables(
@@ -752,6 +761,8 @@ const UpdateProductSingle = ({ match }) => {
 			Specs: Specs ? Specs : "",
 			Specs_Arabic: Specs_Arabic ? Specs_Arabic : "",
 			fitCare: fitCare ? fitCare : fitCare,
+			viewsCount: viewsCount,
+			sizeChart: sizeChart ? sizeChart : {},
 			fitCare_Arabic: fitCare_Arabic ? fitCare_Arabic : "",
 		};
 		updateProduct(match.params.productId, user._id, token, {

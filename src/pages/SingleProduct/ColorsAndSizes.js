@@ -89,6 +89,7 @@ const ColorsAndSizes = ({
 	chosenProductAttributes,
 	colorSelected,
 	setColorSelected,
+	setModalVisible2,
 }) => {
 	const [clickedLink, setClickedLink] = useState("");
 	const [clickedLink2, setClickedLink2] = useState("");
@@ -166,7 +167,45 @@ const ColorsAndSizes = ({
 				</div>
 			</div>
 			<div className='text-capitalize text-title' style={{ color: "#0052a5" }}>
-				<span className='chooseSize'>Choose a Size:</span>
+				<div className='row'>
+					<div className='col-md-6 '>
+						<span className='chooseSize'>Choose a Size:</span>
+					</div>
+					{Product &&
+					Product.sizeChart &&
+					Product.sizeChart.chartLength &&
+					Product.sizeChart.chartLength.length > 0 ? (
+						<div
+							onClick={() => setModalVisible2(true)}
+							className='col-md-6 '
+							style={{
+								fontWeight: "bolder",
+								textDecoration: "underline",
+								cursor: "pointer",
+							}}>
+							Size Guide
+							<svg
+								width='24'
+								height='24'
+								viewBox='0 0 24 24'
+								fill='none'
+								role='img'
+								xmlns='http://www.w3.org/2000/svg'>
+								<path
+									fill-rule='evenodd'
+									clip-rule='evenodd'
+									d='M6.44305 7.07914C6.44305 6.31518 7.00822 5.75 7.77219 5.75C8.53616 5.75 9.10134 6.31518 9.10134 7.07914C9.10134 7.84311 8.53616 8.40829 7.77219 8.40829C7.00822 8.40829 6.44305 7.84311 6.44305 7.07914ZM7.77219 4.25C6.1798 4.25 4.94305 5.48675 4.94305 7.07914C4.94305 8.67154 6.1798 9.90829 7.77219 9.90829C9.36459 9.90829 10.6013 8.67154 10.6013 7.07914C10.6013 5.48675 9.36459 4.25 7.77219 4.25ZM5 10.4874H4.25V11.2374V15.3957V15.6228L4.37596 15.8117L5.6361 17.7019V20.2471V20.9971H6.3861H9.15829H9.90829V20.2471V17.7019L11.1684 15.8117L11.2944 15.6228V15.3957V11.2374V10.4874H10.5444H5ZM5.75 15.1686V11.9874H9.79438V15.1686L8.53425 17.0588L8.40829 17.2478V17.4749V19.4971H7.1361V17.4749V17.2478L7.01013 17.0588L5.75 15.1686Z'
+									fill='black'></path>
+								<path
+									fill-rule='evenodd'
+									clip-rule='evenodd'
+									d='M19.611 4.25H13.2596V7.71524V9.21524V10.4874V11.9874V13.2596V14.7596V16.0318V17.5318V20.9971H19.611V4.25ZM14.759 17.5318V19.497H18.11V5.75H14.759V7.71524H16.8388V9.21524H14.759V10.4874H16.1457V11.9874H14.759V13.2596H16.8388V14.7596H14.759V16.0318H16.1457V17.5318H14.759Z'
+									fill='black'></path>
+							</svg>
+						</div>
+					) : null}
+				</div>
+
 				<div className='my-2 mx-5 text-center row'>
 					{allSizes &&
 						allSizes.map((s, i) => {

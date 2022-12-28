@@ -379,7 +379,7 @@ const InvoicePDF = (props) => {
 								<div className='col-6'>Cash on delivery surcharge</div>
 								<div className='col-5'>
 									{Number(
-										(Number(updateSingleOrder.totalAmountAfterDiscount) -
+										(Number(updateSingleOrder.totalAmount) -
 											Number(updateSingleOrder.shippingFees)) *
 											0.01,
 									).toFixed(2)}{" "}
@@ -401,7 +401,7 @@ const InvoicePDF = (props) => {
 									}}>
 									{Number(
 										Number(updateSingleOrder.totalAmountAfterDiscount) +
-											(Number(updateSingleOrder.totalAmountAfterDiscount) -
+											(Number(updateSingleOrder.totalAmount) -
 												Number(updateSingleOrder.shippingFees)) *
 												0.01,
 									).toFixed(2)}{" "}

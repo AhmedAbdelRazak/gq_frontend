@@ -291,9 +291,7 @@ const UserDashboard = () => {
 								</span>{" "}
 								<span style={{ fontWeight: "bold", color: "#737373" }}>
 									{Number(
-										(Number(
-											lastPurchase && lastPurchase.totalAmountAfterDiscount,
-										) -
+										(Number(lastPurchase && lastPurchase.totalAmount) -
 											Number(lastPurchase && lastPurchase.shippingFees)) *
 											0.01,
 									).toFixed(2)}{" "}
@@ -314,9 +312,7 @@ const UserDashboard = () => {
 										Number(
 											lastPurchase && lastPurchase.totalAmountAfterDiscount,
 										) +
-											(Number(
-												lastPurchase && lastPurchase.totalAmountAfterDiscount,
-											) -
+											(Number(lastPurchase && lastPurchase.totalAmount) -
 												Number(lastPurchase && lastPurchase.shippingFees)) *
 												0.01,
 									).toFixed(2)}{" "}

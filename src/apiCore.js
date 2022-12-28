@@ -594,8 +594,13 @@ export const generatingTokenPaymob = (
 	setPayMobPaymentData,
 	customerDetails,
 	totalAmountAfterDiscounting2,
+	total_amount,
 	cart,
 ) => {
+	const totalAmountFinal =
+		Number(totalAmountAfterDiscounting2()) + Number(total_amount) * 0.01;
+
+	// console.log(totalAmountFinal, "totalamountFROM API Core");
 	//generate token
 	const options = {
 		method: "POST",
@@ -619,7 +624,7 @@ export const generatingTokenPaymob = (
 				body: JSON.stringify({
 					auth_token: response.token,
 					delivery_needed: true,
-					amount_cents: totalAmountAfterDiscounting2() * 100,
+					amount_cents: totalAmountFinal * 100,
 					currency: "EGP",
 					api_key: process.env.REACT_APP_API_KEY,
 					items: cart.map((i) => {
@@ -678,7 +683,7 @@ export const generatingTokenPaymob = (
 
 						body: JSON.stringify({
 							auth_token: response.token,
-							amount_cents: totalAmountAfterDiscounting2() * 100,
+							amount_cents: totalAmountFinal * 100,
 							expiration: 3600,
 							order_id: response2.id,
 							currency: "EGP",

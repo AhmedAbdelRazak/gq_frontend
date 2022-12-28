@@ -3,13 +3,20 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import AdminMenu from "../../AdminMenu/AdminMenu";
-import { getProducts, getListOfSubs, updateProduct } from "../../apiAdmin";
+import {
+	getProducts,
+	getListOfSubs,
+	updateProduct,
+	cloudinaryUpload1,
+} from "../../apiAdmin";
 import { isAuthenticated } from "../../../auth";
 import { toast } from "react-toastify";
 import DarkBG from "../../AdminMenu/DarkBG";
 import { Redirect } from "react-router-dom";
-
+import axios from "axios";
+import Resizer from "react-image-file-resizer";
 import { Select } from "antd";
+import SizeChartImageCard from "./SizeChartImageCard";
 
 const { Option } = Select;
 
@@ -21,6 +28,7 @@ const UpdateSpecs = ({ match }) => {
 	const [productSKU, setProductSKU] = useState("");
 	// eslint-disable-next-line
 	const [slug, setSlug] = useState("");
+	const [viewsCount, setViewsCount] = useState(0);
 	// eslint-disable-next-line
 	const [slug_Arabic, setSlug_Arabic] = useState("");
 	const [description, setDescription] = useState("");
@@ -55,6 +63,12 @@ const UpdateSpecs = ({ match }) => {
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
 	const [storeName, setStoreName] = useState("");
+	const [sizeChart, setSizeChart] = useState({
+		chartImage: [],
+		chartSize: [],
+		chartLength: [],
+		chartWidth: [],
+	});
 
 	const [policy, setPolicy] = useState("");
 	const [policy_Arabic, setPolicy_Arabic] = useState("");
@@ -92,6 +106,9 @@ const UpdateSpecs = ({ match }) => {
 					data.filter((e) => e._id === match.params.productId)[0]
 						.productName_Arabic,
 				);
+				setViewsCount(
+					data.filter((e) => e._id === match.params.productId)[0].viewsCount,
+				);
 				setSlug(data.filter((e) => e._id === match.params.productId)[0].slug);
 				setSlug_Arabic(
 					data.filter((e) => e._id === match.params.productId)[0].slug_Arabic,
@@ -105,6 +122,22 @@ const UpdateSpecs = ({ match }) => {
 				setDescription_Arabic(
 					data.filter((e) => e._id === match.params.productId)[0]
 						.description_Arabic,
+				);
+				setSizeChart(
+					data.filter((e) => e._id === match.params.productId)[0].sizeChart
+						? data.filter((e) => e._id === match.params.productId)[0].sizeChart
+						: {
+								chartImage: [],
+								chartSize: [
+									...new Set(
+										data
+											.filter((e) => e._id === match.params.productId)[0]
+											.productAttributes.map((ii) => ii.size),
+									),
+								],
+								chartLength: [],
+								chartWidth: [],
+						  },
 				);
 				setChosenSubcategories(
 					data.filter((e) => e._id === match.params.productId)[0].subcategory &&
@@ -236,7 +269,7 @@ const UpdateSpecs = ({ match }) => {
 		// eslint-disable-next-line
 	}, [match.params.productId]);
 
-	console.log(relatedProducts, "relatedProducts");
+	console.log(chosenSizes, "chosenSizes");
 
 	const UpdateProductToDatabase = (e) => {
 		e.preventDefault();
@@ -266,6 +299,7 @@ const UpdateSpecs = ({ match }) => {
 				relatedProducts && relatedProducts.length > 0 ? relatedProducts : [],
 			shipping: shipping,
 			addVariables: addVariables,
+			viewsCount: viewsCount,
 			storeName: storeName,
 			clearance: clearance,
 			productAttributes:
@@ -282,6 +316,7 @@ const UpdateSpecs = ({ match }) => {
 			Specs_Arabic: Specs_Arabic ? Specs_Arabic : "",
 			fitCare: fitCare ? fitCare : fitCare,
 			fitCare_Arabic: fitCare_Arabic ? fitCare_Arabic : "",
+			sizeChart: sizeChart ? sizeChart : {},
 		};
 		updateProduct(match.params.productId, user._id, token, {
 			product: values,
@@ -295,6 +330,82 @@ const UpdateSpecs = ({ match }) => {
 				}, 3000);
 			}
 		});
+	};
+
+	console.log(sizeChart, "sizeChart");
+
+	const fileUploadAndResizeSizeChart = (e) => {
+		// console.log(e.target.files);
+		let files = e.target.files;
+		let allUploadedFiles = sizeChart.chartImage;
+		if (files) {
+			for (let i = 0; i < files.length; i++) {
+				Resizer.imageFileResizer(
+					files[i],
+					720,
+					720,
+					"JPEG",
+					100,
+					0,
+					(uri) => {
+						cloudinaryUpload1(user._id, token, { image: uri })
+							.then((data) => {
+								allUploadedFiles.push(data);
+
+								setSizeChart({ ...sizeChart, chartImage: allUploadedFiles });
+							})
+							.catch((err) => {
+								console.log("CLOUDINARY UPLOAD ERR", err);
+							});
+					},
+					"base64",
+				);
+			}
+		}
+	};
+
+	const FileUploadStoreLogo = () => {
+		return (
+			<>
+				<SizeChartImageCard
+					sizeChart={sizeChart}
+					handleImageRemove={handleImageRemove}
+					setSizeChart={setSizeChart}
+					fileUploadAndResizeThumbNail={fileUploadAndResizeSizeChart}
+				/>
+			</>
+		);
+	};
+
+	const handleImageRemove = (public_id) => {
+		// console.log("remove image", public_id);
+		axios
+			.post(
+				`${process.env.REACT_APP_API_URL}/admin/removeimage/${user._id}`,
+				{ public_id },
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				},
+			)
+			.then((res) => {
+				// eslint-disable-next-line
+				const { images } = sizeChart.chartImage;
+				// let filteredImages = images.filter((item) => {
+				// 	return item.public_id !== public_id;
+				// });
+				setSizeChart({ ...sizeChart, chartImage: [] });
+				setTimeout(function () {
+					window.location.reload(false);
+				}, 1000);
+			})
+			.catch((err) => {
+				console.log(err);
+				setTimeout(function () {
+					window.location.reload(false);
+				}, 1000);
+			});
 	};
 
 	const extraFeatures = () => {
@@ -437,6 +548,88 @@ const UpdateSpecs = ({ match }) => {
 						)}
 					</div>
 				</div>
+				<h5 className='mt-5' style={{ fontWeight: "bolder" }}>
+					Update Size Chart/ Size
+				</h5>
+				<div className='col-md-4'>{FileUploadStoreLogo()}</div>
+				{chosenSizes &&
+					chosenSizes.length > 0 &&
+					chosenSizes.map((s, i) => {
+						return (
+							<div className='row mt-4 mx-5'>
+								<div className='col-md-4 mx-auto' key={i}>
+									<label
+										className='text-muted'
+										style={{ fontWeight: "bold", fontSize: "14px" }}>
+										Size{" "}
+										<span style={{ textTransform: "uppercase" }}>({s})</span>
+									</label>
+									<input
+										type='text'
+										className='form-control'
+										// onChange={() =>
+										// 	setSizeChart({
+										// 		...sizeChart,
+										// 		chartSize: [s],
+										// 	})
+										// }
+										value={s}
+									/>
+								</div>
+								<div className='col-md-4 mx-auto'>
+									<label
+										className='text-muted'
+										style={{ fontWeight: "bold", fontSize: "14px" }}>
+										Length{" "}
+										<span style={{ textTransform: "uppercase" }}>({s})</span>
+									</label>
+									<input
+										type='text'
+										className='form-control'
+										onChange={(e) => {
+											var clone = [...sizeChart.chartLength];
+											let obj = clone[i];
+											obj = e.target.value;
+											clone[i] = obj;
+											setSizeChart({
+												...sizeChart,
+												chartLength: [...clone],
+											});
+										}}
+										value={
+											sizeChart.chartLength[i] ? sizeChart.chartLength[i] : null
+										}
+									/>
+								</div>
+								<div className='col-md-4 mx-auto'>
+									<label
+										className='text-muted'
+										style={{ fontWeight: "bold", fontSize: "14px" }}>
+										Width{" "}
+										<span style={{ textTransform: "uppercase" }}>({s})</span>
+									</label>
+									<input
+										type='text'
+										className='form-control'
+										onChange={(e) => {
+											var clone = [...sizeChart.chartWidth];
+											let obj = clone[i];
+											obj = e.target.value;
+											clone[i] = obj;
+											setSizeChart({
+												...sizeChart,
+												chartWidth: [...clone],
+											});
+										}}
+										value={
+											sizeChart.chartWidth[i] ? sizeChart.chartWidth[i] : null
+										}
+									/>
+								</div>
+							</div>
+						);
+					})}
+
 				<br />
 				<br />
 				<br />

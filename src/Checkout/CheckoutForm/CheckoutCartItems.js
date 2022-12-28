@@ -7,7 +7,12 @@ import { FaMinus, FaPlus } from "react-icons/fa";
 import { useCartContext } from "../cart_context";
 import { Link } from "react-router-dom";
 
-const CheckoutCartItems = ({ chosenLanguage }) => {
+const CheckoutCartItems = ({
+	chosenLanguage,
+	shippingFee,
+	couponApplied,
+	appliedCoupon,
+}) => {
 	// eslint-disable-next-line
 	const [relatedProducts, setRelatedProducts] = useState([]);
 
@@ -274,7 +279,66 @@ const CheckoutCartItems = ({ chosenLanguage }) => {
 						</div>
 					);
 				})}
-				<div className='Totals'>Subtotal: {total_amount} L.E.</div>
+				<div className='Totals mx-auto col-md-10'>
+					<div className=''>Subtotal: {total_amount} L.E.</div>
+					<div className=''>Shipping Fee: {shippingFee} L.E.</div>
+					<div className=''>COD%: {total_amount * 0.01} L.E. (1%)</div>
+					{couponApplied ? (
+						<>
+							{appliedCoupon && appliedCoupon.name && appliedCoupon.expiry ? (
+								<div className='mt-1'>
+									{new Date(appliedCoupon.expiry).setHours(0, 0, 0, 0) >=
+									new Date().setHours(0, 0, 0, 0) ? (
+										<div style={{ fontWeight: "bold", fontSize: "1.3rem" }}>
+											Total Amount Due:{" "}
+											<s style={{ color: "red", marginRight: "10px" }}>
+												{" "}
+												{Number(total_amount) +
+													Number(shippingFee) +
+													Number(Number(total_amount * 0.01).toFixed(2))}{" "}
+												L.E.{" "}
+											</s>
+											{Number(
+												Number(total_amount) +
+													Number(shippingFee) +
+													Number(Number(total_amount * 0.01).toFixed(2)) -
+													(Number(total_amount) *
+														Number(appliedCoupon.discount)) /
+														100,
+											).toFixed(2)}{" "}
+											L.E.{" "}
+										</div>
+									) : (
+										<div style={{ fontWeight: "bold", fontSize: "1.3rem" }}>
+											Total Amount Due:{" "}
+											{Number(total_amount) +
+												Number(shippingFee) +
+												Number(Number(total_amount * 0.01).toFixed(2))}{" "}
+											L.E.{" "}
+										</div>
+									)}
+								</div>
+							) : (
+								<div style={{ fontWeight: "bold", fontSize: "1.3rem" }}>
+									Total Amount Due:{" "}
+									{Number(total_amount) +
+										Number(shippingFee) +
+										Number(Number(total_amount * 0.01).toFixed(2))}{" "}
+									L.E.{" "}
+								</div>
+							)}
+						</>
+					) : (
+						<div style={{ fontWeight: "bold", fontSize: "1.3rem" }}>
+							Total Amount Due:{" "}
+							{Number(total_amount) +
+								Number(shippingFee) +
+								Number(Number(total_amount * 0.01).toFixed(2))}{" "}
+							L.E.{" "}
+						</div>
+					)}
+				</div>
+
 				<div className='link-container my-5'>
 					<Link
 						to='/our-products'
@@ -340,9 +404,7 @@ const CheckoutCartItemsWrapper = styled.div`
 	}
 
 	.Totals {
-		text-align: right;
-		margin-right: 200px;
-		font-size: 1.3rem;
+		font-size: 1.1rem;
 		font-weight: bold;
 	}
 

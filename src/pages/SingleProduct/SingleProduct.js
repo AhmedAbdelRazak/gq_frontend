@@ -35,12 +35,14 @@ import ColorsAndSizes from "./ColorsAndSizes";
 import CardForRelatedProducts from "./CardForRelatedProducts";
 import "antd/dist/antd.css";
 import { Collapse } from "antd";
+import SizeChartModal from "./SizeChartModal";
 const { Panel } = Collapse;
 
 const SingleProduct = (props) => {
 	const [Product, setProduct] = useState({});
 	const [star, setStar] = useState(0);
 	const [modalVisible, setModalVisible] = useState(false);
+	const [modalVisible2, setModalVisible2] = useState(false);
 	const [comments, setComments] = useState([]);
 	const [text, setText] = useState("");
 	// eslint-disable-next-line
@@ -479,6 +481,11 @@ const SingleProduct = (props) => {
 				</>
 			) : (
 				<>
+					<SizeChartModal
+						modalVisible2={modalVisible2}
+						setModalVisible2={setModalVisible2}
+						Product={Product}
+					/>
 					<div className='row'>
 						<div className='col-md-7 text-center imageWrapper  mt-3'>
 							<DisplayImages
@@ -535,6 +542,7 @@ const SingleProduct = (props) => {
 								setColorSelected={setColorSelected}
 								colorSelected={colorSelected}
 								loading={loading}
+								setModalVisible2={setModalVisible2}
 							/>
 							{Product && Product.policy ? (
 								<div
