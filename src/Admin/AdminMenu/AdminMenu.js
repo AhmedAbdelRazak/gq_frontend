@@ -19,6 +19,7 @@ import {
 	MoneyCollectOutlined,
 	BorderHorizontalOutlined,
 	RadiusBottomleftOutlined,
+	SwapOutlined,
 } from "@ant-design/icons";
 import { Button, Menu } from "antd";
 import LogoImage from "../../GeneralImages/ace-logo.png";
@@ -301,10 +302,24 @@ const items = [
 		getItem("Financial Report", "/admin/financial-report"),
 	]),
 
-	getItem("Online Store Management", "sub34", <BorderHorizontalOutlined />, [
+	getItem("ACE Store Management", "sub34", <BorderHorizontalOutlined />, [
 		getItem(
-			<Link to='/admin/online-store-management'>Online Store Properties</Link>,
+			<Link to='/admin/online-store-management'>ACE Store Properties</Link>,
 			"/admin/online-store-management",
+		),
+		getItem("ACE Pages", "sub41", <SwapOutlined />, [
+			getItem(
+				<Link to='/admin/website-edit/contactus-edit'>Contact Us</Link>,
+				"/admin/website-edit/contactus-edit",
+			),
+			getItem(
+				<Link to='/admin/website-edit/aboutus-edit'>About Us</Link>,
+				"/admin/website-edit/aboutus-edit",
+			),
+		]),
+		getItem(
+			<Link to='/admin/add-hero-comp'>Add Hero Component</Link>,
+			"/admin/add-hero-comp",
 		),
 		getItem(
 			<Link to='/admin/product-specs'>Product Specs</Link>,
@@ -314,16 +329,13 @@ const items = [
 			<Link to='/admin/coupon-management'>Coupons</Link>,
 			"/admin/coupon-management",
 		),
-		getItem(
-			<Link to='/admin/add-hero-comp'>Add Hero Component</Link>,
-			"/admin/add-hero-comp",
-		),
+
 		getItem(
 			<Link to='/admin/ace-orders-list'>Ace Store Sales Report</Link>,
 			"/admin/ace-orders-list",
 		),
 
-		getItem("Top Ads", "sub40", <RadiusBottomleftOutlined />, [
+		getItem("Ads Carousel", "sub40", <RadiusBottomleftOutlined />, [
 			getItem(
 				<Link to='/admin/add-top-ads'>Add Top Ads</Link>,
 				"/admin/add-top-ads",
@@ -554,6 +566,10 @@ const AdminMenu = ({
 						? "/admin/coupon-management"
 						: fromPage === "AceStoreSales"
 						? "/admin/ace-orders-list"
+						: fromPage === "WebsiteEditAbout"
+						? "/admin/website-edit/aboutus-edit"
+						: fromPage === "WebsiteEditContact"
+						? "/admin/website-edit/contactus-edit"
 						: "/admin/dashboard"
 				}
 				defaultOpenKeys={[

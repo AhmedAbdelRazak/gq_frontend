@@ -59,6 +59,10 @@ import OperationsReport from "./Admin/GQShopReports/OperationsReport";
 import ReturnOrExchange from "./Admin/Orders/ReturnAndExchange/ReturnOrExchange";
 import UpdateOrderMiscellaneous from "./Admin/Orders/CreateNewOrder/UpdateOrderMiscellaneous";
 import ExchangeList from "./Admin/Orders/ExchangeList";
+import ProductList from "./Admin/OnlineStore/ProductSpecsUpdate/ProductList";
+import UpdateSpecs from "./Admin/OnlineStore/ProductSpecsUpdate/UpdateSpecs";
+import CouponManagement from "./Admin/OnlineStore/CouponManagement";
+import AceOrdersList from "./Admin/OnlineStore/AceOrdersList";
 
 //Store
 import DarkBackground2 from "./Navbar/DarkBackground2";
@@ -79,10 +83,13 @@ import CheckoutMain from "./Checkout/CheckoutForm/CheckoutMain";
 import GenderNav from "./Navbar/GenderNav";
 import UserDashboard from "./pages/User/UserDashboard";
 import PrivateRoute from "./auth/PrivateRoute";
-import ProductList from "./Admin/OnlineStore/ProductSpecsUpdate/ProductList";
-import UpdateSpecs from "./Admin/OnlineStore/ProductSpecsUpdate/UpdateSpecs";
-import CouponManagement from "./Admin/OnlineStore/CouponManagement";
-import AceOrdersList from "./Admin/OnlineStore/AceOrdersList";
+import EditWebsite from "./Admin/OnlineStore/OnlineStorePages/EditWebsite";
+import EditAboutUsPage from "./Admin/OnlineStore/OnlineStorePages/EditAboutUsPage";
+import EditContactUsPage from "./Admin/OnlineStore/OnlineStorePages/EditContactUsPage";
+import About from "./pages/About/About";
+import AboutArabic from "./pages/About/AboutArabic";
+import Contactus from "./pages/Contact/Contackus";
+import ContactArabic from "./pages/Contact/ContactArabic";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -210,6 +217,17 @@ const App = () => {
 					component={() => <Cart chosenLanguage={language} />}
 				/>
 				<Route path='/checkout' exact component={CheckoutMain} />
+				{language === "Arabic" ? (
+					<Route path='/contact' exact component={ContactArabic} />
+				) : (
+					<Route path='/contact' exact component={Contactus} />
+				)}
+
+				{language === "Arabic" ? (
+					<Route path='/about' exact component={AboutArabic} />
+				) : (
+					<Route path='/about' exact component={About} />
+				)}
 				<PrivateRoute path='/user/dashboard' exact component={UserDashboard} />
 
 				<AdminRoute path='/admin/dashboard' exact component={AdminDashboard} />
@@ -442,6 +460,17 @@ const App = () => {
 				/>
 
 				<AdminRoute path='/admin/add-hero-comp' exact component={AddHeroComp} />
+				<AdminRoute path='/admin/website-edit' exact component={EditWebsite} />
+				<AdminRoute
+					path='/admin/website-edit/aboutus-edit'
+					exact
+					component={EditAboutUsPage}
+				/>
+				<AdminRoute
+					path='/admin/website-edit/contactus-edit'
+					exact
+					component={EditContactUsPage}
+				/>
 			</Switch>
 			<Footer />
 		</BrowserRouter>

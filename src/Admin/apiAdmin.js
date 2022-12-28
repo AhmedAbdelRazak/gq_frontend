@@ -1171,3 +1171,108 @@ export const aceOrders = (userId, token, day1, day2) => {
 		})
 		.catch((err) => console.log(err));
 };
+
+export const createContact = (userId, token, contact) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/contact/create/${userId}`, {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify(contact),
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+};
+
+export const updateContact = (contactId, userId, token, contact) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/contact/${contactId}/${userId}`,
+		{
+			method: "PUT",
+			headers: {
+				// content type?
+				"Content-Type": "application/json",
+				Accept: "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify(contact),
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const getContacts = (token) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/contact`, {
+		method: "GET",
+		headers: {
+			// content type?
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const createAbout = (userId, token, about) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/about/create/${userId}`, {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify(about),
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+};
+
+export const updateAbout = (aboutId, userId, token, about) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/about/${aboutId}/${userId}`, {
+		method: "PUT",
+		headers: {
+			// content type?
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify(about),
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const getAbouts = (token) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/about`, {
+		method: "GET",
+		headers: {
+			// content type?
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};

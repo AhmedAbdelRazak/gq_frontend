@@ -47,7 +47,7 @@ const ImageCard = ({
 												<span aria-hidden='true'>&times;</span>
 											</button>
 											<img
-												src={image.url}
+												src={image.url ? image.url : image}
 												alt='Img Not Found'
 												style={{
 													width: "130px",

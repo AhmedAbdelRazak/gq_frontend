@@ -231,9 +231,14 @@ const OnlineStoreManagement = () => {
 				setTransactionFeePercentage(
 					latestStoreManagement.transactionFeePercentage,
 				);
+				setAddStoreLogo({
+					images: latestStoreManagement.addStoreLogo.map((i) => i.url),
+				});
 			}
 		});
 	};
+
+	console.log(addStoreLogo, "add Store Logo");
 
 	useEffect(() => {
 		gettingPreviousLoyaltyPointsManagement();
