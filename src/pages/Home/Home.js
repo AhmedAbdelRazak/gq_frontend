@@ -80,6 +80,12 @@ const Home = ({ chosenLanguage }) => {
 
 	useEffect(() => {
 		gettingAllProducts();
+		localStorage.removeItem("PaidNow");
+		localStorage.removeItem("storedData");
+		localStorage.removeItem("chosenShippingOption");
+		localStorage.removeItem("orderDataStored");
+		localStorage.removeItem("productColor");
+
 		// eslint-disable-next-line
 	}, []);
 

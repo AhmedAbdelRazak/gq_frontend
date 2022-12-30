@@ -179,15 +179,9 @@ const OnlineStoreManagement = () => {
 				// 	return item.public_id !== public_id;
 				// });
 				setAddStoreLogo([]);
-				setTimeout(function () {
-					window.location.reload(false);
-				}, 1000);
 			})
 			.catch((err) => {
 				console.log(err);
-				setTimeout(function () {
-					window.location.reload(false);
-				}, 1000);
 			});
 	};
 

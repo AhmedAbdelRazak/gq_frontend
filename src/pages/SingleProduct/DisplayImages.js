@@ -3,8 +3,10 @@
 import React from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
+// eslint-disable-next-line
 import { ToastContainer } from "react-toastify";
 import styled from "styled-components";
+// eslint-disable-next-line
 import { Link } from "react-router-dom";
 
 const DisplayImages = ({
@@ -50,7 +52,7 @@ const DisplayImages = ({
 			)}
 
 			<div className='row mr-3'>
-				<div className='col-5 mx-auto'>
+				{/* <div className='col-5 mx-auto'>
 					<Like>
 						{likee ? (
 							<>
@@ -102,9 +104,9 @@ const DisplayImages = ({
 							</div>
 						)}
 					</Like>
-				</div>
+				</div> */}
 
-				<div className='col-5 mx-auto'>
+				{/* <div className='col-5 mx-auto'>
 					<ViewsCount>
 						<div className=''>
 							<i
@@ -117,7 +119,7 @@ const DisplayImages = ({
 							<span className='viewsCountText'>{Product.viewsCount} Views</span>
 						</div>
 					</ViewsCount>
-				</div>
+				</div> */}
 			</div>
 		</div>
 	);
@@ -125,6 +127,7 @@ const DisplayImages = ({
 
 export default DisplayImages;
 
+// eslint-disable-next-line
 const Like = styled.div`
 	cursor: pointer;
 	font-family: Roboto, Helvetica, Arial, sans-serif !important;
@@ -147,6 +150,7 @@ const Like = styled.div`
 	}
 `;
 
+// eslint-disable-next-line
 const ViewsCount = styled.div`
 	span {
 		font-weight: bold;

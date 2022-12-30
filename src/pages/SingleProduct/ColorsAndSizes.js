@@ -1,7 +1,8 @@
 /** @format */
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { getColors } from "../../apiCore";
 
 const isActive = (c, sureClickedLink) => {
 	if (c === sureClickedLink) {
@@ -25,7 +26,7 @@ const isActive = (c, sureClickedLink) => {
 			fontSize: "0.9rem",
 			border: "1px lightgrey solid",
 			borderRadius: "10px",
-			boxShadow: "1px 2px 1px 2px rgba(0,0,0,0.1)",
+			// boxShadow: "1px 2px 1px 2px rgba(0,0,0,0.1)",
 
 			// textDecoration: "underline",
 		};
@@ -63,7 +64,7 @@ const isActive2 = (s, sureClickedLink) => {
 			fontSize: "0.9rem",
 			border: "1px lightgrey solid",
 			borderRadius: "10px",
-			boxShadow: "1px 2px 1px 2px rgba(0,0,0,0.1)",
+			// boxShadow: "1px 2px 1px 2px rgba(0,0,0,0.1)",
 
 			// textDecoration: "underline",
 		};
@@ -90,20 +91,47 @@ const ColorsAndSizes = ({
 	colorSelected,
 	setColorSelected,
 	setModalVisible2,
+	colorFromLocalStorage,
+	setClickedLink,
+	clickedLink,
 }) => {
-	const [clickedLink, setClickedLink] = useState("");
 	const [clickedLink2, setClickedLink2] = useState("");
+	const [allColoring, setAllColors] = useState([]);
+
+	const gettingAllColors = () => {
+		getColors().then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllColors(data);
+			}
+		});
+	};
+
+	useEffect(() => {
+		gettingAllColors();
+
+		// eslint-disable-next-line
+	}, []);
 
 	return (
 		<ColorsAndSizesWrapper>
 			<div className='text-capitalize text-title' style={{ color: "#0052a5" }}>
-				<span className='chooseColor'>Choose a Color:</span>
-				<div className='my-2 mx-5 text-center row'>
+				<span className='chooseColor'>
+					Color:{" "}
+					<span style={{ color: "darkgrey" }}>
+						{allColoring[allColoring.map((i) => i.hexa).indexOf(clickedLink)]
+							? allColoring[allColoring.map((i) => i.hexa).indexOf(clickedLink)]
+									.color
+							: clickedLink}
+					</span>
+				</span>
+				<div className='my-2 gridContainer'>
 					{allAddedColors &&
 						allAddedColors.map((c, i) => {
 							return (
 								<div
-									className='mx-2 p-1 my-2 col-xl-2 col-lg-2 col-md-2 col-sm-2 col-3 attStyling imgWrapper'
+									className='attStyling imgWrapper'
 									key={i}
 									onClick={() => {
 										var images = Product.productAttributes.filter(
@@ -149,11 +177,6 @@ const ColorsAndSizes = ({
 										setColorSelected(true);
 									}}
 									style={isActive(c.color, clickedLink)}>
-									{/* {allColors &&
-										allColors.length &&
-										allColors[allColors.map((i) => i.hexa).indexOf(c.color)]
-											.color} */}
-
 									{c.productImages && c.productImages.length > 0 ? (
 										<img
 											style={{ height: "75%", width: "75%" }}
@@ -166,10 +189,14 @@ const ColorsAndSizes = ({
 						})}
 				</div>
 			</div>
+			<br />
 			<div className='text-capitalize text-title' style={{ color: "#0052a5" }}>
 				<div className='row'>
-					<div className='col-md-6 '>
-						<span className='chooseSize'>Choose a Size:</span>
+					<div className='col-6 '>
+						<span className='chooseSize'>
+							Choose a Size:{" "}
+							<span style={{ color: "darkgrey" }}>{clickedLink2}</span>{" "}
+						</span>
 					</div>
 					{Product &&
 					Product.sizeChart &&
@@ -177,11 +204,13 @@ const ColorsAndSizes = ({
 					Product.sizeChart.chartLength.length > 0 ? (
 						<div
 							onClick={() => setModalVisible2(true)}
-							className='col-md-6 chooseSize'
+							className='col-6 '
 							style={{
 								fontWeight: "bolder",
 								textDecoration: "underline",
 								cursor: "pointer",
+								color: "black",
+								textTransform: "uppercase",
 							}}>
 							Size Guide
 							<svg
@@ -206,7 +235,7 @@ const ColorsAndSizes = ({
 					) : null}
 				</div>
 
-				<div className='my-2 mx-5 text-center row'>
+				<div className='my-2 text-center gridContainer2'>
 					{allSizes &&
 						allSizes.map((s, i) => {
 							return (
@@ -253,44 +282,28 @@ const ColorsAndSizes = ({
 
 										setClickedLink2(s);
 									}}
-									className='mx-2 p-2 my-3 col-xl-2 col-lg-2 col-md-2 col-sm-2 col-5 attStyling'
+									className='attStyling my-auto ml-2 py-2'
 									key={i}
 									style={isActive2(s, clickedLink2)}>
-									{s}
+									{s.toLowerCase() === "small"
+										? "s"
+										: s.toLowerCase() === "medium"
+										? "m"
+										: s.toLowerCase() === "large"
+										? "l"
+										: s}
 								</div>
 							);
 						})}
 				</div>
 			</div>
-			{chosenProductAttributes.pickedPrice ? (
-				<>
-					{chosenProductAttributes.SubSKURetailerPrice >
-					chosenProductAttributes.pickedPrice ? (
-						<p
-							className='text-capitalize text-title chooseSize'
-							style={{ color: "#0052a5" }}>
-							Item Price:{" "}
-							<s style={{ color: "red", fontWeight: "bold" }}>
-								{chosenProductAttributes.SubSKURetailerPrice} L.E.
-							</s>{" "}
-							{chosenProductAttributes.pickedPrice} L.E.
-						</p>
-					) : (
-						<p
-							className='text-capitalize text-title chooseSize'
-							style={{ color: "#0052a5" }}>
-							Item Price: {chosenProductAttributes.pickedPrice} L.E.
-						</p>
-					)}
-				</>
-			) : null}
 
 			{(chosenProductAttributes.quantity ||
 				chosenProductAttributes.quantity <= 0) &&
 			chosenProductAttributes.pickedPrice ? (
 				<>
 					<p
-						className='text-capitalize text-title chooseSize'
+						className='text-capitalize text-title chooseSize mt-3'
 						style={{ color: "#0052a5" }}>
 						Availability:{" "}
 						{chosenProductAttributes.quantity > 0 ? (
@@ -304,14 +317,15 @@ const ColorsAndSizes = ({
 					</p>
 				</>
 			) : null}
-			<p
+			{/* <p
 				className='text-capitalize text-title chooseSize'
 				style={{ color: "#0052a5" }}>
 				Product SKU:{" "}
 				<span style={{ color: "black", textTransform: "uppercase" }}>
 					{Product.productSKU}
 				</span>
-			</p>
+			</p> */}
+			<br />
 		</ColorsAndSizesWrapper>
 	);
 };
@@ -319,14 +333,31 @@ const ColorsAndSizes = ({
 export default ColorsAndSizes;
 
 const ColorsAndSizesWrapper = styled.div`
+	.gridContainer {
+		display: grid;
+		grid-template-columns: 15% 15% 15% 15% 15% 15%;
+		margin: auto 10px;
+	}
 	.fa-check {
 		color: darkgreen;
 		font-size: 1rem;
 	}
 
+	.gridContainer2 {
+		display: grid;
+		grid-template-columns: 20% 20% 20% 20% 20%;
+		margin: auto 10px;
+	}
+
 	.imgWrapper {
-		width: 50%;
-		height: 50%;
+		width: 100%;
+		height: 100%;
+		border: white solid 1px !important;
+	}
+
+	.imgWrapper > img {
+		width: 90% !important;
+		height: 90% !important;
 	}
 
 	.attStyling:hover {
@@ -337,9 +368,13 @@ const ColorsAndSizesWrapper = styled.div`
 
 	.chooseColor {
 		font-weight: bold;
+		color: black;
+		text-transform: uppercase;
 	}
 	.chooseSize {
 		font-weight: bold;
+		color: black;
+		text-transform: uppercase;
 	}
 
 	@media (max-width: 1000px) {
@@ -350,10 +385,20 @@ const ColorsAndSizesWrapper = styled.div`
 			margin-left: 10px !important;
 		}
 
-		.imgWrapper img {
-			width: 60% !important;
-			height: 60% !important;
-			object-fit: cover;
+		.imgWrapper {
+			width: 100% !important;
+			height: 100% !important;
+			border: white solid 1px !important;
+		}
+
+		.imgWrapper > img {
+			width: 100% !important;
+			height: 100% !important;
+		}
+		.gridContainer {
+			display: grid;
+			grid-template-columns: 20% 20% 20% 20% 20%;
+			margin: auto 10px;
 		}
 	}
 `;

@@ -177,9 +177,9 @@ const CardForShop = ({
 				</span>
 			</span>
 			{item &&
-				item.thumbnailImage &&
-				item.thumbnailImage[0] &&
-				item.thumbnailImage[0].images && (
+				item.productImages &&
+				item.productImages[0] &&
+				item.productImages[0].url && (
 					<Carousel
 						showArrows={false}
 						dynamicHeight={true}
@@ -189,27 +189,28 @@ const CardForShop = ({
 						showStatus={false}
 						showIndicators={false}
 						showThumbs={false}>
-						{item.thumbnailImage[0].images.map((i) => (
-							<Link
-								to={`/product/${product.category.categorySlug}/${product.slug}/${product._id}`}
-								onClick={() => {
-									window.scrollTo({ top: 0, behavior: "smooth" });
-									SettingViews();
-								}}>
-								<img
-									className=' rounded mx-auto d-block product-imgs'
-									alt={item.productName}
-									src={i.url}
-									key={i.public_id}
-									style={{
-										height: "50vh",
-										width: "100%",
-										objectFit: "cover",
-										minHeight: "400px",
-									}}
-								/>
-							</Link>
-						))}
+						{/* {item.productImages[0].url.map((i) => ( */}
+						<Link
+							to={`/product/${product.category.categorySlug}/${product.slug}/${product._id}`}
+							onClick={() => {
+								window.scrollTo({ top: 0, behavior: "smooth" });
+								SettingViews();
+								localStorage.setItem("productColor", product.color);
+							}}>
+							<img
+								className=' rounded mx-auto d-block product-imgs'
+								alt={item.productName}
+								src={item.productImages[0].url}
+								// key={item.productImages[0].public_id}
+								style={{
+									height: "50vh",
+									width: "100%",
+									objectFit: "cover",
+									minHeight: "400px",
+								}}
+							/>
+						</Link>
+						{/* ))} */}
 					</Carousel>
 				)}
 		</div>

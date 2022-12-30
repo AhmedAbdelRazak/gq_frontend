@@ -473,7 +473,7 @@ const UpdateSpecs = ({ match }) => {
 						<label
 							className='text-muted'
 							style={{ fontWeight: "bold", fontSize: "14px" }}>
-							Product Specs
+							Product Delivery & Return
 						</label>
 						<textarea
 							type='text'
@@ -487,7 +487,7 @@ const UpdateSpecs = ({ match }) => {
 						<label
 							className='text-muted'
 							style={{ fontWeight: "bold", fontSize: "14px" }}>
-							Product Specs Arabic
+							Product Delivery & Return Arabic
 						</label>
 						<textarea
 							type='text'

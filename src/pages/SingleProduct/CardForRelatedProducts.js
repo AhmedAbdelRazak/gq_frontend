@@ -330,8 +330,9 @@ const CardForRelatedProductsWrapper = styled.div`
 		transition: var(--mainTransition);
 		min-height: 500px;
 		width: 100%;
-		border: 1px white solid !important;
+		border: 1px rgb(245, 245, 245) solid !important;
 		margin-top: 50px;
+		background: rgb(245, 245, 245);
 	}
 
 	.card:hover {
