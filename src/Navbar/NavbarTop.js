@@ -12,7 +12,6 @@ import {
 	getColors,
 	getProducts,
 } from "../apiCore";
-import { Helmet } from "react-helmet";
 import Sidebar from "./Sidebar";
 import EgyptianFlag from "../GeneralImages/Egypt.png";
 import AmericanFlag from "../GeneralImages/UnitedStates.png";
@@ -439,7 +438,17 @@ const NavbarTop = ({
 	return (
 		<Nav
 			className=' navbar  navbar-expand-sm nav-center py-0'
-			style={{ backgroundColor: "rgb(235, 235, 235)" }}>
+			style={{ backgroundColor: "white" }}>
+			{isSidebarOpen ? <DarkBackground isSidebarOpen={isSidebarOpen} /> : null}
+			<Sidebar
+				clickMenu={clickMenu}
+				setClickMenu={setClickMenu}
+				click={click}
+				setClick={setClick}
+				setLanguage={setLanguage}
+				language={language}
+				allGenders={allGenders}
+			/>
 			{click ? (
 				<i
 					className='fas fa-times nav-icon faaa-bars'
@@ -451,25 +460,7 @@ const NavbarTop = ({
 					onClick={handleSidebar}
 					style={{ color: "lightBlack" }}></i>
 			)}
-			<Helmet>
-				<meta charSet='utf-8' />
-				<link
-					rel='stylesheet'
-					href='https://fonts.googleapis.com/earlyaccess/droidarabickufi.css'
-				/>
-				<link rel='canonical' href='http://infinite-apps.com' />
-			</Helmet>
-			{isSidebarOpen ? <DarkBackground isSidebarOpen={isSidebarOpen} /> : null}
-			<Sidebar
-				clickMenu={clickMenu}
-				setClickMenu={setClickMenu}
-				click={click}
-				setClick={setClick}
-				setLanguage={setLanguage}
-				language={language}
-				allGenders={allGenders}
-			/>
-			<div className='logo-type ml-5 logoWrapper'>
+			<div className='logo-type  logoWrapper'>
 				<Link
 					to='/'
 					onClick={() => {
@@ -478,11 +469,6 @@ const NavbarTop = ({
 					<div className='infiniteAppsLogo'>
 						<img className='imgLogo' src={finalLogoUrl} alt='Infinite Apps' />
 					</div>
-					{/* <div
-						className='logo-type ml-1'
-						style={{ color: "black", fontSize: "18px" }}>
-						{onlineStoreName} <br />
-					</div> */}
 				</Link>
 			</div>
 
@@ -856,16 +842,14 @@ const Nav = styled.nav`
 			margin-top: 0px;
 			margin-bottom: 0px;
 			margin-left: 0px;
-			border-radius: 15px;
 		}
 
 		.imgLogo {
-			width: 100px;
-			height: 100px;
+			width: 80px;
+			height: 80px;
 			margin-top: 0px;
 			margin-bottom: 0px;
 			margin-left: 0px;
-			border-radius: 15px;
 		}
 
 		.logo-type {

@@ -13,6 +13,7 @@ import {
 	like,
 	unlike,
 	getColors,
+	getProducts,
 } from "../../apiCore";
 // eslint-disable-next-line
 import { addItem } from "../../cartHelpers";
@@ -39,7 +40,34 @@ import "antd/dist/antd.css";
 import { Collapse } from "antd";
 import SizeChartModal from "./SizeChartModal";
 import SigninModal from "./SigninModal/SigninModal";
+import {
+	AntDesignOutlined,
+	BugOutlined,
+	CloseCircleOutlined,
+	DeleteOutlined,
+	HeatMapOutlined,
+} from "@ant-design/icons";
 const { Panel } = Collapse;
+
+const isActive = (selectedLink, path) => {
+	if (selectedLink === path) {
+		return {
+			color: "black",
+			fontWeight: "bold",
+			textDecoration: "underline",
+			fontSize: "1rem",
+			textTransform: "uppercase",
+		};
+	} else {
+		return {
+			textAlign: "center",
+			fontSize: "1rem",
+			fontWeight: "bold",
+			color: "darkgrey",
+			textTransform: "uppercase",
+		};
+	}
+};
 
 const SingleProduct = (props) => {
 	const [Product, setProduct] = useState({});
@@ -50,6 +78,7 @@ const SingleProduct = (props) => {
 	const [comments, setComments] = useState([]);
 	const [text, setText] = useState("");
 	const [clickedLink, setClickedLink] = useState("");
+	const [selectedLink, setSelectedLink] = useState("WEAR IT WITH");
 	// eslint-disable-next-line
 	const [error, setError] = useState(false);
 	const [loading, setLoading] = useState(true);
@@ -60,6 +89,7 @@ const SingleProduct = (props) => {
 	const [userlikee, setuserLikee] = useState(false);
 	const [redirect2, setRedirect2] = useState(false);
 	const [relatedProducts, setRelatedProducts] = useState([]);
+	const [categoryProducts, setCategoryProducts] = useState([]);
 	const [allSizes, setAllSizes] = useState([]);
 	const [allAddedColors, setAllAddedColors] = useState([]);
 	const [allColors, setAllColors] = useState([]);
@@ -215,6 +245,24 @@ const SingleProduct = (props) => {
 					setClickedLink(localStorage.getItem("productColor"));
 					setColorSelected(true);
 				}
+
+				getProducts().then((data2) => {
+					if (data2.error) {
+						console.log(data2.error);
+					} else {
+						var allAceProducts = data2.filter(
+							(i) =>
+								i.activeProduct === true && i.storeName.storeName === "ace",
+						);
+						setCategoryProducts(
+							allAceProducts.filter(
+								(iiii) =>
+									iiii.category.categoryName.toLowerCase() ===
+									data.category.categoryName,
+							),
+						);
+					}
+				});
 			}
 		});
 		setLoading(false);
@@ -925,7 +973,42 @@ const SingleProduct = (props) => {
 														).map((cc, ii) => {
 															return (
 																<div key={ii} className='ml-3 my-2'>
-																	<>{cc}</>
+																	{cc
+																		.toLowerCase()
+																		.includes("washing instructions") ||
+																	cc.toLowerCase().includes("extra care") ||
+																	cc === "" ? (
+																		<h5 style={{ fontWeight: "bold" }}>{cc}</h5>
+																	) : (
+																		<ul
+																			style={{
+																				listStyle: ii > 7 ? "" : "none",
+																				marginLeft: ii > 7 ? "20px" : "0px",
+																			}}>
+																			<li>
+																				<span
+																					style={{
+																						fontSize: "15px",
+																						fontWeight: "bold",
+																					}}>
+																					{" "}
+																					{ii === 2 ? (
+																						<HeatMapOutlined />
+																					) : ii === 3 ? (
+																						<AntDesignOutlined />
+																					) : ii === 4 ? (
+																						<CloseCircleOutlined />
+																					) : ii === 5 ? (
+																						<BugOutlined />
+																					) : ii === 6 ? (
+																						<DeleteOutlined />
+																					) : null}
+																				</span>
+
+																				{cc}
+																			</li>
+																		</ul>
+																	)}
 																</div>
 															);
 														})}
@@ -935,144 +1018,85 @@ const SingleProduct = (props) => {
 									</Panel>
 								) : null}
 							</Collapse>
-
-							{/* <div className='row text-center col-lg-12 col-md-11 mx-auto my-5 buttons'>
-								{!chosenProductAttributes.SubSKUColor ||
-								!chosenProductAttributes.SubSKUSize ? (
-									<div
-										className='col-md-3 btn btn-outline-primary p-2 mx-auto mt-2'
-										style={{ fontSize: "0.9rem", fontWeight: "bolder" }}>
-										<span>
-											<i className='fa fa-calendar mr-2' aria-hidden='true'></i>
-										</span>
-										Choose A Size And Color
-									</div>
-								) : (
-									<>
-										{chosenProductAttributes.quantity > 0 ? (
-											<>
-												<div
-													className='col-md-3 btn btn-outline-primary p-2 mx-auto mt-2'
-													style={{ fontSize: "0.9rem", fontWeight: "bolder" }}
-													onClick={() => {
-														openSidebar();
-														addToCart(
-															Product._id,
-															null,
-															1,
-															Product,
-															chosenProductAttributes,
-														);
-													}}>
-													<span>
-														<i
-															className='fa fa-calendar mr-2'
-															aria-hidden='true'></i>
-													</span>
-													Add To Cart
-												</div>
-											</>
-										) : (
-											<div
-												className='col-md-3 btn btn-outline-danger p-2 mx-auto mt-2'
-												style={{ fontSize: "0.9rem", fontWeight: "bolder" }}>
-												<span>
-													<i
-														className='fa fa-calendar mr-2'
-														aria-hidden='true'></i>
-												</span>
-												Sold Out
-											</div>
-										)}
-									</>
-								)}
-
-								<div
-									className='col-md-4  btn btn-outline-info p-2 mx-auto mt-2'
-									style={{ fontSize: "0.9rem", fontWeight: "bolder" }}>
-									<>
-										<div onClick={handleModal}>
-											<span>
-												<i className='far fa-comment-alt mr-2'></i>
-											</span>
-
-											{user ? (
-												"Leave Your Feedback"
-											) : (
-												<span
-													style={{ fontSize: "0.65rem", fontWeight: "bold" }}>
-													Login to leave a feedback or a rating
-												</span>
-											)}
-										</div>
-										<Modal
-											title={
-												<div
-													style={{
-														textAlign: "center",
-														margin: "10px",
-														padding: "5px",
-														fontWeight: "bold",
-													}}>
-													{`Please leave a Star Rating and a Comment for ${
-														Product && Product.productName
-													}`}
-												</div>
-											}
-											visible={modalVisible}
-											onOk={() => {
-												setModalVisible(false);
-												toast.success(
-													`Thank you for your Feedback ${user.name}`,
-												);
-											}}
-											okButtonProps={{ style: { display: "none" } }}
-											cancelButtonProps={{ style: { display: "none" } }}
-											onCancel={() => setModalVisible(false)}>
-											<h5 className='mt-4 mb-2' style={{ fontWeight: "bold" }}>
-												Please Leave a Rating
-											</h5>
-											<StarRating
-												name={Product && Product._id}
-												numberOfStars={5}
-												rating={star}
-												changeRating={onStarClick}
-												isSelectable={true}
-												starRatedColor='red'
-											/>
-											<br />
-											<div className='mt-5'>
-												{FileUploadComments()}
-												{commentForm()}
-											</div>
-										</Modal>
-									</>
-								</div>
-							</div> */}
 						</div>
 					</div>
 					{relatedProducts && relatedProducts.length > 0 ? (
 						<ProductWrapperRelated>
 							<React.Fragment>
-								<div className='title'>
-									<h1 className='title'>You May Also Like!</h1>
+								<div className='col-md-3 mx-auto'>
+									<div className='row mx-auto'>
+										<div className='col-6'>
+											<h4
+												className='theLinks'
+												style={isActive(selectedLink, "WEAR IT WITH")}
+												onClick={() => {
+													setSelectedLink("WEAR IT WITH");
+												}}>
+												WEAR IT WITH
+											</h4>
+										</div>
+										<div className='col-6'>
+											<h4
+												className='theLinks'
+												style={isActive(selectedLink, "YOU MAY ALSO LIKE")}
+												onClick={() => {
+													setSelectedLink("YOU MAY ALSO LIKE");
+												}}>
+												YOU MIGHT LIKE
+											</h4>
+										</div>
+									</div>
 								</div>
 							</React.Fragment>
-							<div className='container-fluid my-1 ProductSlider'>
-								<Slider {...settings} className='mb-5'>
-									{relatedProducts &&
-										relatedProducts.map((product, i) => (
-											<div className='img-fluid images ' key={i}>
-												<CardForRelatedProducts
-													i={i}
-													product={product}
-													key={i}
-													// chosenLanguage={chosenLanguage}
-												/>
-											</div>
-										))}
-								</Slider>
-							</div>
+							{selectedLink === "WEAR IT WITH" ? (
+								<div className='container-fluid my-1 ProductSlider'>
+									<Slider {...settings} className='mb-5'>
+										{relatedProducts &&
+											relatedProducts.map((product, i) => (
+												<div className='img-fluid images ' key={i}>
+													<CardForRelatedProducts
+														i={i}
+														product={product}
+														key={i}
+														// chosenLanguage={chosenLanguage}
+													/>
+												</div>
+											))}
+									</Slider>
+								</div>
+							) : selectedLink === "YOU MAY ALSO LIKE" ? (
+								<div className='container-fluid my-1 ProductSlider'>
+									<Slider {...settings} className='mb-5'>
+										{categoryProducts &&
+											categoryProducts.map((product, i) => (
+												<div className='img-fluid images ' key={i}>
+													<CardForRelatedProducts
+														i={i}
+														product={product}
+														key={i}
+														// chosenLanguage={chosenLanguage}
+													/>
+												</div>
+											))}
+									</Slider>
+								</div>
+							) : (
+								<div className='container-fluid my-1 ProductSlider'>
+									<Slider {...settings} className='mb-5'>
+										{relatedProducts &&
+											relatedProducts.map((product, i) => (
+												<div className='img-fluid images ' key={i}>
+													<CardForRelatedProducts
+														i={i}
+														product={product}
+														key={i}
+														// chosenLanguage={chosenLanguage}
+													/>
+												</div>
+											))}
+									</Slider>
+								</div>
+							)}
 						</ProductWrapperRelated>
 					) : null}
 					<div className='p-5'>
@@ -1256,21 +1280,16 @@ const ProductWrapperRelated = styled.div`
 	background-color: rgb(245, 245, 245);
 	padding: 20px;
 
-	.title {
-		text-align: center;
-		font-size: 2rem;
-		/* letter-spacing: 1px; */
-		font-weight: bold;
-		text-transform: uppercase;
-		/* text-shadow: 3px 3px 10px; */
+	.theLinks:hover {
+		cursor: pointer;
 	}
 
 	.titleArabic {
 		text-align: center;
-		font-size: 2rem;
+		font-size: 1.2rem;
 		/* letter-spacing: 7px; */
 		font-weight: bold;
-		text-shadow: 3px 3px 10px;
+		/* text-shadow: 3px 3px 10px; */
 	}
 
 	.ProductSlider {
@@ -1295,6 +1314,9 @@ const ProductWrapperRelated = styled.div`
 	@media (max-width: 1200px) {
 		.ProductSlider {
 			padding: 0px 10px 0px 10px;
+		}
+		.theLinks {
+			font-size: 0.9rem !important;
 		}
 	}
 `;

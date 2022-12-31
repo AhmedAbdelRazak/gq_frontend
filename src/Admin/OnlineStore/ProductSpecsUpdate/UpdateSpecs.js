@@ -269,8 +269,6 @@ const UpdateSpecs = ({ match }) => {
 		// eslint-disable-next-line
 	}, [match.params.productId]);
 
-	console.log(chosenSizes, "chosenSizes");
-
 	const UpdateProductToDatabase = (e) => {
 		e.preventDefault();
 		window.scrollTo({ top: 0, behavior: "smooth" });
@@ -331,8 +329,6 @@ const UpdateSpecs = ({ match }) => {
 			}
 		});
 	};
-
-	console.log(sizeChart, "sizeChart");
 
 	const fileUploadAndResizeSizeChart = (e) => {
 		// console.log(e.target.files);
@@ -580,7 +576,16 @@ const UpdateSpecs = ({ match }) => {
 									<label
 										className='text-muted'
 										style={{ fontWeight: "bold", fontSize: "14px" }}>
-										Length{" "}
+										{chosenCategory &&
+										chosenCategory.categoryName.toLowerCase() &&
+										(chosenCategory.categoryName
+											.toLowerCase()
+											.includes("tops") ||
+											chosenCategory.categoryName
+												.toLowerCase()
+												.includes("shirts"))
+											? "Chest"
+											: "Waist"}{" "}
 										<span style={{ textTransform: "uppercase" }}>({s})</span>
 									</label>
 									<input
@@ -605,7 +610,16 @@ const UpdateSpecs = ({ match }) => {
 									<label
 										className='text-muted'
 										style={{ fontWeight: "bold", fontSize: "14px" }}>
-										Width{" "}
+										{chosenCategory &&
+										chosenCategory.categoryName.toLowerCase() &&
+										(chosenCategory.categoryName
+											.toLowerCase()
+											.includes("tops") ||
+											chosenCategory.categoryName
+												.toLowerCase()
+												.includes("shirts"))
+											? "Waist"
+											: "Inside Leg"}{" "}
 										<span style={{ textTransform: "uppercase" }}>({s})</span>
 									</label>
 									<input
@@ -672,6 +686,9 @@ const UpdateSpecs = ({ match }) => {
 							marginBottom: "20px",
 						}}>
 						Extra Features For Product Display in the Online Store
+						<br />
+						<br />
+						PRODUCT: {productName.toLocaleUpperCase()}
 					</h4>
 					<div className='col-md-6 mx-auto'>
 						<hr />
