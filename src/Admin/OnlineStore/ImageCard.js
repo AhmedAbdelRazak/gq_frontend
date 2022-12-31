@@ -29,6 +29,7 @@ const ImageCard = ({
 							{addThumbnail &&
 								addThumbnail.images &&
 								addThumbnail.images.map((image) => {
+									console.log(image);
 									return (
 										<div className='m-3 col-6 '>
 											<button
@@ -47,7 +48,7 @@ const ImageCard = ({
 												<span aria-hidden='true'>&times;</span>
 											</button>
 											<img
-												src={image.url ? image.url : image}
+												src={image && image.url ? image.url : image}
 												alt='Img Not Found'
 												style={{
 													width: "130px",

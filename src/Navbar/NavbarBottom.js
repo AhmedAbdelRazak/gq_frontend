@@ -77,7 +77,7 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 						data[data.length - 1] &&
 						data[data.length - 1].addStoreLogo &&
 						data[data.length - 1].addStoreLogo[0] &&
-						data[data.length - 1].addStoreLogo[0].url,
+						data[data.length - 1].addStoreLogo[0],
 				);
 			}
 		});

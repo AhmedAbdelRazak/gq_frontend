@@ -62,7 +62,7 @@ const NavbarTop = ({
 						data[data.length - 1] &&
 						data[data.length - 1].addStoreLogo &&
 						data[data.length - 1].addStoreLogo[0] &&
-						data[data.length - 1].addStoreLogo[0].url,
+						data[data.length - 1].addStoreLogo[0],
 				);
 				setOnlineStoreName(
 					data && data[data.length - 1] && data[data.length - 1].addStoreName,
@@ -116,7 +116,7 @@ const NavbarTop = ({
 	}, []);
 
 	const storeLogo = logoImage;
-	var index = storeLogo.indexOf("upload");
+	var index = storeLogo && storeLogo.indexOf("upload");
 
 	// eslint-disable-next-line
 	var finalLogoUrl =

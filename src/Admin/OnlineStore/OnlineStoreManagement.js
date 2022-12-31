@@ -226,7 +226,7 @@ const OnlineStoreManagement = () => {
 					latestStoreManagement.transactionFeePercentage,
 				);
 				setAddStoreLogo({
-					images: latestStoreManagement.addStoreLogo.map((i) => i.url),
+					images: latestStoreManagement.addStoreLogo.map((i) => i),
 				});
 			}
 		});
