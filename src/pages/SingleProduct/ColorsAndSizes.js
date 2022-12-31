@@ -50,8 +50,8 @@ const isActive = (c, sureClickedLink) => {
 	}
 };
 
-const isActive2 = (s, sureClickedLink) => {
-	if (s === sureClickedLink) {
+const isActive2 = (s, sureClickedLink, sizeAvailable) => {
+	if (s === sureClickedLink && !sizeAvailable) {
 		return {
 			// color: "white !important",
 			// background: "#dbeeff",
@@ -67,6 +67,25 @@ const isActive2 = (s, sureClickedLink) => {
 			// boxShadow: "1px 2px 1px 2px rgba(0,0,0,0.1)",
 
 			// textDecoration: "underline",
+		};
+	} else if (!sizeAvailable) {
+		return {
+			color: "black",
+			// background: "#d8ebff",
+			textTransform: "uppercase",
+			fontSize: "0.85rem",
+			transition: "0.3s",
+			border: "1px black solid",
+		};
+	} else if (sizeAvailable) {
+		return {
+			color: "darkgrey",
+			// background: "#d8ebff",
+			textTransform: "uppercase",
+			fontWeight: "bolder",
+			fontSize: "0.85rem",
+			transition: "0.3s",
+			border: "1px lightgrey solid",
 		};
 	} else {
 		return {
@@ -113,6 +132,13 @@ const ColorsAndSizes = ({
 
 		// eslint-disable-next-line
 	}, []);
+
+	const SizesWithNoStock =
+		Product &&
+		Product.productAttributes &&
+		Product.productAttributes.filter(
+			(i) => chosenProductAttributes.SubSKUColor === i.color && i.quantity <= 0,
+		);
 
 	return (
 		<ColorsAndSizesWrapper>
@@ -191,8 +217,8 @@ const ColorsAndSizes = ({
 			</div>
 			<br />
 			<div className='text-capitalize text-title' style={{ color: "#0052a5" }}>
-				<div className='row'>
-					<div className='col-6 '>
+				<div className='row '>
+					<div className='col-7'>
 						<span className='chooseSize'>
 							Choose a Size:{" "}
 							<span style={{ color: "darkgrey" }}>{clickedLink2}</span>{" "}
@@ -204,7 +230,7 @@ const ColorsAndSizes = ({
 					Product.sizeChart.chartLength.length > 0 ? (
 						<div
 							onClick={() => setModalVisible2(true)}
-							className='col-6 '
+							className='col-4 ml-auto'
 							style={{
 								fontWeight: "bolder",
 								textDecoration: "underline",
@@ -284,14 +310,27 @@ const ColorsAndSizes = ({
 									}}
 									className='attStyling my-auto ml-2 py-2'
 									key={i}
-									style={isActive2(s, clickedLink2)}>
-									{s.toLowerCase() === "small"
-										? "s"
-										: s.toLowerCase() === "medium"
-										? "m"
-										: s.toLowerCase() === "large"
-										? "l"
-										: s}
+									style={isActive2(
+										s,
+										clickedLink2,
+										SizesWithNoStock.map((iiii) => iiii.size).indexOf(s) >= 0,
+									)}>
+									{SizesWithNoStock.map((iiii) => iiii.size).indexOf(s) >= 0 ? (
+										<div>
+											<div>
+												{s}
+												<div class='line1'></div>
+											</div>
+										</div>
+									) : s.toLowerCase() === "small" ? (
+										"s"
+									) : s.toLowerCase() === "medium" ? (
+										"m"
+									) : s.toLowerCase() === "large" ? (
+										"l"
+									) : (
+										s
+									)}
 								</div>
 							);
 						})}
@@ -305,14 +344,11 @@ const ColorsAndSizes = ({
 					<p
 						className='text-capitalize text-title chooseSize mt-3'
 						style={{ color: "#0052a5" }}>
-						Availability:{" "}
-						{chosenProductAttributes.quantity > 0 ? (
-							<span>
-								<i className='fas fa-check'></i>
-								Available{" "}
+						{chosenProductAttributes.quantity > 0 ? null : (
+							<span style={{ color: "red", textTransform: "uppercase" }}>
+								<span style={{ color: "black" }}>Availability:</span>{" "}
+								Unavailable
 							</span>
-						) : (
-							<span>Unavailable</span>
 						)}
 					</p>
 				</>
@@ -377,6 +413,15 @@ const ColorsAndSizesWrapper = styled.div`
 		text-transform: uppercase;
 	}
 
+	.line1 {
+		width: 18.3%;
+		height: 0px;
+		border-bottom: 1px solid black;
+		-webkit-transform: translateY(-11px) translateX(-5px) rotate(16deg);
+		position: absolute;
+		/* top: -20px; */
+	}
+
 	@media (max-width: 1000px) {
 		.chooseColor {
 			margin-left: 10px !important;
@@ -399,6 +444,50 @@ const ColorsAndSizesWrapper = styled.div`
 			display: grid;
 			grid-template-columns: 20% 20% 20% 20% 20%;
 			margin: auto 10px;
+		}
+	}
+
+	@media (max-width: 1300px) {
+		.line1 {
+			width: 17%;
+			height: 0px;
+			border-bottom: 1px solid black;
+			-webkit-transform: translateY(-11px) translateX(-3%) rotate(24deg);
+			position: absolute;
+			/* top: -20px; */
+		}
+	}
+
+	@media (max-width: 770px) {
+		.line1 {
+			width: 18%;
+			height: 0px;
+			border-bottom: 1px solid black;
+			-webkit-transform: translateY(-11px) translateX(-3%) rotate(17deg);
+			position: absolute;
+			/* top: -20px; */
+		}
+	}
+
+	@media (max-width: 540px) {
+		.line1 {
+			width: 17.5%;
+			height: 0px;
+			border-bottom: 1px solid black;
+			-webkit-transform: translateY(-11px) translateX(-3%) rotate(20deg);
+			position: absolute;
+			/* top: -20px; */
+		}
+	}
+
+	@media (max-width: 420px) {
+		.line1 {
+			width: 17.5%;
+			height: 0px;
+			border-bottom: 1px solid black;
+			-webkit-transform: translateY(-11px) translateX(-7%) rotate(30deg);
+			position: absolute;
+			/* top: -20px; */
 		}
 	}
 `;

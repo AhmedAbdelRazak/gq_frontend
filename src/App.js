@@ -166,6 +166,12 @@ const App = () => {
 	return (
 		<BrowserRouter>
 			<ToastContainer />
+			{window.location.pathname.includes("admin") ? null : allAdsCombined &&
+			  allAdsCombined.show_ad ? (
+				<>
+					<NavbarAds />
+				</>
+			) : null}
 			{window.location.pathname.includes("admin") ? null : (
 				<>
 					{click && clickMenu ? (
@@ -188,7 +194,6 @@ const App = () => {
 			  allAdsCombined.show_ad ? (
 				<>
 					<GenderNav />
-					<NavbarAds />
 				</>
 			) : null}
 

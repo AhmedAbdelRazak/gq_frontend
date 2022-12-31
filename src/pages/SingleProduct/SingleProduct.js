@@ -38,6 +38,7 @@ import CardForRelatedProducts from "./CardForRelatedProducts";
 import "antd/dist/antd.css";
 import { Collapse } from "antd";
 import SizeChartModal from "./SizeChartModal";
+import SigninModal from "./SigninModal/SigninModal";
 const { Panel } = Collapse;
 
 const SingleProduct = (props) => {
@@ -45,6 +46,7 @@ const SingleProduct = (props) => {
 	const [star, setStar] = useState(0);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [modalVisible2, setModalVisible2] = useState(false);
+	const [modalVisible3, setModalVisible3] = useState(false);
 	const [comments, setComments] = useState([]);
 	const [text, setText] = useState("");
 	const [clickedLink, setClickedLink] = useState("");
@@ -521,6 +523,10 @@ const SingleProduct = (props) => {
 						setModalVisible2={setModalVisible2}
 						Product={Product}
 					/>
+					<SigninModal
+						modalVisible3={modalVisible3}
+						setModalVisible3={setModalVisible3}
+					/>
 					<div className='row'>
 						<div className='col-md-7 text-center imageWrapper  mt-3'>
 							<DisplayImages
@@ -565,15 +571,15 @@ const SingleProduct = (props) => {
 										<strong>No Ratings</strong>
 									</div>
 								)}
-								{Product.productName}
+								<span className='productNamePrice'>{Product.productName}</span>
 								<div
 									className='mt-2'
-									style={{ color: "darkgrey", fontSize: "0.9rem" }}>
+									style={{ color: "darkgrey", fontSize: "0.8rem" }}>
 									{Product && Product.category && Product.category.categoryName}
 								</div>
 
 								<div
-									className='mt-2'
+									className='mt-2 productNamePrice'
 									style={{ color: "black", fontSize: "1.2rem" }}>
 									{Product &&
 										Product.productAttributes &&
@@ -634,7 +640,13 @@ const SingleProduct = (props) => {
 											</button>
 										</>
 									) : (
-										<div className=''>
+										<div
+											className=''
+											onClick={() => {
+												if (!isAuthenticated() && !isAuthenticated().token) {
+													setModalVisible3(true);
+												}
+											}}>
 											<button
 												id='wishlist_heart_pdp'
 												aria-label='Add to wishlist'
@@ -660,7 +672,6 @@ const SingleProduct = (props) => {
 												</div>
 
 												<span className='sc-pKMan fdsIjn'>Add to wishlist</span>
-												{shouldRedirect2(redirect2)}
 											</button>
 										</div>
 									)}
@@ -763,18 +774,7 @@ const SingleProduct = (props) => {
 														</span>
 													</button>
 												</>
-											) : (
-												<div
-													className='col-md-3 btn btn-outline-danger p-2 mx-auto mt-2'
-													style={{ fontSize: "0.9rem", fontWeight: "bolder" }}>
-													<span>
-														<i
-															className='fa fa-calendar mr-2'
-															aria-hidden='true'></i>
-													</span>
-													Sold Out
-												</div>
-											)}
+											) : null}
 										</>
 									)}
 								</div>
@@ -878,7 +878,7 @@ const SingleProduct = (props) => {
 										style={{ marginBottom: "5px" }}
 										header={
 											<span style={{ fontWeight: "bold", color: "black" }}>
-												Product Delivery & Return
+												Delivery & Return
 											</span>
 										}>
 										<div className='productDescriptionWrapper'>
@@ -1239,6 +1239,10 @@ const SingleEmp = styled.div`
 	.AddToCartStyling > button {
 		font-size: 12px !important;
 		position: sticky !important;
+	}
+
+	.productNamePrice {
+		font-size: 1rem !important;
 	}
 
 

@@ -8,8 +8,6 @@ import "antd/dist/antd.css"; // or 'antd/dist/antd.less'
 // import { toast } from "react-toastify";
 
 const SizeChartModal = ({ Product, modalVisible2, setModalVisible2 }) => {
-	console.log(Product, "single Product");
-
 	const mainForm = () => {
 		return (
 			<div className='mx-auto text-center mx-auto'>

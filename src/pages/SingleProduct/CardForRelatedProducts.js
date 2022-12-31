@@ -193,6 +193,7 @@ const CardForRelatedProducts = ({
 							<Link
 								to={`/product/${product.category.categorySlug}/${product.slug}/${product._id}`}
 								onClick={() => {
+									localStorage.removeItem("productColor");
 									window.scrollTo({ top: 0, behavior: "smooth" });
 									SettingViews();
 								}}>

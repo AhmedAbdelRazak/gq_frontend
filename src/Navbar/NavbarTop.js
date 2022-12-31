@@ -167,6 +167,8 @@ const NavbarTop = ({
 								...new Map(productSizes.map((item) => [item, item])).values(),
 							];
 
+							console.log(productSizes);
+
 							var chosenAttribute =
 								i.allProductDetailsIncluded.productAttributes.filter(
 									(iii) => iii.color === i.color && iii.size === i.size,

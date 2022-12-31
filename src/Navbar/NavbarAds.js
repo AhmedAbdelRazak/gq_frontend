@@ -1,7 +1,7 @@
 /** @format */
 
 import Slider from "react-slick";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import styled from "styled-components";
 import { getAllAds } from "../Admin/apiAdmin";
 
@@ -39,25 +39,25 @@ const NavbarAds = () => {
 	};
 
 	return (
-		<div style={{ backgroundColor: "white", padding: "10px" }}>
+		<NavbarAdsWrapper style={{ backgroundColor: "white", padding: "10px" }}>
 			{" "}
-			<NavbarAdsWrapper className='mx-auto'>
+			<div className='mx-auto'>
 				<div className='nav-item mainMessages '>
 					<Slider {...settings}>
 						{allAdsCombined &&
 							allAdsCombined.map((i, e) => {
 								return (
-									<>
-										<div key={e}>
+									<Fragment key={e}>
+										<div>
 											<span>{i}</span>
 										</div>
-									</>
+									</Fragment>
 								);
 							})}
 					</Slider>
 				</div>
-			</NavbarAdsWrapper>
-		</div>
+			</div>
+		</NavbarAdsWrapper>
 	);
 };
 
@@ -65,12 +65,13 @@ export default NavbarAds;
 
 const NavbarAdsWrapper = styled.nav`
 	text-align: center;
-	padding-top: 10px;
-	padding-bottom: 22px;
-	width: 70%;
+	padding: 10px !important;
+	width: 50%;
 	/* box-shadow: 8px 10px 5px 0px rgba(0, 0, 0, 0.02); */
-	background: white !important;
+	background: rgb(235, 235, 235) !important;
 	border: 1px #f5f5f5 solid;
+	text-align: center;
+	margin: auto;
 
 	.slick-dots li button:hover:before,
 	.slick-dots li button:focus:before {
@@ -98,6 +99,10 @@ const NavbarAdsWrapper = styled.nav`
 		text-align: center;
 		font-size: 0.82rem;
 	}
+	.slick-dots li button:before {
+		font-size: 10px;
+		display: none;
+	}
 
 	@media (max-width: 1400px) {
 		.mainMessages {
@@ -109,7 +114,7 @@ const NavbarAdsWrapper = styled.nav`
 		}
 	}
 	@media (max-width: 900px) {
-		width: 100%;
+		width: 100% !important;
 		box-shadow: none;
 		margin: 0 !important;
 

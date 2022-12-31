@@ -64,7 +64,7 @@ const OrdersHist = () => {
 	// eslint-disable-next-line
 	const [selectedFilter, setSelectedFilter] = useState("SelectAll");
 	const [currentPage, setCurrentPage] = useState(1);
-	const [postsPerPage, setPostsPerPage] = useState(80);
+	const [postsPerPage, setPostsPerPage] = useState(100);
 	const [allProducts, setAllProducts] = useState([]);
 	const [day1, setDay1] = useState(
 		new Date(new Date().setDate(new Date().getDate() + 3)),
@@ -105,7 +105,7 @@ const OrdersHist = () => {
 
 	yesterday.setDate(yesterday.getDate() - 1);
 	last7Days.setDate(last7Days.getDate() - 7);
-	last90Days.setDate(last90Days.getDate() - 200);
+	last90Days.setDate(last90Days.getDate() - 300);
 
 	const loadOrders = () => {
 		function sortOrdersAscendingly(a, b) {
@@ -417,7 +417,7 @@ const OrdersHist = () => {
 							if (e.target.value.length > 0) {
 								setPostsPerPage(allOrders.length + 2);
 							} else {
-								setPostsPerPage(80);
+								setPostsPerPage(100);
 							}
 						}}
 						placeholder='Search By Client Phone, Client Name, Status Or Carrier'

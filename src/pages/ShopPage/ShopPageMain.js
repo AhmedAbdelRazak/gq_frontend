@@ -125,7 +125,8 @@ const ShopPageMain = ({ chosenLanguage }) => {
 	const finalResultVariableDifferentImages = allProductsAdded.map((i) => {
 		return {
 			...i,
-			productAttributes: i.productAttributes.filter(
+			productAttributes: i.productAttributes,
+			clickedProductAttribute: i.productAttributes.filter(
 				(ii) => PK.indexOf(ii.PK) !== -1,
 			),
 		};
@@ -134,7 +135,7 @@ const ShopPageMain = ({ chosenLanguage }) => {
 	const finalOfFinal1 =
 		finalResultVariableDifferentImages &&
 		finalResultVariableDifferentImages.map((i) =>
-			i.productAttributes.map((ii) => {
+			i.clickedProductAttribute.map((ii) => {
 				return {
 					...i,
 					DropShippingPrice: ii.DropShippingPrice,
@@ -188,6 +189,8 @@ const ShopPageMain = ({ chosenLanguage }) => {
 	}
 
 	shuffle(finalPromise);
+
+	// console.log(finalPromise, "final");
 
 	return (
 		<ShopPageMainWrapper>
