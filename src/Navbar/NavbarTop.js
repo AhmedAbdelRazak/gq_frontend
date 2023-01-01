@@ -133,7 +133,7 @@ const NavbarTop = ({
 				<div
 					onClick={closeSidebar}
 					className='float-right mr-3'
-					style={{ fontSize: "20px", color: "darkRed", cursor: "pointer" }}>
+					style={{ fontSize: "20px", color: "#c60e0e", cursor: "pointer" }}>
 					<FaTimes />
 				</div>
 				{cart && cart.length === 0 ? (
@@ -449,20 +449,6 @@ const NavbarTop = ({
 				language={language}
 				allGenders={allGenders}
 			/>
-			{click ? (
-				<i
-					className='fas fa-times nav-icon faaa-bars'
-					onClick={handleSidebar}
-					style={{ color: "darkred" }}></i>
-			) : (
-				<i
-					className='fa fa-bars nav-icon faaa-bars'
-					onClick={handleSidebar}
-					style={{ color: "lightBlack" }}></i>
-			)}
-			<div className='cellPhoneLogo'>
-				<img className='imgLogo' src={finalLogoUrl} alt='Infinite Apps' />
-			</div>
 
 			<div className='logo-type  logoWrapper'>
 				<Link
@@ -695,26 +681,63 @@ const NavbarTop = ({
 					</li>
 				</ul>
 			</div>
-			<div className='iconsCellPhone'>
-				<i className='fa-regular fa-user nav-icon2 faaa-bars '></i>
-				<i className='fa-solid fa-magnifying-glass nav-icon2 faaa-bars '></i>
-				<i className='fa-regular fa-heart nav-icon2 faaa-bars'></i>
-			</div>
-
-			<div className='nav-cart mr-3 faaa-bars'>
+			<div className='row mx-auto'>
+				<div className='col-2 mx-auto my-auto'>
+					{click ? (
+						<i
+							className='fas fa-times nav-icon faaa-bars'
+							onClick={handleSidebar}
+							style={{ color: "#c60e0e" }}></i>
+					) : (
+						<i
+							className='fa fa-bars nav-icon faaa-bars'
+							onClick={handleSidebar}
+							style={{ color: "#676767" }}></i>
+					)}
+				</div>
 				<div
-					onClick={isSidebarOpen ? closeSidebar : openSidebar}
-					style={{ cursor: "pointer" }}>
-					<sup>
-						<small className='cart-badge'>{total_items}</small>
-					</sup>
-					<i
-						className='fa fa-cart-plus faaa-bars'
-						style={{ color: "black", fontSize: "20px", marginTop: "10px" }}
-						aria-hidden='true'></i>
+					className='col-2 mx-auto my-auto  cellPhoneLogo p-0'
+					// style={{ border: "1px black solid" }}
+				>
+					<Link to='/'>
+						<img className='imgLogo2' src={finalLogoUrl} alt='Infinite Apps' />
+					</Link>
 				</div>
 
-				{sideCart()}
+				<div className='col-2 mx-auto my-auto iconsCellPhone'>
+					<Link to='/user/dashboard' style={{ color: "#676767" }}>
+						<i className='fa-regular fa-user  nav-icon2 faaa-bars'></i>
+						{/* <i className='fa-thin fa-user  nav-icon2 faaa-bars'></i> */}
+					</Link>
+				</div>
+
+				<div className='col-2 mx-auto my-auto iconsCellPhone'>
+					<i
+						style={{ color: "#676767" }}
+						className='fa-solid fa-magnifying-glass nav-icon2 faaa-bars '></i>
+				</div>
+
+				<div className='col-2 mx-auto my-auto iconsCellPhone'>
+					<i
+						style={{ color: "#676767" }}
+						className='fa-regular fa-heart nav-icon2 faaa-bars'></i>
+				</div>
+
+				<div className='col-2 mx-auto my-auto nav-cart faaa-bars'>
+					<div
+						onClick={isSidebarOpen ? closeSidebar : openSidebar}
+						style={{ cursor: "pointer" }}>
+						<sup>
+							<small className='cart-badge'>{total_items}</small>
+						</sup>
+						<i
+							className='fa fa-cart-plus faaa-bars'
+							style={{ color: "#676767", fontSize: "20px", marginTop: "10px" }}
+							aria-hidden='true'></i>
+					</div>
+
+					{sideCart()}
+				</div>
 			</div>
 		</Nav>
 	);
@@ -798,11 +821,6 @@ const Nav = styled.nav`
 		border-bottom: 1px solid lightgrey;
 		z-index: 120;
 
-		.cellPhoneLogo {
-			display: block;
-			margin-right: 100px;
-		}
-
 		.iconsCellPhone {
 			display: block;
 		}
@@ -816,7 +834,7 @@ const Nav = styled.nav`
 			display: block;
 			margin-left: 18px;
 			font-weight: bold;
-			background: darkred;
+			background: #c60e0e !important;
 			padding: 6px;
 			position: absolute;
 			top: -14px;
@@ -846,13 +864,13 @@ const Nav = styled.nav`
 		.nav-icon {
 			font-size: 1.35rem;
 			cursor: pointer;
-			margin-left: 15px;
+			/* margin-left: 15px; */
 		}
 
 		.nav-icon2 {
 			font-size: 1.35rem;
 			cursor: pointer;
-			margin-left: 15px;
+			/* margin-left: 20px; */
 		}
 
 		.nav-cart {
@@ -878,6 +896,22 @@ const Nav = styled.nav`
 		.imgLogo {
 			width: 80px;
 			height: 80px;
+			margin-top: 0px;
+			margin-bottom: 0px;
+			margin-left: 0px;
+		}
+
+		.cellPhoneLogo {
+			display: block;
+			width: 159px;
+			height: 60px;
+			margin-top: 0px;
+			margin-bottom: 0px;
+			margin-left: 0px;
+		}
+
+		.imgLogo2 {
+			width: 100%;
 			margin-top: 0px;
 			margin-bottom: 0px;
 			margin-left: 0px;
@@ -919,7 +953,7 @@ const Nav = styled.nav`
 		padding: 1px;
 	}
 
-	@media (max-width: 390px) {
+	/* @media (max-width: 390px) {
 		.nav-icon {
 			font-size: 1rem;
 			cursor: pointer;
@@ -929,9 +963,9 @@ const Nav = styled.nav`
 		.nav-icon2 {
 			font-size: 1rem;
 			cursor: pointer;
-			margin-left: 15px;
+			margin-left: 20px;
 		}
-	}
+	} */
 `;
 
 const SideWrapperCart = styled.nav`

@@ -425,8 +425,12 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 					onClick={() => {
 						window.scrollTo({ top: 0, behavior: "smooth" });
 					}}>
-					<div className='infiniteAppsLogo'>
-						<img className='imgLogo' src={finalLogoUrl} alt='Infinite Apps' />
+					<div className='infiniteAppsLogo p-0'>
+						<img
+							className='imgLogo p-0'
+							src={finalLogoUrl}
+							alt='Infinite Apps'
+						/>
 					</div>
 					{/* <div
 						className='logo-type ml-1'
@@ -679,7 +683,7 @@ const Nav = styled.nav`
 		display: block;
 		margin-left: 18px;
 		font-weight: bold;
-		background: darkred;
+		background: #c60e0e;
 		padding: 6px;
 	}
 

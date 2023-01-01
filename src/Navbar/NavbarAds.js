@@ -68,7 +68,7 @@ const NavbarAdsWrapper = styled.nav`
 	padding: 10px !important;
 	width: 50%;
 	/* box-shadow: 8px 10px 5px 0px rgba(0, 0, 0, 0.02); */
-	background: darkred !important;
+	background: #c60e0e !important;
 	border: 1px #f5f5f5 solid;
 	text-align: center;
 	margin: auto;

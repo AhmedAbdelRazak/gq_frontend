@@ -503,13 +503,6 @@ export const gettingAllProducts = (
 				setAllProducts(requiredProducts);
 			}
 
-			console.log(
-				usedFilters &&
-					usedFilters.length > 0 &&
-					usedFilters[usedFilters.length - 1].filterByType,
-				"usedFilters[usedFilters.length - 1].filterByType",
-			);
-
 			if (filterBy === "gender") {
 				// eslint-disable-next-line
 				var categoriesArray = requiredProducts2

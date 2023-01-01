@@ -190,13 +190,6 @@ const App = () => {
 				</>
 			)}
 
-			{window.location.pathname.includes("admin") ? null : allAdsCombined &&
-			  allAdsCombined.show_ad ? (
-				<>
-					<GenderNav />
-				</>
-			) : null}
-
 			<Switch>
 				<Route path='/signin' exact component={Login} />
 

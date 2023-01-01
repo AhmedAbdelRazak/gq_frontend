@@ -12,6 +12,7 @@ import MostViewedProducts from "./MostViewedProducts";
 import GenderLinks from "./GenderLinks";
 import HeroComponent2 from "./HeroComponent2";
 import HeroComponent3 from "./HeroComponent3";
+import GenderNav from "../../Navbar/GenderNav";
 
 const Home = ({ chosenLanguage }) => {
 	// eslint-disable-next-line
@@ -91,6 +92,9 @@ const Home = ({ chosenLanguage }) => {
 
 	return (
 		<HomeWrapper>
+			<>
+				<GenderNav />
+			</>
 			<HeroComponent />
 
 			<GenderLinks allGenders={allGenders} />

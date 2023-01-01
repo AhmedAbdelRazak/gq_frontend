@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { isAuthenticated, signout } from "../auth";
@@ -15,9 +15,25 @@ const Sidebar = ({
 	history,
 	allGenders,
 }) => {
+	const [pageScrolled, setPageScrolled] = useState(false);
+	const [offset, setOffset] = useState(0);
+
+	useEffect(() => {
+		const onScroll = () => setOffset(window.pageYOffset);
+		// clean up code
+		window.removeEventListener("scroll", onScroll);
+		window.addEventListener("scroll", onScroll, { passive: true });
+		if (window.pageYOffset > 0) {
+			setPageScrolled(true);
+		} else {
+			setPageScrolled(false);
+		}
+		return () => window.removeEventListener("scroll", onScroll);
+	}, [offset]);
+
 	return (
 		<>
-			<SideWrapper show={clickMenu}>
+			<SideWrapper show={clickMenu} show2={pageScrolled}>
 				<ul>
 					<li
 						className='mt-3 genderWrapper'
@@ -312,15 +328,17 @@ export default Sidebar;
 
 const SideWrapper = styled.nav`
 	position: fixed;
-	top: 0px;
+	/* top: 101px; */
 	left: 0;
-	width: 60%;
+	width: 70%;
 	height: 100%;
 	background: var(--mainGrey);
 	z-index: 500;
 	border-right: 3px solid var(--darkGrey);
 	transition: 0.5s;
 	transform: ${(props) => (props.show ? "translateX(0)" : "translateX(-100%)")};
+	top: ${(props) => (props.show2 ? "60px" : "101px")};
+
 	/*transform: translateX(-100%);*/ /**this will hide the side bar */
 	ul {
 		list-style-type: none;
