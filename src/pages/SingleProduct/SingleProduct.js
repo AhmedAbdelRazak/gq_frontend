@@ -153,6 +153,24 @@ const SingleProduct = (props) => {
 			if (data.error) {
 				setError(data.error);
 			} else {
+				getProducts().then((data2) => {
+					if (data2.error) {
+						console.log(data2.error);
+					} else {
+						var allAceProducts = data2.filter(
+							(i) =>
+								i.activeProduct === true && i.storeName.storeName === "ace",
+						);
+						setCategoryProducts(
+							allAceProducts.filter(
+								(iiii) =>
+									iiii.category.categoryName.toLowerCase() ===
+									data.category.categoryName,
+							),
+						);
+					}
+				});
+
 				setProduct(data);
 				setComments(data.comments);
 				setLikes(data.likes.length);
@@ -245,24 +263,6 @@ const SingleProduct = (props) => {
 					setClickedLink(localStorage.getItem("productColor"));
 					setColorSelected(true);
 				}
-
-				getProducts().then((data2) => {
-					if (data2.error) {
-						console.log(data2.error);
-					} else {
-						var allAceProducts = data2.filter(
-							(i) =>
-								i.activeProduct === true && i.storeName.storeName === "ace",
-						);
-						setCategoryProducts(
-							allAceProducts.filter(
-								(iiii) =>
-									iiii.category.categoryName.toLowerCase() ===
-									data.category.categoryName,
-							),
-						);
-					}
-				});
 			}
 		});
 		setLoading(false);
@@ -530,6 +530,8 @@ const SingleProduct = (props) => {
 		],
 	};
 
+	// console.log(categoryProducts, "categoryProducts");
+
 	const settings2 = {
 		dots: true,
 		infinite: true,
@@ -545,7 +547,7 @@ const SingleProduct = (props) => {
 		responsive: [
 			{
 				breakpoint: 1200,
-				settings2: {
+				settings: {
 					dots: true,
 					infinite: true,
 					autoplay: true,
