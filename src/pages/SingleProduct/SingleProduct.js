@@ -530,6 +530,38 @@ const SingleProduct = (props) => {
 		],
 	};
 
+	const settings2 = {
+		dots: true,
+		infinite: true,
+		autoplay: true,
+		arrows: true,
+		speed: 1000,
+		slidesToShow: categoryProducts && categoryProducts.length >= 4 ? 4 : 2,
+		slidesToScroll: 1,
+		autoplaySpeed: 5000,
+		pauseOnHover: true,
+		adaptiveHeight: true,
+
+		responsive: [
+			{
+				breakpoint: 1200,
+				settings2: {
+					dots: true,
+					infinite: true,
+					autoplay: true,
+					arrows: true,
+					speed: 1000,
+					slidesToShow:
+						categoryProducts && categoryProducts.length >= 2 ? 2 : 1,
+					slidesToScroll: 1,
+					autoplaySpeed: 5000,
+					pauseOnHover: true,
+					adaptiveHeight: true,
+				},
+			},
+		],
+	};
+
 	var titleName =
 		Product && Product.productName && Product.productName.toUpperCase();
 
@@ -1020,6 +1052,30 @@ const SingleProduct = (props) => {
 							</Collapse>
 						</div>
 					</div>
+					{relatedProducts &&
+					relatedProducts.length === 0 &&
+					categoryProducts &&
+					categoryProducts.length > 0 ? (
+						<ProductWrapperRelated>
+							<h5 className='title'>YOU MAY ALSO LIKE!</h5>
+							<div className='container-fluid my-1 ProductSlider'>
+								<Slider {...settings2} className='mb-5'>
+									{categoryProducts &&
+										categoryProducts.map((product, i) => (
+											<div className='img-fluid images ' key={i}>
+												<CardForRelatedProducts
+													i={i}
+													product={product}
+													key={i}
+													// chosenLanguage={chosenLanguage}
+												/>
+											</div>
+										))}
+								</Slider>
+							</div>
+						</ProductWrapperRelated>
+					) : null}
+
 					{relatedProducts && relatedProducts.length > 0 ? (
 						<ProductWrapperRelated>
 							<React.Fragment>
@@ -1066,7 +1122,7 @@ const SingleProduct = (props) => {
 								</div>
 							) : selectedLink === "YOU MAY ALSO LIKE" ? (
 								<div className='container-fluid my-1 ProductSlider'>
-									<Slider {...settings} className='mb-5'>
+									<Slider {...settings2} className='mb-5'>
 										{categoryProducts &&
 											categoryProducts.map((product, i) => (
 												<div className='img-fluid images ' key={i}>
@@ -1080,25 +1136,10 @@ const SingleProduct = (props) => {
 											))}
 									</Slider>
 								</div>
-							) : (
-								<div className='container-fluid my-1 ProductSlider'>
-									<Slider {...settings} className='mb-5'>
-										{relatedProducts &&
-											relatedProducts.map((product, i) => (
-												<div className='img-fluid images ' key={i}>
-													<CardForRelatedProducts
-														i={i}
-														product={product}
-														key={i}
-														// chosenLanguage={chosenLanguage}
-													/>
-												</div>
-											))}
-									</Slider>
-								</div>
-							)}
+							) : null}
 						</ProductWrapperRelated>
 					) : null}
+
 					<div className='p-5'>
 						<HistoricalComments
 							loading={loading}
@@ -1204,6 +1245,10 @@ const SingleEmp = styled.div`
     padding: 0.85rem 0.85rem;
 }
 
+.carousel .thumbs-wrapper {
+    margin: 5px !important;
+}
+
 	@media (max-width: 850px) {
 		padding: 0px !important;
 		width: 100%;
@@ -1282,6 +1327,14 @@ const ProductWrapperRelated = styled.div`
 
 	.theLinks:hover {
 		cursor: pointer;
+	}
+
+	.title {
+		text-align: center;
+		font-size: 1.2rem;
+		/* letter-spacing: 7px; */
+		font-weight: bold;
+		/* text-shadow: 3px 3px 10px; */
 	}
 
 	.titleArabic {

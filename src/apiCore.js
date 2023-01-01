@@ -323,22 +323,121 @@ export const gettingAllProducts = (
 	setSelectedPriceRange,
 	setMinPrice,
 	setMaxPrice,
+	usedFilters,
 ) => {
 	getProducts().then((data) => {
 		if (data.error) {
 			console.log(data.error);
 		} else {
-			const requiredProducts = data.filter(
+			const requiredProductsInitial = data.filter(
 				(i) => i.activeProduct === true && i.storeName.storeName === "ace",
 			);
-			if (filterBy === "gender") {
+
+			const requiredProducts2 = data.filter(
+				(i) => i.activeProduct === true && i.storeName.storeName === "ace",
+			);
+
+			var allProductsAdded =
+				requiredProductsInitial &&
+				requiredProductsInitial.map((ii) => {
+					return {
+						...ii,
+						quantity: 12,
+					};
+				});
+
+			const AllProductsModified =
+				allProductsAdded && allProductsAdded.map((i) => i.productAttributes);
+
+			var mergedAttributes = [].concat.apply([], AllProductsModified);
+
+			let allAttributes = [
+				...new Map(mergedAttributes.map((item) => [item, item])).values(),
+			];
+
+			const allAttributesEnhanced =
+				allAttributes &&
+				allAttributes.filter((i) => i.productImages.length > 0);
+
+			const PK =
+				allAttributesEnhanced && allAttributesEnhanced.map((i) => i.PK);
+
+			const finalResultVariableDifferentImages = allProductsAdded.map((i) => {
+				return {
+					...i,
+					productAttributes: i.productAttributes,
+					clickedProductAttribute: i.productAttributes.filter(
+						(ii) => PK.indexOf(ii.PK) !== -1,
+					),
+				};
+			});
+
+			const finalOfFinal1 =
+				finalResultVariableDifferentImages &&
+				finalResultVariableDifferentImages.map((i) =>
+					i.clickedProductAttribute.map((ii) => {
+						return {
+							...i,
+							DropShippingPrice: ii.DropShippingPrice,
+							MSRP: ii.MSRP,
+							PK: ii.PK,
+							SubSKU: ii.SubSKU,
+							WholeSalePrice: ii.WholeSalePrice,
+							color: ii.color,
+							price: ii.price,
+							priceAfterDiscount: ii.priceAfterDiscount,
+							productImages: ii.productImages,
+							quantity: ii.quantity,
+							size: ii.size,
+						};
+					}),
+				);
+
+			var mergedFinalOfFinal = [].concat.apply([], finalOfFinal1);
+
+			let allAttributesFinalOfFinal = [
+				...new Map(mergedFinalOfFinal.map((item) => [item, item])).values(),
+			];
+
+			const requiredProducts =
+				allAttributesFinalOfFinal &&
+				allAttributesFinalOfFinal.filter(
+					(i) =>
+						i.productImages &&
+						i.productImages[0] &&
+						i.productImages[0].url !== undefined,
+				);
+
+			function shuffle(array) {
+				let currentIndex = array.length,
+					randomIndex;
+
+				// While there remain elements to shuffle.
+				while (currentIndex !== 0) {
+					// Pick a remaining element.
+					randomIndex = Math.floor(Math.random() * currentIndex);
+					currentIndex--;
+
+					// And swap it with the current element.
+					[array[currentIndex], array[randomIndex]] = [
+						array[randomIndex],
+						array[currentIndex],
+					];
+				}
+
+				return array;
+			}
+
+			shuffle(requiredProducts);
+
+			if (filterBy === "gender" && usedFilters.length === 0) {
 				setAllProducts(
 					requiredProducts.filter(
 						(iii) =>
 							iii.gender.genderName.toLowerCase() === urlFilters.toLowerCase(),
 					),
 				);
-			} else if (filterBy === "category") {
+			} else if (filterBy === "category" && usedFilters.length === 0) {
 				setAllProducts(
 					requiredProducts.filter(
 						(iii) =>
@@ -346,7 +445,7 @@ export const gettingAllProducts = (
 							urlFilters.toLowerCase(),
 					),
 				);
-			} else if (filterBy === "subcategory") {
+			} else if (filterBy === "subcategory" && usedFilters.length === 0) {
 				setAllProducts(
 					requiredProducts.filter(
 						(iii) =>
@@ -355,25 +454,65 @@ export const gettingAllProducts = (
 								.indexOf(urlFilters.toLowerCase()) !== -1,
 					),
 				);
+			} else if (
+				usedFilters &&
+				usedFilters.length > 0 &&
+				usedFilters[usedFilters.length - 1].filterBy === "category" &&
+				usedFilters[usedFilters.length - 1].filterByType.length > 0
+			) {
+				setAllProducts(
+					requiredProducts &&
+						requiredProducts.filter(
+							(i) =>
+								usedFilters[usedFilters.length - 1].filterByType.indexOf(
+									i.category.categorySlug,
+								) !== -1,
+						),
+				);
+			} else if (
+				usedFilters &&
+				usedFilters.length > 0 &&
+				usedFilters[usedFilters.length - 1].filterBy === "sizes" &&
+				usedFilters[usedFilters.length - 1].filterByType.length > 0
+			) {
+				setAllProducts(
+					requiredProducts &&
+						requiredProducts.filter(
+							(i) =>
+								usedFilters[usedFilters.length - 1].filterByType.indexOf(
+									i.size.toLowerCase(),
+								) !== -1,
+						),
+				);
+			} else if (
+				usedFilters &&
+				usedFilters.length > 0 &&
+				usedFilters[usedFilters.length - 1].filterBy === "colors" &&
+				usedFilters[usedFilters.length - 1].filterByType.length > 0
+			) {
+				setAllProducts(
+					requiredProducts &&
+						requiredProducts.filter(
+							(i) =>
+								usedFilters[usedFilters.length - 1].filterByType.indexOf(
+									i.color.toLowerCase(),
+								) !== -1,
+						),
+				);
 			} else {
 				setAllProducts(requiredProducts);
 			}
 
-			//Categories Unique
-			// var categoriesArray = data
-			// 	.filter((i) => i.activeProduct === true)
-			// 	.map((ii) => ii.category);
-
-			// let uniqueCategories = [
-			// 	...new Map(
-			// 		categoriesArray.map((item) => [item["categoryName"], item]),
-			// 	).values(),
-			// ];
-			// setAllCategories(uniqueCategories);
+			console.log(
+				usedFilters &&
+					usedFilters.length > 0 &&
+					usedFilters[usedFilters.length - 1].filterByType,
+				"usedFilters[usedFilters.length - 1].filterByType",
+			);
 
 			if (filterBy === "gender") {
 				// eslint-disable-next-line
-				var categoriesArray = requiredProducts
+				var categoriesArray = requiredProducts2
 					.filter(
 						(iii) =>
 							iii.gender.genderName.toLowerCase() === urlFilters.toLowerCase(),
@@ -389,7 +528,7 @@ export const gettingAllProducts = (
 				setAllCategories(uniqueCategories);
 			} else if (filterBy === "category") {
 				// eslint-disable-next-line
-				var categoriesArray = requiredProducts
+				var categoriesArray = requiredProducts2
 					.filter(
 						(iii) =>
 							iii.category.categorySlug.toLowerCase() ===
@@ -406,7 +545,7 @@ export const gettingAllProducts = (
 				setAllCategories(uniqueCategories);
 			} else if (filterBy === "subcategory") {
 				// eslint-disable-next-line
-				var categoriesArray = requiredProducts
+				var categoriesArray = requiredProducts2
 					.filter(
 						(iii) =>
 							iii.subcategory
@@ -425,7 +564,7 @@ export const gettingAllProducts = (
 			} else {
 				// eslint-disable-next-line
 				var categoriesArray =
-					requiredProducts && requiredProducts.map((ii) => ii.category);
+					requiredProducts2 && requiredProducts2.map((ii) => ii.category);
 
 				let uniqueCategories = [
 					...new Map(
@@ -440,7 +579,7 @@ export const gettingAllProducts = (
 
 			//Subcategories Unique
 			var SubcategoriesArray =
-				requiredProducts && requiredProducts.map((ii) => ii.subcategory);
+				requiredProducts2 && requiredProducts2.map((ii) => ii.subcategory);
 
 			var mergedSubcategories = [].concat.apply([], SubcategoriesArray);
 			let uniqueSubcategories = [
@@ -452,7 +591,7 @@ export const gettingAllProducts = (
 
 			//Gender Unique
 			var genderUnique =
-				requiredProducts && requiredProducts.map((ii) => ii.gender);
+				requiredProducts2 && requiredProducts2.map((ii) => ii.gender);
 
 			let uniqueGenders = [
 				...new Map(
@@ -464,8 +603,8 @@ export const gettingAllProducts = (
 
 			//Unique Sizes
 			const allSizes =
-				requiredProducts &&
-				requiredProducts.map((i) => i.productAttributes.map((ii) => ii.size));
+				requiredProducts2 &&
+				requiredProducts2.map((i) => i.productAttributes.map((ii) => ii.size));
 
 			var mergedSizes = [].concat.apply([], allSizes);
 
@@ -476,8 +615,8 @@ export const gettingAllProducts = (
 
 			//Unique Colors
 			const allColorsCombined =
-				requiredProducts &&
-				requiredProducts.map((i) => i.productAttributes.map((ii) => ii.color));
+				requiredProducts2 &&
+				requiredProducts2.map((i) => i.productAttributes.map((ii) => ii.color));
 
 			var mergedColors = [].concat.apply([], allColorsCombined);
 
@@ -489,8 +628,8 @@ export const gettingAllProducts = (
 
 			//Unique Prices
 			const allPricesCombined =
-				requiredProducts &&
-				requiredProducts.map((i) =>
+				requiredProducts2 &&
+				requiredProducts2.map((i) =>
 					i.productAttributes.map((ii) => ii.priceAfterDiscount),
 				);
 

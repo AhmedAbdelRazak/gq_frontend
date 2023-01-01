@@ -51,14 +51,6 @@ const ShopPageMain = ({ chosenLanguage }) => {
 	};
 
 	useEffect(() => {
-		if (filterBy && urlFilters) {
-			setUsedFilters([
-				{
-					filterBy: filterBy,
-					filterByType: [urlFilters],
-				},
-			]);
-		}
 		gettingAllColors();
 		gettingAllProducts(
 			filterBy,
@@ -72,125 +64,11 @@ const ShopPageMain = ({ chosenLanguage }) => {
 			setSelectedPriceRange,
 			setMinPrice,
 			setMaxPrice,
-			selectedPriceRange,
+			usedFilters,
 		);
 
 		// eslint-disable-next-line
-	}, []);
-
-	// const returnFinalProducts = () => {
-	// 	var filteredByCategories =
-	// 		usedFilters &&
-	// 		usedFilters
-	// 			.filter((ii) => ii.filterBy === "category")
-	// 			.map((iii) => iii.filterByType)[0];
-
-	// 	var finalProducts =
-	// 		allProducts &&
-	// 		allProducts.filter(
-	// 			(i) =>
-	// 				filteredByCategories &&
-	// 				filteredByCategories.indexOf(i.category.categorySlug) !== -1,
-	// 		);
-
-	// 	return finalProducts;
-	// };
-
-	// console.log(returnFinalProducts(), "returnFinalProducts");
-	// console.log(usedFilters, "usedFilters");
-
-	var allProductsAdded =
-		allProducts &&
-		allProducts.map((ii) => {
-			return {
-				...ii,
-				quantity: 12,
-			};
-		});
-
-	const AllProductsModified =
-		allProductsAdded && allProductsAdded.map((i) => i.productAttributes);
-
-	var mergedAttributes = [].concat.apply([], AllProductsModified);
-
-	let allAttributes = [
-		...new Map(mergedAttributes.map((item) => [item, item])).values(),
-	];
-
-	const allAttributesEnhanced =
-		allAttributes && allAttributes.filter((i) => i.productImages.length > 0);
-
-	const PK = allAttributesEnhanced && allAttributesEnhanced.map((i) => i.PK);
-
-	const finalResultVariableDifferentImages = allProductsAdded.map((i) => {
-		return {
-			...i,
-			productAttributes: i.productAttributes,
-			clickedProductAttribute: i.productAttributes.filter(
-				(ii) => PK.indexOf(ii.PK) !== -1,
-			),
-		};
-	});
-
-	const finalOfFinal1 =
-		finalResultVariableDifferentImages &&
-		finalResultVariableDifferentImages.map((i) =>
-			i.clickedProductAttribute.map((ii) => {
-				return {
-					...i,
-					DropShippingPrice: ii.DropShippingPrice,
-					MSRP: ii.MSRP,
-					PK: ii.PK,
-					SubSKU: ii.SubSKU,
-					WholeSalePrice: ii.WholeSalePrice,
-					color: ii.color,
-					price: ii.price,
-					priceAfterDiscount: ii.priceAfterDiscount,
-					productImages: ii.productImages,
-					quantity: ii.quantity,
-					size: ii.size,
-				};
-			}),
-		);
-
-	var mergedFinalOfFinal = [].concat.apply([], finalOfFinal1);
-
-	let allAttributesFinalOfFinal = [
-		...new Map(mergedFinalOfFinal.map((item) => [item, item])).values(),
-	];
-
-	const finalPromise =
-		allAttributesFinalOfFinal &&
-		allAttributesFinalOfFinal.filter(
-			(i) =>
-				i.productImages &&
-				i.productImages[0] &&
-				i.productImages[0].url !== undefined,
-		);
-
-	function shuffle(array) {
-		let currentIndex = array.length,
-			randomIndex;
-
-		// While there remain elements to shuffle.
-		while (currentIndex !== 0) {
-			// Pick a remaining element.
-			randomIndex = Math.floor(Math.random() * currentIndex);
-			currentIndex--;
-
-			// And swap it with the current element.
-			[array[currentIndex], array[randomIndex]] = [
-				array[randomIndex],
-				array[currentIndex],
-			];
-		}
-
-		return array;
-	}
-
-	shuffle(finalPromise);
-
-	// console.log(finalPromise, "final");
+	}, [usedFilters]);
 
 	return (
 		<ShopPageMainWrapper>
@@ -239,8 +117,8 @@ const ShopPageMain = ({ chosenLanguage }) => {
 			<div className='cardWrapper'>
 				<div className='row '>
 					<div className='grid-container'>
-						{finalPromise &&
-							finalPromise.map((product, i) => (
+						{allProducts &&
+							allProducts.map((product, i) => (
 								<CardForShop
 									i={i}
 									product={product}

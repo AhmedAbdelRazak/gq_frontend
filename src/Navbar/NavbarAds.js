@@ -39,7 +39,7 @@ const NavbarAds = () => {
 	};
 
 	return (
-		<NavbarAdsWrapper style={{ backgroundColor: "white", padding: "10px" }}>
+		<NavbarAdsWrapper style={{ backgroundColor: "", padding: "" }}>
 			{" "}
 			<div className='mx-auto'>
 				<div className='nav-item mainMessages '>
@@ -68,10 +68,14 @@ const NavbarAdsWrapper = styled.nav`
 	padding: 10px !important;
 	width: 50%;
 	/* box-shadow: 8px 10px 5px 0px rgba(0, 0, 0, 0.02); */
-	background: rgb(235, 235, 235) !important;
+	background: darkred !important;
 	border: 1px #f5f5f5 solid;
 	text-align: center;
 	margin: auto;
+
+	span {
+		color: white !important;
+	}
 
 	.slick-dots li button:hover:before,
 	.slick-dots li button:focus:before {

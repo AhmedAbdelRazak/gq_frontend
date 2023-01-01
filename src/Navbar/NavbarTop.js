@@ -460,6 +460,10 @@ const NavbarTop = ({
 					onClick={handleSidebar}
 					style={{ color: "lightBlack" }}></i>
 			)}
+			<div className='cellPhoneLogo'>
+				<img className='imgLogo' src={finalLogoUrl} alt='Infinite Apps' />
+			</div>
+
 			<div className='logo-type  logoWrapper'>
 				<Link
 					to='/'
@@ -691,10 +695,13 @@ const NavbarTop = ({
 					</li>
 				</ul>
 			</div>
+			<div className='iconsCellPhone'>
+				<i className='fa-regular fa-user nav-icon2 faaa-bars '></i>
+				<i className='fa-solid fa-magnifying-glass nav-icon2 faaa-bars '></i>
+				<i className='fa-regular fa-heart nav-icon2 faaa-bars'></i>
+			</div>
 
 			<div className='nav-cart mr-3 faaa-bars'>
-				{/* <FaCartPlus className="nav-icon" onClick={handleCart} /> */}
-
 				<div
 					onClick={isSidebarOpen ? closeSidebar : openSidebar}
 					style={{ cursor: "pointer" }}>
@@ -720,6 +727,14 @@ const Nav = styled.nav`
 
 	.logoWrapper,
 	.infiniteAppsLogo {
+		display: none;
+	}
+
+	.iconsCellPhone {
+		display: none;
+	}
+
+	.cellPhoneLogo {
 		display: none;
 	}
 
@@ -783,6 +798,15 @@ const Nav = styled.nav`
 		border-bottom: 1px solid lightgrey;
 		z-index: 120;
 
+		.cellPhoneLogo {
+			display: block;
+			margin-right: 100px;
+		}
+
+		.iconsCellPhone {
+			display: block;
+		}
+
 		.cart-badge {
 			border-radius: 20%;
 			font-size: 13px;
@@ -818,7 +842,14 @@ const Nav = styled.nav`
 			max-width: 1170px;
 			margin: 0 auto;
 		}
+
 		.nav-icon {
+			font-size: 1.35rem;
+			cursor: pointer;
+			margin-left: 15px;
+		}
+
+		.nav-icon2 {
 			font-size: 1.35rem;
 			cursor: pointer;
 			margin-left: 15px;
@@ -836,7 +867,7 @@ const Nav = styled.nav`
 			padding: 0 5px;
 		}
 		.infiniteAppsLogo {
-			display: block;
+			display: none;
 			width: 159px;
 			height: 79px;
 			margin-top: 0px;
@@ -886,6 +917,20 @@ const Nav = styled.nav`
 		top: 0;
 		z-index: 120;
 		padding: 1px;
+	}
+
+	@media (max-width: 390px) {
+		.nav-icon {
+			font-size: 1rem;
+			cursor: pointer;
+			margin-left: 10px;
+		}
+
+		.nav-icon2 {
+			font-size: 1rem;
+			cursor: pointer;
+			margin-left: 15px;
+		}
 	}
 `;
 

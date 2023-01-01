@@ -350,7 +350,8 @@ const MainFilter = ({
 										/>
 										<span
 											className='squareColor mr-1'
-											style={{ background: c }}>
+											// style={{ background: c }}
+										>
 											{allColors[allColors.map((i) => i.hexa).indexOf(c)].color}
 										</span>
 									</label>
@@ -484,7 +485,7 @@ const MainFilterWrapper = styled.div`
 		border-radius: 2px;
 		transition: 0.3s;
 		font-size: 12px;
-		color: darkgrey;
+		color: #545454;
 	}
 	.block {
 		transition: 0.3s;

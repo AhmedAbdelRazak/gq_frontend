@@ -639,8 +639,8 @@ const Nav = styled.nav`
 
 	.infiniteAppsLogo {
 		display: block;
-		width: 50px;
-		height: 50px;
+		width: 63px;
+		height: 63px;
 		margin-top: 0px;
 		margin-bottom: 0px;
 		margin-left: 0px;
@@ -648,8 +648,8 @@ const Nav = styled.nav`
 	}
 
 	.imgLogo {
-		width: 70px;
-		height: 70px;
+		width: 100% !important;
+		height: 100% !important;
 		margin-top: 0px;
 		margin-bottom: 0px;
 		margin-left: 0px;
