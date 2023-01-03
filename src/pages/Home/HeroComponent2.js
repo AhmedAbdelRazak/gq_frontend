@@ -13,12 +13,16 @@ import { getAllHeros } from "../../Admin/apiAdmin";
 
 const HeroComponent2 = () => {
 	const [homePage, setHomePage] = useState({});
+	const [photoCell2, setPhotoCell2] = useState("");
 
 	const gettingAllHomes = () => {
 		getAllHeros().then((data) => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
+				var latestHome = data[data.length - 1];
+				var heroCellPhone2 = latestHome.thumbnail2_Phone[0].images[0].url;
+				setPhotoCell2(heroCellPhone2);
 				setHomePage(data[data.length - 1]);
 			}
 		});
@@ -43,6 +47,9 @@ const HeroComponent2 = () => {
 		pauseOnHover: true,
 		adaptiveHeight: true,
 	};
+
+	console.log(photoCell2, "photo");
+
 	return (
 		<HeroComponent2Wrapper className='mx-auto text-center mt-5'>
 			{homePage && homePage.thumbnail2 && homePage.thumbnail2[0] && (
@@ -52,7 +59,9 @@ const HeroComponent2 = () => {
 						style={{ fontWeight: "bolder", fontSize: "1.4rem" }}>
 						Main Section
 					</h3> */}
-					<Link to='/our-products'>
+					<Link
+						to='/our-products'
+						onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
 						<img
 							src={
 								homePage &&
@@ -73,19 +82,10 @@ const HeroComponent2 = () => {
 				homePage.thumbnail2_Phone &&
 				homePage.thumbnail2_Phone[0] && (
 					<div className='heroPicMain phoneBanner'>
-						<Link to='/our-products'>
-							<img
-								src={
-									homePage &&
-									homePage.thumbnail2_Phone &&
-									homePage.thumbnail2_Phone[0] &&
-									homePage.thumbnail2_Phone[0].images &&
-									homePage.thumbnail2_Phone[0].images[0] &&
-									homePage.thumbnail2_Phone[0].images[0].url
-								}
-								alt='ShopPhoto'
-								className='mt-3'
-							/>
+						<Link
+							to='/our-products'
+							onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+							<img src={photoCell2} alt='ShopPhoto2' className='mt-3' />
 						</Link>
 					</div>
 				)}

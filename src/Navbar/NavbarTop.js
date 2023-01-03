@@ -2,10 +2,11 @@
 
 import React, { Fragment, useEffect, useState } from "react";
 import { Link, withRouter } from "react-router-dom";
+import { FaTrash, FaMinus, FaPlus, FaTimes, FaRegHeart } from "react-icons/fa";
+import { BsBag } from "react-icons/bs";
 import { signout, isAuthenticated } from "../auth";
 import styled from "styled-components";
 import { useCartContext } from "../Checkout/cart_context";
-import { FaTrash, FaMinus, FaPlus, FaTimes } from "react-icons/fa";
 import DarkBackground from "./DarkBackground";
 import {
 	allLoyaltyPointsAndStoreStatus,
@@ -15,18 +16,11 @@ import {
 import Sidebar from "./Sidebar";
 import EgyptianFlag from "../GeneralImages/Egypt.png";
 import AmericanFlag from "../GeneralImages/UnitedStates.png";
+import DarkBackground2 from "./DarkBackground2";
+import SigninModal from "../pages/SingleProduct/SigninModal/SigninModal";
 // import logo from "../pagesImgs/Sinai-I-Logo.jpg";
 
-const NavbarTop = ({
-	history,
-	click,
-	setClick,
-	clickMenu,
-	setClickMenu,
-	language,
-	setLanguage,
-	chosenLanguage,
-}) => {
+const NavbarTop = ({ history, language, setLanguage, chosenLanguage }) => {
 	const {
 		cart,
 		total_items,
@@ -37,6 +31,9 @@ const NavbarTop = ({
 		openSidebar,
 		closeSidebar,
 		isSidebarOpen,
+		openSidebar2,
+		closeSidebar2,
+		isSidebarOpen2,
 		changeSize,
 		changeColor,
 	} = useCartContext();
@@ -47,10 +44,7 @@ const NavbarTop = ({
 	const [onlineStoreName, setOnlineStoreName] = useState("");
 	const [allColors, setAllColors] = useState([]);
 	const [allGenders, setAllGenders] = useState([]);
-
-	const handleSidebar = () => {
-		setClick(!click);
-	};
+	const [modalVisible3, setModalVisible3] = useState(false);
 
 	const getOnlineStoreName = () => {
 		allLoyaltyPointsAndStoreStatus().then((data) => {
@@ -440,11 +434,10 @@ const NavbarTop = ({
 			className=' navbar  navbar-expand-sm nav-center py-0'
 			style={{ backgroundColor: "white" }}>
 			{isSidebarOpen ? <DarkBackground isSidebarOpen={isSidebarOpen} /> : null}
+			{isSidebarOpen2 ? (
+				<DarkBackground2 isSidebarOpen2={isSidebarOpen2} />
+			) : null}
 			<Sidebar
-				clickMenu={clickMenu}
-				setClickMenu={setClickMenu}
-				click={click}
-				setClick={setClick}
 				setLanguage={setLanguage}
 				language={language}
 				allGenders={allGenders}
@@ -493,8 +486,8 @@ const NavbarTop = ({
 										Account
 									</title>
 									<path
-										fill-rule='evenodd'
-										clip-rule='evenodd'
+										fillRule='evenodd'
+										clipRule='evenodd'
 										d='M13.5 4.79092C13.5 2.53192 11.4849 0.700012 9 0.700012L8.782 0.704731C6.39831 0.808141 4.5 2.59836 4.5 4.79092V5.6091C4.5 7.8681 6.5151 9.70001 9 9.70001L9.218 9.69529C11.6017 9.59188 13.5 7.80166 13.5 5.6091V4.79092ZM8.84702 2.20332L9.014 2.19901L9.18583 2.20488C10.7822 2.28873 12 3.44567 12 4.79092V5.6091L11.9946 5.76395C11.9049 7.04676 10.7094 8.12918 9.15298 8.1967L8.96754 8.20036L8.78519 8.19546C7.21783 8.1113 6 6.95435 6 5.6091V4.79092L6.0054 4.63607C6.09507 3.35326 7.29059 2.27084 8.84702 2.20332ZM15.3594 12.6468C13.6548 12.1815 11.3274 11.7 9 11.7C6.6726 11.7 4.3452 12.1815 2.6406 12.6468C1.0773 13.0725 0 14.4972 0 16.1172V18H18V16.1172L17.9949 15.9238C17.913 14.3848 16.8602 13.0555 15.3594 12.6468ZM3.03471 14.0941C5.07704 13.5366 7.12428 13.2 9 13.2C10.8757 13.2 12.923 13.5366 14.9644 14.0939L15.1214 14.1434C15.9428 14.4386 16.5 15.2247 16.5 16.1172V16.499H1.5V16.1172L1.50646 15.9512C1.57496 15.0735 2.1823 14.3262 3.03471 14.0941Z'
 										fill='black'></path>
 								</svg>
@@ -531,8 +524,8 @@ const NavbarTop = ({
 										Account
 									</title>
 									<path
-										fill-rule='evenodd'
-										clip-rule='evenodd'
+										fillRule='evenodd'
+										clipRule='evenodd'
 										d='M13.5 4.79092C13.5 2.53192 11.4849 0.700012 9 0.700012L8.782 0.704731C6.39831 0.808141 4.5 2.59836 4.5 4.79092V5.6091C4.5 7.8681 6.5151 9.70001 9 9.70001L9.218 9.69529C11.6017 9.59188 13.5 7.80166 13.5 5.6091V4.79092ZM8.84702 2.20332L9.014 2.19901L9.18583 2.20488C10.7822 2.28873 12 3.44567 12 4.79092V5.6091L11.9946 5.76395C11.9049 7.04676 10.7094 8.12918 9.15298 8.1967L8.96754 8.20036L8.78519 8.19546C7.21783 8.1113 6 6.95435 6 5.6091V4.79092L6.0054 4.63607C6.09507 3.35326 7.29059 2.27084 8.84702 2.20332ZM15.3594 12.6468C13.6548 12.1815 11.3274 11.7 9 11.7C6.6726 11.7 4.3452 12.1815 2.6406 12.6468C1.0773 13.0725 0 14.4972 0 16.1172V18H18V16.1172L17.9949 15.9238C17.913 14.3848 16.8602 13.0555 15.3594 12.6468ZM3.03471 14.0941C5.07704 13.5366 7.12428 13.2 9 13.2C10.8757 13.2 12.923 13.5366 14.9644 14.0939L15.1214 14.1434C15.9428 14.4386 16.5 15.2247 16.5 16.1172V16.499H1.5V16.1172L1.50646 15.9512C1.57496 15.0735 2.1823 14.3262 3.03471 14.0941Z'
 										fill='black'></path>
 								</svg>
@@ -681,62 +674,92 @@ const NavbarTop = ({
 					</li>
 				</ul>
 			</div>
-			<div className='row mx-auto'>
-				<div className='col-2 mx-auto my-auto'>
-					{click ? (
+			<div className='row p-0 m-0'>
+				<SigninModal
+					modalVisible3={modalVisible3}
+					setModalVisible3={setModalVisible3}
+				/>
+				{isSidebarOpen2 ? (
+					<div
+						className='col-1 my-auto'
+						onClick={isSidebarOpen2 ? closeSidebar2 : openSidebar2}>
 						<i
-							className='fas fa-times nav-icon faaa-bars'
-							onClick={handleSidebar}
+							className='fas fa-times nav-icon2 faaa-bars'
 							style={{ color: "#c60e0e" }}></i>
-					) : (
+					</div>
+				) : null}
+				{!isSidebarOpen2 ? (
+					<div
+						className='col-1 my-auto'
+						onClick={isSidebarOpen2 ? closeSidebar2 : openSidebar2}>
 						<i
-							className='fa fa-bars nav-icon faaa-bars'
-							onClick={handleSidebar}
+							className='fa fa-bars nav-icon2 faaa-bars'
 							style={{ color: "#676767" }}></i>
-					)}
-				</div>
+					</div>
+				) : null}
+
 				<div
-					className='col-2 mx-auto my-auto  cellPhoneLogo p-0'
+					className='col-2  my-auto  cellPhoneLogo p-0'
 					// style={{ border: "1px black solid" }}
 				>
 					<Link to='/'>
 						<img className='imgLogo2' src={finalLogoUrl} alt='Infinite Apps' />
 					</Link>
 				</div>
+				<div className={window.screen.width >= 363 ? "col-2" : "col-2"}></div>
+				<div
+					// className='col-7 my-auto'
+					className={
+						window.screen.width >= 363 ? "col-7 my-auto" : "col-6 my-auto"
+					}>
+					<div className='row mx-auto '>
+						<div className='col-1 mx-auto my-auto iconsCellPhone'>
+							<Link to='/user/dashboard' style={{ color: "#676767" }}>
+								<i className='fa-regular fa-user  nav-icon2 faaa-bars'></i>
+								{/* <i className='fa-thin fa-user  nav-icon2 faaa-bars'></i> */}
+							</Link>
+						</div>
 
-				<div className='col-2 mx-auto my-auto iconsCellPhone'>
-					<Link to='/user/dashboard' style={{ color: "#676767" }}>
-						<i className='fa-regular fa-user  nav-icon2 faaa-bars'></i>
-						{/* <i className='fa-thin fa-user  nav-icon2 faaa-bars'></i> */}
-					</Link>
-				</div>
+						<div className='col-1 mx-auto my-auto iconsCellPhone'>
+							<i
+								style={{ color: "#676767" }}
+								className='fa-solid fa-magnifying-glass nav-icon2 faaa-bars '></i>
+						</div>
 
-				<div className='col-2 mx-auto my-auto iconsCellPhone'>
-					<i
-						style={{ color: "#676767" }}
-						className='fa-solid fa-magnifying-glass nav-icon2 faaa-bars '></i>
-				</div>
+						<div
+							className='col-1 mx-auto my-auto iconsCellPhone'
+							onClick={() => {
+								if (!isAuthenticated() && !isAuthenticated().token) {
+									setModalVisible3(true);
+								} else {
+									window.location.replace(
+										`${process.env.REACT_APP_MAIN_URL}/user/wishlist`,
+									);
+								}
+							}}>
+							<span
+								style={{ color: "#676767" }}
+								className='fa-regular fa-heart nav-icon2 faaa-bars'>
+								<FaRegHeart />
+							</span>
+						</div>
 
-				<div className='col-2 mx-auto my-auto iconsCellPhone'>
-					<i
-						style={{ color: "#676767" }}
-						className='fa-regular fa-heart nav-icon2 faaa-bars'></i>
-				</div>
+						<div className='col-1 mx-auto my-auto nav-cart faaa-bars nav-icon2'>
+							<div
+								onClick={isSidebarOpen ? closeSidebar : openSidebar}
+								style={{ cursor: "pointer" }}>
+								<sup>
+									<small className='cart-badge'>{total_items}</small>
+								</sup>
+								<span className='nav-icon2' style={{ fontSize: "1.3rem" }}>
+									<BsBag />
+								</span>
+								{/* <i className='fa fa-cart-plus ' aria-hidden='true'></i> */}
+							</div>
 
-				<div className='col-2 mx-auto my-auto nav-cart faaa-bars'>
-					<div
-						onClick={isSidebarOpen ? closeSidebar : openSidebar}
-						style={{ cursor: "pointer" }}>
-						<sup>
-							<small className='cart-badge'>{total_items}</small>
-						</sup>
-						<i
-							className='fa fa-cart-plus faaa-bars'
-							style={{ color: "#676767", fontSize: "20px", marginTop: "10px" }}
-							aria-hidden='true'></i>
+							{sideCart()}
+						</div>
 					</div>
-
-					{sideCart()}
 				</div>
 			</div>
 		</Nav>
@@ -826,19 +849,18 @@ const Nav = styled.nav`
 		}
 
 		.cart-badge {
-			border-radius: 20%;
-			font-size: 13px;
-			font-style: italic;
-			color: white;
+			font-size: 12px;
+			/* font-style: italic; */
+			color: #c60e0e;
 			text-decoration: none !important;
 			display: block;
 			margin-left: 18px;
 			font-weight: bold;
-			background: #c60e0e !important;
-			padding: 6px;
+			/* background: #c60e0e !important; */
+			padding: 5px;
 			position: absolute;
-			top: -14px;
-			left: -10px;
+			top: 16px;
+			left: -17.5px;
 		}
 
 		.logo-type {
@@ -875,6 +897,7 @@ const Nav = styled.nav`
 
 		.nav-cart {
 			position: relative;
+			bottom: 5px;
 		}
 		.cart-items {
 			background: var(--mainGrey);
@@ -904,14 +927,14 @@ const Nav = styled.nav`
 		.cellPhoneLogo {
 			display: block;
 			width: 159px;
-			height: 60px;
+			height: 65px;
 			margin-top: 0px;
 			margin-bottom: 0px;
 			margin-left: 0px;
 		}
 
 		.imgLogo2 {
-			width: 100%;
+			width: 90%;
 			margin-top: 0px;
 			margin-bottom: 0px;
 			margin-left: 0px;
@@ -953,19 +976,34 @@ const Nav = styled.nav`
 		padding: 1px;
 	}
 
-	/* @media (max-width: 390px) {
+	@media (max-width: 375px) {
+		.hideSmall {
+			display: none;
+		}
+		.cart-badge {
+			font-size: 10px;
+			/* font-style: italic; */
+			color: #c60e0e;
+			text-decoration: none !important;
+			display: block;
+			margin-left: 18px;
+			font-weight: bold;
+			/* background: #c60e0e !important; */
+			padding: 3px;
+			position: absolute;
+			top: 13px;
+			left: -16.5px;
+		}
 		.nav-icon {
 			font-size: 1rem;
 			cursor: pointer;
-			margin-left: 10px;
 		}
 
 		.nav-icon2 {
-			font-size: 1rem;
+			font-size: 1rem !important;
 			cursor: pointer;
-			margin-left: 20px;
 		}
-	} */
+	}
 `;
 
 const SideWrapperCart = styled.nav`

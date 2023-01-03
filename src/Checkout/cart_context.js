@@ -14,6 +14,10 @@ import {
 	SIDEBAR_CLOSE,
 	SHIPPING_FEES,
 	SHIPPING_DETAILS,
+	SIDEBAR_OPEN2,
+	SIDEBAR_CLOSE2,
+	SIDEFILTERS_CLOSE,
+	SIDEFILTERS_OPEN,
 } from "../actions";
 
 const getLocalStorage = () => {
@@ -27,6 +31,8 @@ const getLocalStorage = () => {
 
 const initialState = {
 	isSidebarOpen: false,
+	isSidebarOpen2: false,
+	isSideFilterOpen: false,
 	cart: getLocalStorage(),
 	total_items: 0,
 	total_amount: 0,
@@ -44,6 +50,20 @@ export const CartProvider = ({ children }) => {
 	};
 	const closeSidebar = () => {
 		dispatch({ type: SIDEBAR_CLOSE });
+	};
+
+	const openSidebar2 = () => {
+		dispatch({ type: SIDEBAR_OPEN2 });
+	};
+	const closeSidebar2 = () => {
+		dispatch({ type: SIDEBAR_CLOSE2 });
+	};
+
+	const openSideFilter = () => {
+		dispatch({ type: SIDEFILTERS_OPEN });
+	};
+	const closeSideFilter = () => {
+		dispatch({ type: SIDEFILTERS_CLOSE });
 	};
 
 	// add to cart
@@ -119,6 +139,10 @@ export const CartProvider = ({ children }) => {
 				clearCart,
 				openSidebar,
 				closeSidebar,
+				openSidebar2,
+				closeSidebar2,
+				openSideFilter,
+				closeSideFilter,
 				addShipmentFee,
 				addShipmentDetails,
 				changeColor,

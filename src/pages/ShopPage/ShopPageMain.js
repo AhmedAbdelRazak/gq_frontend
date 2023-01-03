@@ -5,11 +5,17 @@ import styled from "styled-components";
 import { getColors, gettingAllProducts } from "../../apiCore";
 import MainFilter from "./Filters/MainFilter";
 import CardForShop from "./CardForShop";
+// eslint-disable-next-line
+import { Link } from "react-router-dom";
+import { useCartContext } from "../../Checkout/cart_context";
+import SidebarFilters from "./Filters/SidebarFilters";
+import DarkBackground from "./Filters/DarkBackground";
 // import { FilterTwoTone } from "@ant-design/icons";
 
 const ShopPageMain = ({ chosenLanguage }) => {
 	const [allProducts, setAllProducts] = useState([]);
 	const [allCategories, setAllCategories] = useState([]);
+
 	// eslint-disable-next-line
 	const [allSubcategories, setAllSubcategories] = useState([]);
 	// eslint-disable-next-line
@@ -23,6 +29,9 @@ const ShopPageMain = ({ chosenLanguage }) => {
 	const [selectedPriceRange, setSelectedPriceRange] = useState(0);
 	const [minPrice, setMinPrice] = useState(0);
 	const [maxPrice, setMaxPrice] = useState(0);
+
+	const { openSideFilter, closeSideFilter, isSideFilterOpen } =
+		useCartContext();
 
 	//getting filters from URL
 	const filterPath = window.location.search;
@@ -72,10 +81,14 @@ const ShopPageMain = ({ chosenLanguage }) => {
 
 	return (
 		<ShopPageMainWrapper>
+			{isSideFilterOpen ? (
+				<DarkBackground isSideFilterOpen={isSideFilterOpen} />
+			) : null}
+
 			<div className='heroFilter'>
 				<div className='titleWrapper'>
 					<h5>{urlFilters ? urlFilters : ""}</h5>
-					<h2>All products</h2>
+					<h2> All products </h2>
 				</div>
 			</div>
 			<span className='filters_desktop'>
@@ -97,17 +110,32 @@ const ShopPageMain = ({ chosenLanguage }) => {
 				/>
 			</span>
 			<div className='filtersPhone'>
-				FILTERS:{" "}
-				<svg
-					width='24px'
-					height='24px'
-					viewBox='0 0 24 24'
-					version='1.1'
-					role='img'>
-					<path
-						d='M3,16.75 L3,15.25 L11.5805101,15.2501592 C11.9237855,13.6774884 13.3243842,12.5 15,12.5 C16.6756158,12.5 18.0762145,13.6774884 18.4194899,15.2501592 L21,15.25 L21,16.75 L18.4192733,16.7508322 C18.0756259,18.3230064 16.6752637,19.5 15,19.5 C13.3247363,19.5 11.9243741,18.3230064 11.5807267,16.7508322 L3,16.75 Z M15,14 C13.8954305,14 13,14.8954305 13,16 C13,17.1045695 13.8954305,18 15,18 C16.1045695,18 17,17.1045695 17,16 C17,14.8954305 16.1045695,14 15,14 Z M3,8.75 L3,7.25 L5.58051014,7.25015916 C5.92378549,5.67748844 7.32438416,4.5 9,4.5 C10.6756158,4.5 12.0762145,5.67748844 12.4194899,7.25015916 L21,7.25 L21,8.75 L12.4192733,8.75083217 C12.0756259,10.3230064 10.6752637,11.5 9,11.5 C7.32473626,11.5 5.92437411,10.3230064 5.58072667,8.75083217 L3,8.75 Z M9,6 C7.8954305,6 7,6.8954305 7,8 C7,9.1045695 7.8954305,10 9,10 C10.1045695,10 11,9.1045695 11,8 C11,6.8954305 10.1045695,6 9,6 Z'
-						id='Combined-Shape'></path>
-				</svg>
+				<SidebarFilters
+					allCategories={allCategories}
+					allProductColors={allProductColors}
+					allSizes={allSizes}
+					usedFilters={usedFilters}
+					setUsedFilters={setUsedFilters}
+					allColors={allColors}
+				/>
+				<div style={{ display: allGenders.length === 1 ? "none" : "" }}>
+					<div className='row mx-auto'>
+						<div
+							onClick={isSideFilterOpen ? closeSideFilter : openSideFilter}
+							className={"col-6 mx-auto filterSort"}
+							style={{ textTransform: "uppercase" }}>
+							<span>FILTER</span>
+						</div>
+						<div
+							className={"col-6 mx-auto filterSort"}
+							style={{ textTransform: "uppercase" }}>
+							<span
+								onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+								SORT
+							</span>
+						</div>
+					</div>
+				</div>
 			</div>
 
 			{/* <h1 className='my-5'>
@@ -116,7 +144,12 @@ const ShopPageMain = ({ chosenLanguage }) => {
 
 			<div className='cardWrapper'>
 				<div className='row '>
-					<div className='grid-container'>
+					<div
+						className={
+							allProducts && allProducts.length === 1
+								? "col-md-3"
+								: "grid-container"
+						}>
 						{allProducts &&
 							allProducts.map((product, i) => (
 								<CardForShop
@@ -230,6 +263,7 @@ const ShopPageMainWrapper = styled.div`
 
 		.heroFilter {
 			min-height: 165px;
+			text-align: center;
 		}
 
 		.filters_desktop {
@@ -238,9 +272,17 @@ const ShopPageMainWrapper = styled.div`
 
 		.filtersPhone {
 			display: block;
-			margin-top: 10px;
-			margin-left: 14px;
-			font-weight: bolder;
+			/* font-weight: bolder; */
+			text-align: center;
+			/* background: #f2f2f2; */
+
+			.filterSort {
+				border: 1px solid #e9e9e9;
+				width: 100%;
+				padding: 20px 0px;
+				/* font-weight: bold; */
+				font-size: 1.1rem;
+			}
 		}
 	}
 `;

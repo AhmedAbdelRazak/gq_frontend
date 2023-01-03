@@ -107,7 +107,9 @@ const HeroComponent = () => {
 
 			{homePage && homePage.thumbnail && homePage.thumbnail[0] && (
 				<div className='heroPicMain deskTopBanner'>
-					<Link to='/our-products'>
+					<Link
+						to='/our-products'
+						onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
 						<img
 							src={
 								homePage &&
@@ -126,7 +128,9 @@ const HeroComponent = () => {
 
 			{homePage && homePage.thumbnail_Phone && homePage.thumbnail_Phone[0] && (
 				<div className='heroPicMain phoneBanner'>
-					<Link to='/our-products'>
+					<Link
+						to='/our-products'
+						onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
 						<img
 							src={
 								homePage &&

@@ -430,14 +430,61 @@ export const gettingAllProducts = (
 
 			shuffle(requiredProducts);
 
-			if (filterBy === "gender" && usedFilters.length === 0) {
-				setAllProducts(
-					requiredProducts.filter(
-						(iii) =>
-							iii.gender.genderName.toLowerCase() === urlFilters.toLowerCase(),
-					),
+			if (filterBy === "gender") {
+				const genderFilter = requiredProducts.filter(
+					(iii) =>
+						iii.gender.genderName.toLowerCase() === urlFilters.toLowerCase(),
 				);
-			} else if (filterBy === "category" && usedFilters.length === 0) {
+
+				if (
+					usedFilters &&
+					usedFilters.length > 0 &&
+					usedFilters[usedFilters.length - 1].filterBy === "sizes" &&
+					usedFilters[usedFilters.length - 1].filterByType.length > 0
+				) {
+					setAllProducts(
+						genderFilter &&
+							genderFilter.filter(
+								(i) =>
+									usedFilters[usedFilters.length - 1].filterByType.indexOf(
+										i.size.toLowerCase(),
+									) !== -1,
+							),
+					);
+				} else if (
+					usedFilters &&
+					usedFilters.length > 0 &&
+					usedFilters[usedFilters.length - 1].filterBy === "colors" &&
+					usedFilters[usedFilters.length - 1].filterByType.length > 0
+				) {
+					setAllProducts(
+						genderFilter &&
+							genderFilter.filter(
+								(i) =>
+									usedFilters[usedFilters.length - 1].filterByType.indexOf(
+										i.color.toLowerCase(),
+									) !== -1,
+							),
+					);
+				} else if (
+					usedFilters &&
+					usedFilters.length > 0 &&
+					usedFilters[usedFilters.length - 1].filterBy === "category" &&
+					usedFilters[usedFilters.length - 1].filterByType.length > 0
+				) {
+					setAllProducts(
+						genderFilter &&
+							genderFilter.filter(
+								(i) =>
+									usedFilters[usedFilters.length - 1].filterByType.indexOf(
+										i.category.categorySlug,
+									) !== -1,
+							),
+					);
+				} else {
+					setAllProducts(genderFilter);
+				}
+			} else if (filterBy === "category") {
 				setAllProducts(
 					requiredProducts.filter(
 						(iii) =>
@@ -445,7 +492,7 @@ export const gettingAllProducts = (
 							urlFilters.toLowerCase(),
 					),
 				);
-			} else if (filterBy === "subcategory" && usedFilters.length === 0) {
+			} else if (filterBy === "subcategory") {
 				setAllProducts(
 					requiredProducts.filter(
 						(iii) =>
@@ -453,51 +500,6 @@ export const gettingAllProducts = (
 								.map((iiii) => iiii.SubcategorySlug)
 								.indexOf(urlFilters.toLowerCase()) !== -1,
 					),
-				);
-			} else if (
-				usedFilters &&
-				usedFilters.length > 0 &&
-				usedFilters[usedFilters.length - 1].filterBy === "category" &&
-				usedFilters[usedFilters.length - 1].filterByType.length > 0
-			) {
-				setAllProducts(
-					requiredProducts &&
-						requiredProducts.filter(
-							(i) =>
-								usedFilters[usedFilters.length - 1].filterByType.indexOf(
-									i.category.categorySlug,
-								) !== -1,
-						),
-				);
-			} else if (
-				usedFilters &&
-				usedFilters.length > 0 &&
-				usedFilters[usedFilters.length - 1].filterBy === "sizes" &&
-				usedFilters[usedFilters.length - 1].filterByType.length > 0
-			) {
-				setAllProducts(
-					requiredProducts &&
-						requiredProducts.filter(
-							(i) =>
-								usedFilters[usedFilters.length - 1].filterByType.indexOf(
-									i.size.toLowerCase(),
-								) !== -1,
-						),
-				);
-			} else if (
-				usedFilters &&
-				usedFilters.length > 0 &&
-				usedFilters[usedFilters.length - 1].filterBy === "colors" &&
-				usedFilters[usedFilters.length - 1].filterByType.length > 0
-			) {
-				setAllProducts(
-					requiredProducts &&
-						requiredProducts.filter(
-							(i) =>
-								usedFilters[usedFilters.length - 1].filterByType.indexOf(
-									i.color.toLowerCase(),
-								) !== -1,
-						),
 				);
 			} else {
 				setAllProducts(requiredProducts);

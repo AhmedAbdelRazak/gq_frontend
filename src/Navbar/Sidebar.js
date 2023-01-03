@@ -4,19 +4,13 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { isAuthenticated, signout } from "../auth";
+import { useCartContext } from "../Checkout/cart_context";
 
-const Sidebar = ({
-	clickMenu,
-	setClickMenu,
-	click,
-	setClick,
-	language,
-	setLanguage,
-	history,
-	allGenders,
-}) => {
+const Sidebar = ({ language, setLanguage, history, allGenders }) => {
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [offset, setOffset] = useState(0);
+
+	const { openSidebar2, closeSidebar2, isSidebarOpen2 } = useCartContext();
 
 	useEffect(() => {
 		const onScroll = () => setOffset(window.pageYOffset);
@@ -33,7 +27,7 @@ const Sidebar = ({
 
 	return (
 		<>
-			<SideWrapper show={clickMenu} show2={pageScrolled}>
+			<SideWrapper show={isSidebarOpen2} show2={pageScrolled}>
 				<ul>
 					<li
 						className='mt-3 genderWrapper'
@@ -50,16 +44,13 @@ const Sidebar = ({
 											margin: allGenders.length === 2 ? "0px 20px" : "0px 15px",
 										}}
 										key={i}
-										onClick={() => {
-											setClickMenu(false);
-											setClick(false);
-										}}>
+										onClick={isSidebarOpen2 ? closeSidebar2 : openSidebar2}>
 										{g.genderName}
 									</Link>
 								);
 							})}
 					</li>
-					<div className='col-10 mx-auto'>
+					<div className='col-12 mx-auto'>
 						<hr />
 					</div>
 					<li
@@ -70,22 +61,17 @@ const Sidebar = ({
 						<Link
 							to='/'
 							className='sidebar-link'
-							onClick={() => {
-								setClickMenu(false);
-								setClick(false);
-							}}>
-							{click && clickMenu ? (
-								<Fragment>
-									<i className='fas fa-home fontawesome-icons'></i>
-									<>
-										{language === "Arabic" ? (
-											<span className='sidebarArabic'>الصفحة الرئيسية</span>
-										) : (
-											"Home"
-										)}{" "}
-									</>
-								</Fragment>
-							) : null}
+							onClick={isSidebarOpen2 ? closeSidebar2 : openSidebar2}>
+							<Fragment>
+								<i className='fas fa-home fontawesome-icons'></i>
+								<>
+									{language === "Arabic" ? (
+										<span className='sidebarArabic'>الصفحة الرئيسية</span>
+									) : (
+										"Home"
+									)}{" "}
+								</>
+							</Fragment>
 						</Link>
 					</li>
 					<li
@@ -95,23 +81,18 @@ const Sidebar = ({
 						<Link
 							to='/our-products'
 							className='sidebar-link'
-							onClick={() => {
-								setClickMenu(false);
-								setClick(false);
-							}}>
-							{click && clickMenu ? (
-								<Fragment>
-									<i class='fas fa-box-open fontawesome-icons'></i>
+							onClick={isSidebarOpen2 ? closeSidebar2 : openSidebar2}>
+							<Fragment>
+								<i class='fas fa-box-open fontawesome-icons'></i>
 
-									<>
-										{language === "Arabic" ? (
-											<span className='sidebarArabic'>منتجاتنا</span>
-										) : (
-											"Our Products"
-										)}
-									</>
-								</Fragment>
-							) : null}
+								<>
+									{language === "Arabic" ? (
+										<span className='sidebarArabic'>منتجاتنا</span>
+									) : (
+										"Our Products"
+									)}
+								</>
+							</Fragment>
 						</Link>
 					</li>
 					<li
@@ -121,22 +102,17 @@ const Sidebar = ({
 						<Link
 							to='/about'
 							className='sidebar-link'
-							onClick={() => {
-								setClickMenu(false);
-								setClick(false);
-							}}>
-							{click && clickMenu ? (
-								<Fragment>
-									<i class='fas fa-comment-alt fontawesome-icons'></i>
-									<>
-										{language === "Arabic" ? (
-											<span className='sidebarArabic'>من نحن</span>
-										) : (
-											"About"
-										)}
-									</>
-								</Fragment>
-							) : null}
+							onClick={isSidebarOpen2 ? closeSidebar2 : openSidebar2}>
+							<Fragment>
+								<i class='fas fa-comment-alt fontawesome-icons'></i>
+								<>
+									{language === "Arabic" ? (
+										<span className='sidebarArabic'>من نحن</span>
+									) : (
+										"About"
+									)}
+								</>
+							</Fragment>
 						</Link>
 					</li>
 					<li
@@ -146,22 +122,17 @@ const Sidebar = ({
 						<Link
 							to='/contact'
 							className='sidebar-link'
-							onClick={() => {
-								setClickMenu(false);
-								setClick(false);
-							}}>
-							{click && clickMenu ? (
-								<Fragment>
-									<i class='fas fa-envelope fontawesome-icons'></i>
-									<>
-										{language === "Arabic" ? (
-											<span className='sidebarArabic'>اتصل بنا</span>
-										) : (
-											"Contact Us"
-										)}
-									</>
-								</Fragment>
-							) : null}
+							onClick={isSidebarOpen2 ? closeSidebar2 : openSidebar2}>
+							<Fragment>
+								<i class='fas fa-envelope fontawesome-icons'></i>
+								<>
+									{language === "Arabic" ? (
+										<span className='sidebarArabic'>اتصل بنا</span>
+									) : (
+										"Contact Us"
+									)}
+								</>
+							</Fragment>
 						</Link>
 					</li>
 
@@ -174,10 +145,7 @@ const Sidebar = ({
 							<Link
 								className='nav-link fontawesome-icons myAccount '
 								to='/user/dashboard'
-								onClick={() => {
-									setClickMenu(false);
-									setClick(false);
-								}}>
+								onClick={isSidebarOpen2 ? closeSidebar2 : openSidebar2}>
 								My Account/Dashboard
 							</Link>
 						</li>
@@ -193,10 +161,7 @@ const Sidebar = ({
 								<Link
 									className='nav-link fontawesome-icons myAccount '
 									to='/admin/dashboard'
-									onClick={() => {
-										setClickMenu(false);
-										setClick(false);
-									}}>
+									onClick={isSidebarOpen2 ? closeSidebar2 : openSidebar2}>
 									Admin Dashboard
 								</Link>
 							</li>
@@ -208,10 +173,7 @@ const Sidebar = ({
 								<Link
 									className='nav-link fontawesome-icons myAccount'
 									to='/user/dashboard'
-									onClick={() => {
-										setClickMenu(false);
-										setClick(false);
-									}}>
+									onClick={isSidebarOpen2 ? closeSidebar2 : openSidebar2}>
 									My Account/Dashboard
 								</Link>
 							</li>
@@ -228,10 +190,7 @@ const Sidebar = ({
 								<Link
 									className='nav-link fontawesome-icons '
 									to='/signin'
-									onClick={() => {
-										setClickMenu(false);
-										setClick(false);
-									}}>
+									onClick={isSidebarOpen2 ? closeSidebar2 : openSidebar2}>
 									Login
 								</Link>
 							</li>
@@ -244,10 +203,7 @@ const Sidebar = ({
 								<Link
 									className='nav-link fontawesome-icons'
 									to='/signup'
-									onClick={() => {
-										setClickMenu(false);
-										setClick(false);
-									}}>
+									onClick={isSidebarOpen2 ? closeSidebar2 : openSidebar2}>
 									Register
 								</Link>
 							</li>
@@ -290,15 +246,17 @@ const Sidebar = ({
 							window.scrollTo({ top: 0, behavior: "smooth" });
 						}}>
 						<span style={{ color: "black", fontWeight: "bold" }}>Language</span>{" "}
-						<span className=' ml-4 btn' style={{ padding: "1px" }}>
+						<span
+							className=' ml-4 btn'
+							style={{ padding: "1px" }}
+							onClick={isSidebarOpen2 ? closeSidebar2 : openSidebar2}>
 							{language === "English" ? (
 								<span
 									style={{ background: "#c40000", color: "white" }}
 									className='btn '
 									onClick={() => {
 										setLanguage("Arabic");
-										setClickMenu(false);
-										setClick(false);
+
 										// window.location.reload(false);
 									}}>
 									Arabic
@@ -309,8 +267,7 @@ const Sidebar = ({
 									className='btn '
 									onClick={() => {
 										setLanguage("English");
-										setClickMenu(false);
-										setClick(false);
+
 										// window.location.reload(false);
 									}}>
 									English
@@ -338,13 +295,11 @@ const SideWrapper = styled.nav`
 	transition: 0.5s;
 	transform: ${(props) => (props.show ? "translateX(0)" : "translateX(-100%)")};
 	top: ${(props) => (props.show2 ? "60px" : "101px")};
-
 	/*transform: translateX(-100%);*/ /**this will hide the side bar */
 	ul {
 		list-style-type: none;
 		padding: 0 !important;
 	}
-
 	.genderItem {
 		font-weight: bold;
 		text-transform: uppercase;
@@ -353,7 +308,6 @@ const SideWrapper = styled.nav`
 	.genderWrapper {
 		text-align: center;
 	}
-
 	hr {
 		border-bottom: 1px solid darkgrey;
 	}
@@ -372,13 +326,11 @@ const SideWrapper = styled.nav`
 		/* padding: 1rem 2rem 1rem 2rem; */
 		text-decoration: none;
 	}
-
 	.fontawesome-icons {
 		color: darkred;
 		margin-right: 10px;
 		/* font-weight: bold; */
 	}
-
 	.sidebarArabic {
 		font-family: "Droid Arabic Kufi";
 		letter-spacing: 0px;
@@ -389,12 +341,10 @@ const SideWrapper = styled.nav`
 	@media (min-width: 680px) {
 		display: none;
 	}
-
 	@media (max-width: 700px) {
 		.sidebar-link {
 			font-size: 0.8rem;
 		}
-
 		.myAccount {
 			font-size: 0.8rem;
 		}

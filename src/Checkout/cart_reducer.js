@@ -8,10 +8,14 @@ import {
 	TOGGLE_CART_ITEM_AMOUNT,
 	SIDEBAR_OPEN,
 	SIDEBAR_CLOSE,
+	SIDEBAR_OPEN2,
+	SIDEBAR_CLOSE2,
 	SHIPPING_FEES,
 	SHIPPING_DETAILS,
 	CHANGE_COLOR,
 	CHANGE_SIZE,
+	SIDEFILTERS_OPEN,
+	SIDEFILTERS_CLOSE,
 } from "../actions";
 
 const cart_reducer = (state, action) => {
@@ -20,6 +24,20 @@ const cart_reducer = (state, action) => {
 	}
 	if (action.type === SIDEBAR_CLOSE) {
 		return { ...state, isSidebarOpen: false };
+	}
+
+	if (action.type === SIDEBAR_OPEN2) {
+		return { ...state, isSidebarOpen2: true };
+	}
+	if (action.type === SIDEBAR_CLOSE2) {
+		return { ...state, isSidebarOpen2: false };
+	}
+
+	if (action.type === SIDEFILTERS_OPEN) {
+		return { ...state, isSideFilterOpen: true };
+	}
+	if (action.type === SIDEFILTERS_CLOSE) {
+		return { ...state, isSideFilterOpen: false };
 	}
 
 	if (action.type === ADD_TO_CART) {

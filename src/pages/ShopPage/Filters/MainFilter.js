@@ -186,7 +186,7 @@ const MainFilter = ({
 						<ArrowDownOutlined />
 					</span>{" "}
 				</span>
-				<span
+				{/* <span
 					className='filtersItem'
 					style={isActive("sizes", clickedItem, filterItemClicked)}
 					onClick={() => {
@@ -205,7 +205,7 @@ const MainFilter = ({
 					<span className='arrowDownIcon'>
 						<ArrowDownOutlined />
 					</span>{" "}
-				</span>
+				</span> */}
 				<span
 					className='filtersItem'
 					style={isActive("color", clickedItem, filterItemClicked)}
@@ -246,7 +246,7 @@ const MainFilter = ({
 						<ArrowDownOutlined />
 					</span>{" "}
 				</span>
-				<span
+				{/* <span
 					className='filtersItem'
 					style={isActive("sortBy", clickedItem, filterItemClicked)}
 					onClick={() => {
@@ -266,7 +266,7 @@ const MainFilter = ({
 					<span className='arrowDownIcon'>
 						<ArrowDownOutlined />
 					</span>{" "}
-				</span>
+				</span> */}
 
 				{clickedItem === "productType" && (
 					<div className='filterClickedWrapper'>
@@ -418,13 +418,33 @@ const MainFilter = ({
 							usedFilters.map((f, i) => {
 								return (
 									<span key={i}>
-										{f.filterBy
+										{f.filterBy && f.filterBy === "colors"
+											? `${f.filterBy} (${f.filterByType.map(
+													(iii) =>
+														allColors[allColors.map((i) => i.hexa).indexOf(iii)]
+															.color,
+											  )})`
+											: f.filterBy
 											? `${f.filterBy} (${f.filterByType})`
 											: "No Filters Applied"}
 									</span>
 								);
 							})}
 					</span>
+					<div
+						onClick={() => {
+							window.location.reload(false);
+						}}>
+						<strong
+							className='appliedFiltersTitle'
+							style={{
+								color: "darkgray",
+								textDecoration: "underline",
+								cursor: "pointer",
+							}}>
+							RESET FILTERS{" "}
+						</strong>
+					</div>
 				</div>
 			) : null}
 		</MainFilterWrapper>

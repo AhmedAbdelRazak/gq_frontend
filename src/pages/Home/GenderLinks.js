@@ -17,7 +17,10 @@ const GenderLinks = ({ allGenders }) => {
 									key={i}
 									className='col-lg-4 col-md-4 col-sm-6 col-6 mx-auto'>
 									<Link
-										to={`/our-products?filterby=gender&gendername=${g.genderName}`}>
+										to={`/our-products?filterby=gender&gendername=${g.genderName}`}
+										onClick={() =>
+											window.scrollTo({ top: 0, behavior: "smooth" })
+										}>
 										<img
 											src={g.thumbnail && g.thumbnail[0] && g.thumbnail[0].url}
 											alt={g.genderName}

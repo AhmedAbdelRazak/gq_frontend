@@ -65,7 +65,6 @@ import CouponManagement from "./Admin/OnlineStore/CouponManagement";
 import AceOrdersList from "./Admin/OnlineStore/AceOrdersList";
 
 //Store
-import DarkBackground2 from "./Navbar/DarkBackground2";
 import NavbarTop from "./Navbar/NavbarTop";
 import NavbarBottom from "./Navbar/NavbarBottom";
 import Home from "./pages/Home/Home";
@@ -80,6 +79,7 @@ import InvoicePDF from "./Admin/Orders/InvoicePDF";
 // eslint-disable-next-line
 import { isAuthenticated } from "./auth";
 import CheckoutMain from "./Checkout/CheckoutForm/CheckoutMain";
+// eslint-disable-next-line
 import GenderNav from "./Navbar/GenderNav";
 import UserDashboard from "./pages/User/UserDashboard";
 import PrivateRoute from "./auth/PrivateRoute";
@@ -90,19 +90,12 @@ import About from "./pages/About/About";
 import AboutArabic from "./pages/About/AboutArabic";
 import Contactus from "./pages/Contact/Contackus";
 import ContactArabic from "./pages/Contact/ContactArabic";
+import UserWishlist from "./pages/User/UserWishlist";
 
 const App = () => {
 	// eslint-disable-next-line
-	const [click, setClick] = useState(false);
-	const [clickMenu, setClickMenu] = useState(false);
-	// eslint-disable-next-line
 	const [language, setLanguage] = useState("English");
 	const [allAdsCombined, setAllAdsCombined] = useState([]);
-
-	useEffect(() => {
-		setClickMenu(click);
-		// eslint-disable-next-line
-	}, [click, clickMenu]);
 
 	useEffect(() => {
 		ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS_MEASUREMENTID);
@@ -174,17 +167,7 @@ const App = () => {
 			) : null}
 			{window.location.pathname.includes("admin") ? null : (
 				<>
-					{click && clickMenu ? (
-						<DarkBackground2 setClick={setClick} setClickMenu={setClickMenu} />
-					) : null}
-					<NavbarTop
-						click={click}
-						setClick={setClick}
-						clickMenu={clickMenu}
-						setClickMenu={setClickMenu}
-						language={language}
-						setLanguage={setLanguage}
-					/>
+					<NavbarTop language={language} setLanguage={setLanguage} />
 
 					<NavbarBottom chosenLanguage={language} />
 				</>
@@ -203,6 +186,7 @@ const App = () => {
 					exact
 					component={SingleProduct}
 				/>
+				<Route path='/user/wishlist' exact component={UserWishlist} />
 				<Route path='/signup' exact component={Register} />
 				<Route
 					path='/our-products'

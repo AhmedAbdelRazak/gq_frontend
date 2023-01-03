@@ -1,7 +1,7 @@
 /** @format */
 // eslint-disable-next-line
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import styled from "styled-components";
 import {
 	signup,
@@ -105,10 +105,17 @@ const Register = () => {
 								setValues({
 									...values,
 								});
+								window.location.reload(false);
 							});
 						}
 					});
 			});
+		}
+	};
+
+	const redirectUser = () => {
+		if (isAuthenticated()) {
+			return <Redirect to='/' />;
 		}
 	};
 
@@ -143,7 +150,7 @@ const Register = () => {
 							</div>
 							<div className='form-group ' style={{ marginTop: "25px" }}>
 								<label htmlFor='email' style={{ fontWeight: "bold" }}>
-									Phone or Email
+									Phone
 								</label>
 								<input
 									className='w-75 mx-auto'
@@ -235,6 +242,7 @@ const Register = () => {
 			<ToastContainer />
 
 			{signUpForm()}
+			{redirectUser()}
 		</WholeSignup>
 	);
 };

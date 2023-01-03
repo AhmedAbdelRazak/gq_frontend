@@ -52,7 +52,9 @@ const HeroComponent3 = () => {
 						style={{ fontWeight: "bolder", fontSize: "1.4rem" }}>
 						Main Section
 					</h3> */}
-					<Link to='/our-products'>
+					<Link
+						to='/our-products'
+						onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
 						<img
 							src={
 								homePage &&
@@ -73,7 +75,9 @@ const HeroComponent3 = () => {
 				homePage.thumbnail3_Phone &&
 				homePage.thumbnail3_Phone[0] && (
 					<div className=' phoneBanner'>
-						<Link to='/our-products'>
+						<Link
+							to='/our-products'
+							onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
 							<img
 								src={
 									homePage &&

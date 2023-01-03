@@ -53,8 +53,11 @@ const GenderNav = () => {
 								key={i}
 								style={{ textTransform: "uppercase" }}>
 								<Link
-									to={`/our-products?filterby=gender&gendername=${g.genderName}`}>
-									{g.genderName}
+									to={`/our-products?filterby=gender&gendername=${g.genderName}`}
+									onClick={() =>
+										window.scrollTo({ top: 0, behavior: "smooth" })
+									}>
+									SHOP {g.genderName}
 								</Link>
 							</div>
 						);

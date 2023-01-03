@@ -67,6 +67,7 @@ const Login = ({ history, setSignRegister }) => {
 						...values,
 						redirectToReferrer: true,
 					});
+					window.location.reload(false);
 				});
 			}
 		});

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import HeroComponent from "./HeroComponent";
 import { getProducts } from "../../apiCore";
+// eslint-disable-next-line
 import CategoryWrapperComp from "./CategoryWrapperComp";
 import FeaturedProducts from "./FeaturedProducts";
 // eslint-disable-next-line
@@ -17,6 +18,7 @@ import GenderNav from "../../Navbar/GenderNav";
 const Home = ({ chosenLanguage }) => {
 	// eslint-disable-next-line
 	const [allProducts, setAllProducts] = useState([]);
+	// eslint-disable-next-line
 	const [allCategories, setAllCategories] = useState([]);
 	// eslint-disable-next-line
 	const [allSubcategories, setAllSubcategories] = useState([]);
@@ -108,12 +110,10 @@ const Home = ({ chosenLanguage }) => {
 			<hr />
 			<br />
 			<HeroComponent2 />
-			<hr />
-			<br />
-			<CategoryWrapperComp
+			{/* <CategoryWrapperComp
 				chosenLanguage={chosenLanguage}
 				categories={allCategories}
-			/>
+			/> */}
 
 			{/* <div className='text-center my-5'>
 				<OurBrandsComp
