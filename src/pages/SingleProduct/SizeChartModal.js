@@ -111,7 +111,7 @@ const SizeChartModal = ({ Product, modalVisible2, setModalVisible2 }) => {
 	return (
 		<SizeChartModalWrapper>
 			<Modal
-				width='80%'
+				width='95%'
 				title={
 					<div
 						style={{

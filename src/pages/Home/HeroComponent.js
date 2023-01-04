@@ -144,8 +144,18 @@ const HeroComponent = () => {
 							className='mt-3'
 						/>
 					</Link>
+					<h3 className='headerPhone'>
+						DO THIS <span>FOR YOU</span>
+					</h3>
+					<div
+						className='textPhone col-12'
+						style={{ textAlign: "left", margin: "0px 35px", color: "black" }}>
+						When you are looking for high quality sportswear at an affordable
+						price. you will find it here
+					</div>
 				</div>
 			)}
+			<br />
 		</HeroComponentWrapper>
 	);
 };
@@ -154,7 +164,7 @@ export default HeroComponent;
 
 const HeroComponentWrapper = styled.div`
 	text-align: center;
-	background-image: linear-gradient(white, white);
+	/* background-image: linear-gradient(white, white); */
 
 	.heroPicMain img {
 		width: 100%;
@@ -206,11 +216,19 @@ const HeroComponentWrapper = styled.div`
 		display: block;
 	}
 
+	.phoneBanner {
+		display: none;
+	}
+
 	.phoneBanner img {
 		display: none;
 	}
 
 	@media (max-width: 1000px) {
+		.phoneBanner {
+			display: block;
+		}
+
 		.heroPicMain {
 			width: 100%;
 			opacity: 1;
@@ -220,6 +238,18 @@ const HeroComponentWrapper = styled.div`
 
 		.deskTopBanner img {
 			display: none;
+		}
+
+		.headerPhone {
+			font-weight: bolder;
+			font-size: 2rem;
+			margin-top: 10px;
+			margin-bottom: 3px;
+		}
+
+		.headerPhone > span {
+			font-size: 1.3rem;
+			font-weight: bold;
 		}
 
 		.phoneBanner img {

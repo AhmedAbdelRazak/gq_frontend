@@ -123,7 +123,7 @@ const MostViewedProductsWrapper = styled.div`
 		/* letter-spacing: 7px; */
 		font-weight: bold;
 		/* color: #ffc4c4; */
-		color: darkred;
+		color: black;
 		text-transform: uppercase;
 		/* text-shadow: 3px 3px 10px; */
 	}
@@ -133,7 +133,7 @@ const MostViewedProductsWrapper = styled.div`
 		font-size: 2rem;
 		/* letter-spacing: 7px; */
 		font-weight: bold;
-		color: #ffc4c4;
+		color: black;
 		font-family: "Droid Arabic Kufi";
 		/* text-shadow: 3px 3px 10px; */
 	}
@@ -158,15 +158,18 @@ const MostViewedProductsWrapper = styled.div`
 		}
 
 		.title {
-			font-size: 1.4rem;
-			text-align: center;
+			font-size: 1.2rem;
+			text-align: left;
+			margin-left: 20px;
 			font-weight: bold;
+			text-transform: "uppercase";
 			/* text-shadow: 3px 3px 10px; */
 		}
 
 		.titleArabic {
-			text-align: center;
-			font-size: 1.4rem;
+			text-align: left;
+			margin-left: 20px;
+			font-size: 1.2rem;
 			/* letter-spacing: 7px; */
 			font-weight: bold;
 			/* text-shadow: 3px 3px 10px; */

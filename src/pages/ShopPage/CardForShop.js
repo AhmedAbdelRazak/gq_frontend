@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { updateItem, removeItem } from "../../cartHelpers";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
+// eslint-disable-next-line
 import { showAverageRating2 } from "../SingleProduct/Rating";
 import { useCartContext } from "../../Checkout/cart_context";
 import { viewsCounter } from "../../apiCore";
@@ -283,24 +284,24 @@ const CardForShop = ({
 								<div className='col-md-4 col-5'>
 									{productPrice <= productPriceAfterDsicount ? (
 										<span style={{ fontWeight: "bold" }}>
-											{productPrice} L.E.
+											{productPrice} EGP
 										</span>
 									) : (
 										<span>
 											<div className='mt-2'>
 												<s style={{ fontWeight: "bold", color: "red" }}>
-													{productPrice} L.E.
+													{productPrice} EGP
 												</s>
 											</div>
 											<div style={{ fontWeight: "bold" }}>
-												{productPriceAfterDsicount} L.E.
+												{productPriceAfterDsicount} EGP
 											</div>
 										</span>
 									)}
 								</div>
 							</div>
 
-							{product && product.ratings && product.ratings.length > 0 ? (
+							{/* {product && product.ratings && product.ratings.length > 0 ? (
 								<div className='mb-3'>{showAverageRating2(product)}</div>
 							) : (
 								<div
@@ -313,7 +314,7 @@ const CardForShop = ({
 									}}>
 									{chosenLanguage === "Arabic" ? null : null}
 								</div>
-							)}
+							)} */}
 						</div>
 					</div>
 				</div>

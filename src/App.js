@@ -91,6 +91,7 @@ import AboutArabic from "./pages/About/AboutArabic";
 import Contactus from "./pages/Contact/Contackus";
 import ContactArabic from "./pages/Contact/ContactArabic";
 import UserWishlist from "./pages/User/UserWishlist";
+import AceReceiving from "./Admin/OnlineStore/AceReceiving";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -347,6 +348,11 @@ const App = () => {
 					path='/admin/ace-orders-list'
 					exact
 					component={AceOrdersList}
+				/>
+				<AdminRoute
+					path='/admin/ace-receiving'
+					exact
+					component={AceReceiving}
 				/>
 				<AdminRoute
 					path='/admin/single-order/:orderId'

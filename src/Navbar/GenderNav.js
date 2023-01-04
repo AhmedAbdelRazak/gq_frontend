@@ -77,7 +77,7 @@ const GenderNavWrapper = styled.div`
 	.genderItem {
 		border: 1px solid #e9e9e9;
 		width: 100%;
-		padding: 20px 0px;
+		padding: 10px 0px;
 		font-weight: bold;
 	}
 

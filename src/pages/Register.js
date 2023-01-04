@@ -122,7 +122,7 @@ const Register = () => {
 	const signUpForm = () => (
 		<FormSignup>
 			<div className='container-fluid mx-auto'>
-				<div className='col-xl-6  mx-auto '>
+				<div className='col-lg-6  mx-auto '>
 					<div
 						className='form-container text-center p-4'
 						style={{
@@ -230,10 +230,10 @@ const Register = () => {
 		<WholeSignup>
 			<Helmet>
 				<meta charSet='utf-8' />
-				<title>GQ Main Order Platform</title>
+				<title>ACE Online Shop | Account Register</title>
 				<meta
 					name='description'
-					content='GQ Main Order Platform Developed By https://infinite-apps.com'
+					content='ACE Online Shop Platform Developed By https://infinite-apps.com'
 				/>
 				<link rel='canonical' href='http://infinite-apps.com' />
 			</Helmet>
@@ -252,6 +252,7 @@ export default Register;
 const FormSignup = styled.div`
 	margin-top: 1.5%;
 	margin-bottom: 95px;
+
 	input[type="text"],
 	input[type="email"],
 	input[type="password"],
@@ -284,12 +285,23 @@ const FormSignup = styled.div`
 	}
 
 	@media (max-width: 900px) {
-		font-size: 14px !important;
+		.form-container {
+			margin-left: 10px;
+			margin-right: 10px;
+		}
+
 		h1 {
+			font-size: 1.5rem;
+		}
+		h1 > span {
 			font-size: 1.5rem;
 		}
 		.loginFont {
 			font-size: 13px;
+		}
+
+		input {
+			width: 100% !important;
 		}
 	}
 `;

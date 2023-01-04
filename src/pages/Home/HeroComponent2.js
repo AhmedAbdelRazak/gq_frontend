@@ -9,6 +9,7 @@ import styled from "styled-components";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { BsArrowRight } from "react-icons/bs";
 import { getAllHeros } from "../../Admin/apiAdmin";
 
 const HeroComponent2 = () => {
@@ -87,6 +88,45 @@ const HeroComponent2 = () => {
 							onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
 							<img src={photoCell2} alt='ShopPhoto2' className='mt-3' />
 						</Link>
+						<div className='textWrapper col-11 mx-auto mt-3'>
+							<h3> BE THE FIRST TO KNOW ABOUT NEW ARRIVALS</h3>
+
+							<div
+								className='btn col-11 mx-auto btn-block'
+								style={{
+									background: "#c60e0e",
+									color: "white",
+									fontWeight: "bolder",
+									textAlign: "left",
+									padding: "10px 0px",
+								}}>
+								<Link
+									style={{
+										color: "white",
+										// textTransform: "uppercase",
+										marginLeft: "10px",
+									}}
+									to={`/signin`}
+									onClick={() =>
+										window.scrollTo({ top: 0, behavior: "smooth" })
+									}>
+									Create an account{" "}
+									<span
+										style={{
+											color: "white",
+											fontSize: "2rem",
+											padding: "0px",
+											margin: "0px",
+											fontWeight: "1000",
+											position: "absolute",
+											top: "-4px",
+											right: "20px",
+										}}>
+										<BsArrowRight />
+									</span>
+								</Link>
+							</div>
+						</div>
 					</div>
 				)}
 		</HeroComponent2Wrapper>
@@ -97,7 +137,7 @@ export default HeroComponent2;
 
 const HeroComponent2Wrapper = styled.div`
 	text-align: center;
-	background-image: linear-gradient(white, white);
+	/* background-image: linear-gradient(white, white); */
 
 	.heroPicMain img {
 		width: 100%;
@@ -149,11 +189,18 @@ const HeroComponent2Wrapper = styled.div`
 		display: block;
 	}
 
+	.phoneBanner {
+		display: none;
+	}
+
 	.phoneBanner img {
 		display: none;
 	}
 
 	@media (max-width: 1000px) {
+		.phoneBanner {
+			display: block;
+		}
 		.heroPicMain {
 			width: 100%;
 			opacity: 1;
@@ -199,6 +246,13 @@ const HeroComponent2Wrapper = styled.div`
 			-webkit-font-smoothing: antialiased;
 			-moz-osx-font-smoothing: grayscale;
 			display: none;
+		}
+
+		.textWrapper > h3 {
+			font-weight: 1000 !important;
+			text-transform: uppercase;
+			text-align: center;
+			font-size: 1.3rem;
 		}
 	}
 `;

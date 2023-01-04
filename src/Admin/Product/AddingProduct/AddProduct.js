@@ -831,6 +831,7 @@ const AddProduct = () => {
 					size: combinationsOfColorSizes[i - 1][ii - 1],
 					color: combinationsOfColorSizes[i - 1][ii],
 					quantity: 0,
+					receivedQuantity: 0,
 					price: inheritPrice ? parentPrice2 : 0,
 					priceAfterDiscount: inheritPrice ? parentPrice3 : 0,
 					MSRP: inheritPrice ? parentPrice1 : 0,

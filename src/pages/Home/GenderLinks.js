@@ -5,9 +5,51 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const GenderLinks = ({ allGenders }) => {
+	function sortOrdersAscendingly(a, b) {
+		const TotalAppointmentsA = a.genderName;
+		const TotalAppointmentsB = b.genderName;
+		let comparison = 0;
+		if (TotalAppointmentsA < TotalAppointmentsB) {
+			comparison = 1;
+		} else {
+			comparison = -1;
+		}
+		return comparison;
+	}
+
 	return (
 		<GenderLinksWrapper>
-			<h1 className='title mb-3'>Gender</h1>
+			<div className='btnGender mb-3'>
+				<div className='row'>
+					{allGenders &&
+						allGenders.sort(sortOrdersAscendingly) &&
+						allGenders.sort(sortOrdersAscendingly).map((g, i) => {
+							return (
+								<div
+									key={i}
+									className='btn col-11 mx-auto btn-block'
+									style={{
+										background: "#c60e0e",
+										color: "white",
+										fontWeight: "bolder",
+									}}>
+									<Link
+										style={{
+											color: "white",
+											textTransform: "uppercase",
+										}}
+										to={`/our-products?filterby=gender&gendername=${g.genderName}`}
+										onClick={() =>
+											window.scrollTo({ top: 0, behavior: "smooth" })
+										}>
+										Shop {g.genderName}
+									</Link>
+								</div>
+							);
+						})}
+				</div>
+			</div>
+
 			<div className='container mx-auto'>
 				<div className='text-center row mx-auto'>
 					{allGenders &&
@@ -15,7 +57,7 @@ const GenderLinks = ({ allGenders }) => {
 							return (
 								<div
 									key={i}
-									className='col-lg-4 col-md-4 col-sm-6 col-6 mx-auto'>
+									className='col-lg-4 col-md-4 col-sm-6 col-5 p-0 imgWrapper'>
 									<Link
 										to={`/our-products?filterby=gender&gendername=${g.genderName}`}
 										onClick={() =>
@@ -28,7 +70,7 @@ const GenderLinks = ({ allGenders }) => {
 											style={{ height: "350px", width: "350px" }}
 										/>
 										<br />
-										<span className='GenderText mb-5'>{g.genderName}</span>
+										{/* <span className='GenderText mb-5'>{g.genderName}</span> */}
 									</Link>
 								</div>
 							);
@@ -42,7 +84,15 @@ const GenderLinks = ({ allGenders }) => {
 export default GenderLinks;
 
 const GenderLinksWrapper = styled.div`
-	margin-top: 70px;
+	margin-top: 20px;
+
+	.btnGender {
+		display: none;
+	}
+
+	.imgWrapper {
+		margin: auto;
+	}
 
 	.title {
 		text-align: center;
@@ -121,8 +171,18 @@ const GenderLinksWrapper = styled.div`
 	}
 	}
 	@media (max-width: 700px) {
+
+		.btnGender {
+		display: block;
+	}
+	
 		.row {
 		margin: auto !important;
+
+	}
+
+	.imgWrapper {
+		margin-left: 10px;
 
 	}
 		
@@ -131,9 +191,14 @@ const GenderLinksWrapper = styled.div`
 			border: 2px white solid;
 			/* border-radius: 10px 10px; */
 			transition: 1s;
-			width: 150px !important;
-			height: 150px !important;
+			width: 195px !important;
+			height: 195px !important;
+			margin-right: 10px;
+		
 		}
+
+		
+
 		.GenderText {
 			font-size: 1rem;
 			text-align: center;

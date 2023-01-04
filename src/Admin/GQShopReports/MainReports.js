@@ -63,22 +63,11 @@ const MainReports = () => {
 	// eslint-disable-next-line
 	var today = new Date();
 
-	var today2 = new Date(new Date().setDate(new Date().getDate() + 1));
-
+	var today2 = new Date();
 	var yesterday = new Date();
-
 	var last7Days = new Date();
-
-	var last30Days = new Date(
-		new Date().toLocaleString("en-US", {
-			timeZone: "Africa/Cairo",
-		}),
-	);
-	var last90Days = new Date(
-		new Date().toLocaleString("en-US", {
-			timeZone: "Africa/Cairo",
-		}),
-	);
+	var last30Days = new Date();
+	var last90Days = new Date();
 
 	yesterday.setDate(yesterday.getDate() - 1);
 	last7Days.setDate(last7Days.getDate() - 7);

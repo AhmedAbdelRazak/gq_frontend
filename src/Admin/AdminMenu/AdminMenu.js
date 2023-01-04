@@ -303,10 +303,6 @@ const items = [
 	]),
 
 	getItem("ACE Store Management", "sub34", <BorderHorizontalOutlined />, [
-		getItem(
-			<Link to='/admin/online-store-management'>ACE Store Properties</Link>,
-			"/admin/online-store-management",
-		),
 		getItem("ACE Pages", "sub41", <SwapOutlined />, [
 			getItem(
 				<Link to='/admin/website-edit/contactus-edit'>Contact Us</Link>,
@@ -317,6 +313,20 @@ const items = [
 				"/admin/website-edit/aboutus-edit",
 			),
 		]),
+		getItem("Ads Carousel", "sub40", <RadiusBottomleftOutlined />, [
+			getItem(
+				<Link to='/admin/add-top-ads'>Add Top Ads</Link>,
+				"/admin/add-top-ads",
+			),
+			getItem(
+				<Link to='/admin/update-top-ads'>Update Top Ads</Link>,
+				"/admin/update-top-ads",
+			),
+		]),
+		getItem(
+			<Link to='/admin/online-store-management'>ACE Store Properties</Link>,
+			"/admin/online-store-management",
+		),
 		getItem(
 			<Link to='/admin/add-hero-comp'>Add Hero Component</Link>,
 			"/admin/add-hero-comp",
@@ -331,20 +341,22 @@ const items = [
 		),
 
 		getItem(
+			<Link to='/admin/inventory-report'>Inventory Report</Link>,
+			"/admin/inventory-report",
+		),
+
+		getItem(
 			<Link to='/admin/ace-orders-list'>Ace Store Sales Report</Link>,
 			"/admin/ace-orders-list",
 		),
-
-		getItem("Ads Carousel", "sub40", <RadiusBottomleftOutlined />, [
-			getItem(
-				<Link to='/admin/add-top-ads'>Add Top Ads</Link>,
-				"/admin/add-top-ads",
-			),
-			getItem(
-				<Link to='/admin/update-top-ads'>Update Top Ads</Link>,
-				"/admin/update-top-ads",
-			),
-		]),
+		getItem(
+			<Link to='/admin/ace-receiving'>Ace Store Receiving</Link>,
+			"/admin/ace-receiving",
+		),
+		getItem(
+			<Link to='/admin/offline-order-taking'>Offline Order Taking</Link>,
+			"/admin/offline-order-taking",
+		),
 	]),
 ];
 
@@ -570,6 +582,8 @@ const AdminMenu = ({
 						? "/admin/website-edit/aboutus-edit"
 						: fromPage === "WebsiteEditContact"
 						? "/admin/website-edit/contactus-edit"
+						: fromPage === "AceStoreReceiving"
+						? "/admin/ace-receiving"
 						: "/admin/dashboard"
 				}
 				defaultOpenKeys={[

@@ -213,7 +213,10 @@ const NavbarTop = ({ history, language, setLanguage, chosenLanguage }) => {
 												<div className='col-4 mr-3'>
 													Size:{" "}
 													<select
-														style={{ textTransform: "capitalize" }}
+														style={{
+															textTransform: "capitalize",
+															border: "1px solid lightgrey",
+														}}
 														onChange={(e) => {
 															var chosenAttribute2 =
 																i.allProductDetailsIncluded.productAttributes.filter(
@@ -247,7 +250,10 @@ const NavbarTop = ({ history, language, setLanguage, chosenLanguage }) => {
 												<div className='col-4  '>
 													Color:{" "}
 													<select
-														style={{ textTransform: "capitalize" }}
+														style={{
+															textTransform: "capitalize",
+															border: "1px solid lightgrey",
+														}}
 														onChange={(e) => {
 															var chosenColorImageHelper =
 																i.allProductDetailsIncluded.productAttributes.filter(
@@ -331,14 +337,21 @@ const NavbarTop = ({ history, language, setLanguage, chosenLanguage }) => {
 											{chosenLanguage === "Arabic" ? (
 												<span
 													className='buttons-up-down'
-													style={{ color: "#282491", marginTop: "10px" }}>
+													style={{
+														color: "#282491",
+														marginTop: "10px",
+													}}>
 													<button
 														type='button'
 														className='amount-btn'
 														onClick={increase}>
 														<FaPlus />
 													</button>
-													<span className='amount'>{i.amount}</span>
+													<span
+														className='amount px-2'
+														style={{ border: "1px solid lightgrey" }}>
+														{i.amount}
+													</span>
 
 													<button
 														type='button'
@@ -346,20 +359,28 @@ const NavbarTop = ({ history, language, setLanguage, chosenLanguage }) => {
 														onClick={decrease}>
 														<FaMinus />
 													</button>
-													<span style={{ color: "black" }}>الكمية</span>
+													<span style={{ color: "black" }} className='mr-2'>
+														الكمية
+													</span>
 												</span>
 											) : (
 												<span
 													className='buttons-up-down'
 													style={{ color: "#282491", marginTop: "10px" }}>
-													<span style={{ color: "black" }}>Quantity</span>
+													<span style={{ color: "black" }} className='mr-2'>
+														Quantity
+													</span>
 													<button
 														type='button'
 														className='amount-btn'
 														onClick={decrease}>
 														<FaMinus />
 													</button>
-													<span className='amount'>{i.amount}</span>
+													<span
+														className='amount px-2'
+														style={{ border: "1px solid lightgrey" }}>
+														{i.amount}
+													</span>
 													<button
 														type='button'
 														className='amount-btn'
@@ -1072,18 +1093,23 @@ const SideWrapperCart = styled.nav`
 				background: transparent;
 				border-color: transparent;
 				cursor: pointer;
-				padding: 1rem 0;
+				padding: 0.6rem 0rem;
 				width: 2rem;
 				height: 1rem;
 				display: flex;
 				align-items: center;
 				justify-content: center;
+				border: 1px solid lightgrey;
 			}
 		}
 	}
 	@media (max-width: 1000px) {
 		.trashIcon {
 			margin-left: 180px !important;
+		}
+
+		.link-btn {
+			font-size: 0.9rem;
 		}
 	}
 `;

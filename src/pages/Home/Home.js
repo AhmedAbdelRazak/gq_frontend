@@ -138,5 +138,5 @@ export default Home;
 const HomeWrapper = styled.div`
 	min-height: 880px;
 	overflow-x: hidden;
-	background-color: white;
+	/* background-color: white; */
 `;

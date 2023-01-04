@@ -101,6 +101,7 @@ const Footer = () => {
 
 const Wrapper = styled.footer`
 	background: white;
+	padding-top: 50px;
 
 	.flags {
 		width: 1.2%;
@@ -155,6 +156,9 @@ const Wrapper = styled.footer`
 		}
 		.flags {
 			width: 3%;
+		}
+		h5 {
+			font-size: 1rem;
 		}
 	}
 `;

@@ -65,11 +65,11 @@ export default NavbarAds;
 
 const NavbarAdsWrapper = styled.nav`
 	text-align: center;
-	padding: 10px !important;
+	padding: 10px 0px !important;
 	width: 50%;
 	/* box-shadow: 8px 10px 5px 0px rgba(0, 0, 0, 0.02); */
 	background: #c60e0e !important;
-	border: 1px #f5f5f5 solid;
+	border: 1px #c60e0e solid;
 	text-align: center;
 	margin: auto;
 
@@ -109,6 +109,8 @@ const NavbarAdsWrapper = styled.nav`
 	}
 
 	@media (max-width: 1400px) {
+		margin: 0px !important;
+
 		.mainMessages {
 			color: #000;
 			font-weight: bold;
@@ -120,7 +122,7 @@ const NavbarAdsWrapper = styled.nav`
 	@media (max-width: 900px) {
 		width: 100% !important;
 		box-shadow: none;
-		margin: 0 !important;
+		margin: 0px !important;
 
 		.mainMessages {
 			color: #000;

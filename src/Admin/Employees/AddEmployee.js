@@ -11,7 +11,7 @@ import { Link, Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
 import Resizer from "react-image-file-resizer";
 import axios from "axios";
-import { cloudinaryUpload1 } from "../apiAdmin";
+import { cloudinaryUpload1, getStores } from "../apiAdmin";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import DarkBG from "../AdminMenu/DarkBG";
@@ -22,6 +22,7 @@ const AddEmployee = () => {
 	const [offset, setOffset] = useState(0);
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
+	const [allStore, setAllStores] = useState([]);
 
 	const [values, setValues] = useState({
 		name: "",
@@ -35,6 +36,7 @@ const AddEmployee = () => {
 		misMatch: false,
 		loading: false,
 		userRole: "Order Taker",
+		userStore: "g&q",
 	});
 
 	// eslint-disable-next-line
@@ -48,9 +50,9 @@ const AddEmployee = () => {
 		// eslint-disable-next-line
 		role,
 		userRole,
+		userStore,
 	} = values;
 
-	// eslint-disable-next-line
 	const { user, token } = isAuthenticated();
 
 	const handleChange = (name) => (event) => {
@@ -61,6 +63,21 @@ const AddEmployee = () => {
 			[name]: event.target.value,
 		});
 	};
+
+	const gettingAllStores = () => {
+		getStores(token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllStores(data);
+			}
+		});
+	};
+
+	useEffect(() => {
+		gettingAllStores();
+		// eslint-disable-next-line
+	}, []);
 
 	const clickSubmit = (event) => {
 		event.preventDefault();
@@ -97,6 +114,7 @@ const AddEmployee = () => {
 				misMatch,
 				role: 1,
 				userRole,
+				userStore,
 			}).then((data) => {
 				console.log(data);
 				if (data.error || data.misMatch) {
@@ -115,6 +133,7 @@ const AddEmployee = () => {
 						success: false,
 						misMatch: false,
 						loading: false,
+						userStore: "",
 					});
 					setTimeout(function () {
 						window.location.reload(false);
@@ -126,6 +145,10 @@ const AddEmployee = () => {
 
 	const handleChosenRole = (event) => {
 		setValues({ ...values, userRole: event.target.value });
+	};
+
+	const handleChosenStore = (event) => {
+		setValues({ ...values, userStore: event.target.value });
 	};
 
 	const fileUploadAndResizeThumbNail = (e) => {
@@ -343,6 +366,30 @@ const AddEmployee = () => {
 									<option value='Order Taker'>Order Taker</option>
 									<option value='Operations'>Operations</option>
 									<option value='Finance'>Finance</option>
+									<option value='offlineStore'>Offline Store</option>
+								</select>
+							</div>
+
+							<div className='form-group ' style={{ marginTop: "25px" }}>
+								<label htmlFor='password2' style={{ fontWeight: "bold" }}>
+									Add Associated Store
+								</label>
+								<select
+									onChange={handleChosenStore}
+									className='w-75 mx-auto'
+									style={{ fontSize: "0.80rem" }}>
+									<option>Please select / Required*</option>
+									{allStore &&
+										allStore.map((s, i) => {
+											return (
+												<option
+													key={i}
+													value={s.storeName}
+													style={{ textTransform: "uppercase" }}>
+													{s.storeName}
+												</option>
+											);
+										})}
 								</select>
 							</div>
 
@@ -399,7 +446,7 @@ const AddEmployee = () => {
 				</div>
 				<div className='mainContent'>
 					<Navbar fromPage='AddEmployee' pageScrolled={pageScrolled} />
-					<h3 className='mx-auto text-center mb-5'>Add A New Employee</h3>
+					<h3 className='mx-auto text-center mb-5'>Add A New Employee/ User</h3>
 					{signUpForm()}
 				</div>
 			</div>

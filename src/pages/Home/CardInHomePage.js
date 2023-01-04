@@ -5,6 +5,7 @@ import { Link, Redirect } from "react-router-dom";
 import styled from "styled-components";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
+// eslint-disable-next-line
 import { showAverageRating2 } from "../SingleProduct/Rating";
 import { useCartContext } from "../../Checkout/cart_context";
 import { viewsCounter } from "../../apiCore";
@@ -264,21 +265,6 @@ const CardInHomePage = ({
 									)}
 								</div>
 							</div>
-
-							{product && product.ratings && product.ratings.length > 0 ? (
-								<div className='mb-3'>{showAverageRating2(product)}</div>
-							) : (
-								<div
-									className='mb-2'
-									style={{
-										fontSize: "0.75rem",
-										fontStyle: "italic",
-										// fontWeight: "bold",
-										color: "black",
-									}}>
-									{chosenLanguage === "Arabic" ? null : null}
-								</div>
-							)}
 						</div>
 					</div>
 				</div>

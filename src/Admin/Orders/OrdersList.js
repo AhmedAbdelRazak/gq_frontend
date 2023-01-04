@@ -45,9 +45,7 @@ const OrdersList = () => {
 	const { user, token } = isAuthenticated();
 
 	// eslint-disable-next-line
-	var today = new Date().toDateString("en-US", {
-		timeZone: "Africa/Cairo",
-	});
+	var today = new Date();
 
 	var yesterday = new Date();
 	var last7Days = new Date();

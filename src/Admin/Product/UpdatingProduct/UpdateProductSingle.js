@@ -888,6 +888,19 @@ const UpdateProductSingle = ({ match }) => {
 									)
 							  ].quantity
 							: 0,
+
+					receivedQuantity:
+						allPrimaryKeys.indexOf(
+							combinationsOfColorSizes[i - 1][ii - 1] +
+								combinationsOfColorSizes[i - 1][ii],
+						) > -1
+							? productAttributesFinal[
+									allPrimaryKeys.indexOf(
+										combinationsOfColorSizes[i - 1][ii - 1] +
+											combinationsOfColorSizes[i - 1][ii],
+									)
+							  ].receivedQuantity
+							: 0,
 					price:
 						allPrimaryKeys.indexOf(
 							combinationsOfColorSizes[i - 1][ii - 1] +

@@ -5,7 +5,12 @@ import styled from "styled-components";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import Navbar from "../AdminNavMenu/Navbar";
 import { isAuthenticated } from "../../auth/index";
-import { cloudinaryUpload1, getAllUsers, updateUserByAdmin } from "../apiAdmin";
+import {
+	cloudinaryUpload1,
+	getAllUsers,
+	getStores,
+	updateUserByAdmin,
+} from "../apiAdmin";
 import Resizer from "react-image-file-resizer";
 import axios from "axios";
 // eslint-disable-next-line
@@ -17,6 +22,7 @@ const UpdateEmployeeSingle = ({ match }) => {
 	const [addThumbnail, setAddThumbnail] = useState([]);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
+	const [allStore, setAllStores] = useState([]);
 
 	const [values, setValues] = useState({
 		name: "",
@@ -31,6 +37,7 @@ const UpdateEmployeeSingle = ({ match }) => {
 		employeeImage: "",
 		role: 1,
 		userRole: "",
+		userStore: "",
 	});
 
 	const { name, email, password, password2, employeeImage } = values;
@@ -43,6 +50,21 @@ const UpdateEmployeeSingle = ({ match }) => {
 			[name]: event.target.value,
 		});
 	};
+
+	const gettingAllStores = () => {
+		getStores(token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllStores(data);
+			}
+		});
+	};
+
+	useEffect(() => {
+		gettingAllStores();
+		// eslint-disable-next-line
+	}, []);
 
 	const gettingAllUsers = () => {
 		getAllUsers(user._id, token).then((data) => {
@@ -68,6 +90,11 @@ const UpdateEmployeeSingle = ({ match }) => {
 						match.params.userId &&
 						match.params.userId !== "undefined" &&
 						data.filter((e) => e._id === match.params.userId)[0].userRole,
+
+					userStore:
+						match.params.userId &&
+						match.params.userId !== "undefined" &&
+						data.filter((e) => e._id === match.params.userId)[0].userStore,
 
 					employeeImage:
 						match.params.userId &&
@@ -104,6 +131,7 @@ const UpdateEmployeeSingle = ({ match }) => {
 				employeeImage: employeeImage,
 				email: values.email,
 				userRole: values.userRole,
+				userStore: values.userStore,
 			}).then((data) => {
 				if (data.error) {
 					console.log(data.error);
@@ -233,7 +261,7 @@ const UpdateEmployeeSingle = ({ match }) => {
 
 							<div className='form-group ' style={{ marginTop: "25px" }}>
 								<label htmlFor='password2' style={{ fontWeight: "bold" }}>
-									Add Employee Role
+									Update Employee Role
 								</label>
 								<select
 									onChange={handleChosenRole}
@@ -253,6 +281,34 @@ const UpdateEmployeeSingle = ({ match }) => {
 								</select>
 							</div>
 
+							<div className='form-group ' style={{ marginTop: "25px" }}>
+								<label htmlFor='password2' style={{ fontWeight: "bold" }}>
+									Update Associated Store
+								</label>
+								<select
+									onChange={handleChosenStore}
+									className='w-75 mx-auto'
+									style={{ fontSize: "0.80rem" }}>
+									{values.userRole ? (
+										<option>{values.userStore}</option>
+									) : (
+										<option>Please select / Required*</option>
+									)}
+
+									{allStore &&
+										allStore.map((s, i) => {
+											return (
+												<option
+													key={i}
+													value={s.storeName}
+													style={{ textTransform: "uppercase" }}>
+													{s.storeName}
+												</option>
+											);
+										})}
+								</select>
+							</div>
+
 							<input
 								type='submit'
 								value='Update Employee'
@@ -269,6 +325,10 @@ const UpdateEmployeeSingle = ({ match }) => {
 
 	const handleChosenRole = (event) => {
 		setValues({ ...values, userRole: event.target.value });
+	};
+
+	const handleChosenStore = (event) => {
+		setValues({ ...values, userStore: event.target.value });
 	};
 
 	const fileUploadAndResizeThumbNail = (e) => {

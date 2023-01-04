@@ -58,11 +58,13 @@ const FeaturedProducts = ({ allProducts, chosenLanguage }) => {
 				<h1
 					style={{
 						fontWeight: "bolder",
-						fontSize: "1.4rem",
+						fontSize: "1.3rem",
 						marginLeft: "35px",
 					}}
 					className={chosenLanguage === "Arabic" ? "titleArabic" : "title"}>
-					{chosenLanguage === "Arabic" ? "منتجات مميزة" : "Featured Products"}{" "}
+					{chosenLanguage === "Arabic"
+						? "منتجات مميزة"
+						: "EXPLORE THE COLLECTION"}{" "}
 				</h1>
 			</div>
 			<div className='container-fluid my-3 ProductSlider'>
@@ -80,6 +82,10 @@ const FeaturedProducts = ({ allProducts, chosenLanguage }) => {
 						))}
 				</Slider>
 			</div>
+			<div className='headerWrapper'>
+				<h3>BECOME A MEMBER</h3>
+				<p>Join now and get 10% off your next purchase</p>
+			</div>
 		</FeaturedProductsWrapper>
 	);
 };
@@ -96,7 +102,7 @@ const FeaturedProductsWrapper = styled.div`
 		margin-left: 35px;
 		font-weight: bold;
 		/* color: #ffc4c4; */
-		color: darkred;
+		color: black;
 		margin-left: 0px;
 		text-transform: uppercase;
 		/* text-shadow: 3px 3px 10px; */
@@ -108,10 +114,14 @@ const FeaturedProductsWrapper = styled.div`
 		margin-left: 35px;
 		/* letter-spacing: 7px; */
 		font-weight: bold;
-		color: darkred;
+		color: black;
 		margin-left: 0px;
 		font-family: "Droid Arabic Kufi";
 		/* text-shadow: 3px 3px 10px; */
+	}
+
+	.headerWrapper {
+		display: none;
 	}
 
 	.images {
@@ -142,25 +152,41 @@ const FeaturedProductsWrapper = styled.div`
 	@media (max-width: 1200px) {
 		.ProductSlider {
 			padding: 0px 0px 0px 0px;
-		}
-
-		h1 {
-			margin: auto !important;
+			margin: 0px !important;
 		}
 
 		.title {
-			font-size: 1.4rem;
-			text-align: center;
+			font-size: 1.1rem !important;
 			font-weight: bold;
-			/* text-shadow: 3px 3px 10px; */
 		}
 
 		.titleArabic {
-			text-align: center;
-			font-size: 1.4rem;
-			/* letter-spacing: 7px; */
+			font-size: 1.1rem !important;
 			font-weight: bold;
-			/* text-shadow: 3px 3px 10px; */
+		}
+
+		.headerWrapper {
+			display: block;
+			background: black;
+			text-align: center;
+		}
+
+		.headerWrapper > h3 {
+			color: white;
+			font-size: 1.2rem;
+			font-weight: bold;
+			text-align: center;
+			padding-top: 10px;
+		}
+		.headerWrapper > p {
+			color: white;
+			font-size: 0.9rem;
+			/* font-weight: bold; */
+			text-align: center;
+			padding-bottom: 10px;
+		}
+		.slick-dots {
+			display: none !important;
 		}
 	}
 `;

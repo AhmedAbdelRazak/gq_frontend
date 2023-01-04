@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.min.css";
 // import ReactGA from "react-ga";
 import ReactGA from "react-ga";
 import Helmet from "react-helmet";
+// eslint-disable-next-line
 import StoreImage from "../GeneralImages/LoginImg.jpg";
 
 const Login = ({ history }) => {
@@ -91,7 +92,7 @@ const Login = ({ history }) => {
 	};
 
 	useEffect(() => {
-		window.scrollTo({ top: 150, behavior: "smooth" });
+		// window.scrollTo({ top: 150, behavior: "smooth" });
 		ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS_MEASUREMENTID);
 		// To Report Page View
 		ReactGA.pageview(window.location.pathname + window.location.search);
@@ -119,7 +120,7 @@ const Login = ({ history }) => {
 				</div>
 				<div className=' mx-auto'>
 					<div
-						className='form-container'
+						className='form-container p-3 mx-auto'
 						style={{
 							// border: "solid 3px grey",
 							background: "white",
@@ -132,14 +133,15 @@ const Login = ({ history }) => {
 						{/* <Google informParent={informParent} /> */}
 
 						<form onSubmit={clickSubmit}>
-							<div className='form-group' style={{ marginTop: "25px" }}>
+							<div
+								className='form-group'
+								style={{ marginTop: "25px", textAlign: "center" }}>
 								<div
-									className='col-md-8'
 									style={{
 										fontWeight: "bold",
 										textAlign: "center",
 									}}>
-									Email Address / Phone
+									Phone
 								</div>
 								<input
 									className='w-50 mx-auto'
@@ -152,7 +154,6 @@ const Login = ({ history }) => {
 							</div>
 							<div className='form-group ' style={{ marginTop: "25px" }}>
 								<div
-									className='col-md-7'
 									style={{
 										fontWeight: "bold",
 										textAlign: "center",
@@ -208,7 +209,8 @@ const Login = ({ history }) => {
 		<WholeSignin>
 			<Helmet>
 				<meta charSet='utf-8' />
-				<title>GQ Main Order Platform</title>
+				<title>ACE Online Shop | Account Login</title>
+
 				<meta
 					name='description'
 					content='GQ Main Order Platform Developed By https://infinite-apps.com'
@@ -219,10 +221,10 @@ const Login = ({ history }) => {
 			<ToastContainer />
 			{showLoading()}
 			<div className='row'>
-				<div className='col-md-6 my-auto'>{signinForm()}</div>
-				<div className='col-md-6 theImage'>
+				<div className='col-md-6 my-auto mx-auto'>{signinForm()}</div>
+				{/* <div className='col-md-6 theImage'>
 					<img className='heroImage' src={StoreImage} alt='GQ_Shop' />
-				</div>
+				</div> */}
 			</div>
 			{redirectUser()}
 		</WholeSignin>
@@ -232,7 +234,7 @@ const Login = ({ history }) => {
 export default Login;
 
 const FormSignin = styled.div`
-	margin: 0px !important;
+	margin: 40px auto !important;
 
 	input[type="text"],
 	input[type="email"],
@@ -269,17 +271,21 @@ const FormSignin = styled.div`
 			font-size: 13px;
 		}
 
-		/* .form-container {
+		.form-container {
 			margin-left: 10px;
 			margin-right: 10px;
-		} */
+		}
+
+		input {
+			width: 100% !important;
+		}
 	}
 `;
 
 const WholeSignin = styled.div`
 	overflow-x: hidden;
-	background: white;
-	min-height: 880px;
+	/* background: white; */
+	min-height: 500px;
 	margin: 0px !important;
 
 	.storeName {

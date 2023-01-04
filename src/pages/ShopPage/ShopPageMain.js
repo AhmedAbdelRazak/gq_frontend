@@ -172,7 +172,7 @@ export default ShopPageMain;
 
 const ShopPageMainWrapper = styled.div`
 	min-height: 700px;
-	background: white;
+	/* background: white; */
 	transition: 0.3s;
 	overflow: hidden;
 
@@ -250,6 +250,16 @@ const ShopPageMainWrapper = styled.div`
 			/* text-shadow: 3px 3px 10px; */
 		}
 
+		.titleWrapper {
+			position: relative;
+			margin-left: 0px;
+			margin-top: 0px;
+		}
+
+		.titleWrapper > h5 {
+			padding-top: 40px !important;
+		}
+
 		.cardWrapper {
 			margin: 30px auto !important;
 			padding: 0px !important;
@@ -279,7 +289,7 @@ const ShopPageMainWrapper = styled.div`
 			.filterSort {
 				border: 1px solid #e9e9e9;
 				width: 100%;
-				padding: 20px 0px;
+				padding: 8px 0px;
 				/* font-weight: bold; */
 				font-size: 1.1rem;
 			}
