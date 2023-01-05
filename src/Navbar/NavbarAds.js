@@ -42,13 +42,13 @@ const NavbarAds = () => {
 		<NavbarAdsWrapper style={{ backgroundColor: "", padding: "" }}>
 			{" "}
 			<div className='mx-auto'>
-				<div className='nav-item mainMessages '>
+				<div className='nav-item mainMessages mx-auto text-center'>
 					<Slider {...settings}>
 						{allAdsCombined &&
 							allAdsCombined.map((i, e) => {
 								return (
 									<Fragment key={e}>
-										<div>
+										<div className='mx-auto'>
 											<span>{i}</span>
 										</div>
 									</Fragment>
@@ -109,8 +109,6 @@ const NavbarAdsWrapper = styled.nav`
 	}
 
 	@media (max-width: 1400px) {
-		margin: 0px !important;
-
 		.mainMessages {
 			color: #000;
 			font-weight: bold;

@@ -201,7 +201,7 @@ const SidebarFiltersWrapper = styled.nav`
 	position: fixed;
 	/* top: 101px; */
 	left: 0;
-	top: 101px;
+	top: 106px;
 	width: 70%;
 	height: 100%;
 	background: var(--mainGrey);

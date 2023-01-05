@@ -2,6 +2,7 @@
 
 import React, { Fragment, useEffect, useState } from "react";
 import { Link, withRouter } from "react-router-dom";
+// eslint-disable-next-line
 import { FaTrash, FaMinus, FaPlus, FaTimes, FaRegHeart } from "react-icons/fa";
 import { BsBag } from "react-icons/bs";
 import { signout, isAuthenticated } from "../auth";
@@ -27,7 +28,7 @@ const NavbarTop = ({ history, language, setLanguage, chosenLanguage }) => {
 		// clearCart,
 		removeItem,
 		toggleAmount,
-		// total_amount,
+		total_amount,
 		openSidebar,
 		closeSidebar,
 		isSidebarOpen,
@@ -160,8 +161,6 @@ const NavbarTop = ({ history, language, setLanguage, chosenLanguage }) => {
 								...new Map(productSizes.map((item) => [item, item])).values(),
 							];
 
-							console.log(productSizes);
-
 							var chosenAttribute =
 								i.allProductDetailsIncluded.productAttributes.filter(
 									(iii) => iii.color === i.color && iii.size === i.size,
@@ -194,128 +193,154 @@ const NavbarTop = ({ history, language, setLanguage, chosenLanguage }) => {
 										<div className='col-9 mx-auto my-auto'>
 											<div
 												style={{
-													fontSize: "12px",
+													fontSize: "15px",
 													fontWeight: "bold",
-													marginLeft: "10px",
+													marginLeft: "14px",
 													textTransform: "capitalize",
+													color: "#545454",
 												}}>
 												{i.name}
 											</div>
 											<div
-												className='row'
 												style={{
-													fontSize: "12px",
+													fontSize: "15px",
 													fontWeight: "bold",
-													marginLeft: "10px",
-													marginTop: "10px",
+													marginLeft: "14px",
+													marginTop: "3px",
 													textTransform: "capitalize",
+													color: "#545454",
 												}}>
-												<div className='col-4 mr-3'>
-													Size:{" "}
-													<select
-														style={{
-															textTransform: "capitalize",
-															border: "1px solid lightgrey",
-														}}
-														onChange={(e) => {
-															var chosenAttribute2 =
-																i.allProductDetailsIncluded.productAttributes.filter(
-																	(iii) =>
-																		iii.color === i.color &&
-																		iii.size.toLowerCase() ===
-																			e.target.value.toLowerCase(),
-																)[0];
-															changeSize(
-																i.id,
-																e.target.value,
-																i.color,
-																chosenAttribute2.quantity,
-																i.size,
+												{i.categoryName}
+											</div>
+
+											<div
+												className=''
+												style={{
+													fontSize: "13px",
+													fontWeight: "bold",
+													marginTop: "6px",
+													marginLeft: "14px",
+													textTransform: "capitalize",
+													color: "#7b7b7b",
+												}}>
+												Size:{" "}
+												<select
+													className='w-50 ml-2'
+													style={{
+														textTransform: "uppercase",
+														border: "1px solid lightgrey",
+													}}
+													onChange={(e) => {
+														var chosenAttribute2 =
+															i.allProductDetailsIncluded.productAttributes.filter(
+																(iii) =>
+																	iii.color === i.color &&
+																	iii.size.toLowerCase() ===
+																		e.target.value.toLowerCase(),
+															)[0];
+														changeSize(
+															i.id,
+															e.target.value,
+															i.color,
+															chosenAttribute2.quantity,
+															i.size,
+														);
+													}}>
+													<option style={{ textTransform: "capitalize" }}>
+														{i.size}
+													</option>
+
+													{uniqueProductSizes &&
+														uniqueProductSizes.map((ss, ii) => {
+															return (
+																<option key={ii} value={ss}>
+																	{ss}
+																</option>
 															);
-														}}>
-														<option style={{ textTransform: "capitalize" }}>
-															{i.size}
-														</option>
+														})}
+												</select>
+											</div>
+											<div
+												className=''
+												style={{
+													fontSize: "13px",
+													fontWeight: "bold",
+													marginTop: "3px",
+													marginLeft: "14px",
+													textTransform: "capitalize",
+													color: "#7b7b7b",
+												}}>
+												Color:{" "}
+												<select
+													className='w-50'
+													style={{
+														textTransform: "uppercase",
+														border: "1px solid lightgrey",
+													}}
+													onChange={(e) => {
+														var chosenColorImageHelper =
+															i.allProductDetailsIncluded.productAttributes.filter(
+																(iii) => iii.color === e.target.value,
+															)[0];
 
-														{uniqueProductSizes &&
-															uniqueProductSizes.map((ss, ii) => {
-																return (
-																	<option key={ii} value={ss}>
-																		{ss}
-																	</option>
-																);
-															})}
-													</select>
-												</div>
-												<div className='col-4  '>
-													Color:{" "}
-													<select
-														style={{
-															textTransform: "capitalize",
-															border: "1px solid lightgrey",
-														}}
-														onChange={(e) => {
-															var chosenColorImageHelper =
-																i.allProductDetailsIncluded.productAttributes.filter(
-																	(iii) => iii.color === e.target.value,
-																)[0];
+														var chosenColorImage =
+															chosenColorImageHelper &&
+															chosenColorImageHelper.productImages &&
+															chosenColorImageHelper.productImages[0] &&
+															chosenColorImageHelper.productImages[0].url;
 
-															var chosenColorImage =
-																chosenColorImageHelper &&
-																chosenColorImageHelper.productImages &&
-																chosenColorImageHelper.productImages[0] &&
-																chosenColorImageHelper.productImages[0].url;
+														var chosenAttribute2 =
+															i.allProductDetailsIncluded.productAttributes.filter(
+																(iii) =>
+																	iii.color.toLowerCase() ===
+																		e.target.value.toLowerCase() &&
+																	iii.size.toLowerCase() === i.size,
+															)[0];
+														changeColor(
+															i.id,
+															e.target.value,
+															i.size,
+															chosenColorImage,
+															chosenAttribute2.quantity,
+															i.color,
+														);
+													}}>
+													<option style={{ textTransform: "capitalize" }}>
+														{allColors &&
+															allColors[
+																allColors.map((ii) => ii.hexa).indexOf(i.color)
+															] &&
+															allColors[
+																allColors.map((ii) => ii.hexa).indexOf(i.color)
+															].color}
+													</option>
 
-															var chosenAttribute2 =
-																i.allProductDetailsIncluded.productAttributes.filter(
-																	(iii) =>
-																		iii.color.toLowerCase() ===
-																			e.target.value.toLowerCase() &&
-																		iii.size.toLowerCase() === i.size,
-																)[0];
-															changeColor(
-																i.id,
-																e.target.value,
-																i.size,
-																chosenColorImage,
-																chosenAttribute2.quantity,
-																i.color,
+													{uniqueProductColors &&
+														uniqueProductColors.map((cc, ii) => {
+															return (
+																<option key={ii} value={cc}>
+																	{allColors &&
+																		allColors[
+																			allColors.map((ii) => ii.hexa).indexOf(cc)
+																		] &&
+																		allColors[
+																			allColors.map((ii) => ii.hexa).indexOf(cc)
+																		].color}
+																</option>
 															);
-														}}>
-														<option style={{ textTransform: "capitalize" }}>
-															{allColors &&
-																allColors[
-																	allColors
-																		.map((ii) => ii.hexa)
-																		.indexOf(i.color)
-																] &&
-																allColors[
-																	allColors
-																		.map((ii) => ii.hexa)
-																		.indexOf(i.color)
-																].color}
-														</option>
-
-														{uniqueProductColors &&
-															uniqueProductColors.map((cc, ii) => {
-																return (
-																	<option key={ii} value={cc}>
-																		{allColors &&
-																			allColors[
-																				allColors
-																					.map((ii) => ii.hexa)
-																					.indexOf(cc)
-																			] &&
-																			allColors[
-																				allColors
-																					.map((ii) => ii.hexa)
-																					.indexOf(cc)
-																			].color}
-																	</option>
-																);
-															})}
-													</select>
-												</div>
+														})}
+												</select>
+											</div>
+											<div
+												style={{
+													fontSize: "14px",
+													fontWeight: "bold",
+													marginTop: "6px",
+													marginLeft: "14px",
+													textTransform: "capitalize",
+													color: "#7b7b7b",
+												}}>
+												{Number(i.priceAfterDiscount * i.amount).toFixed(2)} EGP
 											</div>
 											<div
 												style={{
@@ -335,71 +360,99 @@ const NavbarTop = ({ history, language, setLanguage, chosenLanguage }) => {
 												)}
 											</div>
 											{chosenLanguage === "Arabic" ? (
-												<span
+												<div
 													className='buttons-up-down'
 													style={{
-														color: "#282491",
+														fontSize: "12px",
+														fontWeight: "bold",
+														marginLeft: "15px",
 														marginTop: "10px",
+														textTransform: "capitalize",
+														color: "darkgreen",
 													}}>
 													<button
 														type='button'
 														className='amount-btn'
-														onClick={increase}>
-														<FaPlus />
-													</button>
-													<span
-														className='amount px-2'
-														style={{ border: "1px solid lightgrey" }}>
-														{i.amount}
-													</span>
-
-													<button
-														type='button'
-														className='amount-btn'
+														style={{
+															border: "lightgrey solid 1px",
+															backgroundColor: "white",
+															color: "darkgrey",
+															padding: "8px 13px",
+														}}
 														onClick={decrease}>
 														<FaMinus />
 													</button>
-													<span style={{ color: "black" }} className='mr-2'>
-														الكمية
+													<span
+														className='amount my-auto mx-auto'
+														style={{
+															border: "lightgrey solid 1px",
+															backgroundColor: "white",
+															color: "black",
+															padding: "9px 14px 11px 14px",
+														}}>
+														{i.amount}
 													</span>
-												</span>
+													<button
+														style={{
+															border: "lightgrey solid 1px",
+															backgroundColor: "white",
+															color: "darkgrey",
+															padding: "8px 13px",
+														}}
+														type='button'
+														className='amount-btn'
+														onClick={increase}>
+														<FaPlus />
+													</button>
+												</div>
 											) : (
-												<span
+												<div
 													className='buttons-up-down'
-													style={{ color: "#282491", marginTop: "10px" }}>
-													<span style={{ color: "black" }} className='mr-2'>
-														Quantity
-													</span>
+													style={{
+														fontSize: "12px",
+														fontWeight: "bold",
+														marginLeft: "15px",
+														marginTop: "10px",
+														textTransform: "capitalize",
+														color: "darkgreen",
+													}}>
 													<button
 														type='button'
 														className='amount-btn'
+														style={{
+															border: "lightgrey solid 1px",
+															backgroundColor: "white",
+															color: "darkgrey",
+															padding: "8px 13px",
+														}}
 														onClick={decrease}>
 														<FaMinus />
 													</button>
 													<span
-														className='amount px-2'
-														style={{ border: "1px solid lightgrey" }}>
+														className='amount my-auto mx-auto'
+														style={{
+															border: "lightgrey solid 1px",
+															backgroundColor: "white",
+															color: "black",
+															padding: "9px 14px 11px 14px",
+														}}>
 														{i.amount}
 													</span>
 													<button
+														style={{
+															border: "lightgrey solid 1px",
+															backgroundColor: "white",
+															color: "darkgrey",
+															padding: "8px 13px",
+														}}
 														type='button'
 														className='amount-btn'
 														onClick={increase}>
 														<FaPlus />
 													</button>
-												</span>
+												</div>
 											)}
-											<div
-												style={{
-													fontSize: "0.9rem",
-													fontWeight: "bold",
-													letterSpacing: "3px",
-													color: "#8d9124",
-													marginLeft: "70px",
-													marginTop: "10px",
-												}}>
-												{i.priceAfterDiscount * i.amount} L.E.
-											</div>
+
 											<button
 												className='trashIcon'
 												type='button'
@@ -419,19 +472,22 @@ const NavbarTop = ({ history, language, setLanguage, chosenLanguage }) => {
 								</div>
 							);
 						})}
-						<div className='link-container' onClick={closeSidebar}>
-							<div className='link-btn-wrapper'>
-								<Link
-									to='/our-products'
-									className='link-btn btn-block w-75 mx-auto text-center py-2'
-									onClick={() =>
-										window.scrollTo({ top: 0, behavior: "smooth" })
-									}>
-									continue shopping
-								</Link>
-							</div>
 
-							<br />
+						<div
+							className='row'
+							style={{
+								fontSize: "14px",
+								fontWeight: "bold",
+								marginLeft: "14px",
+								marginTop: "3px",
+								textTransform: "capitalize",
+							}}>
+							<div className='col-6'>TOTAL AMOUNT</div>
+							<div className='col-6'>{Number(total_amount).toFixed(2)} EGP</div>
+						</div>
+						<hr />
+
+						<div className='link-container' onClick={closeSidebar}>
 							<div className='link-btn-wrapper'>
 								<Link
 									style={{ background: "#007db5" }}
@@ -441,6 +497,18 @@ const NavbarTop = ({ history, language, setLanguage, chosenLanguage }) => {
 										window.scrollTo({ top: 0, behavior: "smooth" })
 									}>
 									Check Out
+								</Link>
+							</div>
+
+							<div className='link-btn-wrapper mt-2'>
+								<Link
+									style={{ background: "#5d5d5d" }}
+									to='/our-products'
+									className='link-btn btn-block w-75 mx-auto text-center py-2'
+									onClick={() =>
+										window.scrollTo({ top: 0, behavior: "smooth" })
+									}>
+									continue shopping
 								</Link>
 							</div>
 						</div>
@@ -731,7 +799,7 @@ const NavbarTop = ({ history, language, setLanguage, chosenLanguage }) => {
 				<div
 					// className='col-7 my-auto'
 					className={
-						window.screen.width >= 363 ? "col-7 my-auto" : "col-6 my-auto"
+						window.screen.width >= 363 ? "col-7 my-auto" : "col-6 my-auto ml-4"
 					}>
 					<div className='row mx-auto '>
 						<div className='col-1 mx-auto my-auto iconsCellPhone'>
@@ -760,9 +828,7 @@ const NavbarTop = ({ history, language, setLanguage, chosenLanguage }) => {
 							}}>
 							<span
 								style={{ color: "#676767" }}
-								className='fa-regular fa-heart nav-icon2 faaa-bars'>
-								<FaRegHeart />
-							</span>
+								className='fa-regular fa-heart nav-icon2 faaa-bars'></span>
 						</div>
 
 						<div className='col-1 mx-auto my-auto nav-cart faaa-bars nav-icon2'>
@@ -819,6 +885,12 @@ const Nav = styled.nav`
 	.link-container {
 		margin: auto;
 		text-align: center;
+		border-radius: 10px;
+	}
+
+	.link-container > div > a {
+		border-radius: 20px;
+		padding: 10px !important;
 	}
 
 	/* .imgLogo {
@@ -875,13 +947,13 @@ const Nav = styled.nav`
 			color: #c60e0e;
 			text-decoration: none !important;
 			display: block;
-			margin-left: 18px;
+			margin-left: 18.5px;
 			font-weight: bold;
 			/* background: #c60e0e !important; */
 			padding: 5px;
 			position: absolute;
 			top: 16px;
-			left: -17.5px;
+			left: -17px;
 		}
 
 		.logo-type {
@@ -947,15 +1019,17 @@ const Nav = styled.nav`
 
 		.cellPhoneLogo {
 			display: block;
-			width: 159px;
+			width: 140px;
 			height: 65px;
 			margin-top: 0px;
 			margin-bottom: 0px;
 			margin-left: 0px;
+			padding: 0px !important;
 		}
 
 		.imgLogo2 {
 			width: 90%;
+			padding: 0px !important;
 			margin-top: 0px;
 			margin-bottom: 0px;
 			margin-left: 0px;
@@ -1001,28 +1075,13 @@ const Nav = styled.nav`
 		.hideSmall {
 			display: none;
 		}
-		.cart-badge {
-			font-size: 10px;
-			/* font-style: italic; */
-			color: #c60e0e;
-			text-decoration: none !important;
-			display: block;
-			margin-left: 18px;
-			font-weight: bold;
-			/* background: #c60e0e !important; */
-			padding: 3px;
-			position: absolute;
-			top: 13px;
-			left: -16.5px;
-		}
-		.nav-icon {
-			font-size: 1rem;
-			cursor: pointer;
-		}
 
-		.nav-icon2 {
-			font-size: 1rem !important;
-			cursor: pointer;
+		/* .nav-icon {
+			margin-left: 2px;
+		} */
+
+		.imgLogo2 {
+			margin-top: 5px;
 		}
 	}
 `;
@@ -1077,35 +1136,11 @@ const SideWrapperCart = styled.nav`
 
 	.cellPhoneLayout {
 		display: block;
-		.buttons-up-down {
-			margin-left: 30px;
-			display: grid;
-			font-size: 12px;
-			width: 100px;
-			font-weight: bold;
-			justify-items: center;
-			grid-template-columns: repeat(4, 1fr);
-			align-items: center;
-			h2 {
-				margin-bottom: 0;
-			}
-			button {
-				background: transparent;
-				border-color: transparent;
-				cursor: pointer;
-				padding: 0.6rem 0rem;
-				width: 2rem;
-				height: 1rem;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				border: 1px solid lightgrey;
-			}
-		}
 	}
 	@media (max-width: 1000px) {
 		.trashIcon {
 			margin-left: 180px !important;
+			font-size: 15px !important;
 		}
 
 		.link-btn {

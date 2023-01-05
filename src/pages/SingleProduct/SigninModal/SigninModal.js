@@ -44,7 +44,7 @@ const SigninModal = ({ modalVisible3, setModalVisible3 }) => {
 							}}>{`ACCOUNT REGISTER FORM`}</div>
 					)
 				}
-				visible={modalVisible3}
+				open={modalVisible3}
 				onOk={() => {
 					setModalVisible3(false);
 				}}

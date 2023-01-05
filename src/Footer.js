@@ -6,6 +6,7 @@ import EgyptianFlag from "./GeneralImages/Egypt.png";
 import { BsFacebook, BsPinterest } from "react-icons/bs";
 import { AiOutlineYoutube, AiFillTwitterCircle } from "react-icons/ai";
 import { FaTiktok } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
 	return (
@@ -56,10 +57,36 @@ const Footer = () => {
 
 				<img className='flags' src={EgyptianFlag} alt='Egypt' />
 				<span style={{ fontWeight: "bold" }}>EGYPT</span>
-				<div className='mt-4 footerLinks'>Terms & Conditions</div>
-				<div className='footerLinks'>Terms of Use</div>
-				<div className='footerLinks'>Privacy Notice</div>
-				<div className='footerLinks'>Cookie Policy</div>
+				<div className='mt-4 footerLinks'>
+					{" "}
+					<Link
+						to='/privacy-policy'
+						onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+						Terms & Conditions
+					</Link>
+				</div>
+				<div className='footerLinks'>
+					<Link
+						to='/privacy-policy'
+						onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+						Privacy Policy
+					</Link>
+				</div>
+				<div className='footerLinks'>
+					{" "}
+					<Link
+						to='/return-exchange-policy'
+						onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+						Returns & Exchange Policy
+					</Link>
+				</div>
+				<div className='footerLinks'>
+					<Link
+						to='cookie-policy'
+						onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+						Cookie Policy
+					</Link>{" "}
+				</div>
 				<div className='footerLinks'>Modern Slavery</div>
 			</div>
 			<div className='mb-2 paymentImages mx-auto'>
@@ -108,6 +135,12 @@ const Wrapper = styled.footer`
 	}
 
 	.footerLinks {
+		font-size: 1rem;
+		font-weight: bold;
+		color: #5d5d5d;
+	}
+
+	.footerLinks > a {
 		font-size: 1rem;
 		font-weight: bold;
 		color: #5d5d5d;

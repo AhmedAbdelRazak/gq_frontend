@@ -88,6 +88,9 @@ const Home = ({ chosenLanguage }) => {
 		localStorage.removeItem("chosenShippingOption");
 		localStorage.removeItem("orderDataStored");
 		localStorage.removeItem("productColor");
+		return () => {
+			setAllProducts([]);
+		};
 
 		// eslint-disable-next-line
 	}, []);
@@ -121,13 +124,12 @@ const Home = ({ chosenLanguage }) => {
 					allSubcategories={allSubcategories}
 				/>
 			</div> */}
-			<hr />
 			<br />
 			<MostViewedProducts chosenLanguage={chosenLanguage} />
-			<hr />
-			<br />
+
 			<HeroComponent3 />
-			<hr />
+			<br />
+			<br />
 			<br />
 		</HomeWrapper>
 	);

@@ -242,4 +242,11 @@ const GenderLinksWrapper = styled.div`
 
 		/* text-shadow: 3px 3px 10px; */
 	}
+
+	@media (max-width: 420px) {
+		.imgWrapper > a > img {
+			width: 112% !important;
+			height: 112% !important;
+		}
+	}
 `;

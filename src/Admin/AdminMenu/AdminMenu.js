@@ -341,6 +341,11 @@ const items = [
 		),
 
 		getItem(
+			<Link to='/admin/print-barcodes'>Print SKUs' Barcode</Link>,
+			"/admin/print-barcodes",
+		),
+
+		getItem(
 			<Link to='/admin/inventory-report'>Inventory Report</Link>,
 			"/admin/inventory-report",
 		),
@@ -354,7 +359,7 @@ const items = [
 			"/admin/ace-receiving",
 		),
 		getItem(
-			<Link to='/admin/offline-order-taking'>Offline Order Taking</Link>,
+			<Link to='/admin/offline-order-taking'>Onsite Order Taking</Link>,
 			"/admin/offline-order-taking",
 		),
 	]),
@@ -584,6 +589,10 @@ const AdminMenu = ({
 						? "/admin/website-edit/contactus-edit"
 						: fromPage === "AceStoreReceiving"
 						? "/admin/ace-receiving"
+						: fromPage === "AceStoreOrderTaking"
+						? "/admin/offline-order-taking"
+						: fromPage === "PrintBarcodes"
+						? "/admin/print-barcodes"
 						: "/admin/dashboard"
 				}
 				defaultOpenKeys={[

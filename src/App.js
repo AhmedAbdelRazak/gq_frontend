@@ -92,6 +92,12 @@ import Contactus from "./pages/Contact/Contackus";
 import ContactArabic from "./pages/Contact/ContactArabic";
 import UserWishlist from "./pages/User/UserWishlist";
 import AceReceiving from "./Admin/OnlineStore/AceReceiving";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import CookiePolicy from "./pages/CookiePolicy";
+import RetExchPolicy from "./pages/RetExchPolicy";
+import OnsiteOrderTaking from "./Admin/OnlineStore/OnsiteOrderTaking/OnsiteOrderTaking";
+import PrintBarcodes from "./Admin/OnlineStore/PrintBarcodes/PrintBarcodes";
+import SingleBarcodePage from "./Admin/OnlineStore/PrintBarcodes/SingleBarcodePage";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -187,6 +193,9 @@ const App = () => {
 					exact
 					component={SingleProduct}
 				/>
+				<Route path='/privacy-policy' exact component={PrivacyPolicy} />
+				<Route path='/cookie-policy' exact component={CookiePolicy} />
+				<Route path='/return-exchange-policy' exact component={RetExchPolicy} />
 				<Route path='/user/wishlist' exact component={UserWishlist} />
 				<Route path='/signup' exact component={Register} />
 				<Route
@@ -353,6 +362,21 @@ const App = () => {
 					path='/admin/ace-receiving'
 					exact
 					component={AceReceiving}
+				/>
+				<AdminRoute
+					path='/admin/offline-order-taking'
+					exact
+					component={OnsiteOrderTaking}
+				/>
+				<AdminRoute
+					path='/admin/print-barcodes'
+					exact
+					component={PrintBarcodes}
+				/>
+				<AdminRoute
+					path='/admin/single-barcode/:sku'
+					exact
+					component={SingleBarcodePage}
 				/>
 				<AdminRoute
 					path='/admin/single-order/:orderId'

@@ -27,6 +27,9 @@ const HeroComponent3 = () => {
 	useEffect(() => {
 		gettingAllHomes();
 		localStorage.removeItem("Cleared");
+		return () => {
+			setHomePage([]);
+		};
 		// eslint-disable-next-line
 	}, []);
 

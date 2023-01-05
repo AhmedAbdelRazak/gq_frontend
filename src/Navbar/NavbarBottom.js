@@ -49,7 +49,7 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 		// clearCart,
 		removeItem,
 		toggleAmount,
-		// total_amount,
+		total_amount,
 		openSidebar,
 		changeSize,
 		changeColor,
@@ -173,122 +173,165 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 											<div className='col-9 mx-auto my-auto'>
 												<div
 													style={{
-														fontSize: "12px",
+														fontSize: "14px",
 														fontWeight: "bold",
-														marginLeft: "10px",
+														marginLeft: "14px",
 														textTransform: "capitalize",
 													}}>
-													{chosenLanguage === "Arabic" ? i.nameArabic : i.name}
+													{i.name}
 												</div>
 												<div
 													style={{
-														fontSize: "12px",
+														fontSize: "14px",
 														fontWeight: "bold",
-														marginLeft: "10px",
-														marginTop: "10px",
+														marginLeft: "14px",
+														marginTop: "3px",
 														textTransform: "capitalize",
 													}}>
-													<span className='mr-3 '>
-														Size:{" "}
-														<select
-															style={{ textTransform: "capitalize" }}
-															onChange={(e) => {
-																var chosenAttribute2 =
-																	i.allProductDetailsIncluded.productAttributes.filter(
-																		(iii) =>
-																			iii.color === i.color &&
-																			iii.size.toLowerCase() ===
-																				e.target.value.toLowerCase(),
-																	)[0];
-																changeSize(
-																	i.id,
-																	e.target.value,
-																	i.color,
-																	chosenAttribute2.quantity,
-																	i.size,
-																);
-															}}>
-															<option style={{ textTransform: "capitalize" }}>
-																{i.size}
-															</option>
-
-															{uniqueProductSizes &&
-																uniqueProductSizes.map((ss, ii) => {
-																	return (
-																		<option key={ii} value={ss}>
-																			{ss}
-																		</option>
-																	);
-																})}
-														</select>
-													</span>
-													<span>
-														Color:{" "}
-														<select
-															style={{ textTransform: "capitalize" }}
-															onChange={(e) => {
-																var chosenColorImageHelper =
-																	i.allProductDetailsIncluded.productAttributes.filter(
-																		(iii) => iii.color === e.target.value,
-																	)[0];
-
-																var chosenColorImage =
-																	chosenColorImageHelper &&
-																	chosenColorImageHelper.productImages &&
-																	chosenColorImageHelper.productImages[0] &&
-																	chosenColorImageHelper.productImages[0].url;
-
-																var chosenAttribute2 =
-																	i.allProductDetailsIncluded.productAttributes.filter(
-																		(iii) =>
-																			iii.color.toLowerCase() ===
-																				e.target.value.toLowerCase() &&
-																			iii.size.toLowerCase() === i.size,
-																	)[0];
-																changeColor(
-																	i.id,
-																	e.target.value,
-																	i.size,
-																	chosenColorImage,
-																	chosenAttribute2.quantity,
-																	i.color,
-																);
-															}}>
-															<option style={{ textTransform: "capitalize" }}>
-																{allColors &&
-																	allColors[
-																		allColors
-																			.map((ii) => ii.hexa)
-																			.indexOf(i.color)
-																	] &&
-																	allColors[
-																		allColors
-																			.map((ii) => ii.hexa)
-																			.indexOf(i.color)
-																	].color}
-															</option>
-
-															{uniqueProductColors &&
-																uniqueProductColors.map((cc, ii) => {
-																	return (
-																		<option key={ii} value={cc}>
-																			{allColors &&
-																				allColors[
-																					allColors
-																						.map((ii) => ii.hexa)
-																						.indexOf(cc)
-																				] &&
-																				allColors[
-																					allColors
-																						.map((ii) => ii.hexa)
-																						.indexOf(cc)
-																				].color}
-																		</option>
-																	);
-																})}
-														</select>
-													</span>
+													{i.categoryName}
 												</div>
+
+												<div
+													className=''
+													style={{
+														fontSize: "13px",
+														fontWeight: "bold",
+														marginTop: "6px",
+														marginLeft: "14px",
+														textTransform: "capitalize",
+														color: "#7b7b7b",
+													}}>
+													Size:{" "}
+													<select
+														className='w-50 ml-2'
+														style={{
+															textTransform: "uppercase",
+															border: "1px solid lightgrey",
+														}}
+														onChange={(e) => {
+															var chosenAttribute2 =
+																i.allProductDetailsIncluded.productAttributes.filter(
+																	(iii) =>
+																		iii.color === i.color &&
+																		iii.size.toLowerCase() ===
+																			e.target.value.toLowerCase(),
+																)[0];
+															changeSize(
+																i.id,
+																e.target.value,
+																i.color,
+																chosenAttribute2.quantity,
+																i.size,
+															);
+														}}>
+														<option style={{ textTransform: "capitalize" }}>
+															{i.size}
+														</option>
+
+														{uniqueProductSizes &&
+															uniqueProductSizes.map((ss, ii) => {
+																return (
+																	<option key={ii} value={ss}>
+																		{ss}
+																	</option>
+																);
+															})}
+													</select>
+												</div>
+
+												<div
+													className=''
+													style={{
+														fontSize: "13px",
+														fontWeight: "bold",
+														marginTop: "3px",
+														marginLeft: "14px",
+														textTransform: "capitalize",
+														color: "#7b7b7b",
+													}}>
+													Color:{" "}
+													<select
+														className='w-50'
+														style={{
+															textTransform: "uppercase",
+															border: "1px solid lightgrey",
+														}}
+														onChange={(e) => {
+															var chosenColorImageHelper =
+																i.allProductDetailsIncluded.productAttributes.filter(
+																	(iii) => iii.color === e.target.value,
+																)[0];
+
+															var chosenColorImage =
+																chosenColorImageHelper &&
+																chosenColorImageHelper.productImages &&
+																chosenColorImageHelper.productImages[0] &&
+																chosenColorImageHelper.productImages[0].url;
+
+															var chosenAttribute2 =
+																i.allProductDetailsIncluded.productAttributes.filter(
+																	(iii) =>
+																		iii.color.toLowerCase() ===
+																			e.target.value.toLowerCase() &&
+																		iii.size.toLowerCase() === i.size,
+																)[0];
+															changeColor(
+																i.id,
+																e.target.value,
+																i.size,
+																chosenColorImage,
+																chosenAttribute2.quantity,
+																i.color,
+															);
+														}}>
+														<option style={{ textTransform: "capitalize" }}>
+															{allColors &&
+																allColors[
+																	allColors
+																		.map((ii) => ii.hexa)
+																		.indexOf(i.color)
+																] &&
+																allColors[
+																	allColors
+																		.map((ii) => ii.hexa)
+																		.indexOf(i.color)
+																].color}
+														</option>
+
+														{uniqueProductColors &&
+															uniqueProductColors.map((cc, ii) => {
+																return (
+																	<option key={ii} value={cc}>
+																		{allColors &&
+																			allColors[
+																				allColors
+																					.map((ii) => ii.hexa)
+																					.indexOf(cc)
+																			] &&
+																			allColors[
+																				allColors
+																					.map((ii) => ii.hexa)
+																					.indexOf(cc)
+																			].color}
+																	</option>
+																);
+															})}
+													</select>
+												</div>
+
+												<div
+													style={{
+														fontSize: "14px",
+														fontWeight: "bold",
+														marginTop: "6px",
+														marginLeft: "14px",
+														textTransform: "capitalize",
+														color: "#7b7b7b",
+													}}>
+													{Number(i.priceAfterDiscount * i.amount).toFixed(2)}{" "}
+													EGP
+												</div>
+
 												<div
 													style={{
 														fontSize: "12px",
@@ -308,57 +351,99 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 												</div>
 
 												{chosenLanguage === "Arabic" ? (
-													<span
+													<div
 														className='buttons-up-down'
-														style={{ color: "#282491", marginTop: "10px" }}>
+														style={{
+															fontSize: "12px",
+															fontWeight: "bold",
+															marginLeft: "15px",
+															marginTop: "10px",
+															textTransform: "capitalize",
+															color: "darkgreen",
+														}}>
 														<button
+															type='button'
+															className='amount-btn'
+															style={{
+																border: "lightgrey solid 1px",
+																backgroundColor: "white",
+																color: "darkgrey",
+																padding: "8px 13px",
+															}}
+															onClick={decrease}>
+															<FaMinus />
+														</button>
+														<span
+															className='amount my-auto mx-auto'
+															style={{
+																border: "lightgrey solid 1px",
+																backgroundColor: "white",
+																color: "black",
+																padding: "9px 14px 11px 14px",
+															}}>
+															{i.amount}
+														</span>
+														<button
+															style={{
+																border: "lightgrey solid 1px",
+																backgroundColor: "white",
+																color: "darkgrey",
+																padding: "8px 13px",
+															}}
 															type='button'
 															className='amount-btn'
 															onClick={increase}>
 															<FaPlus />
 														</button>
-														<span className='amount'>{i.amount}</span>
-
-														<button
-															type='button'
-															className='amount-btn'
-															onClick={decrease}>
-															<FaMinus />
-														</button>
-														<span style={{ color: "black" }}>الكمية</span>
-													</span>
+													</div>
 												) : (
-													<span
+													<div
 														className='buttons-up-down'
-														style={{ color: "#282491", marginTop: "10px" }}>
-														<span style={{ color: "black" }}>Quantity</span>
+														style={{
+															fontSize: "12px",
+															fontWeight: "bold",
+															marginLeft: "15px",
+															marginTop: "10px",
+															textTransform: "capitalize",
+															color: "darkgreen",
+														}}>
 														<button
 															type='button'
 															className='amount-btn'
+															style={{
+																border: "lightgrey solid 1px",
+																backgroundColor: "white",
+																color: "darkgrey",
+																padding: "8px 13px",
+															}}
 															onClick={decrease}>
 															<FaMinus />
 														</button>
-														<span className='amount'>{i.amount}</span>
+														<span
+															className='amount my-auto mx-auto'
+															style={{
+																border: "lightgrey solid 1px",
+																backgroundColor: "white",
+																color: "black",
+																padding: "9px 14px 11px 14px",
+															}}>
+															{i.amount}
+														</span>
 														<button
+															style={{
+																border: "lightgrey solid 1px",
+																backgroundColor: "white",
+																color: "darkgrey",
+																padding: "8px 13px",
+															}}
 															type='button'
 															className='amount-btn'
 															onClick={increase}>
 															<FaPlus />
 														</button>
-													</span>
+													</div>
 												)}
 
-												<div
-													style={{
-														fontSize: "0.9rem",
-														fontWeight: "bold",
-														letterSpacing: "3px",
-														color: "#8d9124",
-														marginLeft: "70px",
-														marginTop: "10px",
-													}}>
-													{i.priceAfterDiscount * i.amount} L.E.
-												</div>
 												<button
 													type='button'
 													style={{
@@ -377,19 +462,22 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 									</div>
 								);
 							})}
-						<div className='link-container' onClick={closeSidebar}>
-							<div className='link-btn-wrapper'>
-								<Link
-									to='/our-products'
-									className='link-btn btn-block w-75 mx-auto text-center py-2'
-									onClick={() =>
-										window.scrollTo({ top: 0, behavior: "smooth" })
-									}>
-									continue shopping
-								</Link>
-							</div>
 
-							<br />
+						<div
+							className='row'
+							style={{
+								fontSize: "14px",
+								fontWeight: "bold",
+								marginLeft: "14px",
+								marginTop: "3px",
+								textTransform: "capitalize",
+							}}>
+							<div className='col-6'>TOTAL AMOUNT</div>
+							<div className='col-6'>{Number(total_amount).toFixed(2)} EGP</div>
+						</div>
+						<hr />
+
+						<div className='link-container' onClick={closeSidebar}>
 							<div className='link-btn-wrapper'>
 								<Link
 									style={{ background: "#007db5" }}
@@ -399,6 +487,18 @@ const NavbarBottom = ({ history, chosenLanguage }) => {
 										window.scrollTo({ top: 0, behavior: "smooth" })
 									}>
 									Check Out
+								</Link>
+							</div>
+
+							<div className='link-btn-wrapper mt-2'>
+								<Link
+									style={{ background: "#5d5d5d" }}
+									to='/our-products'
+									className='link-btn btn-block w-75 mx-auto text-center py-2'
+									onClick={() =>
+										window.scrollTo({ top: 0, behavior: "smooth" })
+									}>
+									continue shopping
 								</Link>
 							</div>
 						</div>
@@ -711,7 +811,7 @@ const SideWrapper = styled.nav`
 	position: fixed;
 	top: 0px;
 	right: 0;
-	width: 24%;
+	width: 35%;
 	height: 100%;
 	background: var(--mainGrey);
 	z-index: 100;
@@ -761,29 +861,9 @@ const SideWrapper = styled.nav`
 
 	.cellPhoneLayout {
 		display: block;
-		.buttons-up-down {
-			margin-left: 30px;
-			display: grid;
-			font-size: 12px;
-			width: 100px;
-			font-weight: bold;
-			justify-items: center;
-			grid-template-columns: repeat(4, 1fr);
-			align-items: center;
-			h2 {
-				margin-bottom: 0;
-			}
-			button {
-				background: transparent;
-				border-color: transparent;
-				cursor: pointer;
-				padding: 1rem 0;
-				width: 2rem;
-				height: 1rem;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-			}
-		}
+	}
+
+	@media (max-width: 1200px) {
+		width: 60%;
 	}
 `;

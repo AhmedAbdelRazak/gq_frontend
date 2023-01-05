@@ -32,6 +32,9 @@ const HeroComponent2 = () => {
 	useEffect(() => {
 		gettingAllHomes();
 		localStorage.removeItem("Cleared");
+		return () => {
+			setHomePage([]);
+		};
 		// eslint-disable-next-line
 	}, []);
 
@@ -48,8 +51,6 @@ const HeroComponent2 = () => {
 		pauseOnHover: true,
 		adaptiveHeight: true,
 	};
-
-	console.log(photoCell2, "photo");
 
 	return (
 		<HeroComponent2Wrapper className='mx-auto text-center mt-5'>

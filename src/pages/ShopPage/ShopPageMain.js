@@ -60,7 +60,6 @@ const ShopPageMain = ({ chosenLanguage }) => {
 	};
 
 	useEffect(() => {
-		gettingAllColors();
 		gettingAllProducts(
 			filterBy,
 			urlFilters,
@@ -75,6 +74,19 @@ const ShopPageMain = ({ chosenLanguage }) => {
 			setMaxPrice,
 			usedFilters,
 		);
+		gettingAllColors();
+
+		return () => {
+			setAllProducts([]);
+			// setAllCategories([])
+			// setAllSubcategories([])
+			// setAllSizes([])
+			// setAllProductColors([])
+			// setAllGenders([])
+			// setSelectedPriceRange("")
+			// setMinPrice("")
+			// setMaxPrice("")
+		};
 
 		// eslint-disable-next-line
 	}, [usedFilters]);

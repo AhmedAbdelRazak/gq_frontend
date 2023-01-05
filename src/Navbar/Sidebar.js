@@ -83,7 +83,7 @@ const Sidebar = ({ language, setLanguage, history, allGenders }) => {
 							className='sidebar-link'
 							onClick={isSidebarOpen2 ? closeSidebar2 : openSidebar2}>
 							<Fragment>
-								<i class='fas fa-box-open fontawesome-icons'></i>
+								<i className='fas fa-box-open fontawesome-icons'></i>
 
 								<>
 									{language === "Arabic" ? (
@@ -104,7 +104,7 @@ const Sidebar = ({ language, setLanguage, history, allGenders }) => {
 							className='sidebar-link'
 							onClick={isSidebarOpen2 ? closeSidebar2 : openSidebar2}>
 							<Fragment>
-								<i class='fas fa-comment-alt fontawesome-icons'></i>
+								<i className='fas fa-comment-alt fontawesome-icons'></i>
 								<>
 									{language === "Arabic" ? (
 										<span className='sidebarArabic'>من نحن</span>
@@ -124,7 +124,7 @@ const Sidebar = ({ language, setLanguage, history, allGenders }) => {
 							className='sidebar-link'
 							onClick={isSidebarOpen2 ? closeSidebar2 : openSidebar2}>
 							<Fragment>
-								<i class='fas fa-envelope fontawesome-icons'></i>
+								<i className='fas fa-envelope fontawesome-icons'></i>
 								<>
 									{language === "Arabic" ? (
 										<span className='sidebarArabic'>اتصل بنا</span>
@@ -291,10 +291,10 @@ const SideWrapper = styled.nav`
 	height: 100%;
 	background: var(--mainGrey);
 	z-index: 500;
-	border-right: 3px solid var(--darkGrey);
+	border-right: 3px solid lightgrey;
 	transition: 0.5s;
 	transform: ${(props) => (props.show ? "translateX(0)" : "translateX(-100%)")};
-	top: ${(props) => (props.show2 ? "60px" : "101px")};
+	top: ${(props) => (props.show2 ? "66px" : "107px")};
 	/*transform: translateX(-100%);*/ /**this will hide the side bar */
 	ul {
 		list-style-type: none;

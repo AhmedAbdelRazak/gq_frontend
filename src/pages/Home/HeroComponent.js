@@ -27,6 +27,9 @@ const HeroComponent = () => {
 	useEffect(() => {
 		gettingAllHomes();
 		localStorage.removeItem("Cleared");
+		return () => {
+			setHomePage([]);
+		};
 		// eslint-disable-next-line
 	}, []);
 
@@ -287,6 +290,12 @@ const HeroComponentWrapper = styled.div`
 			-webkit-font-smoothing: antialiased;
 			-moz-osx-font-smoothing: grayscale;
 			display: none;
+		}
+	}
+
+	@media (max-width: 600px) {
+		.textPhone {
+			margin: 0px !important;
 		}
 	}
 `;

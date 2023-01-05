@@ -216,21 +216,6 @@ const AceReceiving = () => {
 		});
 	};
 
-	var habal = {
-		thumbnailImage: [
-			{
-				public_id: "GQ_B2B/1664017758371",
-				url: "https://res.cloudinary.com/infiniteapps/image/upload/v1664017759/GQ_B2B/1664017758371.jpg",
-				images: [
-					{
-						public_id: "GQ_B2B/1664017758371",
-						url: "https://res.cloudinary.com/infiniteapps/image/upload/v1664017759/GQ_B2B/1664017758371.jpg",
-					},
-				],
-			},
-		],
-	};
-
 	return (
 		<AceReceivingWrapper show={AdminMenuStatus}>
 			{!collapsed ? (
@@ -369,7 +354,7 @@ const AceReceiving = () => {
 									Items
 								</div>
 								<div>
-									<strong>Quantity Onhand (G&Q Storage):</strong>{" "}
+									<strong>Quantity Onhand (G&Q Hub):</strong>{" "}
 									{chosenProduct && chosenProduct.quantity
 										? chosenProduct.quantity
 										: 0}{" "}
@@ -427,7 +412,7 @@ const AceReceiving = () => {
 											You can count the items again for QA purposes.
 											<br />
 											<br />
-											Overall Quantity Onhand (G&Q Storage):{" "}
+											Overall Quantity Onhand (G&Q Hub):{" "}
 											<span style={{ color: "darkgreen" }}>
 												{chosenProduct && chosenProduct.quantity} items.
 											</span>
@@ -442,7 +427,7 @@ const AceReceiving = () => {
 												{quantityToBeReceived} items.
 											</span>
 											<br />
-											Overall Quantity Onhand (G&Q Storage) After Receiving:{" "}
+											Overall Quantity Onhand (G&Q Hub) After Receiving:{" "}
 											<span style={{ color: "darkgreen" }}>
 												{chosenProduct &&
 													Number(chosenProduct.quantity) -
@@ -485,7 +470,7 @@ const AceReceiving = () => {
 											fontSize: "1rem",
 											color: "red",
 										}}>
-										Unfortunately, The manufactured items at G&Q Storage is less
+										Unfortunately, The manufactured items at G&Q Hub is less
 										than the quantity you want to receive.
 									</div>
 								) : null}

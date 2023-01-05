@@ -156,6 +156,7 @@ const CardInHomePage = ({
 						showThumbs={false}>
 						{item.thumbnailImage[0].images.map((i) => (
 							<Link
+								key={i.public_id}
 								to={`/product/${product.category.categorySlug}/${product.slug}/${product._id}`}
 								onClick={() => {
 									window.scrollTo({ top: 0, behavior: "smooth" });
@@ -165,7 +166,6 @@ const CardInHomePage = ({
 									className=' rounded mx-auto d-block product-imgs'
 									alt={item.productName}
 									src={i.url}
-									key={i.public_id}
 									style={{
 										height: "50vh",
 										width: "100%",

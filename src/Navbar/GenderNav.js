@@ -32,6 +32,9 @@ const GenderNav = () => {
 
 	useEffect(() => {
 		gettingAllProducts();
+		return () => {
+			setAllGenders([]);
+		};
 		// eslint-disable-next-line
 	}, []);
 

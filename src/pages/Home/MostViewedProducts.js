@@ -38,6 +38,9 @@ const MostViewedProducts = ({ chosenLanguage }) => {
 
 	useEffect(() => {
 		loadFilteredResultsMostViewed();
+		return () => {
+			setProductsByMostViews([]);
+		};
 		// eslint-disable-next-line
 	}, []);
 	const settings = {
@@ -173,6 +176,10 @@ const MostViewedProductsWrapper = styled.div`
 			/* letter-spacing: 7px; */
 			font-weight: bold;
 			/* text-shadow: 3px 3px 10px; */
+		}
+
+		.slick-dots {
+			display: none !important;
 		}
 	}
 `;
