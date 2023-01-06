@@ -110,8 +110,6 @@ const Home = ({ chosenLanguage }) => {
 					chosenLanguage={chosenLanguage}
 				/>
 			</div>
-			<hr />
-			<br />
 			<HeroComponent2 />
 			{/* <CategoryWrapperComp
 				chosenLanguage={chosenLanguage}
@@ -124,7 +122,6 @@ const Home = ({ chosenLanguage }) => {
 					allSubcategories={allSubcategories}
 				/>
 			</div> */}
-			<br />
 			<MostViewedProducts chosenLanguage={chosenLanguage} />
 
 			<HeroComponent3 />

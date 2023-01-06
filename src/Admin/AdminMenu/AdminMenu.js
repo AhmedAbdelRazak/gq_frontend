@@ -409,6 +409,9 @@ const AdminMenu = ({
 		if (window.innerWidth <= 1400) {
 			setCollapsed(true);
 			setAdminMenuStatus(true);
+		} else if (fromPage === "AceStoreOrderTaking") {
+			setCollapsed(true);
+			setAdminMenuStatus(true);
 		} else {
 			setCollapsed(false);
 			setAdminMenuStatus(false);
