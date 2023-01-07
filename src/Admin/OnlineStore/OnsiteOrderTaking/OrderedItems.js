@@ -12,6 +12,7 @@ const OrderedItems = ({
 	allProductsAll,
 	allColors,
 	allSubSKUs,
+	setChosenSubSKUs,
 	productsTotalAmount,
 }) => {
 	return (
@@ -41,11 +42,24 @@ const OrderedItems = ({
 											.filter((product) => product._id === p.productId)[0]
 											.productAttributes.map((iiii) => iiii.size);
 
+									const allProductColors =
+										allProductsAll &&
+										allProductsAll
+											.filter((product) => product._id === p.productId)[0]
+											.productAttributes.map((iiii) => iiii.color);
+
 									var mergedSizes = [].concat.apply([], allSizes);
+									var mergedColors = [].concat.apply([], allProductColors);
 
 									let uniqueSizes = [
 										...new Map(
 											mergedSizes.map((item) => [item, item]),
+										).values(),
+									];
+
+									let uniqueColors = [
+										...new Map(
+											mergedColors.map((item) => [item, item]),
 										).values(),
 									];
 
@@ -67,22 +81,109 @@ const OrderedItems = ({
 													{chosenProducts[i] && chosenProducts[i].productName}
 												</div>
 												<div>{p.SubSKU}</div>
-												<div>
-													{allColors[
-														allColors.map((i) => i.hexa).indexOf(p.SubSKUColor)
-													]
-														? allColors[
-																allColors
-																	.map((i) => i.hexa)
-																	.indexOf(p.SubSKUColor)
-														  ].color
-														: p.SubSKUColor}
-												</div>
+
 												<select
-													className='py-2 mb-3'
+													className='py-1 mb-3 mr-2'
 													style={{
 														textTransform: "uppercase",
-														minWidth: "50%",
+														minWidth: "40%",
+														border: "lightgrey solid 1px",
+													}}
+													onChange={(e) => {
+														var updatedProduct1 =
+															allProductsAll &&
+															allProductsAll.filter(
+																(product) => product._id === p.productId,
+															)[0];
+														var updatedProduct2 =
+															updatedProduct1.productAttributes.filter(
+																(att) =>
+																	att.size === p.SubSKUSize &&
+																	att.color === e.target.value,
+															)[0];
+
+														const index = chosenProductWithVariables.findIndex(
+															(object) => {
+																return (
+																	object.productId === p.productId &&
+																	object.SubSKU === p.SubSKU
+																);
+															},
+														);
+
+														if (index !== -1) {
+															chosenProductWithVariables[index].SubSKUColor =
+																e.target.value;
+
+															chosenProducts[index].color = e.target.value;
+
+															chosenProductWithVariables[index].quantity =
+																updatedProduct2.quantity;
+
+															chosenProducts[index].quantity =
+																updatedProduct2.quantity;
+
+															chosenProductWithVariables[
+																index
+															].receivedQuantity =
+																updatedProduct2.receivedQuantity
+																	? updatedProduct2.receivedQuantity
+																	: 0;
+
+															chosenProducts[index].receivedQuantity =
+																updatedProduct2.receivedQuantity
+																	? updatedProduct2.receivedQuantity
+																	: 0;
+
+															chosenProductWithVariables[index].SubSKU =
+																updatedProduct2.SubSKU;
+
+															chosenProducts[index].SubSKU =
+																updatedProduct2.SubSKU;
+
+															chosenSubSKUs[index] = updatedProduct2.SubSKU;
+
+															setChosenProductWithVariables([
+																...chosenProductWithVariables,
+															]);
+															setChosenProducts([...chosenProducts]);
+															setChosenSubSKUs([...chosenSubSKUs]);
+														}
+													}}>
+													<option style={{ textTransform: "capitalize" }}>
+														{allColors[
+															allColors
+																.map((i) => i.hexa)
+																.indexOf(p.SubSKUColor)
+														]
+															? allColors[
+																	allColors
+																		.map((i) => i.hexa)
+																		.indexOf(p.SubSKUColor)
+															  ].color
+															: p.SubSKUColor}
+													</option>
+
+													{uniqueColors &&
+														uniqueColors.map((cc, iii) => {
+															return (
+																<option key={iii} value={cc}>
+																	{allColors[
+																		allColors.map((i) => i.hexa).indexOf(cc)
+																	]
+																		? allColors[
+																				allColors.map((i) => i.hexa).indexOf(cc)
+																		  ].color
+																		: cc}
+																</option>
+															);
+														})}
+												</select>
+												<select
+													className='py-1 mb-3'
+													style={{
+														textTransform: "uppercase",
+														minWidth: "40%",
 														border: "lightgrey solid 1px",
 													}}
 													onChange={(e) => {
@@ -97,7 +198,6 @@ const OrderedItems = ({
 																	att.color === p.SubSKUColor &&
 																	att.size === e.target.value,
 															)[0];
-														console.log(updatedProduct2, "updatedProduct2");
 
 														const index = chosenProductWithVariables.findIndex(
 															(object) => {
@@ -138,10 +238,13 @@ const OrderedItems = ({
 															chosenProducts[index].SubSKU =
 																updatedProduct2.SubSKU;
 
+															chosenSubSKUs[index] = updatedProduct2.SubSKU;
+
 															setChosenProductWithVariables([
 																...chosenProductWithVariables,
 															]);
 															setChosenProducts([...chosenProducts]);
+															setChosenSubSKUs([...chosenSubSKUs]);
 														}
 													}}>
 													<option style={{ textTransform: "capitalize" }}>
@@ -260,6 +363,11 @@ const OrderedItems = ({
 											</div>
 											<div className='col-3 mt-1'>
 												{Number(p.pickedPrice).toFixed(2)} EGP
+												<br />
+												{Number(
+													Number(p.pickedPrice) * Number(p.OrderedQty),
+												).toFixed(2)}{" "}
+												EGP
 											</div>
 										</div>
 									);

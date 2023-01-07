@@ -16,6 +16,7 @@ import { DatePicker } from "antd";
 import "antd/dist/antd.css"; // or 'antd/dist/antd.less'
 import moment from "moment";
 import FiltersModal from "./FiltersModal";
+import DiscountModal from "./DiscountModal";
 
 const OnsiteOrderTaking = () => {
 	// eslint-disable-next-line
@@ -25,6 +26,7 @@ const OnsiteOrderTaking = () => {
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
 	const [modalVisible, setModalVisible] = useState(false);
+	const [modalVisible2, setModalVisible2] = useState(false);
 	const [allProducts, setAllProducts] = useState([]);
 	const [allProductsAll, setAllProductsAll] = useState([]);
 	const [allCategories, setAllCategories] = useState([]);
@@ -40,6 +42,8 @@ const OnsiteOrderTaking = () => {
 	const [chosenProductWithVariables, setChosenProductWithVariables] = useState(
 		[],
 	);
+	const [discountStatus, setDiscountStatus] = useState("");
+	const [discountBy, setDiscountBy] = useState(0);
 
 	const [currentPage, setCurrentPage] = useState(1);
 	// eslint-disable-next-line
@@ -313,21 +317,12 @@ const OnsiteOrderTaking = () => {
 			.map((i) => Number(i.OrderedQty) * Number(i.pickedPrice))
 			.reduce((a, b) => a + b, 0);
 
-	// eslint-disable-next-line
-	const arrayOfColorsGender = ["#c4c4ff", "#ffc4c4"];
-
-	// eslint-disable-next-line
-	const arrayOfColorsCategories = [
-		"#00ffff",
-		"#00ff80",
-		"#ffc4e2",
-		"#c4e2ff",
-		"#e6e600",
-		"#ffe2c4",
-		"",
-		"",
-		"",
-	];
+	let productsTotalAmountAfterDiscount =
+		discountStatus === "Cash"
+			? Number(productsTotalAmount - discountBy).toFixed(2)
+			: Number(
+					productsTotalAmount - productsTotalAmount * (discountBy / 100),
+			  ).toFixed(2);
 
 	return (
 		<OnsiteOrderTakingWrapper show={AdminMenuStatus}>
@@ -389,6 +384,7 @@ const OnsiteOrderTaking = () => {
 								<OrderedItems
 									chosenProductWithVariables={chosenProductWithVariables}
 									chosenSubSKUs={chosenSubSKUs}
+									setChosenSubSKUs={setChosenSubSKUs}
 									chosenProducts={chosenProducts}
 									setChosenProductWithVariables={setChosenProductWithVariables}
 									setChosenProducts={setChosenProducts}
@@ -405,6 +401,15 @@ const OnsiteOrderTaking = () => {
 									allGenders={allGenders}
 									setGenderFilter={setGenderFilter}
 									setCategoryFilter={setCategoryFilter}
+								/>
+
+								<DiscountModal
+									modalVisible={modalVisible2}
+									setModalVisible={setModalVisible2}
+									discountBy={discountBy}
+									setDiscountBy={setDiscountBy}
+									setDiscountStatus={setDiscountStatus}
+									discountStatus={discountStatus}
 								/>
 
 								<ProductsPrview
@@ -444,7 +449,14 @@ const OnsiteOrderTaking = () => {
 											<div style={{ marginLeft: "100px", fontSize: "12px" }}>
 												<div style={{ color: "#625e5e" }}>
 													Discounts{" "}
-													<span style={{ marginLeft: "20px" }}>0.00 EGP</span>
+													<span style={{ marginLeft: "20px" }}>
+														{discountStatus === "Cash"
+															? Number(discountBy).toFixed(2)
+															: Number(
+																	productsTotalAmount * (discountBy / 100),
+															  ).toFixed(2)}{" "}
+														EGP
+													</span>
 												</div>
 												<div style={{ color: "#625e5e" }}>
 													Coupons{" "}
@@ -461,10 +473,32 @@ const OnsiteOrderTaking = () => {
 													fontWeight: "bolder",
 												}}>
 												Total{" "}
-												<strong
-													style={{ fontSize: "1.3rem", marginLeft: "40px" }}>
-													{Number(productsTotalAmount).toFixed(2)} EGP
-												</strong>
+												{discountStatus && discountBy > 0 ? (
+													<span>
+														<s style={{ color: "red" }}>
+															<strong
+																style={{
+																	fontSize: "1.3rem",
+																	marginLeft: "40px",
+																}}>
+																{Number(productsTotalAmount).toFixed(2)} EGP
+															</strong>
+														</s>
+														<strong
+															className='ml-3'
+															style={{ fontSize: "1.3rem" }}>
+															{Number(productsTotalAmountAfterDiscount).toFixed(
+																2,
+															)}{" "}
+															EGP
+														</strong>
+													</span>
+												) : (
+													<strong
+														style={{ fontSize: "1.3rem", marginLeft: "40px" }}>
+														{Number(productsTotalAmount).toFixed(2)} EGP
+													</strong>
+												)}
 											</div>
 										</div>
 
@@ -488,6 +522,11 @@ const OnsiteOrderTaking = () => {
 													</button>
 													<br />
 													<button
+														onClick={() => {
+															setChosenSubSKUs([]);
+															setChosenProductWithVariables([]);
+															setChosenProducts([]);
+														}}
 														style={{
 															background: "darkred",
 															border: "none",
@@ -504,6 +543,9 @@ const OnsiteOrderTaking = () => {
 
 												<div className='col-5'>
 													<button
+														onClick={() => {
+															setModalVisible2(true);
+														}}
 														style={{
 															background: "black",
 															border: "none",
