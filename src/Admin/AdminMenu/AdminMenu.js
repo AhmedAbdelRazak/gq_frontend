@@ -346,8 +346,8 @@ const items = [
 		),
 
 		getItem(
-			<Link to='/admin/inventory-report'>Inventory Report</Link>,
-			"/admin/inventory-report",
+			<Link to='/admin/ace-inventory-report'>Inventory Report</Link>,
+			"/admin/ace-inventory-report",
 		),
 
 		getItem(
@@ -596,7 +596,9 @@ const AdminMenu = ({
 						? "/admin/offline-order-taking"
 						: fromPage === "PrintBarcodes"
 						? "/admin/print-barcodes"
-						: "/admin/dashboard"
+						: (fromPage = "AceInventory"
+								? "/admin/ace-inventory-report"
+								: "/admin/dashboard")
 				}
 				defaultOpenKeys={[
 					"sub1",

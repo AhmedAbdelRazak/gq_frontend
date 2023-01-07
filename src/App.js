@@ -98,6 +98,7 @@ import RetExchPolicy from "./pages/RetExchPolicy";
 import OnsiteOrderTaking from "./Admin/OnlineStore/OnsiteOrderTaking/OnsiteOrderTaking";
 import PrintBarcodes from "./Admin/OnlineStore/PrintBarcodes/PrintBarcodes";
 import SingleBarcodePage from "./Admin/OnlineStore/PrintBarcodes/SingleBarcodePage";
+import Inventory from "./Admin/OnlineStore/Inventory/Inventory";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -362,6 +363,11 @@ const App = () => {
 					path='/admin/ace-receiving'
 					exact
 					component={AceReceiving}
+				/>
+				<AdminRoute
+					path='/admin/ace-inventory-report'
+					exact
+					component={Inventory}
 				/>
 				<AdminRoute
 					path='/admin/offline-order-taking'

@@ -4,21 +4,27 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 // eslint-disable-next-line
 import { isAuthenticated } from "../../../auth";
+// eslint-disable-next-line
 import AdminMenu from "../../AdminMenu/AdminMenu";
 import DarkBG from "../../AdminMenu/DarkBG";
 import { getColors, getProducts } from "../../apiAdmin";
-import { Select } from "antd";
-import { FaMinus, FaPlus } from "react-icons/fa";
-import LogoImage from "../../../GeneralImages/ace-logo.png";
-
-const { Option } = Select;
+import LogoImage from "../../../GeneralImages/Logo2.png";
+import { FilterFilled } from "@ant-design/icons";
+import ProductsPrview from "./ProductsPreview";
+import OrderedItems from "./OrderedItems";
+import { DatePicker } from "antd";
+import "antd/dist/antd.css"; // or 'antd/dist/antd.less'
+import moment from "moment";
+import FiltersModal from "./FiltersModal";
 
 const OnsiteOrderTaking = () => {
+	// eslint-disable-next-line
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [offset, setOffset] = useState(0);
 	// eslint-disable-next-line
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
+	const [modalVisible, setModalVisible] = useState(false);
 	const [allProducts, setAllProducts] = useState([]);
 	const [allProductsAll, setAllProductsAll] = useState([]);
 	const [allCategories, setAllCategories] = useState([]);
@@ -34,6 +40,10 @@ const OnsiteOrderTaking = () => {
 	const [chosenProductWithVariables, setChosenProductWithVariables] = useState(
 		[],
 	);
+
+	const [currentPage, setCurrentPage] = useState(1);
+	// eslint-disable-next-line
+	const [postsPerPage, setPostsPerPage] = useState(15);
 
 	// eslint-disable-next-line
 	const { user, token } = isAuthenticated();
@@ -286,6 +296,14 @@ const OnsiteOrderTaking = () => {
 		// eslint-disable-next-line
 	}, [chosenSubSKUs, genderFilter, categoryFilter]);
 
+	// Get current posts
+	const indexOfLastPost = currentPage * postsPerPage;
+	const indexOfFirstPost = indexOfLastPost - postsPerPage;
+	const currentPosts = allProducts.slice(indexOfFirstPost, indexOfLastPost);
+
+	// Change page
+	const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
 	// console.log(allProducts, "allProducts");
 	// console.log(allCategories, "allCategories");
 
@@ -295,7 +313,10 @@ const OnsiteOrderTaking = () => {
 			.map((i) => Number(i.OrderedQty) * Number(i.pickedPrice))
 			.reduce((a, b) => a + b, 0);
 
+	// eslint-disable-next-line
 	const arrayOfColorsGender = ["#c4c4ff", "#ffc4c4"];
+
+	// eslint-disable-next-line
 	const arrayOfColorsCategories = [
 		"#00ffff",
 		"#00ff80",
@@ -313,8 +334,8 @@ const OnsiteOrderTaking = () => {
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}
-			<div className='grid-container'>
-				<div className=''>
+			<div className=''>
+				{/* <div className=''>
 					<AdminMenu
 						fromPage='AceStoreOrderTaking'
 						AdminMenuStatus={AdminMenuStatus}
@@ -322,497 +343,323 @@ const OnsiteOrderTaking = () => {
 						collapsed={collapsed}
 						setCollapsed={setCollapsed}
 					/>
+				</div> */}
+				<div style={{ padding: "30px 0px", background: "rgb(198,14,14)" }}>
+					<img
+						className='imgLogo2'
+						src={LogoImage}
+						alt='Infinite Apps'
+						style={{
+							width: "80px",
+							position: "absolute",
+							top: "10px",
+							padding: "0px",
+							left: "20px",
+							background: "#c60e0e",
+							border: "#c60e0e solid 1px",
+						}}
+					/>
+					<span
+						style={{
+							fontSize: "1.2rem",
+							marginLeft: "42%",
+							color: "white",
+							position: "absolute",
+							top: "15px",
+						}}>
+						POS SYSTEM (Store #1)
+					</span>
 				</div>
-				<div className='mainContent'>
+
+				<div className='mainContent' style={{ margin: "0px 30px" }}>
 					<div className='col-md-12 '>
-						<div className='text-center mx-auto'>
-							<h3 className='text-center' style={{ fontWeight: "bold" }}>
-								<img
-									src={LogoImage}
-									alt='GQ Logo'
-									style={{
-										width: "10%",
-										padding: "0px",
-										objectFit: "cover",
-									}}
-								/>
-								Onsite POS (Store #1)
-							</h3>
-						</div>
-						{allProductsAll &&
-							allProductsAll.length > 0 &&
-							allSubSKUs &&
-							allSubSKUs.length > 0 && (
-								<div className='form-group mx-3'>
-									<label>Scan Or Type Product SKUs</label>
-									<br />
-									<Select
-										style={{
-											color: "black",
-											textTransform: "capitalize",
-											width: "30%",
-										}}
-										showSearch
-										mode='multiple'
-										placeholder='Search to Select A SKU'
-										value={chosenSubSKUs}
-										allowClear
-										onChange={(value) => {
-											setChosenSubSKUs(value);
-										}}>
-										{allSubSKUs &&
-											allSubSKUs.map((subsku, i) => {
-												return (
-													<Option
-														key={i}
-														value={subsku}
-														style={{ textTransform: "uppercase" }}>
-														{subsku}
-													</Option>
-												);
-											})}
-									</Select>
-								</div>
-							)}
 						<div
 							className='posWrapper'
 							style={{
-								border: "2px lightgrey solid",
+								// border: "2px lightgrey solid",
 								borderRadius: "5px",
-								background: "white",
+								// background: "white",
 							}}>
-							<div className='row mx-3' style={{ minHeight: "720px" }}>
-								<div className='col-md-5 mt-3'>
-									<div>
-										<div className='row text-center'>
-											<div className='col-1'>#</div>
-											<div className='col-4'>Name</div>
-											<div className='col-4'>Quantity</div>
-											<div className='col-3'>Unit Price</div>
+							<div
+								className='row mx-3'
+								style={{
+									minHeight: "720px",
+									borderBottom: "3px grey solid",
+								}}>
+								<OrderedItems
+									chosenProductWithVariables={chosenProductWithVariables}
+									chosenSubSKUs={chosenSubSKUs}
+									chosenProducts={chosenProducts}
+									setChosenProductWithVariables={setChosenProductWithVariables}
+									setChosenProducts={setChosenProducts}
+									allProductsAll={allProductsAll}
+									allColors={allColors}
+									allSubSKUs={allSubSKUs}
+									productsTotalAmount={productsTotalAmount}
+								/>
+
+								<FiltersModal
+									modalVisible={modalVisible}
+									setModalVisible={setModalVisible}
+									allCategories={allCategories}
+									allGenders={allGenders}
+									setGenderFilter={setGenderFilter}
+									setCategoryFilter={setCategoryFilter}
+								/>
+
+								<ProductsPrview
+									allProducts={allProducts}
+									allProductsAll={allProductsAll}
+									allSubSKUs={allSubSKUs}
+									chosenProductWithVariables={chosenProductWithVariables}
+									chosenSubSKUs={chosenSubSKUs}
+									setChosenProductWithVariables={setChosenProductWithVariables}
+									setChosenSubSKUs={setChosenSubSKUs}
+									FilterFilled={FilterFilled}
+									postsPerPage={postsPerPage}
+									totalPosts={allProducts.length}
+									paginate={paginate}
+									currentPage={currentPage}
+									currentPosts={currentPosts}
+									setModalVisible={setModalVisible}
+								/>
+							</div>
+							<div className='row'>
+								<div className='col-6'>
+									<div className='row'>
+										<div className='col-6'>
+											<div
+												className='ml-5'
+												style={{
+													fontSize: "1.3rem",
+													marginTop: "20px",
+													fontWeight: "bolder",
+												}}>
+												Subtotal{" "}
+												<strong
+													style={{ fontSize: "1.1rem", marginLeft: "40px" }}>
+													{Number(productsTotalAmount).toFixed(2)} EGP
+												</strong>
+											</div>
+											<div style={{ marginLeft: "100px", fontSize: "12px" }}>
+												<div style={{ color: "#625e5e" }}>
+													Discounts{" "}
+													<span style={{ marginLeft: "20px" }}>0.00 EGP</span>
+												</div>
+												<div style={{ color: "#625e5e" }}>
+													Coupons{" "}
+													<span style={{ marginLeft: "20px" }}>0.00 EGP</span>
+												</div>
+											</div>
+											<div className='col-7 ml-5'>
+												<hr style={{ border: "1px grey solid" }} />
+											</div>
+											<div
+												className='ml-5 mt-2'
+												style={{
+													fontSize: "1.6rem",
+													fontWeight: "bolder",
+												}}>
+												Total{" "}
+												<strong
+													style={{ fontSize: "1.3rem", marginLeft: "40px" }}>
+													{Number(productsTotalAmount).toFixed(2)} EGP
+												</strong>
+											</div>
 										</div>
-										{chosenSubSKUs &&
-											chosenSubSKUs.length > 0 &&
-											chosenProducts &&
-											chosenProducts.length > 0 &&
-											allSubSKUs.length > 0 &&
-											chosenProductWithVariables.length > 0 &&
-											allProductsAll.length > 0 && (
-												<>
-													{chosenProductWithVariables &&
-														chosenProductWithVariables.map((p, i) => {
-															const allSizes =
-																allProductsAll &&
-																allProductsAll
-																	.filter(
-																		(product) => product._id === p.productId,
-																	)[0]
-																	.productAttributes.map((iiii) => iiii.size);
 
-															var mergedSizes = [].concat.apply([], allSizes);
-
-															let uniqueSizes = [
-																...new Map(
-																	mergedSizes.map((item) => [item, item]),
-																).values(),
-															];
-
-															return (
-																<div
-																	className='row text-center my-3'
-																	key={i}
-																	style={{
-																		borderBottom: "2px solid lightgrey",
-																	}}>
-																	<div className='col-1 mt-1'>{i + 1}</div>
-																	<div
-																		className='col-4 my-auto'
-																		style={{
-																			textTransform: "uppercase",
-																			fontSize: "12px",
-																		}}>
-																		<div>
-																			{chosenProducts[i] &&
-																				chosenProducts[i].productName}
-																		</div>
-																		<div>{p.SubSKU}</div>
-																		<div>
-																			{allColors[
-																				allColors
-																					.map((i) => i.hexa)
-																					.indexOf(p.SubSKUColor)
-																			]
-																				? allColors[
-																						allColors
-																							.map((i) => i.hexa)
-																							.indexOf(p.SubSKUColor)
-																				  ].color
-																				: p.SubSKUColor}
-																		</div>
-																		<select
-																			className='py-2 mb-3'
-																			style={{
-																				textTransform: "uppercase",
-																				minWidth: "50%",
-																				border: "lightgrey solid 1px",
-																			}}
-																			onChange={(e) => {
-																				var updatedProduct1 =
-																					allProductsAll &&
-																					allProductsAll.filter(
-																						(product) =>
-																							product._id === p.productId,
-																					)[0];
-																				var updatedProduct2 =
-																					updatedProduct1.productAttributes.filter(
-																						(att) =>
-																							att.color === p.SubSKUColor &&
-																							att.size === e.target.value,
-																					)[0];
-																				console.log(
-																					updatedProduct2,
-																					"updatedProduct2",
-																				);
-
-																				const index =
-																					chosenProductWithVariables.findIndex(
-																						(object) => {
-																							return (
-																								object.productId ===
-																									p.productId &&
-																								object.SubSKU === p.SubSKU
-																							);
-																						},
-																					);
-
-																				if (index !== -1) {
-																					chosenProductWithVariables[
-																						index
-																					].SubSKUSize = e.target.value;
-
-																					chosenProducts[index].size =
-																						e.target.value;
-
-																					chosenProductWithVariables[
-																						index
-																					].quantity = updatedProduct2.quantity;
-
-																					chosenProducts[index].quantity =
-																						updatedProduct2.quantity;
-
-																					chosenProductWithVariables[
-																						index
-																					].receivedQuantity =
-																						updatedProduct2.receivedQuantity
-																							? updatedProduct2.receivedQuantity
-																							: 0;
-
-																					chosenProducts[
-																						index
-																					].receivedQuantity =
-																						updatedProduct2.receivedQuantity
-																							? updatedProduct2.receivedQuantity
-																							: 0;
-
-																					chosenProductWithVariables[
-																						index
-																					].SubSKU = updatedProduct2.SubSKU;
-
-																					chosenProducts[index].SubSKU =
-																						updatedProduct2.SubSKU;
-
-																					setChosenProductWithVariables([
-																						...chosenProductWithVariables,
-																					]);
-																					setChosenProducts([
-																						...chosenProducts,
-																					]);
-																				}
-																			}}>
-																			<option
-																				style={{ textTransform: "capitalize" }}>
-																				{p.SubSKUSize}
-																			</option>
-
-																			{uniqueSizes &&
-																				uniqueSizes.map((ss, iii) => {
-																					return (
-																						<option key={iii} value={ss}>
-																							{ss}
-																						</option>
-																					);
-																				})}
-																		</select>
-																	</div>
-																	<div className='col-4 mt-1'>
-																		<button
-																			style={{
-																				border: "lightgrey solid 1px",
-																				backgroundColor: "white",
-																				color: "darkgrey",
-																				padding: "4px",
-																			}}
-																			type='button'
-																			className='amount-btn'
-																			onClick={() => {
-																				const index =
-																					chosenProductWithVariables.findIndex(
-																						(object) => {
-																							return (
-																								object.productId ===
-																									p.productId &&
-																								object.SubSKU === p.SubSKU
-																							);
-																						},
-																					);
-
-																				if (index !== -1) {
-																					chosenProductWithVariables[
-																						index
-																					].OrderedQty -= 1;
-
-																					setChosenProductWithVariables([
-																						...chosenProductWithVariables,
-																					]);
-																				}
-																			}}>
-																			<FaMinus />
-																		</button>
-																		<span
-																			className='amount'
-																			style={{
-																				border: "lightgrey solid 1px",
-																				backgroundColor: "white",
-																				color: "black",
-																				padding: "6px 5px",
-																			}}>
-																			{p.OrderedQty}
-																		</span>
-																		<button
-																			style={{
-																				border: "lightgrey solid 1px",
-																				backgroundColor: "white",
-																				color: "darkgrey",
-																				padding: "4px",
-																			}}
-																			type='button'
-																			className='amount-btn'
-																			onClick={() => {
-																				const index =
-																					chosenProductWithVariables.findIndex(
-																						(object) => {
-																							return (
-																								object.productId ===
-																									p.productId &&
-																								object.SubSKU === p.SubSKU
-																							);
-																						},
-																					);
-
-																				if (index !== -1) {
-																					chosenProductWithVariables[
-																						index
-																					].OrderedQty += 1;
-
-																					setChosenProductWithVariables([
-																						...chosenProductWithVariables,
-																					]);
-																				}
-																			}}>
-																			<FaPlus />
-																		</button>
-																		<div style={{ fontSize: "12px" }}>
-																			<strong>
-																				Current Active Stock In Ace Store:
-																			</strong>{" "}
-																			{chosenProducts &&
-																			chosenProducts[i] &&
-																			chosenProducts[i].receivedQuantity
-																				? chosenProducts[i].receivedQuantity
-																				: 0}{" "}
-																			Items{" "}
-																			{chosenProducts &&
-																			chosenProducts[i] &&
-																			chosenProducts[i].receivedQuantity <
-																				p.OrderedQty ? (
-																				<strong
-																					style={{
-																						color: "red",
-																						fontSize: "12px",
-																					}}>
-																					(No Enough Stock)
-																				</strong>
-																			) : null}
-																			<div
-																				style={{
-																					fontSize: "12px",
-																				}}>
-																				<strong>
-																					Quantity Onhand (G&Q Hub):
-																				</strong>{" "}
-																				{chosenProducts[i] &&
-																				chosenProducts[i].quantity
-																					? chosenProducts[i].quantity
-																					: 0}{" "}
-																				Items
-																			</div>
-																		</div>
-																	</div>
-																	<div className='col-3 mt-1'>
-																		{Number(p.pickedPrice).toFixed(2)} EGP
-																	</div>
-																</div>
-															);
-														})}
-												</>
-											)}
-									</div>
-									<div
-										className='ml-5'
-										style={{
-											fontSize: "1.1rem",
-											marginTop:
-												chosenProductWithVariables.length === 1
-													? "300px"
-													: chosenProductWithVariables.length === 2
-													? "200px"
-													: chosenProductWithVariables.length > 2
-													? "40px"
-													: "480px",
-										}}>
-										Total Amount:{" "}
-										<strong>
-											{Number(productsTotalAmount).toFixed(2)} EGP
-										</strong>
-									</div>
-									<div className='btn btn-primary ml-5 my-3'>
-										Receipt Preview & Print
-									</div>
-								</div>
-								<div
-									className='col-md-1 px-0 pb-5 '
-									style={{ background: "lightgrey" }}>
-									<div className='pt-2 mb-4'>
-										<span className='ml-2' style={{ fontWeight: "bold" }}>
-											GENDER
-										</span>
-										{allGenders &&
-											allGenders.map((g, i) => {
-												return (
-													<React.Fragment key={i}>
-														{" "}
-														<div
-															className=' w-100 mx-0'
-															style={{
-																padding: "15px 4px",
-																background: arrayOfColorsGender[i]
-																	? arrayOfColorsGender[i]
-																	: "red",
-																textTransform: "uppercase",
-																fontSize: "12px",
-																fontWeight: "bold",
-																cursor: "pointer",
-															}}
-															onClick={() =>
-																setGenderFilter(g.genderName.toLowerCase())
-															}>
-															{g.genderName}
-														</div>
-													</React.Fragment>
-												);
-											})}
-									</div>
-									<div>
-										<span className='ml-2' style={{ fontWeight: "bold" }}>
-											CATEGORIES
-										</span>
-
-										{allCategories &&
-											allCategories.map((c, i) => {
-												return (
-													<React.Fragment key={i}>
-														{" "}
-														<div
-															className=' w-100 mx-0'
-															style={{
-																padding: "15px 4px",
-																background: arrayOfColorsCategories[i]
-																	? arrayOfColorsCategories[i]
-																	: "lightgrey",
-
-																textTransform: "uppercase",
-																fontSize: "12px",
-																fontWeight: "bold",
-																cursor: "pointer",
-															}}
-															onClick={() =>
-																setCategoryFilter(c.categoryName.toLowerCase())
-															}>
-															{c.categoryName}
-														</div>
-													</React.Fragment>
-												);
-											})}
-									</div>
-								</div>
-								<div className='col-md-6 productsOnRight'>
-									<div className='grid-container2'>
-										{allProducts &&
-											allProducts.map((p, i) => {
-												return (
-													<div
-														className='pt-3 mb-5'
-														key={i}
-														style={{ cursor: "pointer" }}
-														onClick={() => {
-															if (chosenSubSKUs.length === 0) {
-																setChosenSubSKUs([p.SubSKU]);
-															} else if (
-																chosenSubSKUs.indexOf(p.SubSKU) !== -1
-															) {
-																const index =
-																	chosenProductWithVariables.findIndex(
-																		(object) => {
-																			return (
-																				object.productId === p._id &&
-																				object.SubSKU === p.SubSKU
-																			);
-																		},
-																	);
-
-																if (index !== -1) {
-																	chosenProductWithVariables[
-																		index
-																	].OrderedQty += 1;
-
-																	setChosenProductWithVariables([
-																		...chosenProductWithVariables,
-																	]);
-																}
-															} else {
-																setChosenSubSKUs([...chosenSubSKUs, p.SubSKU]);
-															}
+										<div
+											className='col-6 mt-3'
+											// style={{ border: "1px black solid" }}
+										>
+											<div className='row'>
+												<div className='col-7'>
+													<button
+														style={{
+															background: "#004d00",
+															border: "none",
+															padding: "20px 30px",
+															color: "white",
+															fontWeight: "bold",
+															borderRadius: "10px",
+															fontSize: "1.2rem",
 														}}>
-														<img
-															width='100%'
-															height='100%'
-															src={p.productImages[0].url}
-															alt='infinite-apps'
-														/>
-														<div
-															style={{
-																fontSize: "13px",
-																fontWeight: "bold",
-																textTransform: "capitalize",
-															}}>
-															<div>
-																{p.productName}
-																<br />
-																{Number(p.priceAfterDiscount).toFixed(2)} EGP
-															</div>
-														</div>
-													</div>
-												);
-											})}
+														CHECKOUT
+													</button>
+													<br />
+													<button
+														style={{
+															background: "darkred",
+															border: "none",
+															padding: "5px",
+															color: "white",
+															fontWeight: "bold",
+															borderRadius: "10px",
+															marginLeft: "70px",
+															marginTop: "10px",
+														}}>
+														CLEAR
+													</button>
+												</div>
+
+												<div className='col-5'>
+													<button
+														style={{
+															background: "black",
+															border: "none",
+															padding: "5px",
+															fontSize: "12px",
+															color: "white",
+															fontWeight: "bold",
+															borderRadius: "10px",
+															width: "70%",
+														}}>
+														DISCOUNT
+													</button>
+													<br />
+													<button
+														style={{
+															background: "black",
+															border: "none",
+															padding: "5px",
+															fontSize: "12px",
+															color: "white",
+															fontWeight: "bold",
+															borderRadius: "10px",
+															marginTop: "5px",
+															width: "70%",
+														}}>
+														COUPONS
+													</button>
+													<br />
+													<button
+														style={{
+															background: "black",
+															border: "none",
+															width: "70%",
+															padding: "5px",
+															fontSize: "12px",
+															color: "white",
+															fontWeight: "bold",
+															borderRadius: "10px",
+															marginTop: "5px",
+														}}>
+														GIFT
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div className='col-6'>
+									<div
+										style={{
+											fontSize: "12px",
+											marginLeft: "50px",
+											marginTop: "20px",
+										}}>
+										<div className='grid-container3 '>
+											<div className=''>
+												Payment Method
+												<br />
+												<select
+													className='py-2 mb-3'
+													style={{
+														textTransform: "uppercase",
+														width: "90%",
+														border: "lightgrey solid 1px",
+														boxShadow: "2px 1px 2px 1px rgba(0,0,0,0.3)",
+													}}>
+													<option value='sdf'>Please Select</option>
+													<option value='sdf'>Cash</option>
+													<option value='sdf'>Card</option>
+												</select>
+											</div>
+											<div className=''>
+												Date
+												<br />
+												<DatePicker
+													className='inputFields'
+													// onChange={(date) => {
+													// 	setSelectedDate(new Date(date._d).toLocaleDateString() || date._d);
+													// }}
+													// disabledDate={disabledDate}
+													max
+													size='small'
+													showToday={true}
+													defaultValue={moment(new Date())}
+													placeholder='Please pick the desired schedule date'
+													style={{
+														height: "auto",
+														padding: "7px",
+														width: "90%",
+														boxShadow: "2px 1px 2px 1px rgba(0,0,0,0.3)",
+													}}
+												/>
+											</div>
+											<div className=''>
+												Invoice Number
+												<br />
+												<input
+													className='py-2 mb-3'
+													value='INV0001123131020'
+													type='text'
+													style={{
+														border: "1px lightgrey solid",
+														width: "90%",
+														boxShadow: "2px 1px 2px 1px rgba(0,0,0,0.3)",
+													}}
+												/>
+											</div>
+										</div>
+									</div>
+
+									<div
+										style={{
+											fontSize: "12px",
+											marginLeft: "50px",
+											marginTop: "10px",
+										}}>
+										<button
+											style={{
+												background: "#89c1ff",
+												border: "none",
+												padding: "10px 15px",
+												color: "white",
+												textTransform: "uppercase",
+												fontWeight: "bold",
+												borderRadius: "10px",
+												marginRight: "20px",
+											}}>
+											Customer List
+										</button>
+										<button
+											style={{
+												background: "#0070eb",
+												border: "none",
+												padding: "10px 15px",
+												color: "white",
+												textTransform: "uppercase",
+												fontWeight: "bold",
+												borderRadius: "10px",
+												marginRight: "20px",
+											}}>
+											New Customer
+										</button>
+										<span>
+											<input
+												className='py-2 mb-3'
+												value=''
+												placeholder='search for customer by phone #'
+												type='text'
+												style={{
+													border: "1px lightgrey solid",
+													width: "45%",
+													boxShadow: "2px 1px 2px 1px rgba(0,0,0,0.3)",
+												}}
+											/>
+										</span>
 									</div>
 								</div>
 							</div>
@@ -844,7 +691,7 @@ const OnsiteOrderTaking = () => {
 										{chosenProductWithVariables &&
 											chosenProductWithVariables.map((p, i) => {
 												return (
-													<div className='col-md-5 mx-auto' key={i}>
+													<div className='col-md-6 mx-auto' key={i}>
 														<div className='mb-3'>
 															<img
 																src={p.productSubSKUImage}
@@ -1138,11 +985,20 @@ const OnsiteOrderTakingWrapper = styled.div`
 	}
 
 	.productsOnRight {
+		padding: 0px;
+
 		.grid-container2 {
 			display: grid;
-			grid-template-columns: 20% 20% 20% 20% 20%;
+			grid-template-columns: 17% 17% 17% 17% 17% 17%;
 			margin: auto;
+			padding-left: 2px;
 		}
+	}
+
+	.grid-container3 {
+		display: grid;
+		margin: auto;
+		grid-template-columns: 25% 25% 25% 25%;
 	}
 
 	@media (max-width: 1750px) {
