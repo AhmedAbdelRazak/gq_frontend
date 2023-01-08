@@ -86,7 +86,7 @@ const DiscountModal = ({
 							textAlign: "center",
 							fontWeight: "bold",
 							fontSize: "1.3rem",
-						}}>{`Product Filters`}</div>
+						}}>{`Total Discount`}</div>
 				}
 				visible={modalVisible}
 				onOk={() => {

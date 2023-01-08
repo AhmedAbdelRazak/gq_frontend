@@ -167,13 +167,15 @@ const App = () => {
 	return (
 		<BrowserRouter>
 			<ToastContainer />
-			{window.location.pathname.includes("admin") ? null : allAdsCombined &&
+			{window.location.pathname.includes("admin") ||
+			window.location.pathname === "/" ? null : allAdsCombined &&
 			  allAdsCombined.show_ad ? (
 				<>
 					<NavbarAds />
 				</>
 			) : null}
-			{window.location.pathname.includes("admin") ? null : (
+			{window.location.pathname.includes("admin") ||
+			window.location.pathname === "/" ? null : (
 				<>
 					<NavbarTop language={language} setLanguage={setLanguage} />
 
@@ -182,10 +184,10 @@ const App = () => {
 			)}
 
 			<Switch>
-				<Route path='/signin' exact component={Login} />
+				<Route path='/' exact component={Login} />
 
 				<Route
-					path='/'
+					path='/home'
 					exact
 					component={() => <Home chosenLanguage={language} />}
 				/>

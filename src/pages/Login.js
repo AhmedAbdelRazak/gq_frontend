@@ -115,7 +115,7 @@ const Login = ({ history }) => {
 			<div className='container-fluid mx-auto'>
 				<div className='mx-auto text-center'>
 					<h1>
-						<span className='storeName'>ACE Online Shop</span>
+						<span className='storeName'>G&Q Factory System Login</span>
 					</h1>
 				</div>
 				<div className=' mx-auto'>
@@ -209,7 +209,7 @@ const Login = ({ history }) => {
 		<WholeSignin>
 			<Helmet>
 				<meta charSet='utf-8' />
-				<title>ACE Online Shop | Account Login</title>
+				<title>G&Q Factory | Account Login</title>
 
 				<meta
 					name='description'
@@ -234,7 +234,7 @@ const Login = ({ history }) => {
 export default Login;
 
 const FormSignin = styled.div`
-	margin: 40px auto !important;
+	margin: 90px auto !important;
 
 	input[type="text"],
 	input[type="email"],
@@ -285,7 +285,7 @@ const FormSignin = styled.div`
 const WholeSignin = styled.div`
 	overflow-x: hidden;
 	/* background: white; */
-	min-height: 500px;
+	min-height: 800px;
 	margin: 0px !important;
 
 	.storeName {
