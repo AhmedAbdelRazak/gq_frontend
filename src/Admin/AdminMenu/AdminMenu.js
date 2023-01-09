@@ -89,6 +89,10 @@ const items = [
 			<Link to='/admin/gq-reports/operations'>Operations Report</Link>,
 			"/admin/gq-reports/operations",
 		),
+		getItem(
+			<Link to='/admin/employee-share'>Employee Share Report</Link>,
+			"/admin/employee-share",
+		),
 	]),
 	// getItem("Option 2", "3", <DesktopOutlined />),
 	// getItem("Option 3", "4", <ContainerOutlined />),
@@ -596,9 +600,11 @@ const AdminMenu = ({
 						? "/admin/offline-order-taking"
 						: fromPage === "PrintBarcodes"
 						? "/admin/print-barcodes"
-						: (fromPage = "AceInventory"
-								? "/admin/ace-inventory-report"
-								: "/admin/dashboard")
+						: fromPage === "AceInventory"
+						? "/admin/ace-inventory-report"
+						: fromPage === "EmployeeShare"
+						? "/admin/employee-share"
+						: "/admin/dashboard"
 				}
 				defaultOpenKeys={[
 					"sub1",

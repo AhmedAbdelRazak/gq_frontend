@@ -20,7 +20,7 @@ const Footer = () => {
 
 const Wrapper = styled.footer`
 	background: white;
-	padding-top: 50px;
+	padding-top: 8px;
 
 	.flags {
 		width: 1.2%;

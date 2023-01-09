@@ -99,6 +99,7 @@ import OnsiteOrderTaking from "./Admin/OnlineStore/OnsiteOrderTaking/OnsiteOrder
 import PrintBarcodes from "./Admin/OnlineStore/PrintBarcodes/PrintBarcodes";
 import SingleBarcodePage from "./Admin/OnlineStore/PrintBarcodes/SingleBarcodePage";
 import Inventory from "./Admin/OnlineStore/Inventory/Inventory";
+import EmployeeShare from "./Admin/GQShopReports/EmployeeShare";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -417,6 +418,11 @@ const App = () => {
 					path='/admin/gq-reports/operations'
 					exact
 					component={OperationsReport}
+				/>
+				<AdminRoute
+					path='/admin/employee-share'
+					exact
+					component={EmployeeShare}
 				/>
 				<AdminRoute
 					path='/admin/update-employee'

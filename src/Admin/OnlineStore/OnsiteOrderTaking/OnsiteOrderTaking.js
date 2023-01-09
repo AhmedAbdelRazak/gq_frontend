@@ -7,7 +7,12 @@ import { isAuthenticated } from "../../../auth";
 // eslint-disable-next-line
 import AdminMenu from "../../AdminMenu/AdminMenu";
 import DarkBG from "../../AdminMenu/DarkBG";
-import { getColors, getProducts } from "../../apiAdmin";
+import {
+	getColors,
+	getProducts,
+	ordersLength,
+	readSingleOrderByPhoneNumber,
+} from "../../apiAdmin";
 import LogoImage from "../../../GeneralImages/Logo2.png";
 import { FilterFilled } from "@ant-design/icons";
 import ProductsPrview from "./ProductsPreview";
@@ -17,6 +22,11 @@ import "antd/dist/antd.css"; // or 'antd/dist/antd.less'
 import moment from "moment";
 import FiltersModal from "./FiltersModal";
 import DiscountModal from "./DiscountModal";
+import CustomerConfirmationModal from "./CustomerConfirmationModal";
+import CheckoutCardModal from "./CheckoutCardModal";
+import CheckoutCashModal from "./CheckoutCashModal";
+import { toast } from "react-toastify";
+import NewCustomerModal from "./NewCustomerModal";
 
 const OnsiteOrderTaking = () => {
 	// eslint-disable-next-line
@@ -27,6 +37,10 @@ const OnsiteOrderTaking = () => {
 	const [collapsed, setCollapsed] = useState(false);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [modalVisible2, setModalVisible2] = useState(false);
+	const [modalVisible3, setModalVisible3] = useState(false);
+	const [modalVisible4, setModalVisible4] = useState(false);
+	const [modalVisible5, setModalVisible5] = useState(false);
+	const [modalVisible6, setModalVisible6] = useState(false);
 	const [allProducts, setAllProducts] = useState([]);
 	const [allProductsAll, setAllProductsAll] = useState([]);
 	const [allCategories, setAllCategories] = useState([]);
@@ -36,18 +50,39 @@ const OnsiteOrderTaking = () => {
 	const [allSubSKUs, setAllSubSKUs] = useState([]);
 	const [chosenSubSKUs, setChosenSubSKUs] = useState([]);
 	const [chosenProducts, setChosenProducts] = useState([]);
-	const [submittedSKU, setSubmittedSKU] = useState(false);
 	const [genderFilter, setGenderFilter] = useState("men");
 	const [categoryFilter, setCategoryFilter] = useState("");
 	const [chosenProductWithVariables, setChosenProductWithVariables] = useState(
 		[],
 	);
 	const [discountStatus, setDiscountStatus] = useState("");
+	const [paymentStatus, setPaymentStatus] = useState("");
 	const [discountBy, setDiscountBy] = useState(0);
 
 	const [currentPage, setCurrentPage] = useState(1);
 	// eslint-disable-next-line
 	const [postsPerPage, setPostsPerPage] = useState(15);
+	const [addedPhoneNumber, setAddedPhoneNumber] = useState("");
+	const [userCustomerDetails, setUserCustomerDetails] = useState({
+		fullName: "",
+		email: "",
+		phone: "",
+		address: "",
+		state: "",
+		city: "",
+		cityName: "",
+		carrierName: "",
+	});
+	const [accountHistOrders, setAccountHistOrders] = useState("");
+	const [lengthOfOrders, setLengthOfOrders] = useState("");
+	const [customerPaid, setCustomerPaid] = useState("");
+	const [orderCreationDate, setOrderCreationDate] = useState(
+		new Date(
+			new Date().toLocaleString("en-US", {
+				timeZone: "Africa/Cairo",
+			}),
+		),
+	);
 
 	// eslint-disable-next-line
 	const { user, token } = isAuthenticated();
@@ -324,6 +359,29 @@ const OnsiteOrderTaking = () => {
 					productsTotalAmount - productsTotalAmount * (discountBy / 100),
 			  ).toFixed(2);
 
+	const loadOrdersLength = () => {
+		ordersLength(user._id, token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setLengthOfOrders(data);
+			}
+		});
+	};
+
+	useEffect(() => {
+		loadOrdersLength();
+		// eslint-disable-next-line
+	}, [
+		addedPhoneNumber,
+		modalVisible,
+		modalVisible2,
+		modalVisible3,
+		chosenSubSKUs,
+		paymentStatus,
+		orderCreationDate,
+	]);
+
 	return (
 		<OnsiteOrderTakingWrapper show={AdminMenuStatus}>
 			{!collapsed ? (
@@ -403,6 +461,13 @@ const OnsiteOrderTaking = () => {
 									setCategoryFilter={setCategoryFilter}
 								/>
 
+								<NewCustomerModal
+									modalVisible={modalVisible6}
+									setModalVisible={setModalVisible6}
+									customerDetails={userCustomerDetails}
+									setCustomerDetails={setUserCustomerDetails}
+								/>
+
 								<DiscountModal
 									modalVisible={modalVisible2}
 									setModalVisible={setModalVisible2}
@@ -427,6 +492,70 @@ const OnsiteOrderTaking = () => {
 									currentPage={currentPage}
 									currentPosts={currentPosts}
 									setModalVisible={setModalVisible}
+								/>
+
+								<CustomerConfirmationModal
+									modalVisible={modalVisible3}
+									setModalVisible={setModalVisible3}
+									accountHistOrders={accountHistOrders}
+									userCustomerDetails={userCustomerDetails}
+									allColors={allColors}
+								/>
+								<CheckoutCardModal
+									modalVisible={modalVisible5}
+									setModalVisible={setModalVisible5}
+									accountHistOrders={accountHistOrders}
+									userCustomerDetails={userCustomerDetails}
+									allColors={allColors}
+									chosenProducts={chosenProducts}
+									chosenProductWithVariables={chosenProductWithVariables}
+									invoiceNumber={`INV${new Date(
+										orderCreationDate,
+									).getFullYear()}${
+										new Date(orderCreationDate).getMonth() + 1
+									}${new Date(orderCreationDate).getDate()}000${
+										lengthOfOrders + 1
+									}`}
+									orderCreationDate={orderCreationDate}
+									discountAmount={
+										Number(productsTotalAmount) -
+										Number(productsTotalAmountAfterDiscount)
+									}
+									totalAmountAfterDiscount={Number(
+										productsTotalAmountAfterDiscount,
+									)}
+									totalAmount={productsTotalAmount}
+									paymentStatus={paymentStatus}
+									employeeData={user}
+								/>
+
+								<CheckoutCashModal
+									modalVisible={modalVisible4}
+									setModalVisible={setModalVisible4}
+									accountHistOrders={accountHistOrders}
+									userCustomerDetails={userCustomerDetails}
+									allColors={allColors}
+									chosenProducts={chosenProducts}
+									chosenProductWithVariables={chosenProductWithVariables}
+									invoiceNumber={`INV${new Date(
+										orderCreationDate,
+									).getFullYear()}${
+										new Date(orderCreationDate).getMonth() + 1
+									}${new Date(orderCreationDate).getDate()}000${
+										lengthOfOrders + 1
+									}`}
+									orderCreationDate={orderCreationDate}
+									discountAmount={
+										Number(productsTotalAmount) -
+										Number(productsTotalAmountAfterDiscount)
+									}
+									totalAmountAfterDiscount={Number(
+										productsTotalAmountAfterDiscount,
+									)}
+									totalAmount={productsTotalAmount}
+									paymentStatus={paymentStatus}
+									employeeData={user}
+									customerPaid={customerPaid}
 								/>
 							</div>
 							<div className='row'>
@@ -469,7 +598,7 @@ const OnsiteOrderTaking = () => {
 											<div
 												className='ml-5 mt-2'
 												style={{
-													fontSize: "1.6rem",
+													fontSize: "1.3rem",
 													fontWeight: "bolder",
 												}}>
 												Total{" "}
@@ -509,6 +638,33 @@ const OnsiteOrderTaking = () => {
 											<div className='row'>
 												<div className='col-7'>
 													<button
+														onClick={() => {
+															if (!paymentStatus) {
+																return toast.error(
+																	"Please add a payment method first",
+																);
+															}
+
+															if (
+																chosenProductWithVariables &&
+																chosenProductWithVariables.length === 0
+															) {
+																return toast.error(
+																	"Please add products to the order",
+																);
+															}
+															if (paymentStatus === "cash") {
+																if (!customerPaid) {
+																	return toast.error(
+																		"Please add how much the customer paid?",
+																	);
+																} else {
+																	setModalVisible4(true);
+																}
+															} else {
+																setModalVisible5(true);
+															}
+														}}
 														style={{
 															background: "#004d00",
 															border: "none",
@@ -607,6 +763,7 @@ const OnsiteOrderTaking = () => {
 												<br />
 												<select
 													className='py-2 mb-3'
+													onChange={(e) => setPaymentStatus(e.target.value)}
 													style={{
 														textTransform: "uppercase",
 														width: "90%",
@@ -614,8 +771,8 @@ const OnsiteOrderTaking = () => {
 														boxShadow: "2px 1px 2px 1px rgba(0,0,0,0.3)",
 													}}>
 													<option value='sdf'>Please Select</option>
-													<option value='sdf'>Cash</option>
-													<option value='sdf'>Card</option>
+													<option value='cash'>Cash</option>
+													<option value='card'>Card</option>
 												</select>
 											</div>
 											<div className=''>
@@ -623,10 +780,11 @@ const OnsiteOrderTaking = () => {
 												<br />
 												<DatePicker
 													className='inputFields'
-													// onChange={(date) => {
-													// 	setSelectedDate(new Date(date._d).toLocaleDateString() || date._d);
-													// }}
-													// disabledDate={disabledDate}
+													onChange={(date) => {
+														setOrderCreationDate(
+															new Date(date._d).toLocaleDateString() || date._d,
+														);
+													}}
 													max
 													size='small'
 													showToday={true}
@@ -645,7 +803,13 @@ const OnsiteOrderTaking = () => {
 												<br />
 												<input
 													className='py-2 mb-3'
-													value='INV0001123131020'
+													value={`INV${new Date(
+														orderCreationDate,
+													).getFullYear()}${
+														new Date(orderCreationDate).getMonth() + 1
+													}${new Date(orderCreationDate).getDate()}000${
+														lengthOfOrders + 1
+													}`}
 													type='text'
 													style={{
 														border: "1px lightgrey solid",
@@ -655,6 +819,22 @@ const OnsiteOrderTaking = () => {
 												/>
 											</div>
 										</div>
+										{paymentStatus === "cash" ? (
+											<div>
+												<input
+													placeholder='Customer Paid?'
+													value={customerPaid}
+													onChange={(e) => setCustomerPaid(e.target.value)}
+													type='number'
+													style={{
+														border: "1px lightgrey solid",
+														width: "23%",
+														padding: "8px 5px",
+														boxShadow: "2px 1px 2px 1px rgba(0,0,0,0.3)",
+													}}
+												/>
+											</div>
+										) : null}
 									</div>
 
 									<div
@@ -677,6 +857,7 @@ const OnsiteOrderTaking = () => {
 											Customer List
 										</button>
 										<button
+											onClick={() => setModalVisible6(true)}
 											style={{
 												background: "#0070eb",
 												border: "none",
@@ -689,323 +870,53 @@ const OnsiteOrderTaking = () => {
 											}}>
 											New Customer
 										</button>
-										<span>
+										<span className='ml-5'>
 											<input
 												className='py-2 mb-3'
-												value=''
-												placeholder='search for customer by phone #'
+												value={addedPhoneNumber}
+												onChange={(e) => setAddedPhoneNumber(e.target.value)}
+												placeholder='search for existing customer by phone #'
 												type='text'
 												style={{
 													border: "1px lightgrey solid",
-													width: "45%",
+													width: "40%",
 													boxShadow: "2px 1px 2px 1px rgba(0,0,0,0.3)",
 												}}
 											/>
+											<button
+												onClick={() => {
+													readSingleOrderByPhoneNumber(
+														user._id,
+														token,
+														addedPhoneNumber,
+													).then((data) => {
+														if (data.error) {
+															console.log(data.error);
+														} else {
+															setAccountHistOrders(data);
+															setUserCustomerDetails(data[0].customerDetails);
+
+															setModalVisible3(true);
+														}
+													});
+												}}
+												className='ml-3'
+												style={{
+													background: "#4a4a4a",
+													border: "none",
+													padding: "10px 15px",
+													color: "white",
+													textTransform: "uppercase",
+													fontWeight: "bold",
+													borderRadius: "10px",
+													marginRight: "20px",
+												}}>
+												Submit
+											</button>
 										</span>
 									</div>
 								</div>
 							</div>
-
-							{chosenSubSKUs.length > 0 && allSubSKUs.length > 0 ? (
-								<button
-									className='btn btn-primary p-1 mt-3'
-									onClick={() => setSubmittedSKU(true)}>
-									Submit Order SKU's
-								</button>
-							) : null}
-
-							{chosenSubSKUs &&
-							chosenSubSKUs.length > 0 &&
-							chosenProducts &&
-							chosenProducts.length > 0 &&
-							allSubSKUs.length > 0 &&
-							submittedSKU ? (
-								<div className='mt-4'>
-									<h5
-										style={{
-											textTransform: "uppercase",
-											fontWeight: "bold",
-											color: "darkred",
-										}}>
-										Products Details
-									</h5>
-									<div className='row'>
-										{chosenProductWithVariables &&
-											chosenProductWithVariables.map((p, i) => {
-												return (
-													<div className='col-md-6 mx-auto' key={i}>
-														<div className='mb-3'>
-															<img
-																src={p.productSubSKUImage}
-																width='25%'
-																alt='infinite-apps'
-															/>
-														</div>
-														<div>
-															<strong>Product Name:</strong>{" "}
-															<span style={{ textTransform: "uppercase" }}>
-																{chosenProducts[i] &&
-																	chosenProducts[i].productName}
-															</span>{" "}
-														</div>
-
-														<div>
-															<strong>Product Color:</strong>{" "}
-															<span style={{ textTransform: "uppercase" }}>
-																{allColors[
-																	allColors
-																		.map((i) => i.hexa)
-																		.indexOf(p.SubSKUColor)
-																]
-																	? allColors[
-																			allColors
-																				.map((i) => i.hexa)
-																				.indexOf(p.SubSKUColor)
-																	  ].color
-																	: p.SubSKUColor}
-															</span>{" "}
-														</div>
-														<div>
-															<strong>Product Size:</strong>{" "}
-															<span style={{ textTransform: "uppercase" }}>
-																{p && p.SubSKUSize}
-															</span>{" "}
-														</div>
-														<br />
-														<div>
-															<strong>
-																Current Active Stock In Ace Store:
-															</strong>{" "}
-															{chosenProducts &&
-															chosenProducts[i] &&
-															chosenProducts[i].receivedQuantity
-																? chosenProducts[i].receivedQuantity
-																: 0}{" "}
-															Items{" "}
-															{chosenProducts &&
-															chosenProducts[i] &&
-															chosenProducts[i].receivedQuantity <
-																p.OrderedQty ? (
-																<strong
-																	style={{ color: "red", fontSize: "12px" }}>
-																	(No Enough Stock)
-																</strong>
-															) : null}
-														</div>
-
-														<div>
-															<strong>Quantity Onhand (G&Q Hub):</strong>{" "}
-															{chosenProducts[i] && chosenProducts[i].quantity
-																? chosenProducts[i].quantity
-																: 0}{" "}
-															Items
-														</div>
-														<div>
-															<strong>
-																Product Available Prices (Click to choose):
-															</strong>{" "}
-															<ul
-																style={{
-																	listStyle: "none",
-																	textDecoration: "underline",
-																	color: "#0080ff",
-																	cursor: "pointer",
-																}}>
-																<li
-																	onClick={() => {
-																		const index =
-																			chosenProductWithVariables.findIndex(
-																				(object) => {
-																					return (
-																						object.productId === p.productId &&
-																						object.SubSKU === p.SubSKU
-																					);
-																				},
-																			);
-
-																		if (index !== -1) {
-																			chosenProductWithVariables[
-																				index
-																			].pickedPrice =
-																				p.SubSKUPriceAfterDiscount;
-																			setChosenProductWithVariables([
-																				...chosenProductWithVariables,
-																			]);
-																		}
-																	}}>
-																	{p.SubSKUPriceAfterDiscount} EGP
-																</li>
-																<li
-																	onClick={() => {
-																		const index =
-																			chosenProductWithVariables.findIndex(
-																				(object) => {
-																					return (
-																						object.productId === p.productId &&
-																						object.SubSKU === p.SubSKU
-																					);
-																				},
-																			);
-
-																		if (index !== -1) {
-																			chosenProductWithVariables[
-																				index
-																			].pickedPrice = p.SubSKURetailerPrice;
-																			setChosenProductWithVariables([
-																				...chosenProductWithVariables,
-																			]);
-																		}
-																	}}>
-																	{p.SubSKURetailerPrice} EGP
-																</li>
-																<li
-																	onClick={() => {
-																		const index =
-																			chosenProductWithVariables.findIndex(
-																				(object) => {
-																					return (
-																						object.productId === p.productId &&
-																						object.SubSKU === p.SubSKU
-																					);
-																				},
-																			);
-
-																		if (index !== -1) {
-																			chosenProductWithVariables[
-																				index
-																			].pickedPrice = p.SubSKUDropshippingPrice;
-																			setChosenProductWithVariables([
-																				...chosenProductWithVariables,
-																			]);
-																		}
-																	}}>
-																	{p.SubSKUDropshippingPrice} EGP
-																</li>
-																<li
-																	onClick={() => {
-																		const index =
-																			chosenProductWithVariables.findIndex(
-																				(object) => {
-																					return (
-																						object.productId === p.productId &&
-																						object.SubSKU === p.SubSKU
-																					);
-																				},
-																			);
-
-																		if (index !== -1) {
-																			chosenProductWithVariables[
-																				index
-																			].pickedPrice = p.SubSKUWholeSalePrice;
-																			setChosenProductWithVariables([
-																				...chosenProductWithVariables,
-																			]);
-																		}
-																	}}>
-																	{p.SubSKUWholeSalePrice} EGP
-																</li>
-																<li
-																	onClick={() => {
-																		const index =
-																			chosenProductWithVariables.findIndex(
-																				(object) => {
-																					return (
-																						object.productId === p.productId &&
-																						object.SubSKU === p.SubSKU
-																					);
-																				},
-																			);
-
-																		if (index !== -1) {
-																			chosenProductWithVariables[
-																				index
-																			].pickedPrice = p.SubSKUMSRP;
-																			setChosenProductWithVariables([
-																				...chosenProductWithVariables,
-																			]);
-																		}
-																	}}>
-																	{p.SubSKUMSRP} EGP
-																</li>
-															</ul>
-														</div>
-														<br />
-														<div className='form-group mt-1'>
-															<label className=''>Order Qty</label>
-															<input
-																value={p.OrderedQty}
-																type='number'
-																style={{
-																	border: "1px lightgrey solid",
-																	width: "100%",
-																}}
-																// max={Number(AvailableStock.quantity)}
-																onChange={(e) => {
-																	const index =
-																		chosenProductWithVariables.findIndex(
-																			(object) => {
-																				return (
-																					object.productId === p.productId &&
-																					object.SubSKU === p.SubSKU
-																				);
-																			},
-																		);
-
-																	if (index !== -1) {
-																		chosenProductWithVariables[
-																			index
-																		].OrderedQty = e.target.value;
-																		setChosenProductWithVariables([
-																			...chosenProductWithVariables,
-																		]);
-																	}
-																}}
-															/>
-														</div>
-														<div className='form-group mt-1'>
-															<label className=''>
-																Product Price (Please be careful while adding
-																the price manually){" "}
-															</label>
-															<input
-																type='number'
-																className='form-control'
-																value={p.pickedPrice}
-																onChange={(e) => {
-																	const index =
-																		chosenProductWithVariables.findIndex(
-																			(object) => {
-																				return (
-																					object.productId === p.productId &&
-																					object.SubSKU === p.SubSKU
-																				);
-																			},
-																		);
-
-																	if (index !== -1) {
-																		chosenProductWithVariables[
-																			index
-																		].pickedPrice = e.target.value;
-																		setChosenProductWithVariables([
-																			...chosenProductWithVariables,
-																		]);
-																	}
-																}}
-																placeholder='Required - Product Price'
-															/>
-														</div>
-													</div>
-												);
-											})}
-									</div>
-									<div className='ml-5 mt-3' style={{ fontSize: "1.1rem" }}>
-										Total Amount:{" "}
-										<strong>
-											{Number(productsTotalAmount).toFixed(2)} EGP
-										</strong>
-									</div>
-								</div>
-							) : null}
 						</div>
 					</div>
 				</div>
