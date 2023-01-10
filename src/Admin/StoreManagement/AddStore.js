@@ -20,6 +20,10 @@ import { Redirect } from "react-router-dom";
 
 const AddStore = () => {
 	const [storeName, setStoreName] = useState("");
+	const [singleBranch, setSingleBranch] = useState("");
+	const [storeBranches, setStoreBranches] = useState([]);
+	const [storeBranchesLogic, setStoreBranchesLogic] = useState(false);
+	const [branchSubmit, setBranchSubmit] = useState(false);
 	// eslint-disable-next-line
 	const [loading, setLoading] = useState("");
 	// eslint-disable-next-line
@@ -82,6 +86,7 @@ const AddStore = () => {
 		// make request to api to create store
 		createStore(user._id, token, {
 			storeName,
+			storeBranches,
 			thumbnail: addThumbnail && addThumbnail.images,
 		}).then((data) => {
 			if (data.error) {
@@ -195,6 +200,60 @@ const AddStore = () => {
 					required
 				/>
 			</div>
+			<div className='form-group'>
+				<label
+					className='text-muted'
+					style={{ fontWeight: "bold", fontSize: "15px" }}>
+					Does This Store Have Branches?
+				</label>
+				<input
+					type='checkbox'
+					className='ml-2'
+					checked={storeBranchesLogic}
+					onChange={() => setStoreBranchesLogic(!storeBranchesLogic)}
+					value={storeBranchesLogic}
+				/>
+			</div>
+
+			{storeBranchesLogic ? (
+				<div className='form-group'>
+					{storeBranches.length > 0 ? (
+						<>
+							Added Branches:
+							{storeBranches.map((s, i) => {
+								return (
+									<div key={i} className='ml-4'>
+										{s}
+									</div>
+								);
+							})}
+						</>
+					) : null}
+					<label
+						className='text-muted'
+						style={{ fontWeight: "bold", fontSize: "15px" }}>
+						Enter Store Branches
+					</label>
+					<input
+						type='text'
+						value={singleBranch}
+						className='form-control'
+						onChange={(e) => {
+							setSingleBranch(e.target.value);
+						}}
+						required
+					/>
+					<br />
+					<div
+						className='btn btn-info mb-5'
+						onClick={() => {
+							setBranchSubmit(!branchSubmit);
+							setStoreBranches([...storeBranches, singleBranch]);
+						}}>
+						Submit Branch
+					</div>
+				</div>
+			) : null}
 
 			<button className='btn btn-outline-primary mb-3'>Add Store</button>
 		</form>

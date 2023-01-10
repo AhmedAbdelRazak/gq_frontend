@@ -23,6 +23,7 @@ const AddEmployee = () => {
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
 	const [allStore, setAllStores] = useState([]);
+	const [allStoreBranches, setAllStoreBranches] = useState([]);
 
 	const [values, setValues] = useState({
 		name: "",
@@ -37,6 +38,7 @@ const AddEmployee = () => {
 		loading: false,
 		userRole: "Order Taker",
 		userStore: "g&q",
+		userBranch: "",
 	});
 
 	// eslint-disable-next-line
@@ -51,6 +53,7 @@ const AddEmployee = () => {
 		role,
 		userRole,
 		userStore,
+		userBranch,
 	} = values;
 
 	const { user, token } = isAuthenticated();
@@ -115,6 +118,7 @@ const AddEmployee = () => {
 				role: 1,
 				userRole,
 				userStore,
+				userBranch,
 			}).then((data) => {
 				console.log(data);
 				if (data.error || data.misMatch) {
@@ -130,6 +134,7 @@ const AddEmployee = () => {
 						password2: "",
 						error: "",
 						employeeImage: "",
+						userBranch: "",
 						success: false,
 						misMatch: false,
 						loading: false,
@@ -149,6 +154,25 @@ const AddEmployee = () => {
 
 	const handleChosenStore = (event) => {
 		setValues({ ...values, userStore: event.target.value });
+
+		const storeBranches =
+			allStore &&
+			allStore.map((i) => i.storeName) &&
+			allStore.map((i) => i.storeName).indexOf(event.target.value);
+
+		if (storeBranches === -1) {
+			setAllStoreBranches([]);
+		} else {
+			setAllStoreBranches(
+				allStore[storeBranches].storeBranches
+					? allStore[storeBranches].storeBranches
+					: [],
+			);
+		}
+	};
+
+	const handleChosenStoreBranch = (event) => {
+		setValues({ ...values, userBranch: event.target.value });
 	};
 
 	const fileUploadAndResizeThumbNail = (e) => {
@@ -362,7 +386,6 @@ const AddEmployee = () => {
 									style={{ fontSize: "0.80rem" }}>
 									<option>Please select / Required*</option>
 									<option value='Admin Account'>Admin Account</option>
-									<option value='Owner Account'>Owner Account</option>
 									<option value='Order Taker'>Order Taker</option>
 									<option value='Operations'>Operations</option>
 									<option value='Finance'>Finance</option>
@@ -392,6 +415,30 @@ const AddEmployee = () => {
 										})}
 								</select>
 							</div>
+							{allStoreBranches && allStoreBranches.length > 0 ? (
+								<div className='form-group ' style={{ marginTop: "25px" }}>
+									<label htmlFor='password2' style={{ fontWeight: "bold" }}>
+										Add User Branch
+									</label>
+									<select
+										onChange={handleChosenStoreBranch}
+										className='w-75 mx-auto'
+										style={{ fontSize: "0.80rem" }}>
+										<option>Please select / Required*</option>
+										{allStoreBranches &&
+											allStoreBranches.map((s, i) => {
+												return (
+													<option
+														key={i}
+														value={s}
+														style={{ textTransform: "uppercase" }}>
+														{s}
+													</option>
+												);
+											})}
+									</select>
+								</div>
+							) : null}
 
 							<input
 								type='submit'

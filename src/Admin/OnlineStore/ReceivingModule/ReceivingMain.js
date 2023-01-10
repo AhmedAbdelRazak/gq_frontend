@@ -3,17 +3,22 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 // eslint-disable-next-line
-import { isAuthenticated } from "../../auth";
-import AdminMenu from "../AdminMenu/AdminMenu";
-import Navbar from "../AdminNavMenu/Navbar";
-import DarkBG from "../AdminMenu/DarkBG";
-import { getColors, getProducts, receiveNew, updateProduct } from "../apiAdmin";
+import { isAuthenticated } from "../../../auth";
+import AdminMenu from "../../AdminMenu/AdminMenu";
+import Navbar from "../../AdminNavMenu/Navbar";
+import DarkBG from "../../AdminMenu/DarkBG";
+import {
+	getColors,
+	getProducts,
+	receiveNew,
+	updateProduct,
+} from "../../apiAdmin";
 import { Select } from "antd";
 import { toast } from "react-toastify";
 
 const { Option } = Select;
 
-const AceReceiving = () => {
+const ReceivingMain = () => {
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [offset, setOffset] = useState(0);
 	const [pageScrolled, setPageScrolled] = useState(false);
@@ -222,9 +227,10 @@ const AceReceiving = () => {
 			storeName: user.userStore,
 			storeBranch: user.userBranch ? user.userBranch : "san stefano",
 			receivedSKU: chosenSubSKU,
-			receivedQuantity: quantityToBeReceived,
+			receivedQuantity: chosenProduct.receivedQuantity,
 		}).then((data) => {
 			if (data.error) {
+				setError(data.error);
 				setTimeout(function () {
 					// window.location.reload(false);
 				}, 1000);
@@ -235,7 +241,7 @@ const AceReceiving = () => {
 	};
 
 	return (
-		<AceReceivingWrapper show={AdminMenuStatus}>
+		<ReceivingMainWrapper show={AdminMenuStatus}>
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}
@@ -464,15 +470,6 @@ const AceReceiving = () => {
 										<div
 											className='my-3'
 											style={{
-												textTransform: "uppercase",
-												fontSize: "1.1rem",
-											}}>
-											This will be received in branch:{" "}
-											<strong>{user.userBranch}</strong>
-										</div>
-										<div
-											className='my-3'
-											style={{
 												fontWeight: "bold",
 												fontSize: "0.9rem",
 												color: "darkred",
@@ -506,13 +503,13 @@ const AceReceiving = () => {
 					</div>
 				</div>
 			</div>
-		</AceReceivingWrapper>
+		</ReceivingMainWrapper>
 	);
 };
 
-export default AceReceiving;
+export default ReceivingMain;
 
-const AceReceivingWrapper = styled.div`
+const ReceivingMainWrapper = styled.div`
 	min-height: 880px;
 
 	.grid-container {

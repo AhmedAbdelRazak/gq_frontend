@@ -23,6 +23,7 @@ const UpdateEmployeeSingle = ({ match }) => {
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
 	const [allStore, setAllStores] = useState([]);
+	const [allStoreBranches, setAllStoreBranches] = useState([]);
 
 	const [values, setValues] = useState({
 		name: "",
@@ -38,6 +39,7 @@ const UpdateEmployeeSingle = ({ match }) => {
 		role: 1,
 		userRole: "",
 		userStore: "",
+		userBranch: "",
 	});
 
 	const { name, email, password, password2, employeeImage } = values;
@@ -51,26 +53,15 @@ const UpdateEmployeeSingle = ({ match }) => {
 		});
 	};
 
-	const gettingAllStores = () => {
-		getStores(token).then((data) => {
-			if (data.error) {
-				console.log(data.error);
-			} else {
-				setAllStores(data);
-			}
-		});
-	};
-
-	useEffect(() => {
-		gettingAllStores();
-		// eslint-disable-next-line
-	}, []);
-
 	const gettingAllUsers = () => {
 		getAllUsers(user._id, token).then((data) => {
 			if (data.error) {
 				console.log(data.error, "getting all users error");
 			} else {
+				console.log(
+					data.filter((e) => e._id === match.params.userId)[0],
+					"data.filter((e) => e._id === match.params.userId)[0]",
+				);
 				setValues({
 					...values,
 					name:
@@ -96,10 +87,45 @@ const UpdateEmployeeSingle = ({ match }) => {
 						match.params.userId !== "undefined" &&
 						data.filter((e) => e._id === match.params.userId)[0].userStore,
 
+					userBranch:
+						match.params.userId &&
+						match.params.userId !== "undefined" &&
+						data.filter((e) => e._id === match.params.userId)[0].userBranch,
+
 					employeeImage:
 						match.params.userId &&
 						match.params.userId !== "undefined" &&
 						data.filter((e) => e._id === match.params.userId)[0].employeeImage,
+				});
+
+				getStores(token).then((data2) => {
+					if (data2.error) {
+						console.log(data2.error);
+					} else {
+						setAllStores(data2);
+
+						const storeBranches =
+							data2 &&
+							data2.map((i) => i.storeName) &&
+							data2
+								.map((i) => i.storeName)
+								.indexOf(
+									match.params.userId &&
+										match.params.userId !== "undefined" &&
+										data.filter((e) => e._id === match.params.userId)[0]
+											.userStore,
+								);
+
+						if (storeBranches === -1) {
+							setAllStoreBranches([]);
+						} else {
+							setAllStoreBranches(
+								data2[storeBranches].storeBranches
+									? data2[storeBranches].storeBranches
+									: [],
+							);
+						}
+					}
 				});
 			}
 		});
@@ -132,6 +158,7 @@ const UpdateEmployeeSingle = ({ match }) => {
 				email: values.email,
 				userRole: values.userRole,
 				userStore: values.userStore,
+				userBranch: values.userBranch,
 			}).then((data) => {
 				if (data.error) {
 					console.log(data.error);
@@ -309,6 +336,35 @@ const UpdateEmployeeSingle = ({ match }) => {
 								</select>
 							</div>
 
+							{allStoreBranches && allStoreBranches.length > 0 ? (
+								<div className='form-group ' style={{ marginTop: "25px" }}>
+									<label htmlFor='password2' style={{ fontWeight: "bold" }}>
+										Add User Branch
+									</label>
+									<select
+										onChange={handleChosenStoreBranch}
+										className='w-75 mx-auto'
+										style={{ fontSize: "0.80rem" }}>
+										{values.userBranch ? (
+											<option>{values.userBranch}</option>
+										) : (
+											<option>Please select / Required*</option>
+										)}
+										{allStoreBranches &&
+											allStoreBranches.map((s, i) => {
+												return (
+													<option
+														key={i}
+														value={s}
+														style={{ textTransform: "uppercase" }}>
+														{s}
+													</option>
+												);
+											})}
+									</select>
+								</div>
+							) : null}
+
 							<input
 								type='submit'
 								value='Update Employee'
@@ -329,6 +385,25 @@ const UpdateEmployeeSingle = ({ match }) => {
 
 	const handleChosenStore = (event) => {
 		setValues({ ...values, userStore: event.target.value });
+
+		const storeBranches =
+			allStore &&
+			allStore.map((i) => i.storeName) &&
+			allStore.map((i) => i.storeName).indexOf(event.target.value);
+
+		if (storeBranches === -1) {
+			setAllStoreBranches([]);
+		} else {
+			setAllStoreBranches(
+				allStore[storeBranches].storeBranches
+					? allStore[storeBranches].storeBranches
+					: [],
+			);
+		}
+	};
+
+	const handleChosenStoreBranch = (event) => {
+		setValues({ ...values, userBranch: event.target.value });
 	};
 
 	const fileUploadAndResizeThumbNail = (e) => {

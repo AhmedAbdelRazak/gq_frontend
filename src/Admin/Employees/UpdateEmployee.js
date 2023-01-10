@@ -23,7 +23,9 @@ const UpdateEmployee = () => {
 			if (data.error) {
 				console.log(data.error, "getting all users error");
 			} else {
-				setAllUsersAvailable(data);
+				setAllUsersAvailable(
+					data.filter((i) => i.name.toLowerCase() !== "self service"),
+				);
 			}
 		});
 	};

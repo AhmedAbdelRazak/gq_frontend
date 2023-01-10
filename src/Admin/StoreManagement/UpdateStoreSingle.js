@@ -19,6 +19,9 @@ const UpdateStoreSingle = ({ match }) => {
 	const { user, token } = isAuthenticated();
 	const [selectedStore, setSelectedStore] = useState([]);
 	const [storeName, setStoreName] = useState("");
+	const [singleBranch, setSingleBranch] = useState("");
+	const [storeBranches, setStoreBranches] = useState([]);
+	const [storeBranchesLogic, setStoreBranchesLogic] = useState(false);
 	const [storeStatus, setStoreStatus] = useState("1");
 	const [loading, setLoading] = useState(true);
 	// eslint-disable-next-line
@@ -43,6 +46,26 @@ const UpdateStoreSingle = ({ match }) => {
 					match.params.storeId &&
 						match.params.storeId !== "undefined" &&
 						data.filter((s) => s._id === match.params.storeId)[0].storeName,
+				);
+
+				setStoreBranches(
+					match.params.storeId &&
+						match.params.storeId !== "undefined" &&
+						data.filter((s) => s._id === match.params.storeId)[0].storeBranches
+						? data.filter((s) => s._id === match.params.storeId)[0]
+								.storeBranches
+						: [],
+				);
+
+				setStoreBranchesLogic(
+					match.params.storeId &&
+						match.params.storeId !== "undefined" &&
+						data.filter((s) => s._id === match.params.storeId)[0]
+							.storeBranches &&
+						data.filter((s) => s._id === match.params.storeId)[0].storeBranches
+							.length > 0
+						? true
+						: false,
 				);
 
 				setLoading(false);
@@ -74,6 +97,7 @@ const UpdateStoreSingle = ({ match }) => {
 			) {
 				updateStore(match.params.storeId, user._id, token, {
 					storeName,
+					storeBranches,
 					storeStatus,
 					thumbnail:
 						addThumbnail && addThumbnail.images !== undefined
@@ -102,6 +126,7 @@ const UpdateStoreSingle = ({ match }) => {
 		} else {
 			updateStore(match.params.storeId, user._id, token, {
 				storeName,
+				storeBranches,
 				storeStatus,
 				thumbnail:
 					addThumbnail && addThumbnail.images !== undefined
@@ -340,6 +365,60 @@ const UpdateStoreSingle = ({ match }) => {
 										value={storeName}
 									/>
 								</div>
+
+								<div className='form-group'>
+									<label
+										className='text-muted'
+										style={{ fontWeight: "bold", fontSize: "15px" }}>
+										Does This Store Have Branches?
+									</label>
+									<input
+										type='checkbox'
+										className='ml-2'
+										checked={storeBranchesLogic}
+										onChange={() => setStoreBranchesLogic(!storeBranchesLogic)}
+										value={storeBranchesLogic}
+									/>
+								</div>
+
+								{storeBranchesLogic ? (
+									<div className='form-group'>
+										{storeBranches.length > 0 ? (
+											<>
+												Added Branches:
+												{storeBranches.map((s, i) => {
+													return (
+														<div key={i} className='ml-4'>
+															{s}
+														</div>
+													);
+												})}
+											</>
+										) : null}
+										<label
+											className='text-muted'
+											style={{ fontWeight: "bold", fontSize: "15px" }}>
+											Enter Store Branches
+										</label>
+										<input
+											type='text'
+											value={singleBranch}
+											className='form-control'
+											onChange={(e) => {
+												setSingleBranch(e.target.value);
+											}}
+											required
+										/>
+										<br />
+										<div
+											className='btn btn-info mb-5'
+											onClick={() => {
+												setStoreBranches([...storeBranches, singleBranch]);
+											}}>
+											Submit Branch
+										</div>
+									</div>
+								) : null}
 
 								<div className='form-group'>
 									<label className='text-muted'>Active Store?</label>
