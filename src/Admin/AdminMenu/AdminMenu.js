@@ -363,6 +363,10 @@ const items = [
 			"/admin/ace-receiving",
 		),
 		getItem(
+			<Link to='/admin/ace-receiving-log'>Ace Receiving Log</Link>,
+			"/admin/ace-receiving-log",
+		),
+		getItem(
 			<Link to='/admin/offline-order-taking'>Onsite Order Taking</Link>,
 			"/admin/offline-order-taking",
 		),
@@ -604,6 +608,8 @@ const AdminMenu = ({
 						? "/admin/ace-inventory-report"
 						: fromPage === "EmployeeShare"
 						? "/admin/employee-share"
+						: fromPage === "AceReceivingLog"
+						? "/admin/ace-receiving-log"
 						: "/admin/dashboard"
 				}
 				defaultOpenKeys={[
