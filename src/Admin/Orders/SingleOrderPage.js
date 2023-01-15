@@ -518,7 +518,8 @@ const SingleOrderPage = (props) => {
 									<div className='mt-1'>
 										Shipping Price:{" "}
 										<strong style={{ color: "darkblue" }}>
-											{singleOrder.chosenShippingOption.length > 0 &&
+											{singleOrder.chosenShippingOption &&
+												singleOrder.chosenShippingOption.length > 0 &&
 												singleOrder.customerDetails.carrierName &&
 												singleOrder.chosenShippingOption[0].chosenShippingData.filter(
 													(ii) =>
@@ -534,7 +535,8 @@ const SingleOrderPage = (props) => {
 									<div className='mt-1'>
 										Estimated Time For Arrival:{" "}
 										<strong style={{ color: "darkblue" }}>
-											{singleOrder.chosenShippingOption.length > 0 &&
+											{singleOrder.chosenShippingOption &&
+												singleOrder.chosenShippingOption.length > 0 &&
 												singleOrder.customerDetails.carrierName &&
 												singleOrder.chosenShippingOption[0].chosenShippingData.filter(
 													(ii) =>

@@ -441,77 +441,83 @@ const UpdatingProductVariable = ({
 								chosenColors.map((c, i) => {
 									return (
 										<div key={i} className='mx-auto col-md-3 text-center mt-4'>
-											{productAttributesFinal[i] &&
+											{productAttributesFinal &&
+											productAttributesFinal[i] &&
 											productAttributesFinal[i].productImages &&
 											productAttributesFinal[i].productImages.length > 0 ? (
 												<>
-													{productAttributesFinal[i].productImages.map(
-														(imag, iiii) => {
-															return (
-																<React.Fragment>
-																	<img
-																		alt='nothing'
-																		key={iiii}
-																		width='30%'
-																		className='mb-2'
-																		src={imag.url}
-																	/>
+													{productAttributesFinal &&
+														productAttributesFinal[i] &&
+														productAttributesFinal[i].productImages &&
+														productAttributesFinal[i].productImages.map(
+															(imag, iiii) => {
+																return (
+																	<React.Fragment>
+																		<img
+																			alt='nothing'
+																			key={iiii}
+																			width='30%'
+																			className='mb-2'
+																			src={imag && imag.url ? imag.url : ""}
+																		/>
 
-																	<button
-																		type='button'
-																		onClick={() => {
-																			handleImageRemove(imag.public_id);
+																		<button
+																			type='button'
+																			onClick={() => {
+																				handleImageRemove(imag.public_id);
 
-																			var array = productAttributesFinal[
-																				i
-																			].productImages.filter(function (s) {
-																				return s !== imag;
-																			});
+																				var array = productAttributesFinal[
+																					i
+																				].productImages.filter(function (s) {
+																					return s !== imag;
+																				});
 
-																			const index =
-																				productAttributesFinal.findIndex(
-																					(object) => {
-																						return (
-																							object.PK ===
-																							productAttributesFinal[i].PK
+																				const index =
+																					productAttributesFinal.findIndex(
+																						(object) => {
+																							return (
+																								object.PK ===
+																								productAttributesFinal[i].PK
+																							);
+																						},
+																					);
+
+																				if (index !== -1) {
+																					const newArr =
+																						productAttributesFinal.map(
+																							(obj) => {
+																								if (
+																									obj.PK ===
+																									productAttributesFinal[i].PK
+																								) {
+																									return {
+																										...obj,
+																										productImages: array,
+																									};
+																								}
+
+																								return obj;
+																							},
 																						);
-																					},
-																				);
 
-																			if (index !== -1) {
-																				const newArr =
-																					productAttributesFinal.map((obj) => {
-																						if (
-																							obj.PK ===
-																							productAttributesFinal[i].PK
-																						) {
-																							return {
-																								...obj,
-																								productImages: array,
-																							};
-																						}
-
-																						return obj;
-																					});
-
-																				setProductAttributesFinal(newArr);
-																			}
-																		}}
-																		style={{
-																			transform: "translate(-100%, -100%)",
-																			color: "white",
-																			background: "black",
-																			fontSize: "15px",
-																			padding: "0px",
-																			borderRadius: "50%",
-																		}}
-																		aria-label='Close'>
-																		<span aria-hidden='true'>&times;</span>
-																	</button>
-																</React.Fragment>
-															);
-														},
-													)}
+																					setProductAttributesFinal(newArr);
+																				}
+																			}}
+																			style={{
+																				transform: "translate(-100%, -100%)",
+																				color: "white",
+																				background: "black",
+																				fontSize: "15px",
+																				padding: "0px",
+																				borderRadius: "50%",
+																			}}
+																			aria-label='Close'>
+																			<span aria-hidden='true'>&times;</span>
+																		</button>
+																	</React.Fragment>
+																);
+															},
+														)}
 												</>
 											) : null}
 											<br />
