@@ -337,11 +337,7 @@ const OrdersHist = () => {
 				row.invoiceNumber.toString().toLowerCase().indexOf(q) > -1 ||
 				row.OTNumber.toString().toLowerCase().indexOf(q) > -1 ||
 				row.trackingNumber.toString().toLowerCase().indexOf(q) > -1 ||
-				row.orderSource.toString().toLowerCase().indexOf(q) > -1 ||
-				row.chosenShippingOption[0].carrierName
-					.toString()
-					.toLowerCase()
-					.indexOf(q) > -1
+				row.orderSource.toString().toLowerCase().indexOf(q) > -1
 			);
 		});
 	}
