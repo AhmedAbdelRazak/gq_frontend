@@ -829,7 +829,9 @@ const OrdersList = () => {
 											<td>{s.customerDetails.state}</td>
 											{/* <td>{s.customerDetails.cityName}</td> */}
 											<td style={{ width: "8%" }}>
-												{s.chosenShippingOption[0].carrierName}
+												{s.chosenShippingOption &&
+													s.chosenShippingOption[0] &&
+													s.chosenShippingOption[0].carrierName}
 											</td>
 											<td style={{ width: "8%" }}>
 												{s.trackingNumber ? s.trackingNumber : "Not Added"}

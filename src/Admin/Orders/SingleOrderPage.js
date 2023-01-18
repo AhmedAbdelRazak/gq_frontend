@@ -521,6 +521,7 @@ const SingleOrderPage = (props) => {
 											{singleOrder.chosenShippingOption &&
 												singleOrder.chosenShippingOption.length > 0 &&
 												singleOrder.customerDetails.carrierName &&
+												singleOrder.chosenShippingOption[0] &&
 												singleOrder.chosenShippingOption[0].chosenShippingData.filter(
 													(ii) =>
 														ii.governorate ===
@@ -538,6 +539,7 @@ const SingleOrderPage = (props) => {
 											{singleOrder.chosenShippingOption &&
 												singleOrder.chosenShippingOption.length > 0 &&
 												singleOrder.customerDetails.carrierName &&
+												singleOrder.chosenShippingOption[0] &&
 												singleOrder.chosenShippingOption[0].chosenShippingData.filter(
 													(ii) =>
 														ii.governorate ===
