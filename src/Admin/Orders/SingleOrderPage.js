@@ -439,6 +439,13 @@ const SingleOrderPage = (props) => {
 										{updateSingleOrder.customerDetails.orderComment}
 									</strong>
 								</div>
+								<div className='col-md-6 mx-auto'>
+									Order Taker:{" "}
+									<strong style={{ color: "darkblue" }}>
+										{updateSingleOrder.employeeData.name}
+									</strong>
+								</div>
+
 								{updateSingleOrder &&
 								updateSingleOrder.appliedCoupon &&
 								updateSingleOrder.appliedCoupon.name ? (
@@ -554,7 +561,7 @@ const SingleOrderPage = (props) => {
 							<div className='col-md-4 mx-auto text-center'>
 								<hr />
 							</div>
-							{singleOrder.returnedItems.length === 0 &&
+							{singleOrder.returnedItems.length > 0 &&
 							(singleOrder.status.includes("Return") ||
 								singleOrder.status.includes("Returned")) ? (
 								<>
