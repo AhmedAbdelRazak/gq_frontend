@@ -561,7 +561,7 @@ const SingleOrderPage = (props) => {
 							<div className='col-md-4 mx-auto text-center'>
 								<hr />
 							</div>
-							{singleOrder.returnedItems.length > 0 &&
+							{singleOrder.returnedItems.length >= 0 &&
 							(singleOrder.status.includes("Return") ||
 								singleOrder.status.includes("Returned")) ? (
 								<>
