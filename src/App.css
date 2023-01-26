@@ -187,3 +187,8 @@ body {
 .arabicFonts {
 	font-family: "Droid Arabic Kufi";
 }
+
+text {
+	font-size: 14px !important;
+	font-weight: bolder !important;
+}

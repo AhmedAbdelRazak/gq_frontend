@@ -101,6 +101,7 @@ import SingleBarcodePage from "./Admin/OnlineStore/PrintBarcodes/SingleBarcodePa
 import Inventory from "./Admin/OnlineStore/Inventory/Inventory";
 import EmployeeShare from "./Admin/GQShopReports/EmployeeShare";
 import AceReceivingLog from "./Admin/OnlineStore/AceReceivingLog";
+import PrintBarcodesMain from "./Admin/OnlineStore/PrintBarcodes/BarcodesUpdate/PrintBarcodesMain";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -384,9 +385,14 @@ const App = () => {
 					component={OnsiteOrderTaking}
 				/>
 				<AdminRoute
-					path='/admin/print-barcodes'
+					path='/admin/print-barcodes/draft'
 					exact
 					component={PrintBarcodes}
+				/>
+				<AdminRoute
+					path='/admin/print-barcodes'
+					exact
+					component={PrintBarcodesMain}
 				/>
 				<AdminRoute
 					path='/admin/single-barcode/:sku'
