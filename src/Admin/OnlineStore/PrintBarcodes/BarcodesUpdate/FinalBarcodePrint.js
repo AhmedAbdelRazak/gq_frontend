@@ -49,15 +49,16 @@ const FinalBarcodePrint = ({
 					</div>
 					<div className='content' id='content'>
 						{/* <div style={{ display: "grid", gridTemplateColumns: "33% 33%" }}> */}
-						<div className='row mx-3'>
+						<div className='mx-3'>
 							{allChosenProducts &&
 								allChosenProducts.map((p, i) => {
 									return (
 										<div
 											key={i}
-											className=' mt-1 col-4'
+											className=' col-4  mx-auto'
 											style={{
 												textTransform: "capitalize",
+												marginTop: i === 0 ? "0px" : "11px",
 											}}>
 											<div
 												style={{
@@ -80,7 +81,7 @@ const FinalBarcodePrint = ({
 												</div>
 
 												<div className='row'>
-													<div className='col-6'>
+													<div className='col-6  mx-auto'>
 														<div
 															style={{
 																fontWeight: "bolder",
@@ -112,7 +113,7 @@ const FinalBarcodePrint = ({
 													</div>
 
 													<div
-														className='col-5 my-auto py-1'
+														className='col-5 my-auto py-1  mx-auto'
 														style={{
 															fontSize: "0.9rem",
 															background: "black",
