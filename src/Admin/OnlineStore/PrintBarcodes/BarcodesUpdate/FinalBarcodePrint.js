@@ -61,31 +61,33 @@ const FinalBarcodePrint = ({
 											}}>
 											<div
 												style={{
-													border: "1px black solid",
-													padding: "5px 25px",
-													width: "591px",
-													height: "295px",
+													// border: "1px black solid",
+													padding: "5px 5px",
+													width: "188px",
+													height: "94px",
 												}}>
 												<h3
 													style={{
 														// textAlign: "center",
-														fontSize: "1rem",
+														fontSize: "0.7rem",
 														fontWeight: "bolder",
 														textAlign: "center",
 														margin: "0px",
 													}}>
 													ACE SPORT
 												</h3>
-												<div className='' style={{ fontWeight: "bolder" }}>
+												<div
+													className=''
+													style={{ fontWeight: "bolder", fontSize: "0.6rem" }}>
 													{p.productName}
 												</div>
 
 												<div className='row'>
-													<div className='col-6'>
+													<div className='col-5'>
 														<div
 															style={{
 																fontWeight: "bolder",
-																fontSize: "0.65rem",
+																fontSize: "0.4rem",
 															}}
 															className=''>
 															Size: {p.SubSKUSize}
@@ -94,7 +96,7 @@ const FinalBarcodePrint = ({
 															style={{
 																fontWeight: "bolder",
 																textTransform: "capitalize",
-																fontSize: "0.65rem",
+																fontSize: "0.4rem",
 															}}
 															className=''>
 															Color:{" "}
@@ -113,9 +115,9 @@ const FinalBarcodePrint = ({
 													</div>
 
 													<div
-														className='col-6 my-auto py-2'
+														className='col-6 my-auto'
 														style={{
-															fontSize: "1rem",
+															fontSize: "0.6rem",
 															background: "black",
 															color: "white",
 															fontWeight: "bolder",
@@ -123,13 +125,12 @@ const FinalBarcodePrint = ({
 														EGP {Number(p.SubSKUPriceAfterDiscount).toFixed(2)}
 													</div>
 												</div>
-
-												<div>
+												<div className='barcodeWrapper'>
 													<Barcode
 														value={p.SubSKU}
 														format='CODE128'
-														width={0.9}
-														height='75px'
+														width={0.5}
+														height='25px'
 													/>
 												</div>
 											</div>
