@@ -55,26 +55,28 @@ const FinalBarcodePrint = ({
 									return (
 										<div
 											key={i}
-											className=' mt-3 col-4 py-2'
+											className=' mt-1 col-4'
 											style={{
 												textTransform: "capitalize",
 											}}>
 											<div
 												style={{
 													border: "1px black solid",
-													width: "50%",
-													padding: "10px 25px",
+													padding: "5px 25px",
+													width: "591px",
+													height: "295px",
 												}}>
 												<h3
 													style={{
 														// textAlign: "center",
 														fontSize: "1rem",
 														fontWeight: "bolder",
-														marginLeft: "20px",
+														textAlign: "center",
+														margin: "0px",
 													}}>
 													ACE SPORT
 												</h3>
-												<div className=' mt-3' style={{ fontWeight: "bolder" }}>
+												<div className='' style={{ fontWeight: "bolder" }}>
 													{p.productName}
 												</div>
 
