@@ -27,7 +27,7 @@ const FinalBarcodePrint = ({
 			const imgWidth = 250;
 			const imgHeight = (canvas.height * imgWidth) / canvas.width;
 			const imgDate = canvas.toDataURL("img/png");
-			const pdf = new jsPDF("p", "mm", "a4");
+			const pdf = new jsPDF("p", "mm", [297, 410]);
 			pdf.addImage(imgDate, "PNG", 0, 0, imgWidth, imgHeight);
 			pdf.save(`Barcode`);
 		});
@@ -58,7 +58,7 @@ const FinalBarcodePrint = ({
 											className=' col-4'
 											style={{
 												textTransform: "capitalize",
-												marginTop: i === 0 ? "0px" : "11px",
+												// marginTop: i === 0 ? "0px" : "11px",
 											}}>
 											<div
 												style={{
