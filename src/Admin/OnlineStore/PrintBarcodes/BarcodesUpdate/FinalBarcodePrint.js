@@ -55,7 +55,7 @@ const FinalBarcodePrint = ({
 									return (
 										<div
 											key={i}
-											className=' col-4  mx-auto'
+											className=' col-4'
 											style={{
 												textTransform: "capitalize",
 												marginTop: i === 0 ? "0px" : "11px",
