@@ -141,13 +141,13 @@ const OrderedItems = ({
 															chosenProducts[index].SubSKU =
 																updatedProduct2.SubSKU;
 
-															chosenSubSKUs[index] = updatedProduct2.SubSKU;
+															// chosenSubSKUs[index] = updatedProduct2.SubSKU;
 
 															setChosenProductWithVariables([
 																...chosenProductWithVariables,
 															]);
 															setChosenProducts([...chosenProducts]);
-															setChosenSubSKUs([...chosenSubSKUs]);
+															// setChosenSubSKUs([...chosenSubSKUs]);
 														}
 													}}>
 													<option style={{ textTransform: "capitalize" }}>
@@ -238,13 +238,13 @@ const OrderedItems = ({
 															chosenProducts[index].SubSKU =
 																updatedProduct2.SubSKU;
 
-															chosenSubSKUs[index] = updatedProduct2.SubSKU;
+															// chosenSubSKUs[index] = updatedProduct2.SubSKU;
 
 															setChosenProductWithVariables([
 																...chosenProductWithVariables,
 															]);
 															setChosenProducts([...chosenProducts]);
-															setChosenSubSKUs([...chosenSubSKUs]);
+															// setChosenSubSKUs([...chosenSubSKUs]);
 														}
 													}}>
 													<option style={{ textTransform: "capitalize" }}>
