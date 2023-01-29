@@ -77,9 +77,7 @@ const FinalBarcodePrint = ({
 													}}>
 													ACE SPORT
 												</h3>
-												<div
-													className=''
-													style={{ fontWeight: "bolder", marginLeft: "5px" }}>
+												<div className='' style={{ fontWeight: "bolder" }}>
 													{p.productName}
 												</div>
 
