@@ -27,7 +27,7 @@ const FinalBarcodePrint = ({
 			const imgWidth = 250;
 			const imgHeight = (canvas.height * imgWidth) / canvas.width;
 			const imgDate = canvas.toDataURL("img/png");
-			const pdf = new jsPDF("p", "mm", [297, 410]);
+			const pdf = new jsPDF("p", "mm", [297, 610]);
 			pdf.addImage(imgDate, "PNG", 0, 0, imgWidth, imgHeight);
 			pdf.save(`Barcode`);
 		});
@@ -77,7 +77,9 @@ const FinalBarcodePrint = ({
 													}}>
 													ACE SPORT
 												</h3>
-												<div className='' style={{ fontWeight: "bolder" }}>
+												<div
+													className=''
+													style={{ fontWeight: "bolder", marginLeft: "5px" }}>
 													{p.productName}
 												</div>
 
