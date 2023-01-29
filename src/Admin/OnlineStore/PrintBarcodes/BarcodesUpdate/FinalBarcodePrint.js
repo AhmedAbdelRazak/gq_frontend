@@ -59,7 +59,7 @@ const FinalBarcodePrint = ({
 											style={{
 												textTransform: "capitalize",
 												// marginTop: i === 0 ? "0px" : "11px",
-												marginBottom: "26px",
+												marginBottom: "30px",
 											}}>
 											<div
 												style={{
