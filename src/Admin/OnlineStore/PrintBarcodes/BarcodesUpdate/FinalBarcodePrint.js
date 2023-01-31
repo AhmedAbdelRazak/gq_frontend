@@ -5,6 +5,7 @@ import styled from "styled-components";
 import Barcode from "react-barcode";
 // import { useReactToPrint } from "react-to-print";
 import jsPDF from "jspdf";
+// eslint-disable-next-line
 import html2canvas from "html2canvas";
 import "jspdf-autotable";
 import { Modal } from "antd";
@@ -16,20 +17,38 @@ const FinalBarcodePrint = ({
 	allChosenProducts,
 	allColors,
 }) => {
-	console.log(allChosenProducts, "allChosenProducts");
+	// const exportPDF = () => {
+	// 	const input = document.getElementById("content");
+	// 	html2canvas(input, {
+	// 		logging: true,
+	// 		letterRendering: 1,
+	// 		useCORS: true,
+	// 	}).then((canvas) => {
+	// 		const imgWidth = 250;
+	// 		const imgHeight = (canvas.height * imgWidth) / canvas.width;
+	// 		const imgDate = canvas.toDataURL("img/png");
+	// 		const pdf = new jsPDF("p", "mm", [297, 410]);
+	// 		pdf.addImage(imgDate, "PNG", 0, 0, imgWidth, imgHeight);
+	// 		pdf.save(`Barcode`);
+	// 	});
+	// };
+
 	const exportPDF = () => {
+		var pdf = new jsPDF("p", "px", [297, 410]);
 		const input = document.getElementById("content");
-		html2canvas(input, {
-			logging: true,
-			letterRendering: 1,
-			useCORS: true,
-		}).then((canvas) => {
-			const imgWidth = 250;
-			const imgHeight = (canvas.height * imgWidth) / canvas.width;
-			const imgDate = canvas.toDataURL("img/png");
-			const pdf = new jsPDF("p", "mm", [297, 610]);
-			pdf.addImage(imgDate, "PNG", 0, 0, imgWidth, imgHeight);
-			pdf.save(`Barcode`);
+
+		pdf.canvas.height = 410;
+		pdf.canvas.width = 297;
+
+		pdf.html(input, {
+			callback: function (doc) {
+				// const canvas = document.getElementById("barcode");
+				// const jpegUrl = doc.toDataURL("image/jpeg");
+
+				doc.save("barcode.pdf");
+			},
+			// x: 10,
+			// y: 10,
 		});
 	};
 
@@ -128,6 +147,7 @@ const FinalBarcodePrint = ({
 												<div>
 													<Barcode
 														value={p.SubSKU}
+														renderer={"img"}
 														format='CODE128'
 														width={0.9}
 														height='60px'
