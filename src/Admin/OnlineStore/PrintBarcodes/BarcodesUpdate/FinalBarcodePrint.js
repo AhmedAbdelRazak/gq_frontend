@@ -34,11 +34,13 @@ const FinalBarcodePrint = ({
 	// };
 
 	const exportPDF = () => {
-		var pdf = new jsPDF("p", "px", [297, 410]);
+		var pdf = new jsPDF("p", "mm", [3000, 3000]);
 		const input = document.getElementById("content");
 
-		pdf.canvas.height = 410;
-		pdf.canvas.width = 297;
+		pdf.canvas.height = 3000;
+		pdf.canvas.width = 3000;
+		// pdf.canvas.height =
+		// 	(pdf.canvas.height * pdf.canvas.width) / pdf.canvas.width;
 
 		pdf.html(input, {
 			callback: function (doc) {
