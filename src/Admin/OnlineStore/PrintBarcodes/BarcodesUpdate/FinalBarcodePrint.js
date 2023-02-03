@@ -17,45 +17,44 @@ const FinalBarcodePrint = ({
 	allChosenProducts,
 	allColors,
 }) => {
-	// const exportPDF = () => {
-	// 	const input = document.getElementById("content");
-	// 	html2canvas(input, {
-	// 		logging: true,
-	// 		letterRendering: 1,
-	// 		useCORS: true,
-	// 	}).then((canvas) => {
-	// 		const imgWidth = 250;
-	// 		const imgHeight = (canvas.height * imgWidth) / canvas.width;
-	// 		const imgDate = canvas.toDataURL("img/png");
-	// 		const pdf = new jsPDF("p", "mm", [297, 410]);
-	// 		pdf.addImage(imgDate, "PNG", 0, 0, imgWidth, imgHeight);
-	// 		pdf.save(`Barcode`);
-	// 	});
-	// };
-
+	console.log(allChosenProducts, "allChosenProducts");
 	const exportPDF = () => {
-		var pdf = new jsPDF("p", "mm", [3000, 3000]);
 		const input = document.getElementById("content");
-
-		pdf.canvas.height = 3000;
-		pdf.canvas.width = 3000;
-		// pdf.canvas.height =
-		// 	(pdf.canvas.height * pdf.canvas.width) / pdf.canvas.width;
-
-		pdf.html(input, {
-			callback: function (doc) {
-				// const canvas = document.getElementById("barcode");
-				// const jpegUrl = doc.toDataURL("image/jpeg");
-
-				doc.save("barcode.pdf");
-			},
-			// x: 10,
-			// y: 10,
+		html2canvas(input, {
+			logging: true,
+			letterRendering: 1,
+			useCORS: true,
+		}).then((canvas) => {
+			const imgWidth = 472;
+			const imgHeight = (canvas.height * imgWidth) / canvas.width;
+			const imgDate = canvas.toDataURL("img/png");
+			const pdf = new jsPDF("p", "px", [472, 2000]);
+			pdf.addImage(imgDate, "PNG", 0, 0, imgWidth, imgHeight);
+			pdf.save(`Barcode`);
 		});
 	};
 
 	const iterationsCount = allChosenProducts.map((i) => i.OrderedQty);
 	// .reduce((a, b) => a + b, 0);
+
+	// const exportPDF = () => {
+	// 	var pdf = new jsPDF("p", "px", [472, 295]);
+	// 	const input = document.getElementById("content");
+
+	// 	pdf.canvas.height = 3100;
+	// 	pdf.canvas.width = 472;
+
+	// 	pdf.html(input, {
+	// 		callback: function (doc) {
+	// 			// const canvas = document.getElementById("barcode");
+	// 			// const jpegUrl = doc.toDataURL("image/jpeg");
+
+	// 			doc.save("barcode.pdf");
+	// 		},
+	// 		// x: 10,
+	// 		// y: 10,
+	// 	});
+	// };
 
 	console.log(iterationsCount, "3rd item");
 
@@ -68,15 +67,22 @@ const FinalBarcodePrint = ({
 							Print SKU Barcode
 						</button>
 					</div>
-					<div className='content' id='content'>
+					<div className='content'>
 						{/* <div style={{ display: "grid", gridTemplateColumns: "33% 33%" }}> */}
-						<div className='mx-3'>
+						<div id='content' style={{}}>
 							{allChosenProducts &&
 								allChosenProducts.map((p, i) => {
+									var SubSkuAdjusted = p.SubSKU;
+
+									var lastFive = SubSkuAdjusted.substr(
+										SubSkuAdjusted.length <= 12
+											? SubSkuAdjusted.length - 10
+											: SubSkuAdjusted.length - 10,
+									);
+
 									return (
 										<div
 											key={i}
-											className=' col-4'
 											style={{
 												textTransform: "capitalize",
 												// marginTop: i === 0 ? "0px" : "11px",
@@ -88,71 +94,56 @@ const FinalBarcodePrint = ({
 													padding: "5px 5px",
 													width: "50%",
 												}}>
-												<h3
-													style={{
-														// textAlign: "center",
-														fontSize: "0.9rem",
-														fontWeight: "bolder",
-														textAlign: "center",
-														margin: "0px",
-													}}>
-													ACE SPORT
-												</h3>
-												<div className='' style={{ fontWeight: "bolder" }}>
-													{p.productName}
-												</div>
-
-												<div className='row'>
-													<div className='col-6  mx-auto'>
-														<div
-															style={{
-																fontWeight: "bolder",
-																fontSize: "0.6rem",
-															}}
-															className=''>
-															Size: {p.SubSKUSize}
-														</div>
-														<div
-															style={{
-																fontWeight: "bolder",
-																textTransform: "capitalize",
-																fontSize: "0.6rem",
-															}}
-															className=''>
-															Color:{" "}
-															{allColors[
-																allColors
-																	.map((i) => i.hexa)
-																	.indexOf(p.SubSKUColor)
-															]
-																? allColors[
-																		allColors
-																			.map((i) => i.hexa)
-																			.indexOf(p.SubSKUColor)
-																  ].color
-																: p.SubSKUColor}
-														</div>
-													</div>
-
-													<div
-														className='col-5 my-auto py-1  mx-auto'
-														style={{
-															fontSize: "0.9rem",
-															background: "black",
-															color: "white",
-															fontWeight: "bolder",
-														}}>
-														EGP {Number(p.SubSKUPriceAfterDiscount).toFixed(2)}
-													</div>
-												</div>
-
 												<div>
+													<h3
+														className='ml-3'
+														style={{
+															// textAlign: "center",
+															fontSize: "0.9rem",
+															fontWeight: "bolder",
+															// textAlign: "center",
+															margin: "0px",
+														}}>
+														ACE SPORT
+													</h3>
+													<div className='' style={{ fontWeight: "bolder" }}>
+														{p.productName}
+													</div>
+													<div
+														style={{
+															fontWeight: "bolder",
+															fontSize: "0.7rem",
+														}}
+														className=''>
+														Size: {p.SubSKUSize}
+													</div>
+													<div
+														style={{
+															fontWeight: "bolder",
+															textTransform: "capitalize",
+															fontSize: "0.7rem",
+														}}
+														className=''>
+														Color:{" "}
+														{allColors[
+															allColors
+																.map((i) => i.hexa)
+																.indexOf(p.SubSKUColor)
+														]
+															? allColors[
+																	allColors
+																		.map((i) => i.hexa)
+																		.indexOf(p.SubSKUColor)
+															  ].color
+															: p.SubSKUColor}
+													</div>
 													<Barcode
-														value={p.SubSKU}
-														renderer={"img"}
+														value={lastFive}
+														// renderer={"img"}
 														format='CODE128'
-														width={0.9}
+														// width={1.8}
 														height='60px'
+														marginLeft={0}
 													/>
 												</div>
 											</div>
