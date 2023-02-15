@@ -1328,3 +1328,206 @@ export const getReceivingLogs = (token) => {
 		})
 		.catch((err) => console.log(err));
 };
+
+export const CreateShippingTN = (order, setAramexResponse) => {
+	console.log(order);
+	const AramexObject = {
+		ClientInfo: {
+			UserName: "testingapi@aramex.com",
+			Password: "R123456789$r",
+			Version: "v1",
+			AccountNumber: "987654",
+			AccountPin: "226321",
+			AccountEntity: "CAI",
+			AccountCountryCode: "EG",
+			Source: 24,
+		},
+		LabelInfo: null,
+		Shipments: [
+			{
+				Reference1: "",
+				Reference2: "",
+				Reference3: "",
+				Shipper: {
+					Reference1: "",
+					Reference2: "",
+					AccountNumber: "987654",
+					PartyAddress: {
+						Line1: "Test",
+						Line2: "",
+						Line3: "",
+						City: "Alexandria",
+						StateOrProvinceCode: "",
+						PostCode: "",
+						CountryCode: "EG",
+						Longitude: 0,
+						Latitude: 0,
+						BuildingNumber: null,
+						BuildingName: null,
+						Floor: null,
+						Apartment: null,
+						POBox: null,
+						Description: null,
+					},
+					Contact: {
+						Department: "",
+						PersonName: "aramex",
+						Title: "",
+						CompanyName: "aramex",
+						PhoneNumber1: "009625515111",
+						PhoneNumber1Ext: "",
+						PhoneNumber2: "",
+						PhoneNumber2Ext: "",
+						FaxNumber: "",
+						CellPhone: "9677956000200",
+						EmailAddress: "test@test.com",
+						Type: "",
+					},
+				},
+				Consignee: {
+					Reference1: order.invoiceNumber,
+					Reference2: "",
+					AccountNumber: process.env.REACT_APP_ACCOUNT_NUMBER,
+					PartyAddress: {
+						Line1: order.customerDetails.address,
+						Line2: "",
+						Line3: "",
+						City: "Maadi",
+						StateOrProvinceCode: "MAA",
+						PostCode: "",
+						CountryCode: "EG",
+						Longitude: 0,
+						Latitude: 0,
+						BuildingNumber: "",
+						BuildingName: "",
+						Floor: "",
+						Apartment: "",
+						POBox: null,
+						Description: "",
+					},
+					Contact: {
+						Department: "",
+						PersonName: "aramex",
+						Title: "",
+						CompanyName: "aramex",
+						PhoneNumber1: "009625515111",
+						PhoneNumber1Ext: "",
+						PhoneNumber2: "",
+						PhoneNumber2Ext: "",
+						FaxNumber: "",
+						CellPhone: "9627956000200",
+						EmailAddress: "test@test.com",
+						Type: "",
+					},
+				},
+				ThirdParty: {
+					Reference1: "",
+					Reference2: "",
+					AccountNumber: process.env.REACT_APP_ACCOUNT_NUMBER,
+					PartyAddress: {
+						Line1: "",
+						Line2: "",
+						Line3: "",
+						City: "",
+						StateOrProvinceCode: "",
+						PostCode: "",
+						CountryCode: "",
+						Longitude: 0,
+						Latitude: 0,
+						BuildingNumber: null,
+						BuildingName: null,
+						Floor: null,
+						Apartment: null,
+						POBox: null,
+						Description: null,
+					},
+					Contact: {
+						Department: "",
+						PersonName: "",
+						Title: "",
+						CompanyName: "",
+						PhoneNumber1: "",
+						PhoneNumber1Ext: "",
+						PhoneNumber2: "",
+						PhoneNumber2Ext: "",
+						FaxNumber: "",
+						CellPhone: "",
+						EmailAddress: "",
+						Type: "",
+					},
+				},
+				ShippingDateTime: "/Date(1484085970000-0500)/",
+				DueDate: "/Date(1484085970000-0500)/",
+				Comments: "",
+				PickupLocation: "",
+				OperationsInstructions: "",
+				AccountingInstrcutions: "",
+				Details: {
+					Dimensions: null,
+					ActualWeight: {
+						Unit: "KG",
+						Value: 0.5,
+					},
+					ChargeableWeight: null,
+					DescriptionOfGoods: "Books",
+					GoodsOriginCountry: "EG",
+					NumberOfPieces: 1,
+					ProductGroup: "DOM",
+					ProductType: "CDS",
+					PaymentType: "P",
+					PaymentOptions: "",
+					CustomsValueAmount: null,
+					CashOnDeliveryAmount: { Value: 1046.0, CurrencyCode: "EGP" },
+					InsuranceAmount: null,
+					CashAdditionalAmount: null,
+					CashAdditionalAmountDescription: "",
+					CollectAmount: null,
+					Services: "CODS",
+					Items: [],
+				},
+				Attachments: [],
+				ForeignHAWB: "",
+				TransportType: 0,
+				PickupGUID: "",
+				Number: null,
+				ScheduledDelivery: null,
+			},
+		],
+		Transaction: {
+			Reference1: "",
+			Reference2: "",
+			Reference3: "",
+			Reference4: "",
+			Reference5: "",
+		},
+	};
+
+	console.log(JSON.stringify(AramexObject), "Ahowan");
+
+	return fetch(
+		"https://ws.dev.aramex.net/ShippingAPI.V2/Shipping/Service_1_0.svc/json/CreateShipments",
+		{
+			method: "POST",
+			headers: {
+				Accept: "application/json",
+				"Content-type": "application/json; charset=UTF-8",
+				"Access-Control-Allow-Origin": "https://ws.dev.aramex.net",
+				"Access-Control-Allow-Methods":
+					"GET, POST, PUT, PATCH, POST, DELETE, OPTIONS",
+				"Access-Control-Allow-Headers": "*",
+				"Access-Control-Max-Age": 86400,
+			},
+			body: JSON.stringify(AramexObject),
+		},
+	)
+		.then((response) => {
+			setAramexResponse(response.json());
+			console.log(response, "response");
+			return response.json();
+		})
+		.catch((err) => {
+			setAramexResponse(err);
+
+			console.log(err, "Error Aramex");
+		});
+};

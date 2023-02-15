@@ -8,6 +8,7 @@ import AdminMenu from "../AdminMenu/AdminMenu";
 import DarkBG from "../AdminMenu/DarkBG";
 import Navbar from "../AdminNavMenu/Navbar";
 import {
+	CreateShippingTN,
 	getProducts,
 	listOrdersProcessing,
 	ordersLength,
@@ -37,6 +38,9 @@ const OrdersList = () => {
 	const [lengthOfOrders, setLengthOfOrders] = useState(0);
 	const [backorders, setBackorders] = useState("NotClicked");
 	const [excelDataSet, setExcelDataSet] = useState([]);
+
+	// eslint-disable-next-line
+	const [aramexResponse, setAramexResponse] = useState("");
 
 	//pagination
 	const [currentPage, setCurrentPage] = useState(1);
@@ -660,12 +664,11 @@ const OrdersList = () => {
 						</div>
 						<table
 							className='table table-bordered table-md-responsive table-hover text-center'
-							style={{ fontSize: "0.75rem" }}
+							style={{ fontSize: "0.7rem" }}
 							id='ahowan'>
 							<thead className='thead-light'>
 								<tr>
 									<th scope='col'>Purchase Date</th>
-									<th scope='col'>Order #</th>
 									<th scope='col'>INV #</th>
 									<th scope='col'>Status</th>
 									<th scope='col'>Name</th>
@@ -675,10 +678,11 @@ const OrdersList = () => {
 									<th scope='col'>Taker</th>
 									<th scope='col'>Governorate</th>
 									{/* <th scope='col'>City</th> */}
-									<th scope='col'>Carrier</th>
+									{/* <th scope='col'>Carrier</th> */}
 									<th scope='col'>Tracking #</th>
 									<th scope='col'>Quantity</th>
 									<th scope='col'>Invoice?</th>
+									<th scope='col'>Shipping?</th>
 									<th scope='col'>Details?</th>
 								</tr>
 							</thead>
@@ -753,17 +757,6 @@ const OrdersList = () => {
 												</td>
 											)}
 
-											{s.OTNumber && s.OTNumber !== "Not Added" ? (
-												<td className='my-auto'>{s.OTNumber}</td>
-											) : (
-												<td className='my-auto'>{`OT${new Date(
-													s.createdAt,
-												).getFullYear()}${
-													new Date(s.createdAt).getMonth() + 1
-												}${new Date(s.createdAt).getDate()}000${
-													allOrders.length - i
-												}`}</td>
-											)}
 											<td
 												style={{
 													width: "10%",
@@ -775,7 +768,7 @@ const OrdersList = () => {
 											<td
 												style={{
 													fontWeight: "bold",
-													fontSize: "0.9rem",
+													fontSize: "0.75rem",
 													width: "8.5%",
 													background:
 														// finalChecker2 === "Failed" &&
@@ -828,11 +821,11 @@ const OrdersList = () => {
 											</td>
 											<td>{s.customerDetails.state}</td>
 											{/* <td>{s.customerDetails.cityName}</td> */}
-											<td style={{ width: "8%" }}>
+											{/* <td style={{ width: "8%" }}>
 												{s.chosenShippingOption &&
 													s.chosenShippingOption[0] &&
 													s.chosenShippingOption[0].carrierName}
-											</td>
+											</td> */}
 											<td style={{ width: "8%" }}>
 												{s.trackingNumber ? s.trackingNumber : "Not Added"}
 											</td>
@@ -917,7 +910,35 @@ const OrdersList = () => {
 														color: "darkgreen",
 														fontWeight: "bold",
 													}}>
-													Order Already Invoiced
+													Invoiced
+												</td>
+											)}
+
+											{s.invoiceNumber !== "Not Added" &&
+											s.trackingNumber === "Not Added" ? (
+												<td
+													style={{
+														cursor: "pointer",
+														fontSize: "10px,",
+														fontWeight: "bold",
+													}}>
+													<Link
+														to={`#`}
+														onClick={() =>
+															CreateShippingTN(s, setAramexResponse)
+														}>
+														Create Shipping
+													</Link>
+												</td>
+											) : (
+												<td
+													style={{
+														cursor: "pointer",
+														fontSize: "10px,",
+														color: "darkgray",
+														fontWeight: "bold",
+													}}>
+													Create Shipping
 												</td>
 											)}
 

@@ -555,7 +555,18 @@ const OrdersHist = () => {
 											Show More....
 										</Link>
 									</td>
-									{s.invoiceNumber === "Not Added" ? (
+									{s.invoiceNumber !== "Not Added" &&
+									s.trackingNumber === "Not Added" ? (
+										<td
+											style={{
+												cursor: "pointer",
+												fontSize: "10px,",
+												width: "8%",
+												fontWeight: "bold",
+											}}>
+											<Link to={`#`}>Create Shipping</Link>
+										</td>
+									) : (
 										<td
 											style={{
 												cursor: "pointer",
@@ -565,16 +576,6 @@ const OrdersHist = () => {
 												fontWeight: "bold",
 											}}>
 											Create Shipping
-										</td>
-									) : (
-										<td
-											style={{
-												cursor: "pointer",
-												fontSize: "10px,",
-												width: "8%",
-												fontWeight: "bold",
-											}}>
-											<Link to={`#`}>Create Shipping</Link>
 										</td>
 									)}
 
