@@ -1502,28 +1502,22 @@ export const CreateShippingTN = (order, setAramexResponse) => {
 		},
 	};
 
-	console.log(JSON.stringify(AramexObject), "Ahowan");
-
 	return fetch(
-		"https://ws.dev.aramex.net/ShippingAPI.V2/Shipping/Service_1_0.svc/json/CreateShipments",
+		"/ShippingAPI.V2/Shipping/Service_1_0.svc/json/CreateShipments",
+
 		{
 			method: "POST",
 			headers: {
 				Accept: "application/json",
-				"Content-type": "application/json; charset=UTF-8",
-				"Access-Control-Allow-Origin": "https://ws.dev.aramex.net",
-				"Access-Control-Allow-Methods":
-					"GET, POST, PUT, PATCH, POST, DELETE, OPTIONS",
-				"Access-Control-Allow-Headers": "*",
-				"Access-Control-Max-Age": 86400,
+				"Content-Type": "application/json",
 			},
 			body: JSON.stringify(AramexObject),
 		},
 	)
 		.then((response) => {
+			console.log(response, "success");
 			setAramexResponse(response.json());
-			console.log(response, "response");
-			return response.json();
+			return response;
 		})
 		.catch((err) => {
 			setAramexResponse(err);
