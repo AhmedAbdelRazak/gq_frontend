@@ -413,7 +413,9 @@ const SingleOrderPage = (props) => {
 									Display Invoice
 								</Link>
 							</h5>
-							{updateSingleOrder && updateSingleOrder.trackingNumber ? (
+							{updateSingleOrder &&
+							updateSingleOrder.trackingNumber &&
+							updateSingleOrder.trackingNumber !== "Not Added" ? (
 								<h5
 									style={{
 										fontWeight: "bold",
