@@ -361,6 +361,8 @@ const OrdersList = () => {
 		}
 	};
 
+	const allInvoices = allOrders.map((i) => i.invoiceNumber);
+
 	const mainDate =
 		allOrders &&
 		allOrders.map((i) => {
@@ -925,7 +927,13 @@ const OrdersList = () => {
 													<Link
 														to={`#`}
 														onClick={() =>
-															CreateShippingTN(s, setAramexResponse)
+															CreateShippingTN(
+																user._id,
+																token,
+																s,
+																setAramexResponse,
+																allInvoices,
+															)
 														}>
 														Create Shipping
 													</Link>

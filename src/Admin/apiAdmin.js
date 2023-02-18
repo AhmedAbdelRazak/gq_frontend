@@ -1329,15 +1329,23 @@ export const getReceivingLogs = (token) => {
 		.catch((err) => console.log(err));
 };
 
-export const CreateShippingTN = (order, setAramexResponse) => {
-	console.log(order);
+export const CreateShippingTN = (
+	userId,
+	token,
+	order,
+	setAramexResponse,
+	allInvoices,
+) => {
+	console.log(order, "order");
+
+	const invoiceIndex = allInvoices.indexOf(order.invoiceNumber);
 	const AramexObject = {
 		ClientInfo: {
-			UserName: "testingapi@aramex.com",
-			Password: "R123456789$r",
+			UserName: process.env.REACT_APP_ARAMEX_USERNAME_PROD,
+			Password: process.env.REACT_APP_ARAMEX_PASSWORD_PROD,
 			Version: "v1",
-			AccountNumber: "987654",
-			AccountPin: "226321",
+			AccountNumber: process.env.REACT_APP_ACCOUNT_NUMBER_PROD,
+			AccountPin: process.env.REACT_APP_ACCOUNT_PIN_PROD,
 			AccountEntity: "CAI",
 			AccountCountryCode: "EG",
 			Source: 24,
@@ -1345,15 +1353,17 @@ export const CreateShippingTN = (order, setAramexResponse) => {
 		LabelInfo: null,
 		Shipments: [
 			{
-				Reference1: "",
+				Reference1:
+					invoiceIndex === -1 ? order.invoiceNumber : order.invoiceNumber,
 				Reference2: "",
 				Reference3: "",
 				Shipper: {
-					Reference1: "",
+					Reference1: order.orderSource,
 					Reference2: "",
-					AccountNumber: "987654",
+					AccountNumber: process.env.REACT_APP_ACCOUNT_NUMBER_PROD,
 					PartyAddress: {
-						Line1: "Test",
+						Line1:
+							"العجمي -ش علي ابن ابي طالب-الحديد و الصلب- بجوار جمعية الوكيل الخيرية",
 						Line2: "",
 						Line3: "",
 						City: "Alexandria",
@@ -1370,30 +1380,31 @@ export const CreateShippingTN = (order, setAramexResponse) => {
 						Description: null,
 					},
 					Contact: {
-						Department: "",
-						PersonName: "aramex",
+						Department: "Operations",
+						PersonName: "GQ",
 						Title: "",
-						CompanyName: "aramex",
+						CompanyName: "GQ",
 						PhoneNumber1: "009625515111",
 						PhoneNumber1Ext: "",
 						PhoneNumber2: "",
 						PhoneNumber2Ext: "",
 						FaxNumber: "",
 						CellPhone: "9677956000200",
-						EmailAddress: "test@test.com",
+						EmailAddress: process.env.REACT_APP_ARAMEX_USERNAME_PROD,
 						Type: "",
 					},
 				},
 				Consignee: {
-					Reference1: order.invoiceNumber,
+					Reference1:
+						invoiceIndex === -1 ? order.invoiceNumber : order.invoiceNumber,
 					Reference2: "",
-					AccountNumber: process.env.REACT_APP_ACCOUNT_NUMBER,
+					AccountNumber: process.env.REACT_APP_ACCOUNT_NUMBER_PROD,
 					PartyAddress: {
 						Line1: order.customerDetails.address,
 						Line2: "",
 						Line3: "",
-						City: "Maadi",
-						StateOrProvinceCode: "MAA",
+						City: order.customerDetails.cityName,
+						StateOrProvinceCode: order.customerDetails.city,
 						PostCode: "",
 						CountryCode: "EG",
 						Longitude: 0,
@@ -1406,26 +1417,28 @@ export const CreateShippingTN = (order, setAramexResponse) => {
 						Description: "",
 					},
 					Contact: {
-						Department: "",
-						PersonName: "aramex",
+						Department: "Source, Ads",
+						PersonName: order.customerDetails.fullName,
 						Title: "",
-						CompanyName: "aramex",
-						PhoneNumber1: "009625515111",
+						CompanyName: "Customer",
+						PhoneNumber1: order.customerDetails.phone,
 						PhoneNumber1Ext: "",
 						PhoneNumber2: "",
 						PhoneNumber2Ext: "",
 						FaxNumber: "",
-						CellPhone: "9627956000200",
-						EmailAddress: "test@test.com",
+						CellPhone: order.customerDetails.phone,
+						EmailAddress: order.customerDetails.email
+							? order.customerDetails.email
+							: "",
 						Type: "",
 					},
 				},
 				ThirdParty: {
 					Reference1: "",
 					Reference2: "",
-					AccountNumber: process.env.REACT_APP_ACCOUNT_NUMBER,
+					AccountNumber: process.env.REACT_APP_ACCOUNT_NUMBER_PROD,
 					PartyAddress: {
-						Line1: "",
+						Line1: order.customerDetails.address,
 						Line2: "",
 						Line3: "",
 						City: "",
@@ -1446,19 +1459,22 @@ export const CreateShippingTN = (order, setAramexResponse) => {
 						PersonName: "",
 						Title: "",
 						CompanyName: "",
-						PhoneNumber1: "",
+						PhoneNumber1: order.customerDetails.phone,
 						PhoneNumber1Ext: "",
 						PhoneNumber2: "",
 						PhoneNumber2Ext: "",
 						FaxNumber: "",
-						CellPhone: "",
-						EmailAddress: "",
+						CellPhone: order.customerDetails.phone,
+						EmailAddress: order.customerDetails.email
+							? order.customerDetails.email
+							: "",
 						Type: "",
 					},
 				},
-				ShippingDateTime: "/Date(1484085970000-0500)/",
-				DueDate: "/Date(1484085970000-0500)/",
-				Comments: "",
+				ShippingDateTime:
+					"/Date(" + Date.parse(new Date().toLocaleDateString()) + ")/",
+				DueDate: "/Date(" + Date.parse(new Date().toLocaleDateString()) + ")/",
+				Comments: order.customerDetails.orderComment,
 				PickupLocation: "",
 				OperationsInstructions: "",
 				AccountingInstrcutions: "",
@@ -1469,15 +1485,19 @@ export const CreateShippingTN = (order, setAramexResponse) => {
 						Value: 0.5,
 					},
 					ChargeableWeight: null,
-					DescriptionOfGoods: "Books",
+					DescriptionOfGoods:
+						order.chosenProductQtyWithVariables[0][0].productName,
 					GoodsOriginCountry: "EG",
-					NumberOfPieces: 1,
+					NumberOfPieces: order.totalOrderedQty,
 					ProductGroup: "DOM",
 					ProductType: "CDS",
 					PaymentType: "P",
 					PaymentOptions: "",
 					CustomsValueAmount: null,
-					CashOnDeliveryAmount: { Value: 1046.0, CurrencyCode: "EGP" },
+					CashOnDeliveryAmount: {
+						Value: Number(order.totalAmountAfterDiscount),
+						CurrencyCode: "EGP",
+					},
 					InsuranceAmount: null,
 					CashAdditionalAmount: null,
 					CashAdditionalAmountDescription: "",
@@ -1501,27 +1521,95 @@ export const CreateShippingTN = (order, setAramexResponse) => {
 			Reference5: "",
 		},
 	};
-
-	return fetch(
-		"/ShippingAPI.V2/Shipping/Service_1_0.svc/json/CreateShipments",
-
-		{
-			method: "POST",
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(AramexObject),
+	return fetch(`${process.env.REACT_APP_API_URL}/aramex/${userId}`, {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
 		},
-	)
+		body: JSON.stringify(AramexObject),
+	})
 		.then((response) => {
-			console.log(response, "success");
-			setAramexResponse(response.json());
-			return response;
+			return response.json();
 		})
 		.catch((err) => {
-			setAramexResponse(err);
+			console.log(err);
+		})
+		.then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAramexResponse(data);
 
-			console.log(err, "Error Aramex");
+				return fetch(
+					`${process.env.REACT_APP_API_URL}/update/order/${order._id}/${userId}`,
+					{
+						method: "PUT",
+						headers: {
+							// content type?
+							"Content-Type": "application/json",
+							Accept: "application/json",
+							Authorization: `Bearer ${token}`,
+						},
+						body: JSON.stringify({
+							order: {
+								...order,
+								aramexResponse: data,
+								trackingNumber: data.Shipments[0].ID,
+							},
+						}),
+					},
+				)
+					.then((response2) => {
+						window.location.reload(false);
+						return response2.json();
+					})
+					.catch((err2) => console.log(err2));
+			}
+		});
+};
+
+export const getShippingLabel = (userId, token, order) => {
+	const AramexObject = {
+		ClientInfo: {
+			UserName: process.env.REACT_APP_ARAMEX_USERNAME_PROD,
+			Password: process.env.REACT_APP_ARAMEX_PASSWORD_PROD,
+			Version: "v1",
+			AccountNumber: process.env.REACT_APP_ACCOUNT_NUMBER_PROD,
+			AccountPin: process.env.REACT_APP_ACCOUNT_PIN_PROD,
+			AccountEntity: "CAI",
+			AccountCountryCode: "EG",
+			Source: 24,
+		},
+		LabelInfo: {
+			ReportID: 9201,
+			ReportType: "URL",
+		},
+		OriginEntity: "AMM",
+		ProductGroup: "DOM",
+		ShipmentNumber: order.trackingNumber,
+		Transaction: {
+			Reference1: "",
+			Reference2: "",
+			Reference3: "",
+			Reference4: "",
+			Reference5: "",
+		},
+	};
+	return fetch(`${process.env.REACT_APP_API_URL}/aramex/printlabel/${userId}`, {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify(AramexObject),
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => {
+			console.log(err);
 		});
 };

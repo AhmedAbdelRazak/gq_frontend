@@ -234,7 +234,12 @@ const InvoicePDF = (props) => {
 								updateSingleOrder.chosenShippingOption[0].carrierName}
 						</div>
 						<div className='col-3'>
-							Terms: <br /> Cash on Delivery
+							Terms: <br />{" "}
+							{updateSingleOrder &&
+							updateSingleOrder.paymentStatus &&
+							updateSingleOrder.paymentStatus === "Pay On Delivery"
+								? "Cash on Delivery"
+								: "Paid Online"}
 						</div>
 					</div>
 				</div>

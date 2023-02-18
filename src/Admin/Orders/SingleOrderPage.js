@@ -12,6 +12,7 @@ import DarkBG from "../AdminMenu/DarkBG";
 import Navbar from "../AdminNavMenu/Navbar";
 import {
 	getColors,
+	getShippingLabel,
 	readSingleOrder,
 	updateOrder,
 	updateOrderExchangeAndReturn,
@@ -136,6 +137,24 @@ const SingleOrderPage = (props) => {
 		}
 	};
 
+	const gettingShippingLabel = () => {
+		getShippingLabel(user._id, token, updateSingleOrder).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				window.scrollTo({ top: 0, behavior: "smooth" });
+				toast.info("Please Wait To Return Shipping Label");
+				setTimeout(function () {
+					window.open(data.ShipmentLabel.LabelURL, "_newtab");
+					window.location.reload(false);
+				}, 2500);
+				setTimeout(function () {
+					window.location.reload(false);
+				}, 3500);
+			}
+		});
+	};
+
 	useEffect(() => {
 		const onScroll = () => setOffset(window.pageYOffset);
 		// clean up code
@@ -163,8 +182,6 @@ const SingleOrderPage = (props) => {
 		gettingAllColors();
 		// eslint-disable-next-line
 	}, []);
-
-	console.log(updateSingleOrder, "order");
 
 	return (
 		<SingleOrderPageWrapper show={AdminMenuStatus}>
@@ -396,6 +413,18 @@ const SingleOrderPage = (props) => {
 									Display Invoice
 								</Link>
 							</h5>
+							{updateSingleOrder && updateSingleOrder.trackingNumber ? (
+								<h5
+									style={{
+										fontWeight: "bold",
+										textAlign: "center",
+										marginBottom: "20px",
+									}}>
+									<Link to={`#`} onClick={gettingShippingLabel}>
+										Shipping Label
+									</Link>
+								</h5>
+							) : null}
 
 							<div style={{ fontSize: "1.25rem", fontWeight: "bolder" }}>
 								Customer Details{" "}
