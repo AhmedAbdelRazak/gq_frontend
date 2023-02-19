@@ -1495,7 +1495,10 @@ export const CreateShippingTN = (
 					PaymentOptions: "",
 					CustomsValueAmount: null,
 					CashOnDeliveryAmount: {
-						Value: Number(order.totalAmountAfterDiscount),
+						Value: Number(
+							Number(order.totalAmountAfterDiscount) +
+								Number(order.totalAmountAfterDiscount) * 0.01,
+						).toFixed(2),
 						CurrencyCode: "EGP",
 					},
 					InsuranceAmount: null,
