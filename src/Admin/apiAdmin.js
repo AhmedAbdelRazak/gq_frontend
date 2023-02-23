@@ -1338,6 +1338,10 @@ export const CreateShippingTN = (
 	updateCustomerDetails,
 ) => {
 	const invoiceIndex = allInvoices.indexOf(order.invoiceNumber);
+
+	const transFees = Number(
+		(Number(order.totalAmount) - Number(order.shippingFees)) * 0.01,
+	).toFixed(2);
 	const AramexObject = {
 		ClientInfo: {
 			UserName: process.env.REACT_APP_ARAMEX_USERNAME_PROD,
@@ -1504,8 +1508,7 @@ export const CreateShippingTN = (
 					CustomsValueAmount: null,
 					CashOnDeliveryAmount: {
 						Value: Number(
-							Number(order.totalAmountAfterDiscount) +
-								Number(order.totalAmountAfterDiscount) * 0.01,
+							Number(order.totalAmountAfterDiscount) + transFees,
 						).toFixed(2),
 						CurrencyCode: "EGP",
 					},
@@ -1595,7 +1598,7 @@ export const getShippingLabel = (userId, token, order) => {
 			Source: 24,
 		},
 		LabelInfo: {
-			ReportID: 9201,
+			ReportID: 9729,
 			ReportType: "URL",
 		},
 		OriginEntity: "AMM",
