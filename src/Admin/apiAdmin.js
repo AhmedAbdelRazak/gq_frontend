@@ -1335,9 +1335,8 @@ export const CreateShippingTN = (
 	order,
 	setAramexResponse,
 	allInvoices,
+	updateCustomerDetails,
 ) => {
-	console.log(order, "order");
-
 	const invoiceIndex = allInvoices.indexOf(order.invoiceNumber);
 	const AramexObject = {
 		ClientInfo: {
@@ -1400,11 +1399,11 @@ export const CreateShippingTN = (
 					Reference2: "",
 					AccountNumber: process.env.REACT_APP_ACCOUNT_NUMBER_PROD,
 					PartyAddress: {
-						Line1: order.customerDetails.address,
+						Line1: updateCustomerDetails.address,
 						Line2: "",
 						Line3: "",
-						City: order.customerDetails.cityName,
-						StateOrProvinceCode: order.customerDetails.city,
+						City: updateCustomerDetails.cityName,
+						StateOrProvinceCode: updateCustomerDetails.city,
 						PostCode: "",
 						CountryCode: "EG",
 						Longitude: 0,
@@ -1415,20 +1414,25 @@ export const CreateShippingTN = (
 						Apartment: "",
 						POBox: null,
 						Description: "",
+						CellPhone: updateCustomerDetails.phone
+							? updateCustomerDetails.phone
+							: "",
 					},
 					Contact: {
 						Department: "Source, Ads",
-						PersonName: order.customerDetails.fullName,
+						PersonName: updateCustomerDetails.fullName,
 						Title: "",
 						CompanyName: "Customer",
-						PhoneNumber1: order.customerDetails.phone,
+						PhoneNumber1: updateCustomerDetails.phone,
 						PhoneNumber1Ext: "",
 						PhoneNumber2: "",
 						PhoneNumber2Ext: "",
 						FaxNumber: "",
-						CellPhone: order.customerDetails.phone,
-						EmailAddress: order.customerDetails.email
-							? order.customerDetails.email
+						CellPhone: updateCustomerDetails.phone
+							? updateCustomerDetails.phone
+							: "",
+						EmailAddress: updateCustomerDetails.email
+							? updateCustomerDetails.email
 							: "",
 						Type: "",
 					},
@@ -1438,7 +1442,7 @@ export const CreateShippingTN = (
 					Reference2: "",
 					AccountNumber: process.env.REACT_APP_ACCOUNT_NUMBER_PROD,
 					PartyAddress: {
-						Line1: order.customerDetails.address,
+						Line1: updateCustomerDetails.address,
 						Line2: "",
 						Line3: "",
 						City: "",
@@ -1453,20 +1457,25 @@ export const CreateShippingTN = (
 						Apartment: null,
 						POBox: null,
 						Description: null,
+						CellPhone: updateCustomerDetails.phone
+							? updateCustomerDetails.phone
+							: "",
 					},
 					Contact: {
 						Department: "",
 						PersonName: "",
 						Title: "",
 						CompanyName: "",
-						PhoneNumber1: order.customerDetails.phone,
+						PhoneNumber1: updateCustomerDetails.phone,
 						PhoneNumber1Ext: "",
 						PhoneNumber2: "",
 						PhoneNumber2Ext: "",
 						FaxNumber: "",
-						CellPhone: order.customerDetails.phone,
-						EmailAddress: order.customerDetails.email
-							? order.customerDetails.email
+						CellPhone: updateCustomerDetails.phone
+							? updateCustomerDetails.phone
+							: "",
+						EmailAddress: updateCustomerDetails.email
+							? updateCustomerDetails.email
 							: "",
 						Type: "",
 					},
@@ -1474,7 +1483,7 @@ export const CreateShippingTN = (
 				ShippingDateTime:
 					"/Date(" + Date.parse(new Date().toLocaleDateString()) + ")/",
 				DueDate: "/Date(" + Date.parse(new Date().toLocaleDateString()) + ")/",
-				Comments: order.customerDetails.orderComment,
+				Comments: updateCustomerDetails.orderComment,
 				PickupLocation: "",
 				OperationsInstructions: "",
 				AccountingInstrcutions: "",
@@ -1482,11 +1491,10 @@ export const CreateShippingTN = (
 					Dimensions: null,
 					ActualWeight: {
 						Unit: "KG",
-						Value: 0.5,
+						Value: 0.3,
 					},
 					ChargeableWeight: null,
-					DescriptionOfGoods:
-						order.chosenProductQtyWithVariables[0][0].productName,
+					DescriptionOfGoods: order.chosenProductQtyWithVariables[0][0].SubSKU,
 					GoodsOriginCountry: "EG",
 					NumberOfPieces: order.totalOrderedQty,
 					ProductGroup: "DOM",
@@ -1559,6 +1567,7 @@ export const CreateShippingTN = (
 							order: {
 								...order,
 								aramexResponse: data,
+								customerDetails: updateCustomerDetails,
 								trackingNumber: data.Shipments[0].ID,
 							},
 						}),

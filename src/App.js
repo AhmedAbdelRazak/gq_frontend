@@ -102,6 +102,7 @@ import Inventory from "./Admin/OnlineStore/Inventory/Inventory";
 import EmployeeShare from "./Admin/GQShopReports/EmployeeShare";
 import AceReceivingLog from "./Admin/OnlineStore/AceReceivingLog";
 import PrintBarcodesMain from "./Admin/OnlineStore/PrintBarcodes/BarcodesUpdate/PrintBarcodesMain";
+import Receiving from "./Admin/GQReceiving/Receiving";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -246,6 +247,8 @@ const App = () => {
 					exact
 					component={DeleteGender}
 				/>
+
+				<AdminRoute path='/admin/receiving' exact component={Receiving} />
 
 				<AdminRoute path='/admin/add-category' exact component={AddCategory} />
 				<AdminRoute

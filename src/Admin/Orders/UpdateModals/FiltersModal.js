@@ -71,7 +71,7 @@ const FiltersModal = ({
 							color: "darkgreen",
 						}}>{`Group Filtering`}</div>
 				}
-				visible={modalVisible}
+				open={modalVisible}
 				onOk={() => {
 					setModalVisible(false);
 				}}

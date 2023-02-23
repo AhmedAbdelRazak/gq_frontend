@@ -276,7 +276,7 @@ const ExchangeModal = ({
 							fontSize: "1.3rem",
 						}}>{`Order Exchange`}</div>
 				}
-				visible={modalVisible}
+				open={modalVisible}
 				onOk={() => {
 					setModalVisible(false);
 					setCollapsed(false);

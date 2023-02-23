@@ -20,6 +20,8 @@ import {
 	BorderHorizontalOutlined,
 	RadiusBottomleftOutlined,
 	SwapOutlined,
+	// eslint-disable-next-line
+	CarFilled,
 } from "@ant-design/icons";
 import { Button, Menu } from "antd";
 import LogoImage from "../../GeneralImages/ace-logo.png";
@@ -158,6 +160,15 @@ const items = [
 			getItem(<Link to='/admin/add-size'>Add Sizes</Link>, "/admin/add-size"),
 		]),
 	]),
+
+	// getItem(
+	// 	<Link to='/admin/receiving'>
+	// 		{" "}
+	// 		<CarFilled />
+	// 		<span className='mr-1'>Receiving</span>
+	// 	</Link>,
+	// 	"/admin/receiving",
+	// ),
 
 	getItem("Stores Management", "sub31", <AppstoreAddOutlined />, [
 		getItem(
@@ -302,7 +313,6 @@ const items = [
 	]),
 
 	getItem("Financial Affairs", "sub33", <MoneyCollectOutlined />, [
-		getItem("Add Expenses", "/admin/add-expenses"),
 		getItem("Financial Report", "/admin/financial-report"),
 	]),
 

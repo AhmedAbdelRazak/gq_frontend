@@ -8,6 +8,7 @@ import AdminMenu from "../AdminMenu/AdminMenu";
 import DarkBG from "../AdminMenu/DarkBG";
 import Navbar from "../AdminNavMenu/Navbar";
 import {
+	// eslint-disable-next-line
 	CreateShippingTN,
 	getProducts,
 	listOrdersProcessing,
@@ -21,6 +22,7 @@ import CountUp from "react-countup";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import ReactExport from "react-export-excel";
+import CreateShippingModal from "./UpdateModals/CreateShippingModal";
 // import ExcelToJson from "./ExcelToJson";
 
 const ExcelFile = ReactExport.ExcelFile;
@@ -37,6 +39,9 @@ const OrdersList = () => {
 	const [allProducts, setAllProducts] = useState([]);
 	const [lengthOfOrders, setLengthOfOrders] = useState(0);
 	const [backorders, setBackorders] = useState("NotClicked");
+	const [modalVisible, setModalVisible] = useState(false);
+	const [updateCustomerDetails, setUpdateCustomerDetails] = useState("");
+	const [pickedOrder, setPickedOrder] = useState("");
 	const [excelDataSet, setExcelDataSet] = useState([]);
 
 	// eslint-disable-next-line
@@ -577,6 +582,19 @@ const OrdersList = () => {
 	const dataTable = () => {
 		return (
 			<div className='tableData'>
+				<CreateShippingModal
+					userId={user._id}
+					token={token}
+					pickedOrder={pickedOrder}
+					setAramexResponse={setAramexResponse}
+					allInvoices={allInvoices}
+					modalVisible={modalVisible}
+					setModalVisible={setModalVisible}
+					updateCustomerDetails={updateCustomerDetails}
+					setUpdateCustomerDetails={setUpdateCustomerDetails}
+					updateSingleOrder={pickedOrder}
+					setUpdateSingleOrder={setPickedOrder}
+				/>
 				{allOrders && allOrders.length === 0 ? (
 					<div
 						className='text-center mt-5'
@@ -917,7 +935,8 @@ const OrdersList = () => {
 											)}
 
 											{s.invoiceNumber !== "Not Added" &&
-											s.trackingNumber === "Not Added" ? (
+											(s.trackingNumber === "Not Added" ||
+												!s.trackingNumber) ? (
 												<td
 													style={{
 														cursor: "pointer",
@@ -926,15 +945,11 @@ const OrdersList = () => {
 													}}>
 													<Link
 														to={`#`}
-														onClick={() =>
-															CreateShippingTN(
-																user._id,
-																token,
-																s,
-																setAramexResponse,
-																allInvoices,
-															)
-														}>
+														onClick={() => {
+															setPickedOrder(s);
+															setUpdateCustomerDetails(s.customerDetails);
+															setModalVisible(true);
+														}}>
 														Create Shipping
 													</Link>
 												</td>

@@ -7,6 +7,8 @@ import AdminMenu from "../AdminMenu/AdminMenu";
 import Navbar from "../AdminNavMenu/Navbar";
 import CountUp from "react-countup";
 import {
+	// eslint-disable-next-line
+	CreateShippingTN,
 	getProducts,
 	listOfOrdersFiltered,
 	// eslint-disable-next-line
@@ -75,6 +77,9 @@ const OrdersHist = () => {
 	const [chosenCard, setChosenCard] = useState("OrdersCountCard");
 
 	const [excelDataSet, setExcelDataSet] = useState([]);
+
+	// eslint-disable-next-line
+	const [aramexResponse, setAramexResponse] = useState("");
 
 	const { user, token } = isAuthenticated();
 
@@ -342,6 +347,7 @@ const OrdersHist = () => {
 		});
 	}
 
+	// eslint-disable-next-line
 	const handleRemove = (orderId) => {
 		if (window.confirm("Are You Sure You Want To Delete?")) {
 			removeOrder(orderId, user._id, token)
@@ -363,6 +369,9 @@ const OrdersHist = () => {
 
 	// eslint-disable-next-line
 	const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+	// eslint-disable-next-line
+	const allInvoices = allOrders.map((i) => i.invoiceNumber);
 
 	const dataTable = () => {
 		return (
@@ -428,15 +437,11 @@ const OrdersHist = () => {
 							<th scope='col'>Governorate</th>
 							{/* <th scope='col'>City</th> */}
 							<th scope='col'>Tracking #</th>
+							<th scope='col'>Comments</th>
 							<th scope='col'>Quantity</th>
-							<th scope='col' style={{ width: "8%" }}>
+							<th scope='col' style={{ width: "9%" }}>
 								Details
 							</th>
-
-							<th scope='col'>Shipping?</th>
-							{user.userRole === "Admin Account" ? (
-								<th scope='col'>Delete?</th>
-							) : null}
 						</tr>
 					</thead>
 
@@ -495,7 +500,7 @@ const OrdersHist = () => {
 									<td
 										style={{
 											fontWeight: "bold",
-											fontSize: "0.9rem",
+											fontSize: "0.8rem",
 											width: "8.5%",
 											background:
 												s.status === "Delivered" || s.status === "Shipped"
@@ -521,10 +526,17 @@ const OrdersHist = () => {
 										{s.status}
 									</td>
 
-									<td style={{ width: "11%" }}>{s.customerDetails.fullName}</td>
+									<td style={{ width: "11%", fontSize: "0.7rem" }}>
+										{s.customerDetails.fullName}
+									</td>
 									<td>{s.customerDetails.phone}</td>
 									<td>{s.totalAmountAfterDiscount.toFixed(0)} L.E.</td>
-									<td style={{ textTransform: "uppercase" }}>
+									<td
+										style={{
+											textTransform: "uppercase",
+											width: "5.8%",
+											fontSize: "0.7rem",
+										}}>
 										{s.orderSource}
 									</td>
 									<td
@@ -544,57 +556,93 @@ const OrdersHist = () => {
 									<td style={{ width: "8%" }}>
 										{s.trackingNumber ? s.trackingNumber : "Not Added"}
 									</td>
-									<td>{s.totalOrderQty}</td>
-									<td
-										style={{
-											color: "blue",
-											fontWeight: "bold",
-											cursor: "pointer",
-										}}>
-										<Link to={`/admin/single-order/${s._id}`}>
-											Show More....
-										</Link>
+									<td style={{ width: "10%" }}>
+										{s.customerDetails.orderComment
+											? s.customerDetails.orderComment
+											: "Not Added"}
 									</td>
+									<td>{s.totalOrderQty}</td>
+
 									{s.invoiceNumber !== "Not Added" &&
 									s.trackingNumber === "Not Added" ? (
 										<td
 											style={{
 												cursor: "pointer",
 												fontSize: "10px,",
-												width: "8%",
 												fontWeight: "bold",
 											}}>
-											<Link to={`#`}>Create Shipping</Link>
+											<Link to={`/admin/single-order/${s._id}`}>
+												Show More....
+											</Link>
+											{/* <br />
+											<br />
+
+											<Link
+												to={`#`}
+												onClick={() =>
+													CreateShippingTN(
+														user._id,
+														token,
+														s,
+														setAramexResponse,
+														allInvoices,
+													)
+												}>
+												Create Shipping
+											</Link> */}
+											{/* {user.userRole === "Admin Account" ? (
+												<Link
+													to='#'
+													onClick={() => {
+														handleRemove(s._id);
+														setTimeout(function () {
+															window.location.reload(false);
+														}, 1000);
+													}}
+													style={{
+														color: "red",
+														fontWeight: "bold",
+														cursor: "pointer",
+													}}>
+													<br />
+													Delete?
+												</Link>
+											) : null} */}
 										</td>
 									) : (
 										<td
 											style={{
 												cursor: "pointer",
 												fontSize: "10px,",
-												width: "8%",
 												color: "darkgray",
 												fontWeight: "bold",
 											}}>
-											Create Shipping
+											<Link to={`/admin/single-order/${s._id}`}>
+												Show More....
+											</Link>
+											{/* <br />
+											<br />
+											Create Shipping */}
+											{/* {user.userRole === "Admin Account" ? (
+												<Link
+													to='#'
+													onClick={() => {
+														handleRemove(s._id);
+														setTimeout(function () {
+															window.location.reload(false);
+														}, 1000);
+													}}
+													style={{
+														color: "red",
+														fontWeight: "bold",
+														cursor: "pointer",
+													}}>
+													<br />
+													Delete?
+												</Link>
+											) : null} */}
 										</td>
 									)}
-
-									{user.userRole === "Admin Account" ? (
-										<td
-											onClick={() => {
-												handleRemove(s._id);
-												setTimeout(function () {
-													window.location.reload(false);
-												}, 1000);
-											}}
-											style={{
-												color: "red",
-												fontWeight: "bold",
-												cursor: "pointer",
-											}}>
-											Delete?
-										</td>
-									) : null}
 
 									{/* <td>{Invoice(s)}</td> */}
 								</tr>

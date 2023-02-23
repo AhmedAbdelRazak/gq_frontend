@@ -373,7 +373,7 @@ const InvoicePDF = (props) => {
 						<div className='col-7'></div>
 						<div className='col-5'>
 							<div className='row'>
-								<div className='col-6'>COD surcharge rate</div>
+								<div className='col-6'>Trans Fees %</div>
 								<div className='col-5'>1.00 %</div>
 							</div>
 						</div>
@@ -381,7 +381,7 @@ const InvoicePDF = (props) => {
 						<div className='col-7'></div>
 						<div className='col-5'>
 							<div className='row'>
-								<div className='col-6'>Cash on delivery surcharge</div>
+								<div className='col-6'>Trans Fees</div>
 								<div className='col-5'>
 									{Number(
 										(Number(updateSingleOrder.totalAmount) -

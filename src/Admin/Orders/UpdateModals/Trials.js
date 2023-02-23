@@ -373,7 +373,7 @@ const Trial = ({
 							fontSize: "1.3rem",
 						}}>{`Update ${updateElement}`}</div>
 				}
-				visible={modalVisible}
+				open={modalVisible}
 				onOk={() => {
 					if (updateElement === "Customer Details") {
 						setUpdateSingleOrder({

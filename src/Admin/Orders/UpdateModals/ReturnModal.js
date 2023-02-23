@@ -300,7 +300,7 @@ const ReturnModal = ({
 							fontSize: "1.3rem",
 						}}>{`Order Return`}</div>
 				}
-				visible={modalVisible}
+				open={modalVisible}
 				onOk={() => {
 					setModalVisible(false);
 					setCollapsed(false);
