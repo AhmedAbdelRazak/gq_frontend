@@ -71,12 +71,7 @@ const SingleOrderPage = (props) => {
 							) {
 								const updatedObject = { ...data, status: "Delivered" };
 
-								updateOrder(
-									updateSingleOrder._id,
-									user._id,
-									token,
-									updatedObject,
-								)
+								updateOrder(updatedObject._id, user._id, token, updatedObject)
 									.then((response) => {
 										// toast.success("Payment on delivery order was successfully updated");
 										setTimeout(function () {
