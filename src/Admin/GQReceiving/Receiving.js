@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import styled from "styled-components";
 import { isAuthenticated } from "../../auth";
 import { listOrdersProcessing } from "../apiAdmin";
@@ -41,6 +41,9 @@ const Receiving = () => {
 
 	return (
 		<ReceivingWrapper>
+			{user && user.userRole !== "Admin Account" ? (
+				<Redirect to='/admin/create-new-order' />
+			) : null}
 			{user && user.userRole === "Admin Account" ? (
 				<div>
 					<Link to='/admin/dashboard'>Back to dashboard</Link>
@@ -54,5 +57,5 @@ const Receiving = () => {
 export default Receiving;
 
 const ReceivingWrapper = styled.div`
-	min-height: 500px;
+	min-height: 870px;
 `;

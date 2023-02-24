@@ -1628,3 +1628,46 @@ export const getShippingLabel = (userId, token, order) => {
 			console.log(err);
 		});
 };
+
+export const getTrackingDetails = (userId, token, order) => {
+	console.log(order.trackingNumber, "from tracking Details");
+	const AramexObject = {
+		ClientInfo: {
+			UserName: process.env.REACT_APP_ARAMEX_USERNAME_PROD,
+			Password: process.env.REACT_APP_ARAMEX_PASSWORD_PROD,
+			Version: "v1",
+			AccountNumber: process.env.REACT_APP_ACCOUNT_NUMBER_PROD,
+			AccountPin: process.env.REACT_APP_ACCOUNT_PIN_PROD,
+			AccountEntity: "CAI",
+			AccountCountryCode: "EG",
+			Source: 24,
+		},
+		GetLastTrackingUpdateOnly: false,
+		Shipments: [order.trackingNumber],
+		Transaction: {
+			Reference1: "",
+			Reference2: "",
+			Reference3: "",
+			Reference4: "",
+			Reference5: "",
+		},
+	};
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/aramex/trackingDetails/${userId}`,
+		{
+			method: "POST",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify(AramexObject),
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+};

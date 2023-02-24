@@ -161,14 +161,14 @@ const items = [
 		]),
 	]),
 
-	// getItem(
-	// 	<Link to='/admin/receiving'>
-	// 		{" "}
-	// 		<CarFilled />
-	// 		<span className='mr-1'>Receiving</span>
-	// 	</Link>,
-	// 	"/admin/receiving",
-	// ),
+	getItem(
+		<Link to='/admin/receiving'>
+			{" "}
+			<CarFilled />
+			<span className='mr-1'>Receiving</span>
+		</Link>,
+		"/admin/receiving",
+	),
 
 	getItem("Stores Management", "sub31", <AppstoreAddOutlined />, [
 		getItem(

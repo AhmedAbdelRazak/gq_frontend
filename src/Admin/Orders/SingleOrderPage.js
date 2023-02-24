@@ -13,6 +13,7 @@ import Navbar from "../AdminNavMenu/Navbar";
 import {
 	getColors,
 	getShippingLabel,
+	getTrackingDetails,
 	readSingleOrder,
 	updateOrder,
 	updateOrderExchangeAndReturn,
@@ -31,6 +32,7 @@ const SingleOrderPage = (props) => {
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [allColors, setAllColors] = useState([]);
 	const [offset, setOffset] = useState(0);
+	const [trackingDetails, setTrackingDetails] = useState("");
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
 
@@ -47,6 +49,53 @@ const SingleOrderPage = (props) => {
 				setSingleOrder(data);
 				setUpdateSingleOrder(data);
 				setUpdateCustomerDetails(data.customerDetails);
+
+				if (data.trackingNumber && data.trackingNumber !== "Not Added") {
+					getTrackingDetails(user._id, token, data).then((data2) => {
+						if (data2.error) {
+							console.log(data2.error);
+						} else {
+							setTrackingDetails(data2);
+
+							var statusChangeCheck = data2.TrackingResults[0].Value.map(
+								(i) => i.UpdateCode,
+							).indexOf("SH239");
+
+							if (
+								!data.status.includes("Exchange") &&
+								!data.status.includes("Exchanged") &&
+								!data.status.includes("Return") &&
+								!data.status.includes("Returned") &&
+								statusChangeCheck > -1 &&
+								data.status !== "Delivered"
+							) {
+								const updatedObject = { ...data, status: "Delivered" };
+
+								updateOrder(
+									updateSingleOrder._id,
+									user._id,
+									token,
+									updatedObject,
+								)
+									.then((response) => {
+										// toast.success("Payment on delivery order was successfully updated");
+										setTimeout(function () {
+											window.location.reload(false);
+										}, 1000);
+									})
+
+									.catch((error) => {
+										console.log(error);
+									});
+							} else {
+								return null;
+							}
+						}
+					});
+				} else {
+					return null;
+				}
+
 				setLoading(false);
 			}
 		});
@@ -57,6 +106,8 @@ const SingleOrderPage = (props) => {
 		loadSingleOrder(orderId);
 		// eslint-disable-next-line
 	}, []);
+
+	console.log(trackingDetails, "trackingDetails");
 
 	const UpdatingOrder = (e) => {
 		e.preventDefault();
@@ -154,6 +205,8 @@ const SingleOrderPage = (props) => {
 			}
 		});
 	};
+
+	// console.log(trackingDetails, "trackingDetails");
 
 	useEffect(() => {
 		const onScroll = () => setOffset(window.pageYOffset);
@@ -426,6 +479,47 @@ const SingleOrderPage = (props) => {
 										Shipping Label
 									</Link>
 								</h5>
+							) : null}
+
+							{trackingDetails &&
+							trackingDetails.TrackingResults &&
+							trackingDetails.TrackingResults[0] &&
+							trackingDetails.TrackingResults[0].Value &&
+							updateSingleOrder &&
+							!updateSingleOrder.status.includes("Exchange") &&
+							!updateSingleOrder.status.includes("Exchanged") &&
+							!updateSingleOrder.status.includes("Return") ? (
+								<div className='my-5'>
+									<div style={{ fontSize: "1.25rem", fontWeight: "bolder" }}>
+										Aramex (Shipment) Tracking Details{" "}
+									</div>
+
+									{trackingDetails.TrackingResults[0].Value.map((v, i) => {
+										// 818035920000
+										// 16768497600000200
+										//1676835360000
+										var fomattingDate = parseInt(
+											v.UpdateDateTime.replace(/[^0-9]/g, ""),
+										)
+											.toString()
+											.slice(0, 13);
+
+										return (
+											<div
+												key={i}
+												className='mt-2'
+												style={{ fontSize: "0.8rem" }}>
+												{trackingDetails.TrackingResults[0].Value.length - i}.{" "}
+												<strong>Last Update:</strong> {v.UpdateDescription} |{" "}
+												<strong>Update DateTime:</strong>{" "}
+												{new Date(Number(fomattingDate)).toLocaleString()} |{" "}
+												{v.Comments ? (
+													<strong>Comments: {v.Comments}</strong>
+												) : null}
+											</div>
+										);
+									})}
+								</div>
 							) : null}
 
 							<div style={{ fontSize: "1.25rem", fontWeight: "bolder" }}>
