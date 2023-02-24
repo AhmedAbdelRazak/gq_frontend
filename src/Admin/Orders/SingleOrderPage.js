@@ -83,12 +83,12 @@ const SingleOrderPage = (props) => {
 										console.log(error);
 									});
 							} else {
-								return null;
+								setLoading(false);
 							}
 						}
 					});
 				} else {
-					return null;
+					setLoading(false);
 				}
 
 				setLoading(false);
