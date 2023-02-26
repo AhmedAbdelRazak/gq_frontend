@@ -455,7 +455,7 @@ const Receiving = () => {
 
 	return (
 		<ReceivingWrapper>
-			{user.userRole !== "Admin Account" || user.userRole !== "Stock Keeper" ? (
+			{user.userRole !== "Admin Account" && user.userRole !== "Stock Keeper" ? (
 				<Redirect to='/admin/create-new-order' />
 			) : null}
 			{user && user.userRole === "Admin Account" ? (
