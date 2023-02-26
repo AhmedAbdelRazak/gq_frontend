@@ -13,7 +13,25 @@ const ReturnReceivingD = ({
 	setQuantityToBeReceived,
 	quantityToBeReceived,
 	setInboundQuantitySubmit,
+	acceptedReturn,
+	inboundQuantitySubmit,
 }) => {
+	const variableImage =
+		chosenProduct &&
+		chosenProduct.productAttributes.filter(
+			(i) => i.SubSKU.toLowerCase() === chosenProduct.SubSKU.toLowerCase(),
+		) &&
+		chosenProduct &&
+		chosenProduct.productAttributes.filter(
+			(i) => i.SubSKU.toLowerCase() === chosenProduct.SubSKU.toLowerCase(),
+		)[0] &&
+		chosenProduct &&
+		chosenProduct.productAttributes.filter(
+			(i) => i.SubSKU.toLowerCase() === chosenProduct.SubSKU.toLowerCase(),
+		)[0].productImages[0].url;
+
+	console.log(variableImage, "variableImage");
+
 	return (
 		<ReturnReceivingDWrapper>
 			{submitInvoice &&
@@ -64,6 +82,10 @@ const ReturnReceivingD = ({
 												</div>
 												<div className='col-6 text-center mt-3'>
 													<button
+														disabled={acceptedReturn}
+														style={{
+															background: acceptedReturn ? "darkblue" : null,
+														}}
 														className='btn btn-success'
 														onClick={() => setAcceptedReturn(true)}>
 														ACCEPT
@@ -132,6 +154,10 @@ const ReturnReceivingD = ({
 										</div>
 										<div className='col-6 text-center mt-3'>
 											<button
+												disabled={acceptedReturn}
+												style={{
+													background: acceptedReturn ? "darkblue" : null,
+												}}
 												className='btn btn-success'
 												onClick={() => setAcceptedReturn(true)}>
 												ACCEPT
@@ -153,7 +179,11 @@ const ReturnReceivingD = ({
 					<div className='row'>
 						<div className='col-4'>
 							<img
-								src={chosenProduct.thumbnailImage[0].images[0].url}
+								src={
+									variableImage
+										? variableImage
+										: chosenProduct.thumbnailImage[0].images[0].url
+								}
 								width='100%'
 								alt='infinite-apps'
 							/>
@@ -226,6 +256,9 @@ const ReturnReceivingD = ({
 						{quantityToBeReceived && quantityToBeReceived > 0 ? (
 							<div className='mt-2'>
 								<button
+									style={{
+										background: inboundQuantitySubmit ? "black" : null,
+									}}
 									className='btn btn-info p-2 mb-2'
 									onClick={() => setInboundQuantitySubmit(true)}>
 									Submit Inbound Quantity
@@ -235,6 +268,10 @@ const ReturnReceivingD = ({
 
 						<div className='col-6 text-center mt-2'>
 							<button
+								disabled={acceptedReturn}
+								style={{
+									background: acceptedReturn ? "darkblue" : null,
+								}}
 								className='btn btn-success'
 								onClick={() => setAcceptedReturn(true)}>
 								ACCEPT

@@ -11,6 +11,8 @@ const ReturnReceivingE = ({
 	allProducts,
 	chosenProduct,
 	quantityToBeReceived,
+	returnStatusUpdate,
+	submittedSKU,
 }) => {
 	const returnedItemsDetails =
 		submitInvoice &&
@@ -101,6 +103,22 @@ const ReturnReceivingE = ({
 		);
 	console.log(updatedProductAttributesFinal, "updatedProductAttributesFinal");
 
+	const variableImage =
+		chosenProduct &&
+		chosenProduct.productAttributes.filter(
+			(i) => i.SubSKU.toLowerCase() === chosenProduct.SubSKU.toLowerCase(),
+		) &&
+		chosenProduct &&
+		chosenProduct.productAttributes.filter(
+			(i) => i.SubSKU.toLowerCase() === chosenProduct.SubSKU.toLowerCase(),
+		)[0] &&
+		chosenProduct &&
+		chosenProduct.productAttributes.filter(
+			(i) => i.SubSKU.toLowerCase() === chosenProduct.SubSKU.toLowerCase(),
+		)[0].productImages[0].url;
+
+	console.log(variableImage, "variableImage");
+
 	return (
 		<ReturnReceivingEWrapper>
 			{submitInvoice &&
@@ -147,6 +165,12 @@ const ReturnReceivingE = ({
 												<div className='col-6 text-center mt-3'>
 													<button
 														className='btn btn-success'
+														disabled={returnStatusUpdate}
+														style={{
+															background: returnStatusUpdate
+																? "darkblue"
+																: null,
+														}}
 														onClick={() => setReturnStatusUpdate(true)}>
 														STATUS UPDATE
 													</button>
@@ -208,6 +232,10 @@ const ReturnReceivingE = ({
 										<div className='col-6 text-center mt-3'>
 											<button
 												className='btn btn-success'
+												disabled={returnStatusUpdate}
+												style={{
+													background: returnStatusUpdate ? "darkblue" : null,
+												}}
 												onClick={() => setReturnStatusUpdate(true)}>
 												STATUS UPDATE
 											</button>
@@ -227,6 +255,7 @@ const ReturnReceivingE = ({
 
 			{receivingSource === "New Receiving Order" &&
 			chosenProduct &&
+			submittedSKU &&
 			chosenProduct.productName ? (
 				<div>
 					<div className='row'>
@@ -236,7 +265,11 @@ const ReturnReceivingE = ({
 						<div className='col-3'>AFTER</div>
 						<div className='col-3'>
 							<img
-								src={chosenProduct.thumbnailImage[0].images[0].url}
+								src={
+									variableImage
+										? variableImage
+										: chosenProduct.thumbnailImage[0].images[0].url
+								}
 								width='100%'
 								alt='infinite-apps'
 							/>
@@ -257,6 +290,10 @@ const ReturnReceivingE = ({
 						<div className='col-6 text-center mt-3'>
 							<button
 								className='btn btn-success'
+								disabled={returnStatusUpdate}
+								style={{
+									background: returnStatusUpdate ? "darkblue" : null,
+								}}
 								onClick={() => setReturnStatusUpdate(true)}>
 								STATUS UPDATE
 							</button>
