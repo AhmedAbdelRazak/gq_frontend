@@ -455,7 +455,7 @@ const Receiving = () => {
 
 	return (
 		<ReceivingWrapper>
-			{user && user.userRole !== "Admin Account" ? (
+			{user.userRole !== "Admin Account" || user.userRole !== "Stock Keeper" ? (
 				<Redirect to='/admin/create-new-order' />
 			) : null}
 			{user && user.userRole === "Admin Account" ? (
@@ -469,6 +469,19 @@ const Receiving = () => {
 						marginTop: "20px",
 					}}>
 					<Link to='/admin/dashboard'>Back to dashboard</Link>
+				</div>
+			) : null}
+			{user && user.userRole === "Stock Keeper" ? (
+				<div
+					style={{
+						fontSize: "1.3rem",
+						fontWeight: "bold",
+						textDecoration: "underline",
+						color: "lightgray",
+						textAlign: "center",
+						marginTop: "20px",
+					}}>
+					<Link to='/admin/update-product'>Check Stock Report</Link>
 				</div>
 			) : null}
 			<div className='grid-container'>
