@@ -313,6 +313,9 @@ const StockReport = () => {
 			{isAuthenticated().user.userRole === "Order Taker" ? (
 				<Redirect to='/admin/create-new-order' />
 			) : null}
+			{user.userRole === "Stock Keeper" ? (
+				<Redirect to='/admin/receiving' />
+			) : null}
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}

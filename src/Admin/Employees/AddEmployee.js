@@ -388,6 +388,7 @@ const AddEmployee = () => {
 									<option value='Admin Account'>Admin Account</option>
 									<option value='Order Taker'>Order Taker</option>
 									<option value='Operations'>Operations</option>
+									<option value='Stock Keeper'>Stock Keeper</option>
 									<option value='Finance'>Finance</option>
 									<option value='offlineStore'>Offline Store</option>
 								</select>
@@ -475,8 +476,11 @@ const AddEmployee = () => {
 
 	return (
 		<AddEmployeeWrapper show={AdminMenuStatus}>
-			{user.userRole === "Order Taker" ? (
+			{user.userRole === "Order Taker" || user.userRole === "Operations" ? (
 				<Redirect to='/admin/create-new-order' />
+			) : null}
+			{user.userRole === "Stock Keeper" ? (
+				<Redirect to='/admin/receiving' />
 			) : null}
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />

@@ -212,7 +212,7 @@ const ReturnReceivingD = ({
 					<div className='form-group mt-5 '>
 						<label className=''>
 							Please add how many items would you like to add to your active
-							stock in store?
+							stock?
 						</label>
 						<input
 							onChange={(e) => {

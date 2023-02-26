@@ -20,10 +20,10 @@ import {
 	BorderHorizontalOutlined,
 	RadiusBottomleftOutlined,
 	SwapOutlined,
-	// eslint-disable-next-line
 	CarFilled,
 } from "@ant-design/icons";
 import { Button, Menu } from "antd";
+// eslint-disable-next-line
 import LogoImage from "../../GeneralImages/ace-logo.png";
 import { isAuthenticated } from "../../auth";
 import { getAllUsers } from "../apiAdmin";
@@ -53,7 +53,7 @@ const items = [
 			}}>
 			<Link to='/admin/dashboard'>
 				<img
-					src={LogoImage}
+					src='https://res.cloudinary.com/infiniteapps/image/upload/v1670217122/GQ_B2B/1670217121904.jpg'
 					alt='GQ Logo'
 					style={{
 						width: "100px",

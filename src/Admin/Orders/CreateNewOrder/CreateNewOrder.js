@@ -1706,6 +1706,7 @@ const CreateNewOrder = () => {
 			{!collapsed ? (
 				<DarkBG collapsed={collapsed} setCollapsed={setCollapsed} />
 			) : null}
+
 			<div className='grid-container'>
 				<div className=''>
 					<AdminMenu
