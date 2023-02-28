@@ -408,6 +408,60 @@ export const listOrdersDates = (userId, token, day1, day2) => {
 		.catch((err) => console.log(err));
 };
 
+export const listOrdersWeekly = (userId, token) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/orders/orderslist/weekly/${userId}`,
+		{
+			method: "GET",
+			headers: {
+				Accept: "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			// body: JSON.stringify(today),
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const listOrders30Days = (userId, token) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/orders/orderslist/30days/${userId}`,
+		{
+			method: "GET",
+			headers: {
+				Accept: "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			// body: JSON.stringify(today),
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const aggregateAllOrders = (userId, token) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/orders/orderslist/aggregateall/${userId}`,
+		{
+			method: "GET",
+			headers: {
+				Accept: "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			// body: JSON.stringify(today),
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
 export const listOrdersProcessing = (userId, token) => {
 	return fetch(
 		`${process.env.REACT_APP_API_URL}/order/list/order-processing/${userId}`,

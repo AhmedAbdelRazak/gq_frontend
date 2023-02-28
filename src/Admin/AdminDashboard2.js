@@ -1,49 +1,36 @@
 /** @format */
 
-import {
-	AreaChartOutlined,
-	// eslint-disable-next-line
-	EditOutlined,
-	FileUnknownOutlined,
-	HomeFilled,
-	ShoppingCartOutlined,
-	StarFilled,
-	VerticalAlignTopOutlined,
-	ZoomInOutlined,
-} from "@ant-design/icons";
+import { VerticalAlignTopOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import AdminMenu from "./AdminMenu/AdminMenu";
 import Navbar from "./AdminNavMenu/Navbar";
 import Chart from "react-apexcharts";
 import CountUp from "react-countup";
-import { getProducts, listOrdersDates } from "./apiAdmin";
+import { aggregateAllOrders, getProducts, listOrdersDates } from "./apiAdmin";
 import { isAuthenticated } from "../auth";
+// eslint-disable-next-line
 import { Link, Redirect } from "react-router-dom";
 import DarkBG from "./AdminMenu/DarkBG";
-// eslint-disable-next-line
-import EditDateModal from "./Modals/EditDateModal";
-// eslint-disable-next-line
-import ShowOrdersHistory from "./Modals/ShowOrdersHistory";
 import AttributesModal from "./Product/UpdatingProduct/AttributesModal";
 import {
 	gettingOrderStatusSummaryCount,
 	gettingOrderStatusSummaryRevenue,
-	overUncancelledRevenue,
 } from "./GQShopReports/GettingNumbers";
+import OrdersCountCards from "./CardsBreakDown/OrdersCountCards";
+import OrdersQtyCard from "./CardsBreakDown/OrdersQtyCard";
+import OrdersTotalAmountCards from "./CardsBreakDown/OrdersTotalAmountCards";
 
-const AdminDashboard = () => {
+const AdminDashboard2 = () => {
 	const [allOrders, setAllOrders] = useState([]);
+	const [allOrdersAggregated, setAllOrdersAggregated] = useState("");
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	// eslint-disable-next-line
 	const [offset, setOffset] = useState(0);
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
+	const [chosenCard, setChosenCard] = useState("OrdersCountCard");
 
-	// eslint-disable-next-line
-	const [modalVisible, setModalVisible] = useState(false);
-	// eslint-disable-next-line
-	const [modalVisible2, setModalVisible2] = useState(false);
 	const [allProducts, setAllProducts] = useState([]);
 	const [modalVisible3, setModalVisible3] = useState(false);
 	// eslint-disable-next-line
@@ -51,30 +38,28 @@ const AdminDashboard = () => {
 		new Date(new Date().setDate(new Date().getDate() + 1)),
 	);
 	const [day2, setDay2] = useState(
-		new Date(new Date().setDate(new Date().getDate() - 7)),
+		new Date(new Date().setDate(new Date().getDate() - 30)),
 	);
 	const [clickedProduct, setClickedProduct] = useState({});
 
 	const { user, token } = isAuthenticated();
 
 	const loadOrders = () => {
-		function sortOrdersAscendingly(a, b) {
-			const TotalAppointmentsA = a.orderCreationDate;
-			const TotalAppointmentsB = b.orderCreationDate;
-			let comparison = 0;
-			if (TotalAppointmentsA > TotalAppointmentsB) {
-				comparison = 1;
-			} else if (TotalAppointmentsA > TotalAppointmentsB) {
-				comparison = -1;
-			}
-			return comparison;
-		}
-
 		listOrdersDates(user._id, token, day1, day2).then((data) => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
-				setAllOrders(data.sort(sortOrdersAscendingly));
+				setAllOrders(data);
+			}
+		});
+	};
+
+	const loadOrdersAggregate = () => {
+		aggregateAllOrders(user._id, token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllOrdersAggregated(data);
 			}
 		});
 	};
@@ -92,30 +77,22 @@ const AdminDashboard = () => {
 	useEffect(() => {
 		loadOrders();
 		gettingAllProducts();
+		loadOrdersAggregate();
 		// eslint-disable-next-line
 	}, [day1, day2]);
 
-	useEffect(() => {
-		const reloadCount = sessionStorage.getItem("reloadCount");
-		if (reloadCount < 2) {
-			sessionStorage.setItem("reloadCount", String(reloadCount + 1));
-			window.location.reload();
-		} else {
-			sessionStorage.removeItem("reloadCount");
-		}
-		// eslint-disable-next-line
-	}, []);
-
-	var today = new Date();
+	var today = new Date().toLocaleString();
 	var today2 = new Date();
 	// var yesterday = new Date();
 	var yesterday = new Date();
 	var last7Days = new Date();
+	var last15Days = new Date();
 	var last30Days = new Date();
 	var last90Days = new Date();
 
 	yesterday.setDate(yesterday.getDate() - 1);
 	last7Days.setDate(last7Days.getDate() - 7);
+	last15Days.setDate(last15Days.getDate() - 15);
 	last30Days.setDate(last30Days.getDate() - 30);
 	last90Days.setDate(last90Days.getDate() - 45);
 
@@ -127,80 +104,28 @@ const AdminDashboard = () => {
 			new Date(today).setHours(0, 0, 0, 0),
 	);
 
-	let yesterdaysOrders = allOrders.filter(
-		(i) =>
-			new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
-				new Date(yesterday).setHours(0, 0, 0, 0) &&
-			i.status !== "Cancelled" &&
-			i.status !== "Returned",
-	);
-
-	// eslint-disable-next-line
-	var SumoverallUncancelledOrders2 = overUncancelledRevenue(allOrders);
-
 	const todaysRevenue =
 		todaysOrders && todaysOrders.map((i) => i.totalAmountAfterDiscount);
 
 	const sumOfTodaysRevenue = todaysRevenue.reduce((a, b) => a + b, 0);
 
-	const yesterdaysRevenue =
-		yesterdaysOrders && yesterdaysOrders.map((i) => i.totalAmountAfterDiscount);
-
-	const sumOfYesterdaysRevenue = yesterdaysRevenue.reduce((a, b) => a + b, 0);
-
-	const overAllUnfulfilledOrders =
-		allOrders &&
-		allOrders.filter(
+	let last7daysOrdersRevenue = allOrders
+		.filter(
 			(i) =>
-				i.status !== "Cancelled" &&
-				i.status !== "Shipped" &&
-				i.status !== "Delivered" &&
-				i.status !== "Returned",
-		);
+				new Date(i.orderCreationDate).setHours(0, 0, 0, 0) >=
+					new Date(last7Days).setHours(0, 0, 0, 0) &&
+				(i.status !== "Cancelled" || i.status !== "Returned"),
+		)
+		.map((ii) => ii.totalAmountAfterDiscount);
 
-	const todaysUnfulfilledOrders =
-		todaysOrders &&
-		todaysOrders.filter(
-			(i) =>
-				i.status !== "Cancelled" &&
-				i.status !== "Shipped" &&
-				i.status !== "Delivered" &&
-				i.status !== "Returned",
-		);
-
-	const yesterdaysUnfulfilledOrders =
-		yesterdaysOrders &&
-		yesterdaysOrders.filter(
-			(i) =>
-				i.status !== "Cancelled" &&
-				i.status !== "Shipped" &&
-				i.status !== "Delivered" &&
-				i.status !== "Returned",
-		);
-
-	const yesterdaysUnfulfilledRevenue =
-		yesterdaysUnfulfilledOrders &&
-		yesterdaysUnfulfilledOrders.map((i) => i.totalAmountAfterDiscount);
-
-	const sumOfYesterdaysUnfulfilledRevenue = yesterdaysUnfulfilledRevenue.reduce(
-		(a, b) => a + b,
-		0,
-	);
-
-	const todaysUnfulfilledRevenue =
-		todaysUnfulfilledOrders &&
-		todaysUnfulfilledOrders.map((i) => i.totalAmountAfterDiscount);
-
-	const sumOfTodaysUnfulfilledRevenue = todaysUnfulfilledRevenue.reduce(
-		(a, b) => a + b,
-		0,
-	);
+	const sumOfLast7DaysRevenue =
+		last7daysOrdersRevenue && last7daysOrdersRevenue.reduce((a, b) => a + b, 0);
 
 	let last7daysOrders = allOrders
 		.filter(
 			(i) =>
 				new Date(i.orderCreationDate).setHours(0, 0, 0, 0) >=
-					new Date(last7Days).setHours(0, 0, 0, 0) &&
+					new Date(last15Days).setHours(0, 0, 0, 0) &&
 				(i.status !== "Cancelled" || i.status !== "Returned"),
 		)
 		.map((ii) => {
@@ -209,6 +134,22 @@ const AdminDashboard = () => {
 				orderCreationDate: new Date(ii.orderCreationDate).toLocaleDateString(),
 			};
 		});
+
+	let last30daysOrdersRevenue = allOrders
+		.filter((i) => i.status !== "Cancelled" || i.status !== "Returned")
+		.map((ii) => ii.totalAmountAfterDiscount);
+
+	const sumOfLast30DaysRevenue =
+		last30daysOrdersRevenue &&
+		last30daysOrdersRevenue.reduce((a, b) => a + b, 0);
+
+	let last30daysOrdersQty = allOrders
+		.filter((i) => i.status !== "Cancelled" || i.status !== "Returned")
+		.map((ii) => ii.totalOrderQty);
+
+	// eslint-disable-next-line
+	const sumOfLast30DaysQty =
+		last30daysOrdersQty && last30daysOrdersQty.reduce((a, b) => a + b, 0);
 
 	// console.log(last7daysOrders, "last7daysOrders");
 
@@ -260,7 +201,7 @@ const AdminDashboard = () => {
 				enabled: true,
 				enabledOnSeries: undefined,
 				formatter: function (val, opts) {
-					return val;
+					return Number(val).toLocaleString();
 				},
 				style: {
 					fontSize: "10px",
@@ -364,7 +305,11 @@ const AdminDashboard = () => {
 			if (!res[value.employeeData.name]) {
 				res[value.employeeData.name] = {
 					EmployeeName: value.employeeData.name,
-					EmployeeImage: value.employeeData.employeeImage,
+					EmployeeImage:
+						value.employeeData.employeeImage ===
+						"https://res.cloudinary.com/infiniteapps/image/upload/v1663790484/GQ_B2B/1663790483782.jpg"
+							? "https://res.cloudinary.com/infiniteapps/image/upload/v1677552600/GQ_B2B/GenderWomen_jpqptm.jpg"
+							: value.employeeData.employeeImage,
 					totalAmountAfterDiscount: 0,
 					totalOrders: 0,
 				};
@@ -379,6 +324,8 @@ const AdminDashboard = () => {
 			return res;
 		}, {});
 
+	console.log(Employees_TotalOrders_Revenue, "Employees_TotalOrders_Revenue");
+
 	const selectedDateOrdersModified = () => {
 		const modifiedArray =
 			selectedDateOrders &&
@@ -391,6 +338,7 @@ const AdminDashboard = () => {
 							productName: iii.productName,
 							OrderedQty: iii.OrderedQty,
 							productMainImage: iii.productMainImage,
+							pickedPrice: Number(iii.pickedPrice) * Number(iii.OrderedQty),
 						};
 					}),
 				),
@@ -427,6 +375,7 @@ const AdminDashboard = () => {
 					employeeName: value.employeeName,
 					productMainImage: value.productMainImage,
 					OrderedQty: 0,
+					pickedPrice: 0,
 				};
 				TopSoldProducts.push(res[value.productName + value.employeeName]);
 			}
@@ -435,10 +384,39 @@ const AdminDashboard = () => {
 				value.OrderedQty,
 			);
 
+			res[value.productName + value.employeeName].pickedPrice += Number(
+				value.pickedPrice,
+			);
+
 			return res;
 		}, {});
 
 	TopSoldProducts.sort(sortTopOrdersProducts);
+
+	var TopSoldProducts2 = [];
+	destructingNestedArray &&
+		destructingNestedArray.reduce(function (res, value) {
+			if (!res[value.productName]) {
+				res[value.productName] = {
+					productName: value.productName,
+					productMainImage:
+						value.productMainImage ===
+						"https://res.cloudinary.com/infiniteapps/image/upload/v1664017759/GQ_B2B/1664017758371.jpg"
+							? "https://res.cloudinary.com/infiniteapps/image/upload/v1674859331/GQ_B2B/1674859330886.jpg"
+							: value.productMainImage,
+					OrderedQty: 0,
+					pickedPrice: 0,
+				};
+				TopSoldProducts2.push(res[value.productName]);
+			}
+
+			res[value.productName].OrderedQty += Number(value.OrderedQty);
+			res[value.productName].pickedPrice += Number(value.pickedPrice);
+
+			return res;
+		}, {});
+
+	TopSoldProducts2.sort(sortTopOrdersProducts);
 
 	const modifyingInventoryTable = () => {
 		function sortTopProducts(a, b) {
@@ -534,7 +512,8 @@ const AdminDashboard = () => {
 		.filter(
 			(iii) =>
 				new Date(iii.orderCreationDate).setHours(0, 0, 0, 0) >=
-				new Date(day2).setHours(0, 0, 0, 0),
+					new Date(day2).setHours(0, 0, 0, 0) &&
+				iii.totalAmountAfterDiscount !== 0,
 		);
 
 	var OrderSourceSummary = [];
@@ -560,9 +539,114 @@ const AdminDashboard = () => {
 			return res;
 		}, {});
 
+	console.log(OrderSourceSummary, "OrderSourceSummary");
+
+	function getMinMax(arr) {
+		if (!arr) {
+			return null;
+		}
+		var minV = arr[0];
+		var maxV = arr[0];
+		var a;
+		for (a of arr) {
+			if (a < minV) minV = a;
+			if (a > maxV) maxV = a;
+		}
+		return [minV, maxV];
+	}
+
+	const xAxisValues =
+		OrderSourceSummary &&
+		OrderSourceSummary.map((i) => i.totalAmountAfterDiscount);
+
+	console.log(getMinMax(xAxisValues)[1]);
+
+	var donutChart2 = {
+		chart: {
+			type: "bar",
+		},
+		plotOptions: {
+			bar: {
+				horizontal: true,
+				borderRadius: 15,
+				borderRadiusOnAllStackedSeries: true,
+				dataLabels: {
+					position: "bottom",
+					hideOverflowingLabels: true,
+				},
+			},
+		},
+		fontSize: "10px",
+		colors: [
+			function ({ value, seriesIndex, dataPointIndex, w }) {
+				if (dataPointIndex === 0) {
+					return "#005ab3";
+				} else if (dataPointIndex === 1) {
+					return "#00b3b3";
+				} else if (dataPointIndex === 2) {
+					return "#ff0000";
+				} else if (dataPointIndex === 3) {
+					return "#ff8000";
+				} else if (dataPointIndex === 4) {
+					return "#black";
+				} else if (dataPointIndex === 5) {
+					return "#darkyellow";
+				} else if (dataPointIndex === 6) {
+					return "#005ab3";
+				} else {
+					return "#005ab3";
+				}
+			},
+		],
+		dataLabels: {
+			enabled: true,
+			style: {
+				colors: ["#333"],
+			},
+
+			offsetX: 320,
+
+			formatter: function (value) {
+				const index =
+					OrderSourceSummary &&
+					OrderSourceSummary.map((i) =>
+						Number(i.totalAmountAfterDiscount).toFixed(2),
+					).indexOf(Number(value).toFixed(2));
+
+				return (
+					"EGP " +
+					Number(value).toLocaleString() +
+					` (${
+						OrderSourceSummary && OrderSourceSummary[index].ordersCount
+					} Orders)`
+				);
+			},
+		},
+
+		xaxis: {
+			labels: {
+				show: false,
+			},
+			min: 0,
+			max: getMinMax(xAxisValues)[1] + getMinMax(xAxisValues)[1] * 0.25,
+		},
+
+		series: [
+			{
+				data:
+					OrderSourceSummary &&
+					OrderSourceSummary.map((i) => {
+						return {
+							x: i.orderSource.toUpperCase(),
+							y: Number(i.totalAmountAfterDiscount).toFixed(2),
+						};
+					}),
+			},
+		],
+	};
+
 	return (
-		<AdminDashboardWrapper show={collapsed}>
-			<Redirect to='/admin/dashboard2' />
+		<AdminDashboard2Wrapper show={collapsed}>
 			{user.userRole === "Order Taker" || user.userRole === "Operations" ? (
 				<Redirect to='/admin/create-new-order' />
 			) : null}
@@ -590,190 +674,283 @@ const AdminDashboard = () => {
 					/>
 					<div className='mx-auto'>
 						<div className='container-fluid'>
-							<div className='row mx-auto'>
-								<div className='col-xl-4 col-lg-8 col-md-11  mx-auto'>
-									<div className='firstCard mb-3'>
-										<div className='headerIcons'>
-											<ShoppingCartOutlined />
-										</div>
-										<div className='headerText'>Order Summary</div>
-									</div>
+							<div className='my-3 text-center'>
+								<span
+									style={{
+										fontSize: "0.9rem",
+										color: "black",
+										textAlign: "center",
+										fontWeight: "normal",
+									}}>
+									(Selected Date Range From{" "}
+									<strong> {new Date(day2).toDateString()}</strong> to{" "}
+									<strong>{new Date(day1).toDateString()}</strong>)
+								</span>
+							</div>
 
-									<div className='card'>
-										<h5>Orders Overview</h5>
-										<div className='col-md-10 mx-auto'>
-											<hr />
-										</div>
-										<div className='row mt-3'>
-											<div className='col-5 mt-2 mx-auto'>
-												<span className='cardHeader'>Today's Orders </span>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={1}
-														end={todaysOrders.length}
-														separator=','
-													/>
-												</div>{" "}
-											</div>
-
-											<div className='col-5 mt-2 mx-auto'>
-												<span className='cardHeader'>Yesterday's Orders</span>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={1}
-														end={yesterdaysOrders.length}
-														separator=','
-													/>
-												</div>{" "}
-											</div>
-											<div className='col-5 mt-5 mx-auto'>
-												<span className='cardHeader'>Today's Revenue</span>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={0}
-														end={sumOfTodaysRevenue}
-														separator=','
-													/>{" "}
-													L.E.
-												</div>{" "}
-											</div>
-											<div className='col-5 mt-5 mx-auto'>
-												<span className='cardHeader'>Yesterday's Revenue </span>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={0}
-														end={sumOfYesterdaysRevenue}
-														separator=','
-													/>{" "}
-													L.E.
-												</div>{" "}
-											</div>
-										</div>
-									</div>
-								</div>
-
-								<div className='col-xl-4 col-lg-8 col-md-11 mx-auto'>
-									<div className='secondCard mb-3'>
-										<div className='headerIcons'>
-											<FileUnknownOutlined />
-										</div>
-										<div className='headerText'>Orders Status</div>
-									</div>
-									<div className='card'>
-										<h5>Actions Needed...</h5>
-										<div className='col-md-10 mx-auto'>
-											<hr />
-										</div>
-										<div className='row mt-3'>
-											<div className='col-md-5 mx-auto'>
-												<span className='cardHeader'>
-													Overall Unfulfilled Orders
-												</span>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={1}
-														end={overAllUnfulfilledOrders.length}
-														separator=','
-													/>
-												</div>{" "}
-											</div>
-											<div className='col-md-5 mx-auto'>
-												<span className='cardHeader'>
-													Today's Unfulfilled Orders{" "}
-												</span>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={1}
-														end={todaysUnfulfilledOrders.length}
-														separator=','
-													/>
-												</div>{" "}
-											</div>
-
-											<div className='col-md-5 mt-5 mx-auto'>
-												<span className='cardHeader'>
-													Today's Unfulfilled Revenue
-												</span>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={1}
-														end={sumOfTodaysUnfulfilledRevenue}
-														separator=','
-													/>{" "}
-													L.E.
-												</div>{" "}
-											</div>
-											<div className='col-md-5 mt-5 mx-auto'>
-												<span className='cardHeader'>
-													Yesterday's Unfulfilled Revenue{" "}
-												</span>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={1}
-														end={sumOfYesterdaysUnfulfilledRevenue}
-														separator=','
-													/>{" "}
-													L.E.
-												</div>{" "}
-											</div>
-											<div
-												className='col-md-5 mt-3 mx-auto'
-												style={{ fontWeight: "bolder" }}>
-												{" "}
-												<Link to='/admin/gq-reports/operations'>
-													LEARN MORE...
-												</Link>{" "}
-											</div>
-										</div>
-									</div>
-								</div>
-								<div className='col-xl-4 col-lg-8 col-md-11 mx-auto'>
-									<div className='thirdCard mb-3'>
-										<div className='headerIcons'>
-											<AreaChartOutlined />
-										</div>
-										<div className='headerText'>Sales Stats</div>
-									</div>
-									<div className='card'>
-										<h5>Day Over Day Sales Stats:</h5>
-										<div className='col-md-10 mx-auto'>
-											<hr />
-										</div>
-										<div className='mx-auto text-center w-100 h-100'>
-											<Chart
-												options={chartDataTotalAmount.options}
-												series={chartDataTotalAmount.series}
-												type='area'
-												style={{
-													width: "100%",
-													height: "100%",
-												}}
+							{/* <div className='row mb-3'>
+								<div className='col-xl-3 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+									<div className='' style={{ background: "#f1416c" }}>
+										<div className='card-body'>
+											<h5 style={{ fontWeight: "bolder", color: "white" }}>
+												Overall Orders Count
+											</h5>
+											<CountUp
+												style={{ color: "white" }}
+												duration='3'
+												delay={1}
+												end={allOrders.length}
+												separator=','
 											/>
 										</div>
 									</div>
 								</div>
-								<div className='col-md-9 mx-auto mt-3'>
-									<hr />
-								</div>
-								<div className='col-xl-4 col-lg-8 col-md-11 mx-auto'>
-									<div className='thirdCard mb-3'>
-										<div className='headerIconsStars'>
-											<StarFilled />
-											<StarFilled />
-											<StarFilled />
-										</div>
-										<div className='headerText'>G&Q Super Stars</div>
-									</div>
 
+								<div className='col-xl-3 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+									<div className='' style={{ background: "#009ef7" }}>
+										<div className='card-body'>
+											<h5 style={{ fontWeight: "bolder", color: "white" }}>
+												Overall Ordered Items
+											</h5>
+											<CountUp
+												style={{ color: "white" }}
+												duration='3'
+												delay={1}
+												end={sumOfLast30DaysQty}
+												separator=','
+											/>
+										</div>
+									</div>
+								</div>
+								{user.userRole === "Order Taker" ? null : (
+									<div className='col-xl-3 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+										<div className='' style={{ background: "#50cd89" }}>
+											<div className='card-body'>
+												<h5 style={{ fontWeight: "bolder", color: "white" }}>
+													Total Amount (EGP)
+												</h5>
+												<CountUp
+													style={{ color: "white" }}
+													duration='3'
+													delay={1}
+													end={sumOfLast30DaysRevenue}
+													separator=','
+												/>
+											</div>
+										</div>
+									</div>
+								)}
+							</div> */}
+
+							{chosenCard === "OrdersCountCard" ? (
+								<div>
+									<OrdersCountCards allOrders={allOrders} />
+								</div>
+							) : null}
+							{chosenCard === "OrdersQtyCard" ? (
+								<div>
+									<OrdersQtyCard allOrders={allOrders} />
+								</div>
+							) : null}
+							{chosenCard === "OrdersTotalAmountCard" ? (
+								<div>
+									<OrdersTotalAmountCards allOrders={allOrders} />
+								</div>
+							) : null}
+							<div className='mb-3 ml-5'>
+								<span
+									className='mx-1 ordersCount'
+									onClick={() => {
+										setChosenCard("OrdersCountCard");
+									}}>
+									Orders Count
+								</span>
+								<span
+									className='mx-1 ordersQty'
+									onClick={() => {
+										setChosenCard("OrdersQtyCard");
+									}}>
+									Orders Quantity
+								</span>
+								<span
+									className='mx-1 ordersAmount'
+									onClick={() => {
+										setChosenCard("OrdersTotalAmountCard");
+									}}>
+									Orders Total Amount
+								</span>
+							</div>
+							<div className='row mx-auto mt-4'>
+								<div className='col-xl-5 col-lg-8 col-md-11  mx-auto'>
+									<div className='card' style={{ minHeight: "490px" }}>
+										<h5 className='text-center'>
+											Sales By Store <br />
+											<span style={{ fontSize: "14px" }}>
+												{" "}
+												(From: {new Date(day2).toLocaleDateString()} to:{" "}
+												{new Date(day1).toLocaleDateString()})
+											</span>
+										</h5>
+
+										{OrderSourceSummary &&
+										allOrders &&
+										allOrders.length > 0 &&
+										OrderSourceSummary.length > 0 &&
+										OrderSourceSummary[0] ? (
+											<div className='row mt-3'>
+												<Chart
+													title={donutChart2.title}
+													options={donutChart2}
+													series={donutChart2.series}
+													type='bar'
+													style={{
+														width: "100%",
+														height: "100%",
+													}}
+												/>
+											</div>
+										) : null}
+									</div>
+								</div>
+
+								<div className='col-xl-7 col-lg-8 col-md-11 mx-auto'>
 									<div className='card'>
+										<h5 className='text-center'>Day Over Day Sales</h5>
+										<div className='col-md-10 mx-auto'>
+											<hr />
+										</div>
+										<div className='row'>
+											<div className='col-md-3 mt-4'>
+												<h3
+													style={{
+														fontWeight: "bold",
+														color: "green",
+														fontSize: "1.35rem",
+													}}>
+													Today
+												</h3>
+												<div className=' mb-5 row'>
+													<div
+														className='col-md-5'
+														style={{
+															fontSize: "1rem",
+															fontWeight: "bold",
+														}}>
+														EGP
+													</div>{" "}
+													<div
+														className='col-md-7'
+														style={{ fontSize: "1rem", fontWeight: "bold" }}>
+														{" "}
+														{Number(
+															Number(sumOfTodaysRevenue).toLocaleString(),
+														).toFixed(2)}
+														<div
+															style={{
+																fontSize: "11px",
+																color: "darkgrey",
+															}}>
+															{Number(todaysOrders.length).toLocaleString()}{" "}
+															Orders
+														</div>
+													</div>
+												</div>
+
+												<div className='my-4'>
+													<div style={{ fontSize: "12px", fontWeight: "bold" }}>
+														<span style={{ color: "goldenrod" }}>WEEK</span>
+														<div
+															className='row'
+															style={{ fontSize: "11px", fontWeight: "bold" }}>
+															<div className='col-md-4'>EGP</div>{" "}
+															<div className='col-md-7'>
+																{Number(
+																	Number(sumOfLast7DaysRevenue).toFixed(2),
+																).toLocaleString()}
+																<div
+																	style={{
+																		fontSize: "11px",
+																		color: "darkgrey",
+																	}}>
+																	{Number(
+																		last7daysOrdersRevenue.length,
+																	).toLocaleString()}{" "}
+																	Orders
+																</div>
+															</div>{" "}
+														</div>{" "}
+													</div>{" "}
+												</div>
+												<div className='my-4'>
+													<div style={{ fontSize: "12px", fontWeight: "bold" }}>
+														<span style={{ color: "red" }}>MONTH</span>
+														<div
+															className='row'
+															style={{ fontSize: "11px", fontWeight: "bold" }}>
+															<div className='col-md-4'>EGP</div>{" "}
+															<div className='col-md-7'>
+																{Number(
+																	Number(sumOfLast30DaysRevenue).toFixed(2),
+																).toLocaleString()}
+																<div
+																	style={{
+																		fontSize: "11px",
+																		color: "darkgrey",
+																	}}>
+																	{Number(
+																		last30daysOrdersRevenue.length,
+																	).toLocaleString()}{" "}
+																	Orders
+																</div>
+															</div>{" "}
+														</div>{" "}
+													</div>{" "}
+												</div>
+												<div className='my-4'>
+													{" "}
+													<div style={{ fontSize: "12px", fontWeight: "bold" }}>
+														ALL
+													</div>{" "}
+													<div
+														className='row'
+														style={{ fontSize: "11px", fontWeight: "bold" }}>
+														<div className='col-md-4'>EGP</div>{" "}
+														<div className='col-md-7'>
+															{Number(
+																Number(allOrdersAggregated.totalAmount).toFixed(
+																	2,
+																),
+															).toLocaleString()}
+															<div
+																style={{ fontSize: "11px", color: "darkgrey" }}>
+																{Number(
+																	allOrdersAggregated.ordersCount,
+																).toLocaleString()}{" "}
+																Orders
+															</div>
+														</div>{" "}
+													</div>{" "}
+												</div>
+											</div>
+											<div className='col-md-9'>
+												<div className='mx-auto text-center w-100 h-100'>
+													<Chart
+														options={chartDataTotalAmount.options}
+														series={chartDataTotalAmount.series}
+														type='area'
+														style={{
+															width: "100%",
+															height: "100%",
+														}}
+													/>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div className='col-xl-4 col-lg-8 col-md-11 mx-auto'>
+									<div className='card mt-4' style={{ minHeight: "650px" }}>
 										<h5>Top Employees</h5>{" "}
 										<div className='ml-3'>
 											From:{" "}
@@ -820,7 +997,7 @@ const AdminDashboard = () => {
 																			end={o.totalAmountAfterDiscount}
 																			separator=','
 																		/>{" "}
-																		L.E.
+																		EGP
 																	</div>
 																	<div
 																		style={{
@@ -884,15 +1061,8 @@ const AdminDashboard = () => {
 									</div>
 								</div>
 								<div className='col-xl-4 col-lg-8 col-md-11  mx-auto'>
-									<div className='firstCard mb-3'>
-										<div className='headerIcons'>
-											<ZoomInOutlined />
-										</div>
-										<div className='headerText'>Order Status Summary</div>
-									</div>
-
-									<div className='card'>
-										<h5>Status Summary</h5>
+									<div className='card mt-4' style={{ minHeight: "650px" }}>
+										<h5>Items Received In Stock</h5>
 										<div className='ml-3'>
 											From:{" "}
 											<strong style={{ color: "#006ca9" }}>
@@ -935,7 +1105,7 @@ const AdminDashboard = () => {
 														)}
 														separator=','
 													/>{" "}
-													L.E.
+													EGP
 												</div>{" "}
 											</div>
 
@@ -967,7 +1137,7 @@ const AdminDashboard = () => {
 														)}
 														separator=','
 													/>{" "}
-													L.E.
+													EGP
 												</div>{" "}
 											</div>
 
@@ -999,7 +1169,7 @@ const AdminDashboard = () => {
 														)}
 														separator=','
 													/>{" "}
-													L.E.
+													EGP
 												</div>{" "}
 											</div>
 
@@ -1031,7 +1201,7 @@ const AdminDashboard = () => {
 														)}
 														separator=','
 													/>{" "}
-													L.E.
+													EGP
 												</div>{" "}
 											</div>
 											<div className='col-5 mt-5 mx-auto'>
@@ -1062,7 +1232,7 @@ const AdminDashboard = () => {
 														)}
 														separator=','
 													/>{" "}
-													L.E.
+													EGP
 												</div>{" "}
 											</div>
 											<div className='col-5 mt-5 mx-auto'>
@@ -1093,7 +1263,7 @@ const AdminDashboard = () => {
 														)}
 														separator=','
 													/>{" "}
-													L.E.
+													EGP
 												</div>{" "}
 											</div>
 										</div>
@@ -1143,107 +1313,10 @@ const AdminDashboard = () => {
 									</div>
 								</div>
 
-								<div className='col-xl-4 col-lg-8 col-md-11 mx-auto'>
-									<div className='secondCard mb-3'>
-										<div className='headerIcons'>
-											<HomeFilled />
-										</div>
-										<div className='headerText'>Store Sales Summary</div>
-									</div>
-									<div className='card'>
-										<h5>G&Q Affiliate Stores</h5>
-										<div className='ml-3'>
-											From:{" "}
-											<strong style={{ color: "#006ca9" }}>
-												{new Date(day2).toDateString()}
-											</strong>{" "}
-											To:{" "}
-											<strong style={{ color: "#006ca9" }}>
-												{new Date(day1).toDateString()}
-											</strong>
-										</div>
-										<div className='col-md-10 mx-auto'>
-											<hr />
-										</div>
-										<div className='row mt-3'>
-											{OrderSourceSummary &&
-												OrderSourceSummary.map((s, i) => {
-													return (
-														<div className='col-md-5 mx-auto text-capitalize my-3'>
-															<span className='cardHeader'>
-																{s.orderSource} Orders
-															</span>{" "}
-															<div className='metrics'>
-																<CountUp
-																	duration='2'
-																	delay={1}
-																	end={s.ordersCount}
-																	separator=','
-																/>{" "}
-																Orders
-															</div>{" "}
-															<div className='metrics'>
-																<CountUp
-																	duration='2'
-																	delay={1}
-																	end={s.totalAmountAfterDiscount}
-																	separator=','
-																/>{" "}
-																L.E.
-															</div>{" "}
-														</div>
-													);
-												})}
-										</div>
-										<div className='storeSummaryFilters'>
-											<hr />
-											<select
-												onChange={(e) => {
-													if (e.target.value === "SelectAll") {
-														setDay2(last90Days);
-														setDay1(today2);
-													} else if (e.target.value === "Today") {
-														setDay2(today);
-														setDay1(today);
-													} else if (e.target.value === "Yesterday") {
-														setDay2(yesterday);
-														setDay1(yesterday);
-													} else if (e.target.value === "Last7Days") {
-														setDay2(last7Days);
-														setDay1(today2);
-													} else if (e.target.value === "Last30Days") {
-														setDay2(last30Days);
-														setDay1(today2);
-													} else {
-													}
-												}}
-												placeholder='Select Return Status'
-												className=' mx-auto w-100'
-												style={{
-													paddingTop: "3px",
-													paddingBottom: "3px",
-													// paddingRight: "50px",
-													// textAlign: "center",
-													border: "#cfcfcf solid 1px",
-													borderRadius: "2px",
-													fontSize: "0.9rem",
-													// boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
-													textTransform: "capitalize",
-												}}>
-												<option value='SelectStatus'>Filters:</option>
-												<option value='SelectAll'>Select All</option>
-												<option value='Today'>Today</option>
-												<option value='Yesterday'>Yesterday</option>
-												<option value='Last7Days'>Last 7 Days</option>
-												<option value='Last30Days'>Last 30 Days</option>
-											</select>
-										</div>
-									</div>
-								</div>
-
-								<div className='col-md-12 mx-auto my-5'>
-									<div className='card'>
+								<div className='col-xl-4 col-lg-8 col-md-11  mx-auto'>
+									<div className='card mt-4' style={{ minHeight: "650px" }}>
 										<h5>Top Sold Products</h5>
+
 										<div className='col-md-10 mx-auto'>
 											<hr />
 										</div>
@@ -1258,12 +1331,9 @@ const AdminDashboard = () => {
 														textTransform: "capitalize",
 														textAlign: "center",
 													}}>
-													<th scope='col'>#</th>
-													<th scope='col'>Product Name</th>
-													<th scope='col'>Ordered Qty</th>
-													<th scope='col'>Ordered By</th>
-													<th scope='col'>Status</th>
-													<th scope='col'>Product Image</th>
+													<th scope='col'>Item</th>
+													<th scope='col'>Quantity</th>
+													<th scope='col'>Revenue</th>
 												</tr>
 											</thead>
 											<tbody
@@ -1273,37 +1343,40 @@ const AdminDashboard = () => {
 													textTransform: "capitalize",
 													fontWeight: "bolder",
 												}}>
-												{TopSoldProducts &&
-													TopSoldProducts.map((s, i) => {
-														return (
-															<tr key={i} className=''>
-																<td className='my-auto'>{i + 1}</td>
+												{TopSoldProducts2 &&
+													TopSoldProducts2.map((s, i) => {
+														if (i <= 4) {
+															return (
+																<tr
+																	key={i}
+																	className=''
+																	style={{ fontSize: "11px" }}>
+																	<td>
+																		<img
+																			width='20%'
+																			src={s.productMainImage}
+																			alt={s.productName}
+																		/>{" "}
+																		{s.productName}{" "}
+																	</td>
+																	<td>{s.OrderedQty}</td>
+																	<td>
+																		{Number(s.pickedPrice).toLocaleString()}
+																	</td>
 
-																<td>{s.productName}</td>
-																<td>{s.OrderedQty}</td>
-																<td>{s.employeeName}</td>
-																<td>{s.status}</td>
-																<td
-																	style={{ width: "15%", textAlign: "center" }}>
-																	<img
-																		width='40%'
-																		height='40%'
-																		style={{ marginLeft: "20px" }}
-																		src={s.productMainImage}
-																		alt={s.productName}
-																	/>
-																</td>
-
-																{/* <td>{Invoice(s)}</td> */}
-															</tr>
-														);
+																	{/* <td>{Invoice(s)}</td> */}
+																</tr>
+															);
+														} else {
+															return null;
+														}
 													})}
 											</tbody>
 										</table>
 									</div>
 								</div>
 
-								<div className='col-md-12  mx-auto mb-5'>
+								<div className='col-md-12  mx-auto my-5'>
 									<div className='card'>
 										<h5>GQ Shop Inventory Report</h5>
 										<div className='col-md-10 mx-auto'>
@@ -1410,13 +1483,13 @@ const AdminDashboard = () => {
 					</div>
 				</div>
 			</div>
-		</AdminDashboardWrapper>
+		</AdminDashboard2Wrapper>
 	);
 };
 
-export default AdminDashboard;
+export default AdminDashboard2;
 
-const AdminDashboardWrapper = styled.div`
+const AdminDashboard2Wrapper = styled.div`
 	min-height: 880px;
 	margin-bottom: 10px;
 	/* background: #fafafa; */
@@ -1491,7 +1564,6 @@ const AdminDashboardWrapper = styled.div`
 	}
 
 	.card {
-		min-height: 530px !important;
 		padding: 15px;
 	}
 
@@ -1534,6 +1606,49 @@ const AdminDashboardWrapper = styled.div`
 		position: absolute;
 		top: 83%;
 		width: 94%;
+	}
+
+	.card-body {
+		font-weight: bolder;
+	}
+
+	.card-body span {
+		font-size: 1.5rem;
+	}
+
+	.ordersCount {
+		padding: 4px 25px;
+		background: #f1416c;
+		border-radius: 2px;
+		color: white;
+		font-weight: bold;
+		transition: 0.3s;
+	}
+
+	.ordersQty {
+		padding: 4px 13px;
+		background: #009ef7;
+		border-radius: 2px;
+		color: white;
+		font-weight: bold;
+		transition: 0.3s;
+	}
+
+	.ordersAmount {
+		padding: 4px;
+		background: #50cd89;
+		border-radius: 2px;
+		color: white;
+		font-weight: bold;
+		transition: 0.3s;
+	}
+
+	.ordersAmount:hover,
+	.ordersQty:hover,
+	.ordersCount:hover {
+		padding: 9px 25px;
+		cursor: pointer;
+		transition: 0.3s;
 	}
 
 	@media (max-width: 1750px) {

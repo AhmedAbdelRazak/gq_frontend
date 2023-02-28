@@ -297,5 +297,6 @@ export default OrdersQtyCard;
 const OrdersQtyCardWrapper = styled.div`
 	.card {
 		min-height: 65px;
+		padding: 0px !important;
 	}
 `;

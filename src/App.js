@@ -103,6 +103,7 @@ import EmployeeShare from "./Admin/GQShopReports/EmployeeShare";
 import AceReceivingLog from "./Admin/OnlineStore/AceReceivingLog";
 import PrintBarcodesMain from "./Admin/OnlineStore/PrintBarcodes/BarcodesUpdate/PrintBarcodesMain";
 import Receiving from "./Admin/GQReceiving/Receiving";
+import AdminDashboard2 from "./Admin/AdminDashboard2";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -230,6 +231,11 @@ const App = () => {
 				<PrivateRoute path='/user/dashboard' exact component={UserDashboard} />
 
 				<AdminRoute path='/admin/dashboard' exact component={AdminDashboard} />
+				<AdminRoute
+					path='/admin/dashboard2'
+					exact
+					component={AdminDashboard2}
+				/>
 				<AdminRoute path='/admin/add-gender' exact component={AddGender} />
 				<AdminRoute
 					path='/admin/update-gender'

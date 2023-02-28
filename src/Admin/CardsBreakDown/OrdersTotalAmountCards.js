@@ -108,7 +108,7 @@ const OrdersTotalAmountCards = ({ allOrders }) => {
 						letterSpacing: "1px",
 						color: "#2ea263",
 					}}>
-					Breakdown By Orders Total Amount (L.E.)
+					Breakdown By Orders Total Amount (EGP)
 				</h5>
 				<div className='row'>
 					<div className='col-xl-1 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
@@ -311,5 +311,6 @@ export default OrdersTotalAmountCards;
 const OrdersTotalAmountCardsWrapper = styled.div`
 	.card {
 		min-height: 65px;
+		padding: 0px !important;
 	}
 `;

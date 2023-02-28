@@ -247,5 +247,7 @@ export default OrdersCountCards;
 const OrdersCountCardsWrapper = styled.div`
 	.card {
 		min-height: 65px;
+		padding: 0px !important;
+		margin-bottom: 10px;
 	}
 `;

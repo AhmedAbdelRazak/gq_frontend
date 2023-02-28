@@ -174,7 +174,14 @@ const Navbar = ({ fromPage, pageScrolled }) => {
 								onClick={() => {
 									// window.scrollTo({ top: 0, behavior: "smooth" });
 								}}>
-								<img src={employeeImage} alt='GQShop' />
+								<img
+									src={
+										employeeImage
+											? employeeImage
+											: "https://res.cloudinary.com/infiniteapps/image/upload/v1677529672/GQ_B2B/1677529671982.jpg"
+									}
+									alt='GQShop'
+								/>
 								<CSSTransition
 									in={showAccountMenu}
 									timeout={200}
