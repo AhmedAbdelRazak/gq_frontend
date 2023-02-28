@@ -105,7 +105,7 @@ const AdminDashboard2 = () => {
 	);
 
 	const todaysRevenue =
-		todaysOrders && todaysOrders.map((i) => i.totalAmountAfterDiscount);
+		todaysOrders && todaysOrders.map((i) => Number(i.totalAmountAfterDiscount));
 
 	const sumOfTodaysRevenue = todaysRevenue.reduce((a, b) => a + b, 0);
 
@@ -674,7 +674,7 @@ const AdminDashboard2 = () => {
 					/>
 					<div className='mx-auto'>
 						<div className='container-fluid'>
-							<div className='my-3 text-center'>
+							{/* <div className='my-3 text-center'>
 								<span
 									style={{
 										fontSize: "0.9rem",
@@ -686,7 +686,7 @@ const AdminDashboard2 = () => {
 									<strong> {new Date(day2).toDateString()}</strong> to{" "}
 									<strong>{new Date(day1).toDateString()}</strong>)
 								</span>
-							</div>
+							</div> */}
 
 							{/* <div className='row mb-3'>
 								<div className='col-xl-3 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
@@ -782,7 +782,7 @@ const AdminDashboard2 = () => {
 							</div>
 							<div className='row mx-auto mt-4'>
 								<div className='col-xl-5 col-lg-8 col-md-11  mx-auto'>
-									<div className='card' style={{ minHeight: "490px" }}>
+									<div className='card'>
 										<h5 className='text-center'>
 											Sales By Store <br />
 											<span style={{ fontSize: "14px" }}>
@@ -804,8 +804,7 @@ const AdminDashboard2 = () => {
 													series={donutChart2.series}
 													type='bar'
 													style={{
-														width: "100%",
-														height: "100%",
+														width: "80%",
 													}}
 												/>
 											</div>
@@ -820,7 +819,7 @@ const AdminDashboard2 = () => {
 											<hr />
 										</div>
 										<div className='row'>
-											<div className='col-md-3 mt-4'>
+											<div className='col-md-3 mt-2'>
 												<h3
 													style={{
 														fontWeight: "bold",
@@ -843,8 +842,8 @@ const AdminDashboard2 = () => {
 														style={{ fontSize: "1rem", fontWeight: "bold" }}>
 														{" "}
 														{Number(
-															Number(sumOfTodaysRevenue).toLocaleString(),
-														).toFixed(2)}
+															Number(sumOfTodaysRevenue).toFixed(2),
+														).toLocaleString()}
 														<div
 															style={{
 																fontSize: "11px",
@@ -856,7 +855,7 @@ const AdminDashboard2 = () => {
 													</div>
 												</div>
 
-												<div className='my-4'>
+												<div className='my-2'>
 													<div style={{ fontSize: "12px", fontWeight: "bold" }}>
 														<span style={{ color: "goldenrod" }}>WEEK</span>
 														<div
@@ -881,7 +880,7 @@ const AdminDashboard2 = () => {
 														</div>{" "}
 													</div>{" "}
 												</div>
-												<div className='my-4'>
+												<div className='my-2'>
 													<div style={{ fontSize: "12px", fontWeight: "bold" }}>
 														<span style={{ color: "red" }}>MONTH</span>
 														<div
@@ -906,7 +905,7 @@ const AdminDashboard2 = () => {
 														</div>{" "}
 													</div>{" "}
 												</div>
-												<div className='my-4'>
+												<div className='my-1'>
 													{" "}
 													<div style={{ fontSize: "12px", fontWeight: "bold" }}>
 														ALL
@@ -933,14 +932,13 @@ const AdminDashboard2 = () => {
 												</div>
 											</div>
 											<div className='col-md-9'>
-												<div className='mx-auto text-center w-100 h-100'>
+												<div className='mx-auto text-center'>
 													<Chart
 														options={chartDataTotalAmount.options}
 														series={chartDataTotalAmount.series}
 														type='area'
 														style={{
-															width: "100%",
-															height: "100%",
+															width: "80%",
 														}}
 													/>
 												</div>
