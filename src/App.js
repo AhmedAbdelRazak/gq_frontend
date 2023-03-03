@@ -104,6 +104,7 @@ import AceReceivingLog from "./Admin/OnlineStore/AceReceivingLog";
 import PrintBarcodesMain from "./Admin/OnlineStore/PrintBarcodes/BarcodesUpdate/PrintBarcodesMain";
 import Receiving from "./Admin/GQReceiving/Receiving";
 import AdminDashboard2 from "./Admin/AdminDashboard2";
+import ReceivingLog from "./Admin/GQReceiving/ReceivingLog";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -235,6 +236,11 @@ const App = () => {
 					path='/admin/dashboard2'
 					exact
 					component={AdminDashboard2}
+				/>
+				<AdminRoute
+					path='/admin/receiving-log'
+					exact
+					component={ReceivingLog}
 				/>
 				<AdminRoute path='/admin/add-gender' exact component={AddGender} />
 				<AdminRoute

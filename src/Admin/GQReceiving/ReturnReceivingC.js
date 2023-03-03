@@ -1,6 +1,7 @@
 /** @format */
 
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const ReturnReceivingC = ({
@@ -139,9 +140,9 @@ const ReturnReceivingC = ({
 						</div>
 					</div>
 					<div className='mt-4 col-6 mx-auto'>
-						<button className='btn btn-info btn-block'>
+						<Link to='/admin/receiving-log' className='btn btn-info btn-block'>
 							Check Receiving Log
-						</button>
+						</Link>
 					</div>
 				</>
 			) : null}
@@ -265,10 +266,17 @@ const ReturnReceivingC = ({
 						</div>
 					</div>
 					<div className='mt-4 col-6 mx-auto'>
-						<button className='btn btn-info btn-block'>
+						<Link to='/admin/receiving-log' className='btn btn-info btn-block'>
 							Check Receiving Log
-						</button>
+						</Link>
 					</div>
+				</div>
+			) : null}
+			{!selectedOrder && !submitInvoice && !submittedSKU ? (
+				<div className='mt-4 col-6 mx-auto'>
+					<Link to='/admin/receiving-log' className='btn btn-info btn-block'>
+						Check Receiving Log
+					</Link>
 				</div>
 			) : null}
 		</ReturnReceivingCWrapper>

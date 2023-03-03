@@ -199,6 +199,8 @@ const AdminDashboard2 = () => {
 
 			dataLabels: {
 				enabled: true,
+				fontSize: "50px",
+
 				enabledOnSeries: undefined,
 				formatter: function (val, opts) {
 					return Number(val).toLocaleString();
@@ -234,7 +236,7 @@ const AdminDashboard2 = () => {
 			colors: ["#99dd99"],
 
 			stroke: {
-				width: [3, 3],
+				width: [2, 2],
 			},
 
 			yaxis: {
@@ -576,7 +578,7 @@ const AdminDashboard2 = () => {
 				},
 			},
 		},
-		fontSize: "10px",
+
 		colors: [
 			function ({ value, seriesIndex, dataPointIndex, w }) {
 				if (dataPointIndex === 0) {
@@ -602,6 +604,7 @@ const AdminDashboard2 = () => {
 			enabled: true,
 			style: {
 				colors: ["#333"],
+				fontSize: 10,
 			},
 
 			offsetX: 320,
@@ -757,7 +760,7 @@ const AdminDashboard2 = () => {
 									<OrdersTotalAmountCards allOrders={allOrders} />
 								</div>
 							) : null}
-							<div className='mb-3 ml-5'>
+							<div className='mb-1 ml-5'>
 								<span
 									className='mx-1 ordersCount'
 									onClick={() => {
@@ -780,12 +783,12 @@ const AdminDashboard2 = () => {
 									Orders Total Amount
 								</span>
 							</div>
-							<div className='row mx-auto mt-4'>
+							<div className='row mx-auto mt-3'>
 								<div className='col-xl-5 col-lg-8 col-md-11  mx-auto'>
-									<div className='card'>
+									<div className='card' style={{ maxHeight: "340px" }}>
 										<h5 className='text-center'>
-											Sales By Store <br />
-											<span style={{ fontSize: "14px" }}>
+											Sales By Store
+											<span style={{ fontSize: "13px" }}>
 												{" "}
 												(From: {new Date(day2).toLocaleDateString()} to:{" "}
 												{new Date(day1).toLocaleDateString()})
@@ -797,15 +800,14 @@ const AdminDashboard2 = () => {
 										allOrders.length > 0 &&
 										OrderSourceSummary.length > 0 &&
 										OrderSourceSummary[0] ? (
-											<div className='row mt-3'>
+											<div className='row'>
 												<Chart
 													title={donutChart2.title}
 													options={donutChart2}
 													series={donutChart2.series}
 													type='bar'
-													style={{
-														width: "80%",
-													}}
+													height={280}
+													width={550}
 												/>
 											</div>
 										) : null}
@@ -815,10 +817,8 @@ const AdminDashboard2 = () => {
 								<div className='col-xl-7 col-lg-8 col-md-11 mx-auto'>
 									<div className='card'>
 										<h5 className='text-center'>Day Over Day Sales</h5>
-										<div className='col-md-10 mx-auto'>
-											<hr />
-										</div>
-										<div className='row'>
+
+										<div className='row' style={{ maxHeight: "273px" }}>
 											<div className='col-md-3 mt-2'>
 												<h3
 													style={{
@@ -828,7 +828,7 @@ const AdminDashboard2 = () => {
 													}}>
 													Today
 												</h3>
-												<div className=' mb-5 row'>
+												<div className=' mb-1 row'>
 													<div
 														className='col-md-5'
 														style={{
@@ -855,7 +855,7 @@ const AdminDashboard2 = () => {
 													</div>
 												</div>
 
-												<div className='my-2'>
+												<div className='mt-1 mb-2'>
 													<div style={{ fontSize: "12px", fontWeight: "bold" }}>
 														<span style={{ color: "goldenrod" }}>WEEK</span>
 														<div
@@ -937,9 +937,7 @@ const AdminDashboard2 = () => {
 														options={chartDataTotalAmount.options}
 														series={chartDataTotalAmount.series}
 														type='area'
-														style={{
-															width: "80%",
-														}}
+														height={300}
 													/>
 												</div>
 											</div>
@@ -948,28 +946,31 @@ const AdminDashboard2 = () => {
 								</div>
 
 								<div className='col-xl-4 col-lg-8 col-md-11 mx-auto'>
-									<div className='card mt-4' style={{ minHeight: "650px" }}>
-										<h5>Top Employees</h5>{" "}
-										<div className='ml-3'>
-											From:{" "}
-											<strong style={{ color: "#006ca9" }}>
-												{new Date(day2).toDateString()}
-											</strong>{" "}
-											To:{" "}
-											<strong style={{ color: "#006ca9" }}>
-												{new Date(day1).toDateString()}
-											</strong>
-										</div>
-										<div className='col-md-10 mx-auto'>
-											<hr />
-										</div>
+									<div
+										className='card mt-4'
+										style={{ maxHeight: "485px", overflow: "auto" }}>
+										<h5 className='mb-3'>
+											Top Employees{" "}
+											<span className='ml-1' style={{ fontSize: "13px" }}>
+												From:{" "}
+												<strong style={{ color: "#006ca9" }}>
+													{new Date(day2).toLocaleDateString()}
+												</strong>{" "}
+												To:{" "}
+												<strong style={{ color: "#006ca9" }}>
+													{new Date(day1).toLocaleDateString()}
+												</strong>
+											</span>
+										</h5>{" "}
 										{Employees_TotalOrders_Revenue &&
 											Employees_TotalOrders_Revenue.sort(sortByTopEmployee).map(
 												(o, i) => {
 													return (
 														<>
-															<div className='row' key={i}>
-																<div className='col-md-8'>
+															<div className='row mb-3' key={i}>
+																<div
+																	className='col-md-8'
+																	style={{ fontSize: "12px" }}>
 																	<img
 																		className='userImage'
 																		src={o.EmployeeImage}
@@ -988,7 +989,11 @@ const AdminDashboard2 = () => {
 																	</div>
 																</div>
 																<div className='col-md-4 mt-2'>
-																	<div style={{ fontWeight: "bold" }}>
+																	<div
+																		style={{
+																			fontWeight: "bold",
+																			fontSize: "13px",
+																		}}>
 																		<CountUp
 																			duration='2'
 																			delay={0}
@@ -1007,7 +1012,6 @@ const AdminDashboard2 = () => {
 																	</div>
 																</div>
 															</div>
-															<hr />
 														</>
 													);
 												},
@@ -1059,21 +1063,11 @@ const AdminDashboard2 = () => {
 									</div>
 								</div>
 								<div className='col-xl-4 col-lg-8 col-md-11  mx-auto'>
-									<div className='card mt-4' style={{ minHeight: "650px" }}>
-										<h5>Items Received In Stock</h5>
-										<div className='ml-3'>
-											From:{" "}
-											<strong style={{ color: "#006ca9" }}>
-												{new Date(day2).toDateString()}
-											</strong>{" "}
-											To:{" "}
-											<strong style={{ color: "#006ca9" }}>
-												{new Date(day1).toDateString()}
-											</strong>
-										</div>
-										<div className='col-md-10 mx-auto'>
-											<hr />
-										</div>
+									<div
+										className='card mt-4'
+										style={{ maxHeight: "490px", overflow: "auto" }}>
+										<h5 className='mb-4'>Items Received In Stock </h5>
+
 										<div className='row my-3'>
 											<div className='col-5 mx-auto'>
 												<span className='cardHeader'>Orders On Hold</span>{" "}
@@ -1312,12 +1306,22 @@ const AdminDashboard2 = () => {
 								</div>
 
 								<div className='col-xl-4 col-lg-8 col-md-11  mx-auto'>
-									<div className='card mt-4' style={{ minHeight: "650px" }}>
-										<h5>Top Sold Products</h5>
-
-										<div className='col-md-10 mx-auto'>
-											<hr />
-										</div>
+									<div
+										className='card mt-4'
+										style={{ maxHeight: "485px", overflow: "auto" }}>
+										<h5 className='mb-3'>
+											Top Sold Products{" "}
+											<span className='ml-1' style={{ fontSize: "13px" }}>
+												From:{" "}
+												<strong style={{ color: "#006ca9" }}>
+													{new Date(day2).toLocaleDateString()}
+												</strong>{" "}
+												To:{" "}
+												<strong style={{ color: "#006ca9" }}>
+													{new Date(day1).toLocaleDateString()}
+												</strong>
+											</span>
+										</h5>
 
 										<table
 											className='table table-bordered table-md-responsive table-hover '
@@ -1343,31 +1347,27 @@ const AdminDashboard2 = () => {
 												}}>
 												{TopSoldProducts2 &&
 													TopSoldProducts2.map((s, i) => {
-														if (i <= 4) {
-															return (
-																<tr
-																	key={i}
-																	className=''
-																	style={{ fontSize: "11px" }}>
-																	<td>
-																		<img
-																			width='20%'
-																			src={s.productMainImage}
-																			alt={s.productName}
-																		/>{" "}
-																		{s.productName}{" "}
-																	</td>
-																	<td>{s.OrderedQty}</td>
-																	<td>
-																		{Number(s.pickedPrice).toLocaleString()}
-																	</td>
+														return (
+															<tr
+																key={i}
+																className=''
+																style={{ fontSize: "11px" }}>
+																<td>
+																	<img
+																		width='20%'
+																		src={s.productMainImage}
+																		alt={s.productName}
+																	/>{" "}
+																	{s.productName}{" "}
+																</td>
+																<td>{s.OrderedQty}</td>
+																<td>
+																	{Number(s.pickedPrice).toLocaleString()}
+																</td>
 
-																	{/* <td>{Invoice(s)}</td> */}
-																</tr>
-															);
-														} else {
-															return null;
-														}
+																{/* <td>{Invoice(s)}</td> */}
+															</tr>
+														);
 													})}
 											</tbody>
 										</table>
@@ -1491,7 +1491,7 @@ const AdminDashboard2Wrapper = styled.div`
 	min-height: 880px;
 	margin-bottom: 10px;
 	/* background: #fafafa; */
-	overflow-x: hidden;
+	overflow-x: auto;
 
 	.grid-container {
 		display: grid;
@@ -1502,6 +1502,12 @@ const AdminDashboard2Wrapper = styled.div`
 		margin: auto;
 		/* border: 1px solid red; */
 		/* grid-auto-rows: minmax(60px, auto); */
+	}
+
+	.apexcharts-yaxis-texts-g > text,
+	.apexcharts-xaxis-inversed-texts-g > text,
+	.apexcharts-data-labels > text {
+		font-size: 10px !important;
 	}
 
 	.navbarcontent > nav > ul {
@@ -1579,8 +1585,8 @@ const AdminDashboard2Wrapper = styled.div`
 	}
 
 	.userImage {
-		width: 50px;
-		height: 40px;
+		width: 40px;
+		height: 30px;
 		margin-right: 5px;
 	}
 	.employeeName {
@@ -1647,6 +1653,12 @@ const AdminDashboard2Wrapper = styled.div`
 		padding: 9px 25px;
 		cursor: pointer;
 		transition: 0.3s;
+	}
+
+	.ordersCount,
+	.ordersQty,
+	.ordersAmount {
+		display: none;
 	}
 
 	@media (max-width: 1750px) {
