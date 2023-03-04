@@ -19,6 +19,18 @@ body {
 	font-size: 12.5px;
 }
 
+.tableScrollBarStyling::-webkit-scrollbar {
+	width: 10px !important; /* width of the entire scrollbar */
+}
+.tableScrollBarStyling::-webkit-scrollbar-track {
+	background: lightgrey !important; /* color of the tracking area */
+}
+.tableScrollBarStyling::-webkit-scrollbar-thumb {
+	background-color: lightcyan !important; /* color of the scroll thumb */
+	border-radius: 20px; /* roundness of the scroll thumb */
+	border: 3px solid lightgrey !important; /* creates padding around scroll thumb */
+}
+
 :root {
 	--primaryColor: #5fb7ea;
 	--primaryRGBA: rgba(0, 0, 0, 0.3);

@@ -10,6 +10,7 @@ import Navbar from "../AdminNavMenu/Navbar";
 import {
 	// eslint-disable-next-line
 	CreateShippingTN,
+	getColors,
 	getProducts,
 	listOrdersProcessing,
 	ordersLength,
@@ -43,6 +44,7 @@ const OrdersList = () => {
 	const [updateCustomerDetails, setUpdateCustomerDetails] = useState("");
 	const [pickedOrder, setPickedOrder] = useState("");
 	const [excelDataSet, setExcelDataSet] = useState([]);
+	const [allColors, setAllColors] = useState([]);
 
 	// eslint-disable-next-line
 	const [aramexResponse, setAramexResponse] = useState("");
@@ -251,10 +253,21 @@ const OrdersList = () => {
 		});
 	};
 
+	const gettingAllColors = () => {
+		getColors(token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllColors(data);
+			}
+		});
+	};
+
 	useEffect(() => {
 		loadOrders();
 		gettingAllProducts();
 		loadOrdersLength();
+		gettingAllColors();
 		// eslint-disable-next-line
 	}, [backorders]);
 
@@ -542,6 +555,82 @@ const OrdersList = () => {
 
 	// console.log(adjustedExcelData, "adjustedExcelData");
 
+	const selectedDateOrdersSKUsModified = () => {
+		const modifiedArray =
+			allOrders &&
+			allOrders.map((i) =>
+				i.chosenProductQtyWithVariables.map((ii) =>
+					ii.map((iii) => {
+						return {
+							productName: iii.productName,
+							OrderedQty: iii.OrderedQty,
+							productMainImage: iii.productMainImage,
+							SubSKU: iii.SubSKU,
+							SubSKUColor: iii.SubSKUColor,
+							SubSKUSize: iii.SubSKUSize,
+							productSubSKUImage: iii.productSubSKUImage,
+							orderId: i._id,
+							status: i.status,
+							totalPaidAmount:
+								Number(iii.pickedPrice).toFixed(2) *
+								Number(iii.OrderedQty).toFixed(2),
+						};
+					}),
+				),
+			);
+
+		return modifiedArray;
+	};
+
+	var destructingNestedArraySKUs = [];
+	selectedDateOrdersSKUsModified() &&
+		selectedDateOrdersSKUsModified().map((i) =>
+			i.map((ii) => destructingNestedArraySKUs.push(...ii)),
+		);
+
+	function sortTopOrdersProductsSKUs(a, b) {
+		const TotalAppointmentsA = a.totalPaidAmount;
+		const TotalAppointmentsB = b.totalPaidAmount;
+		let comparison = 0;
+		if (TotalAppointmentsA < TotalAppointmentsB) {
+			comparison = 1;
+		} else if (TotalAppointmentsA > TotalAppointmentsB) {
+			comparison = -1;
+		}
+		return comparison;
+	}
+
+	var TopSoldProductsSKUs = [];
+	destructingNestedArraySKUs &&
+		destructingNestedArraySKUs.reduce(function (res, value) {
+			if (!res[value.productName + value.SubSKU]) {
+				res[value.productName + value.SubSKU] = {
+					productName: value.productName,
+					productMainImage: value.productMainImage,
+					productSubSKUImage: value.productSubSKUImage,
+					SubSKU: value.SubSKU,
+					SubSKUColor: value.SubSKUColor,
+					SubSKUSize: value.SubSKUSize,
+					orderId: value.orderId,
+					status: value.status,
+					OrderedQty: 0,
+					totalPaidAmount: 0,
+				};
+				TopSoldProductsSKUs.push(res[value.productName + value.SubSKU]);
+			}
+
+			res[value.productName + value.SubSKU].OrderedQty += Number(
+				value.OrderedQty,
+			);
+			res[value.productName + value.SubSKU].totalPaidAmount += Number(
+				value.totalPaidAmount,
+			);
+
+			return res;
+		}, {});
+
+	TopSoldProductsSKUs.sort(sortTopOrdersProductsSKUs);
+
 	const DownloadExcel = () => {
 		return (
 			<ExcelFile
@@ -607,6 +696,91 @@ const OrdersList = () => {
 							<Link className='btn btn-success' to='/admin/create-new-order'>
 								Create New Order
 							</Link>
+						</div>
+
+						<div
+							className='tableScrollBarStyling'
+							style={{
+								maxHeight: "700px",
+								overflow: "auto",
+								margin: "40px 100px",
+							}}>
+							<table
+								className='table table-bordered table-md-responsive table-hover'
+								style={{ fontSize: "0.75rem", overflow: "auto" }}>
+								<thead style={{ position: "sticky", top: "0" }}>
+									<tr
+										style={{
+											fontSize: "0.75rem",
+											textTransform: "capitalize",
+											textAlign: "center",
+											backgroundColor: "#009ef7",
+											color: "wheat",
+										}}>
+										<th scope='col'>#</th>
+										<th scope='col'>SKU</th>
+										<th scope='col'>Product Name</th>
+										<th scope='col'>Color</th>
+										<th scope='col'>Size</th>
+										<th scope='col'>Ordered Qty</th>
+										<th scope='col'>Status</th>
+										<th scope='col'>Details</th>
+									</tr>
+								</thead>
+								<tbody
+									className='my-auto'
+									style={{
+										fontSize: "0.75rem",
+										textTransform: "capitalize",
+										fontWeight: "bolder",
+									}}>
+									{TopSoldProductsSKUs &&
+										TopSoldProductsSKUs.map((s, i) => {
+											return (
+												<tr key={i} className=''>
+													<td className='my-auto'>{i + 1}</td>
+													<td style={{ textTransform: "uppercase" }}>
+														{s.SubSKU}
+													</td>
+													<td>{s.productName}</td>
+													<td>
+														{allColors[
+															allColors
+																.map((i) => i.hexa)
+																.indexOf(s.SubSKUColor)
+														]
+															? allColors[
+																	allColors
+																		.map((i) => i.hexa)
+																		.indexOf(s.SubSKUColor)
+															  ].color
+															: s.SubSKUColor}
+													</td>
+
+													<td style={{ textTransform: "uppercase" }}>
+														{s.SubSKUSize}
+													</td>
+													<td>{s.OrderedQty}</td>
+													<td>{s.status}</td>
+													<td style={{ textAlign: "center" }}>
+														<Link to={`/admin/single-order/${s.orderId}`}>
+															Details...
+														</Link>
+														{/* <img
+															width='30%'
+															height='30%'
+															style={{ marginLeft: "10px" }}
+															src={s.productSubSKUImage}
+															alt={s.productName}
+														/> */}
+													</td>
+
+													{/* <td>{Invoice(s)}</td> */}
+												</tr>
+											);
+										})}
+								</tbody>
+							</table>
 						</div>
 
 						<div className='form-group text-right'>
@@ -682,221 +856,200 @@ const OrdersList = () => {
 								Good Orders
 							</Link>
 						</div>
-						<table
-							className='table table-bordered table-md-responsive table-hover text-center'
-							style={{ fontSize: "0.7rem" }}
-							id='ahowan'>
-							<thead className='thead-light'>
-								<tr>
-									<th scope='col'>Purchase Date</th>
-									<th scope='col'>INV #</th>
-									<th scope='col'>Status</th>
-									<th scope='col'>Name</th>
-									<th scope='col'>Phone</th>
-									<th scope='col'>Amount</th>
-									<th scope='col'>Store</th>
-									<th scope='col'>Taker</th>
-									<th scope='col'>Governorate</th>
-									{/* <th scope='col'>City</th> */}
-									{/* <th scope='col'>Carrier</th> */}
-									<th scope='col'>Tracking #</th>
-									<th scope='col'>Quantity</th>
-									<th scope='col'>Invoice?</th>
-									<th scope='col'>Shipping?</th>
-									<th scope='col'>Details?</th>
-								</tr>
-							</thead>
 
-							<tbody className='my-auto'>
-								{search(currentPosts).map((s, i) => {
-									const checkingWithLiveStock = (
-										productId,
-										SubSKU,
-										OrderedQty,
-										status,
-									) => {
-										if (
-											status === "In Processing" ||
-											status === "On Hold" ||
-											status === "Ready To Ship"
-										) {
-											const pickedSub =
-												allProducts &&
-												allProducts.filter((iii) => iii._id === productId)[0];
+						<div
+							className='my-4 tableScrollBarStyling'
+							style={{
+								maxHeight: "1200px",
+								overflow: "auto",
+								margin: "40px 0px",
+							}}>
+							<table
+								className='table table-bordered table-md-responsive table-hover text-center'
+								style={{ fontSize: "0.7rem", overflow: "auto" }}
+								id='ahowan'>
+								<thead
+									className='thead-light'
+									style={{ position: "sticky", top: "0" }}>
+									<tr>
+										<th scope='col'>Purchase Date</th>
+										<th scope='col'>INV #</th>
+										<th scope='col'>Status</th>
+										<th scope='col'>Name</th>
+										<th scope='col'>Phone</th>
+										<th scope='col'>Amount</th>
+										<th scope='col'>Store</th>
+										<th scope='col'>Taker</th>
+										<th scope='col'>Governorate</th>
+										{/* <th scope='col'>City</th> */}
+										{/* <th scope='col'>Carrier</th> */}
+										<th scope='col'>Tracking #</th>
+										<th scope='col'>Quantity</th>
+										<th scope='col'>Invoice?</th>
+										<th scope='col'>Shipping?</th>
+										<th scope='col'>Details?</th>
+									</tr>
+								</thead>
 
-											const GetSpecificSubSKU =
-												pickedSub &&
-												pickedSub.productAttributes &&
-												pickedSub.productAttributes.filter(
-													(iii) => iii.SubSKU === SubSKU,
-												)[0];
-											const QtyChecker =
-												GetSpecificSubSKU &&
-												GetSpecificSubSKU.quantity < OrderedQty;
+								<tbody className='my-auto'>
+									{search(currentPosts).map((s, i) => {
+										const checkingWithLiveStock = (
+											productId,
+											SubSKU,
+											OrderedQty,
+											status,
+										) => {
+											if (
+												status === "In Processing" ||
+												status === "On Hold" ||
+												status === "Ready To Ship"
+											) {
+												const pickedSub =
+													allProducts &&
+													allProducts.filter((iii) => iii._id === productId)[0];
 
-											return QtyChecker;
-										}
-									};
+												const GetSpecificSubSKU =
+													pickedSub &&
+													pickedSub.productAttributes &&
+													pickedSub.productAttributes.filter(
+														(iii) => iii.SubSKU === SubSKU,
+													)[0];
+												const QtyChecker =
+													GetSpecificSubSKU &&
+													GetSpecificSubSKU.quantity < OrderedQty;
 
-									var stockCheckHelper = s.chosenProductQtyWithVariables.map(
-										(iii) =>
-											iii.map((iiii) =>
-												checkingWithLiveStock(
-													iiii.productId,
-													iiii.SubSKU,
-													iiii.OrderedQty,
-													s.status,
+												return QtyChecker;
+											}
+										};
+
+										var stockCheckHelper = s.chosenProductQtyWithVariables.map(
+											(iii) =>
+												iii.map((iiii) =>
+													checkingWithLiveStock(
+														iiii.productId,
+														iiii.SubSKU,
+														iiii.OrderedQty,
+														s.status,
+													),
 												),
-											),
-									);
+										);
 
-									var merged = [].concat.apply([], stockCheckHelper);
-									var finalChecker =
-										merged.indexOf(true) === -1 ? "Passed" : "Failed";
+										var merged = [].concat.apply([], stockCheckHelper);
+										var finalChecker =
+											merged.indexOf(true) === -1 ? "Passed" : "Failed";
 
-									//Getting stock as of the time the order was taken
-									var stockCheckHelper2 = s.chosenProductQtyWithVariables.map(
-										(iii) => iii.map((iiii) => iiii.quantity < iiii.OrderedQty),
-									);
+										//Getting stock as of the time the order was taken
+										var stockCheckHelper2 = s.chosenProductQtyWithVariables.map(
+											(iii) =>
+												iii.map((iiii) => iiii.quantity < iiii.OrderedQty),
+										);
 
-									var merged2 = [].concat.apply([], stockCheckHelper2);
-									var finalChecker2 =
-										merged2.indexOf(true) === -1 ? "Passed" : "Failed";
+										var merged2 = [].concat.apply([], stockCheckHelper2);
+										var finalChecker2 =
+											merged2.indexOf(true) === -1 ? "Passed" : "Failed";
 
-									// console.log(finalChecker2, "Merged2");
+										// console.log(finalChecker2, "Merged2");
 
-									return (
-										<tr key={i} className=''>
-											{s.orderCreationDate ? (
-												<td style={{ width: "8%" }}>
-													{new Date(s.orderCreationDate).toDateString()}{" "}
+										return (
+											<tr key={i} className=''>
+												{s.orderCreationDate ? (
+													<td style={{ width: "8%" }}>
+														{new Date(s.orderCreationDate).toDateString()}{" "}
+													</td>
+												) : (
+													<td style={{ width: "8%" }}>
+														{new Date(s.createdAt).toDateString()}{" "}
+													</td>
+												)}
+
+												<td
+													style={{
+														width: "10%",
+														background:
+															s.invoiceNumber === "Not Added" ? "#f4e4e4" : "",
+													}}>
+													{s.invoiceNumber}
 												</td>
-											) : (
-												<td style={{ width: "8%" }}>
-													{new Date(s.createdAt).toDateString()}{" "}
+												<td
+													style={{
+														fontWeight: "bold",
+														fontSize: "0.75rem",
+														width: "8.5%",
+														background:
+															// finalChecker2 === "Failed" &&
+															finalChecker === "Failed" &&
+															s.status !== "Ready To Ship"
+																? "darkred"
+																: s.status === "Delivered" ||
+																  s.status === "Shipped"
+																? "#004b00"
+																: s.status === "Cancelled"
+																? "darkred"
+																: s.status === "In Processing"
+																? "#d8ffff"
+																: s.status === "Exchange - In Processing"
+																? "#d8ebff"
+																: "#ffffd8",
+														color:
+															// finalChecker2 === "Failed" &&
+															finalChecker === "Failed" &&
+															s.status !== "Ready To Ship"
+																? "white"
+																: s.status === "Delivered" ||
+																  s.status === "Shipped"
+																? "white"
+																: s.status === "Cancelled"
+																? "white"
+																: "black",
+													}}>
+													{s.status}
 												</td>
-											)}
 
-											<td
-												style={{
-													width: "10%",
-													background:
-														s.invoiceNumber === "Not Added" ? "#f4e4e4" : "",
-												}}>
-												{s.invoiceNumber}
-											</td>
-											<td
-												style={{
-													fontWeight: "bold",
-													fontSize: "0.75rem",
-													width: "8.5%",
-													background:
-														// finalChecker2 === "Failed" &&
-														finalChecker === "Failed" &&
-														s.status !== "Ready To Ship"
-															? "darkred"
-															: s.status === "Delivered" ||
-															  s.status === "Shipped"
-															? "#004b00"
-															: s.status === "Cancelled"
-															? "darkred"
-															: s.status === "In Processing"
-															? "#d8ffff"
-															: s.status === "Exchange - In Processing"
-															? "#d8ebff"
-															: "#ffffd8",
-													color:
-														// finalChecker2 === "Failed" &&
-														finalChecker === "Failed" &&
-														s.status !== "Ready To Ship"
-															? "white"
-															: s.status === "Delivered" ||
-															  s.status === "Shipped"
-															? "white"
-															: s.status === "Cancelled"
-															? "white"
-															: "black",
-												}}>
-												{s.status}
-											</td>
-
-											<td style={{ width: "11%" }}>
-												{s.customerDetails.fullName}
-											</td>
-											<td>{s.customerDetails.phone}</td>
-											<td>{s.totalAmountAfterDiscount.toFixed(0)} L.E.</td>
-											<td style={{ textTransform: "uppercase" }}>
-												{s.orderSource}
-											</td>
-											<td
-												style={{
-													background:
-														s.employeeData === "Online Order" ? "#ffc994" : "",
-												}}>
-												{s.employeeData.name
-													? s.employeeData.name
-													: s.employeeData === "Online Order"
-													? "Online Self Service"
-													: ""}
-											</td>
-											<td>{s.customerDetails.state}</td>
-											{/* <td>{s.customerDetails.cityName}</td> */}
-											{/* <td style={{ width: "8%" }}>
+												<td style={{ width: "11%" }}>
+													{s.customerDetails.fullName}
+												</td>
+												<td>{s.customerDetails.phone}</td>
+												<td>{s.totalAmountAfterDiscount.toFixed(0)} L.E.</td>
+												<td style={{ textTransform: "uppercase" }}>
+													{s.orderSource}
+												</td>
+												<td
+													style={{
+														background:
+															s.employeeData === "Online Order"
+																? "#ffc994"
+																: "",
+													}}>
+													{s.employeeData.name
+														? s.employeeData.name
+														: s.employeeData === "Online Order"
+														? "Online Self Service"
+														: ""}
+												</td>
+												<td>{s.customerDetails.state}</td>
+												{/* <td>{s.customerDetails.cityName}</td> */}
+												{/* <td style={{ width: "8%" }}>
 												{s.chosenShippingOption &&
 													s.chosenShippingOption[0] &&
 													s.chosenShippingOption[0].carrierName}
 											</td> */}
-											<td style={{ width: "8%" }}>
-												{s.trackingNumber ? s.trackingNumber : "Not Added"}
-											</td>
-											<td>{s.totalOrderQty}</td>
+												<td style={{ width: "8%" }}>
+													{s.trackingNumber ? s.trackingNumber : "Not Added"}
+												</td>
+												<td>{s.totalOrderQty}</td>
 
-											{s.invoiceNumber === "Not Added" ? (
-												<td
-													style={{
-														color: "darkred",
-														fontWeight: "bold",
-														cursor: "pointer",
-														width: "8%",
-													}}>
-													{finalChecker === "Passed" ? (
-														<Link
-															to={`#`}
-															onClick={() => {
-																var today = new Date().toDateString("en-US", {
-																	timeZone: "Africa/Cairo",
-																});
-
-																let text = s.OTNumber;
-																let result = "INV" + text.slice(2);
-
-																var invoiceNumber =
-																	s.OTNumber === "Not Added"
-																		? `INV${new Date(today).getFullYear()}${
-																				new Date(today).getMonth() + 1
-																		  }${new Date(today).getDate()}000${
-																				lengthOfOrders - i
-																		  }`
-																		: result;
-																handleInvoiceStatus(
-																	invoiceNumber,
-																	s._id,
-																	s,
-																	finalChecker2,
-																);
-															}}>
-															Invoice
-														</Link>
-													) : (
-														<Link
-															to={`#`}
-															style={{ color: "darkred" }}
-															onClick={() => {
-																if (
-																	window.confirm(
-																		"Are You Sure You Want To Invoice? Please note that there is no enough stock...",
-																	)
-																) {
+												{s.invoiceNumber === "Not Added" ? (
+													<td
+														style={{
+															color: "darkred",
+															fontWeight: "bold",
+															cursor: "pointer",
+															width: "8%",
+														}}>
+														{finalChecker === "Passed" ? (
+															<Link
+																to={`#`}
+																onClick={() => {
 																	var today = new Date().toDateString("en-US", {
 																		timeZone: "Africa/Cairo",
 																	});
@@ -918,68 +1071,106 @@ const OrdersList = () => {
 																		s,
 																		finalChecker2,
 																	);
-																}
-															}}>
-															Not Enough Stock
-														</Link>
-													)}
-												</td>
-											) : (
-												<td
-													style={{
-														color: "darkgreen",
-														fontWeight: "bold",
-													}}>
-													Invoiced
-												</td>
-											)}
+																}}>
+																Invoice
+															</Link>
+														) : (
+															<Link
+																to={`#`}
+																style={{ color: "darkred" }}
+																onClick={() => {
+																	if (
+																		window.confirm(
+																			"Are You Sure You Want To Invoice? Please note that there is no enough stock...",
+																		)
+																	) {
+																		var today = new Date().toDateString(
+																			"en-US",
+																			{
+																				timeZone: "Africa/Cairo",
+																			},
+																		);
 
-											{s.invoiceNumber !== "Not Added" &&
-											(s.trackingNumber === "Not Added" ||
-												!s.trackingNumber) ? (
-												<td
-													style={{
-														cursor: "pointer",
-														fontSize: "10px,",
-														fontWeight: "bold",
-													}}>
-													<Link
-														to={`#`}
-														onClick={() => {
-															setPickedOrder(s);
-															setUpdateCustomerDetails(s.customerDetails);
-															setModalVisible(true);
+																		let text = s.OTNumber;
+																		let result = "INV" + text.slice(2);
+
+																		var invoiceNumber =
+																			s.OTNumber === "Not Added"
+																				? `INV${new Date(today).getFullYear()}${
+																						new Date(today).getMonth() + 1
+																				  }${new Date(today).getDate()}000${
+																						lengthOfOrders - i
+																				  }`
+																				: result;
+																		handleInvoiceStatus(
+																			invoiceNumber,
+																			s._id,
+																			s,
+																			finalChecker2,
+																		);
+																	}
+																}}>
+																Not Enough Stock
+															</Link>
+														)}
+													</td>
+												) : (
+													<td
+														style={{
+															color: "darkgreen",
+															fontWeight: "bold",
+														}}>
+														Invoiced
+													</td>
+												)}
+
+												{s.invoiceNumber !== "Not Added" &&
+												(s.trackingNumber === "Not Added" ||
+													!s.trackingNumber) ? (
+													<td
+														style={{
+															cursor: "pointer",
+															fontSize: "10px,",
+															fontWeight: "bold",
+														}}>
+														<Link
+															to={`#`}
+															onClick={() => {
+																setPickedOrder(s);
+																setUpdateCustomerDetails(s.customerDetails);
+																setModalVisible(true);
+															}}>
+															Create Shipping
+														</Link>
+													</td>
+												) : (
+													<td
+														style={{
+															cursor: "pointer",
+															fontSize: "10px,",
+															color: "darkgray",
+															fontWeight: "bold",
 														}}>
 														Create Shipping
-													</Link>
-												</td>
-											) : (
+													</td>
+												)}
+
 												<td
 													style={{
-														cursor: "pointer",
-														fontSize: "10px,",
-														color: "darkgray",
+														color: "blue",
 														fontWeight: "bold",
+														cursor: "pointer",
 													}}>
-													Create Shipping
+													<Link to={`/admin/single-order/${s._id}`}>
+														Details....
+													</Link>
 												</td>
-											)}
-
-											<td
-												style={{
-													color: "blue",
-													fontWeight: "bold",
-													cursor: "pointer",
-												}}>
-												<Link to={`/admin/single-order/${s._id}`}>
-													Details....
-												</Link>
-											</td>
-										</tr>
-									);
-								})}
-							</tbody>
-						</table>
+											</tr>
+										);
+									})}
+								</tbody>
+							</table>
+						</div>
 					</>
 				)}
 			</div>

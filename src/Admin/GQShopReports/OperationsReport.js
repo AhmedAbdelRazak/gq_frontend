@@ -12,6 +12,7 @@ import {
 	getProducts,
 	// eslint-disable-next-line
 	listOrdersProcessing,
+	// eslint-disable-next-line
 	listOrdersProcessingDetermined,
 	ordersLength,
 	updateOrderInvoice,
@@ -108,7 +109,7 @@ const OperationsReport = () => {
 			}
 			return comparison;
 		}
-		listOrdersProcessingDetermined(user._id, token, day1, day2).then((data) => {
+		listOrdersProcessing(user._id, token, day1, day2).then((data) => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
@@ -714,71 +715,81 @@ const OperationsReport = () => {
 						<hr />
 					</div>
 
-					<table
-						className='table table-bordered table-md-responsive table-hover'
-						style={{ fontSize: "0.75rem", overflowX: "auto" }}>
-						<thead className=''>
-							<tr
+					<div
+						style={{
+							maxHeight: "700px",
+							overflow: "auto",
+						}}>
+						<table
+							className='table table-bordered table-md-responsive table-hover'
+							style={{ fontSize: "0.75rem", overflow: "auto" }}>
+							<thead className=''>
+								<tr
+									style={{
+										fontSize: "0.75rem",
+										textTransform: "capitalize",
+										textAlign: "center",
+										backgroundColor: "#009ef7",
+										color: "wheat",
+									}}>
+									<th scope='col'>#</th>
+									<th scope='col'>SKU</th>
+									<th scope='col'>Product Name</th>
+									<th scope='col'>Color</th>
+									<th scope='col'>Size</th>
+									<th scope='col'>Ordered Qty</th>
+									<th scope='col'>Product Image</th>
+								</tr>
+							</thead>
+							<tbody
+								className='my-auto'
 								style={{
 									fontSize: "0.75rem",
 									textTransform: "capitalize",
-									textAlign: "center",
-									backgroundColor: "#009ef7",
-									color: "wheat",
+									fontWeight: "bolder",
 								}}>
-								<th scope='col'>#</th>
-								<th scope='col'>SKU</th>
-								<th scope='col'>Product Name</th>
-								<th scope='col'>Color</th>
-								<th scope='col'>Size</th>
-								<th scope='col'>Ordered Qty</th>
-								<th scope='col'>Product Image</th>
-							</tr>
-						</thead>
-						<tbody
-							className='my-auto'
-							style={{
-								fontSize: "0.75rem",
-								textTransform: "capitalize",
-								fontWeight: "bolder",
-							}}>
-							{TopSoldProductsSKUs &&
-								TopSoldProductsSKUs.map((s, i) => {
-									return (
-										<tr key={i} className=''>
-											<td className='my-auto'>{i + 1}</td>
-											<td>{s.SubSKU}</td>
-											<td>{s.productName}</td>
-											<td>
-												{allColors[
-													allColors.map((i) => i.hexa).indexOf(s.SubSKUColor)
-												]
-													? allColors[
-															allColors
-																.map((i) => i.hexa)
-																.indexOf(s.SubSKUColor)
-													  ].color
-													: s.SubSKUColor}
-											</td>
+								{TopSoldProductsSKUs &&
+									TopSoldProductsSKUs.map((s, i) => {
+										return (
+											<tr key={i} className=''>
+												<td className='my-auto'>{i + 1}</td>
+												<td style={{ textTransform: "uppercase" }}>
+													{s.SubSKU}
+												</td>
+												<td>{s.productName}</td>
+												<td>
+													{allColors[
+														allColors.map((i) => i.hexa).indexOf(s.SubSKUColor)
+													]
+														? allColors[
+																allColors
+																	.map((i) => i.hexa)
+																	.indexOf(s.SubSKUColor)
+														  ].color
+														: s.SubSKUColor}
+												</td>
 
-											<td>{s.SubSKUSize}</td>
-											<td>{s.OrderedQty}</td>
-											<td style={{ width: "15%", textAlign: "center" }}>
-												<img
-													width='40%'
-													height='40%'
-													style={{ marginLeft: "20px" }}
-													src={s.productSubSKUImage}
-													alt={s.productName}
-												/>
-											</td>
+												<td style={{ textTransform: "uppercase" }}>
+													{s.SubSKUSize}
+												</td>
+												<td>{s.OrderedQty}</td>
+												<td style={{ width: "15%", textAlign: "center" }}>
+													<img
+														width='40%'
+														height='40%'
+														style={{ marginLeft: "20px" }}
+														src={s.productSubSKUImage}
+														alt={s.productName}
+													/>
+												</td>
 
-											{/* <td>{Invoice(s)}</td> */}
-										</tr>
-									);
-								})}
-						</tbody>
-					</table>
+												{/* <td>{Invoice(s)}</td> */}
+											</tr>
+										);
+									})}
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 		);
@@ -887,50 +898,99 @@ const OperationsReport = () => {
 								style={{ borderRadius: "20px", width: "50%" }}
 							/>
 						</div>
-
 						<Pagination
 							postsPerPage={postsPerPage}
 							totalPosts={allOrders.length}
 							paginate={paginate}
 							currentPage={currentPage}
 						/>
+						<div
+							style={{
+								maxHeight: "700px",
+								overflow: "auto",
+								marginTop: "80px",
+							}}>
+							<table
+								className='table table-bordered table-md-responsive table-hover text-center my-5'
+								style={{ fontSize: "0.75rem", overflow: "auto" }}
+								id='ahowan'>
+								<thead className='thead-light'>
+									<tr>
+										<th scope='col'>#</th>
 
-						<table
-							className='table table-bordered table-md-responsive table-hover text-center my-5'
-							style={{ fontSize: "0.75rem" }}
-							id='ahowan'>
-							<thead className='thead-light'>
-								<tr>
-									<th scope='col'>#</th>
+										<th scope='col'>Purchase Date</th>
+										<th scope='col'>INV #</th>
+										<th scope='col'>Status</th>
+										<th scope='col'>Name</th>
+										<th scope='col'>Phone</th>
+										<th scope='col'>Amount</th>
+										<th scope='col'>SKU #</th>
+										<th scope='col'>Quantity</th>
+										<th scope='col'>Stock Onhand</th>
+										<th scope='col'>Stock Onhand (live)</th>
+										<th scope='col'>Invoice?</th>
+										<th scope='col'>Details?</th>
+									</tr>
+								</thead>
 
-									<th scope='col'>Purchase Date</th>
-									<th scope='col'>INV #</th>
-									<th scope='col'>Status</th>
-									<th scope='col'>Name</th>
-									<th scope='col'>Phone</th>
-									<th scope='col'>Amount</th>
-									<th scope='col'>SKU #</th>
-									<th scope='col'>Quantity</th>
-									<th scope='col'>Stock Onhand</th>
-									<th scope='col'>Stock Onhand (live)</th>
-									<th scope='col'>Invoice?</th>
-									<th scope='col'>Details?</th>
-								</tr>
-							</thead>
+								<tbody className='my-auto'>
+									{search(currentPosts).map((s, i) => {
+										const checkingWithLiveStock = (
+											productId,
+											SubSKU,
+											OrderedQty,
+											status,
+										) => {
+											if (
+												status === "In Processing" ||
+												status === "On Hold" ||
+												status === "Ready To Ship"
+											) {
+												const pickedSub =
+													allProducts &&
+													allProducts.filter((iii) => iii._id === productId)[0];
 
-							<tbody className='my-auto'>
-								{search(currentPosts).map((s, i) => {
-									const checkingWithLiveStock = (
-										productId,
-										SubSKU,
-										OrderedQty,
-										status,
-									) => {
-										if (
-											status === "In Processing" ||
-											status === "On Hold" ||
-											status === "Ready To Ship"
-										) {
+												const GetSpecificSubSKU =
+													pickedSub &&
+													pickedSub.productAttributes &&
+													pickedSub.productAttributes.filter(
+														(iii) => iii.SubSKU === SubSKU,
+													)[0];
+												const QtyChecker =
+													GetSpecificSubSKU &&
+													GetSpecificSubSKU.quantity < OrderedQty;
+
+												return QtyChecker;
+											}
+										};
+
+										var stockCheckHelper = s.chosenProductQtyWithVariables.map(
+											(iii) =>
+												iii.map((iiii) =>
+													checkingWithLiveStock(
+														iiii.productId,
+														iiii.SubSKU,
+														iiii.OrderedQty,
+														s.status,
+													),
+												),
+										);
+
+										var merged = [].concat.apply([], stockCheckHelper);
+										var finalChecker =
+											merged.indexOf(true) === -1 ? "Passed" : "Failed";
+
+										//Getting stock as of the time the order was taken
+										var stockCheckHelper2 = s.chosenProductQtyWithVariables.map(
+											(iii) =>
+												iii.map((iiii) => iiii.quantity < iiii.OrderedQty),
+										);
+
+										var merged2 = [].concat.apply([], stockCheckHelper2);
+										var finalChecker2 =
+											merged2.indexOf(true) === -1 ? "Passed" : "Failed";
+
+										const returnLiveStock = (productId, SubSKU) => {
 											const pickedSub =
 												allProducts &&
 												allProducts.filter((iii) => iii._id === productId)[0];
@@ -941,206 +1001,129 @@ const OperationsReport = () => {
 												pickedSub.productAttributes.filter(
 													(iii) => iii.SubSKU === SubSKU,
 												)[0];
-											const QtyChecker =
-												GetSpecificSubSKU &&
-												GetSpecificSubSKU.quantity < OrderedQty;
+											const liveStock =
+												GetSpecificSubSKU && GetSpecificSubSKU.quantity;
 
-											return QtyChecker;
-										}
-									};
+											return liveStock;
+										};
 
-									var stockCheckHelper = s.chosenProductQtyWithVariables.map(
-										(iii) =>
-											iii.map((iiii) =>
-												checkingWithLiveStock(
-													iiii.productId,
-													iiii.SubSKU,
-													iiii.OrderedQty,
-													s.status,
-												),
-											),
-									);
+										// console.log(finalChecker2, "Merged2");
 
-									var merged = [].concat.apply([], stockCheckHelper);
-									var finalChecker =
-										merged.indexOf(true) === -1 ? "Passed" : "Failed";
-
-									//Getting stock as of the time the order was taken
-									var stockCheckHelper2 = s.chosenProductQtyWithVariables.map(
-										(iii) => iii.map((iiii) => iiii.quantity < iiii.OrderedQty),
-									);
-
-									var merged2 = [].concat.apply([], stockCheckHelper2);
-									var finalChecker2 =
-										merged2.indexOf(true) === -1 ? "Passed" : "Failed";
-
-									const returnLiveStock = (productId, SubSKU) => {
-										const pickedSub =
-											allProducts &&
-											allProducts.filter((iii) => iii._id === productId)[0];
-
-										const GetSpecificSubSKU =
-											pickedSub &&
-											pickedSub.productAttributes &&
-											pickedSub.productAttributes.filter(
-												(iii) => iii.SubSKU === SubSKU,
-											)[0];
-										const liveStock =
-											GetSpecificSubSKU && GetSpecificSubSKU.quantity;
-
-										return liveStock;
-									};
-
-									// console.log(finalChecker2, "Merged2");
-
-									return (
-										<tr key={i} className=''>
-											<td>{i + 1}</td>
-											{s.orderCreationDate ? (
-												<td style={{ width: "8%" }}>
-													{new Date(s.orderCreationDate).toDateString()}{" "}
-												</td>
-											) : (
-												<td style={{ width: "8%" }}>
-													{new Date(s.createdAt).toDateString()}{" "}
-												</td>
-											)}
-
-											<td
-												style={{
-													width: "10%",
-													background:
-														s.invoiceNumber === "Not Added" ? "#f4e4e4" : "",
-												}}>
-												{s.invoiceNumber}
-											</td>
-											<td
-												style={{
-													fontWeight: "bold",
-													fontSize: "0.9rem",
-													width: "8.5%",
-													background:
-														// finalChecker2 === "Failed" &&
-														finalChecker === "Failed" &&
-														s.status !== "Ready To Ship"
-															? "darkred"
-															: s.status === "Delivered" ||
-															  s.status === "Shipped"
-															? "#004b00"
-															: s.status === "Cancelled"
-															? "darkred"
-															: s.status === "In Processing"
-															? "#d8ffff"
-															: s.status === "Exchange - In Processing"
-															? "#d8ebff"
-															: "#ffffd8",
-													color:
-														// finalChecker2 === "Failed" &&
-														finalChecker === "Failed" &&
-														s.status !== "Ready To Ship"
-															? "white"
-															: s.status === "Delivered" ||
-															  s.status === "Shipped"
-															? "white"
-															: s.status === "Cancelled"
-															? "white"
-															: "black",
-												}}>
-												{s.status}
-											</td>
-
-											<td style={{ width: "11%" }}>
-												{s.customerDetails.fullName}
-											</td>
-											<td style={{ width: "11%" }}>
-												{s.customerDetails.phone}
-											</td>
-											<td>{s.totalAmountAfterDiscount.toFixed(0)} L.E.</td>
-
-											<td>
-												{s.chosenProductQtyWithVariables.map((i) =>
-													i.map((ii) => (
-														<span>
-															{ii.SubSKU} <br />
-														</span>
-													)),
+										return (
+											<tr key={i} className=''>
+												<td>{i + 1}</td>
+												{s.orderCreationDate ? (
+													<td style={{ width: "8%" }}>
+														{new Date(s.orderCreationDate).toDateString()}{" "}
+													</td>
+												) : (
+													<td style={{ width: "8%" }}>
+														{new Date(s.createdAt).toDateString()}{" "}
+													</td>
 												)}
-											</td>
 
-											<td>
-												{s.chosenProductQtyWithVariables.map((i) =>
-													i.map((ii) => (
-														<span>
-															{ii.OrderedQty} <br />
-														</span>
-													)),
-												)}
-											</td>
-											<td>
-												{s.chosenProductQtyWithVariables.map((i) =>
-													i.map((ii) => (
-														<span>
-															{ii.quantity} <br />
-														</span>
-													)),
-												)}
-											</td>
-											<td>
-												{s.chosenProductQtyWithVariables.map((i) =>
-													i.map((ii) => (
-														<span>
-															{returnLiveStock(ii.productId, ii.SubSKU)} <br />
-														</span>
-													)),
-												)}
-											</td>
-
-											{s.invoiceNumber === "Not Added" ? (
 												<td
 													style={{
-														color: "darkred",
-														fontWeight: "bold",
-														cursor: "pointer",
-														width: "9%",
+														width: "10%",
+														background:
+															s.invoiceNumber === "Not Added" ? "#f4e4e4" : "",
 													}}>
-													{finalChecker === "Passed" ? (
-														<Link
-															to={`#`}
-															onClick={() => {
-																var today = new Date().toDateString("en-US", {
-																	timeZone: "Africa/Cairo",
-																});
+													{s.invoiceNumber}
+												</td>
+												<td
+													style={{
+														fontWeight: "bold",
+														fontSize: "0.9rem",
+														width: "8.5%",
+														background:
+															// finalChecker2 === "Failed" &&
+															finalChecker === "Failed" &&
+															s.status !== "Ready To Ship"
+																? "darkred"
+																: s.status === "Delivered" ||
+																  s.status === "Shipped"
+																? "#004b00"
+																: s.status === "Cancelled"
+																? "darkred"
+																: s.status === "In Processing"
+																? "#d8ffff"
+																: s.status === "Exchange - In Processing"
+																? "#d8ebff"
+																: "#ffffd8",
+														color:
+															// finalChecker2 === "Failed" &&
+															finalChecker === "Failed" &&
+															s.status !== "Ready To Ship"
+																? "white"
+																: s.status === "Delivered" ||
+																  s.status === "Shipped"
+																? "white"
+																: s.status === "Cancelled"
+																? "white"
+																: "black",
+													}}>
+													{s.status}
+												</td>
 
-																let text = s.OTNumber;
-																let result = "INV" + text.slice(2);
+												<td style={{ width: "11%" }}>
+													{s.customerDetails.fullName}
+												</td>
+												<td style={{ width: "11%" }}>
+													{s.customerDetails.phone}
+												</td>
+												<td>{s.totalAmountAfterDiscount.toFixed(0)} L.E.</td>
 
-																var invoiceNumber =
-																	s.OTNumber === "Not Added"
-																		? `INV${new Date(today).getFullYear()}${
-																				new Date(today).getMonth() + 1
-																		  }${new Date(today).getDate()}000${
-																				lengthOfOrders - i
-																		  }`
-																		: result;
-																handleInvoiceStatus(
-																	invoiceNumber,
-																	s._id,
-																	s,
-																	finalChecker2,
-																);
-															}}>
-															Invoice
-														</Link>
-													) : (
-														<Link
-															to={`#`}
-															style={{ color: "darkred" }}
-															onClick={() => {
-																if (
-																	window.confirm(
-																		"Are You Sure You Want To Invoice? Please note that there is no enough stock...",
-																	)
-																) {
+												<td>
+													{s.chosenProductQtyWithVariables.map((i) =>
+														i.map((ii) => (
+															<span>
+																{ii.SubSKU} <br />
+															</span>
+														)),
+													)}
+												</td>
+
+												<td>
+													{s.chosenProductQtyWithVariables.map((i) =>
+														i.map((ii) => (
+															<span>
+																{ii.OrderedQty} <br />
+															</span>
+														)),
+													)}
+												</td>
+												<td>
+													{s.chosenProductQtyWithVariables.map((i) =>
+														i.map((ii) => (
+															<span>
+																{ii.quantity} <br />
+															</span>
+														)),
+													)}
+												</td>
+												<td>
+													{s.chosenProductQtyWithVariables.map((i) =>
+														i.map((ii) => (
+															<span>
+																{returnLiveStock(ii.productId, ii.SubSKU)}{" "}
+																<br />
+															</span>
+														)),
+													)}
+												</td>
+
+												{s.invoiceNumber === "Not Added" ? (
+													<td
+														style={{
+															color: "darkred",
+															fontWeight: "bold",
+															cursor: "pointer",
+															width: "9%",
+														}}>
+														{finalChecker === "Passed" ? (
+															<Link
+																to={`#`}
+																onClick={() => {
 																	var today = new Date().toDateString("en-US", {
 																		timeZone: "Africa/Cairo",
 																	});
@@ -1162,37 +1145,75 @@ const OperationsReport = () => {
 																		s,
 																		finalChecker2,
 																	);
-																}
-															}}>
-															Not Enough Stock
-														</Link>
-													)}
-												</td>
-											) : (
+																}}>
+																Invoice
+															</Link>
+														) : (
+															<Link
+																to={`#`}
+																style={{ color: "darkred" }}
+																onClick={() => {
+																	if (
+																		window.confirm(
+																			"Are You Sure You Want To Invoice? Please note that there is no enough stock...",
+																		)
+																	) {
+																		var today = new Date().toDateString(
+																			"en-US",
+																			{
+																				timeZone: "Africa/Cairo",
+																			},
+																		);
+
+																		let text = s.OTNumber;
+																		let result = "INV" + text.slice(2);
+
+																		var invoiceNumber =
+																			s.OTNumber === "Not Added"
+																				? `INV${new Date(today).getFullYear()}${
+																						new Date(today).getMonth() + 1
+																				  }${new Date(today).getDate()}000${
+																						lengthOfOrders - i
+																				  }`
+																				: result;
+																		handleInvoiceStatus(
+																			invoiceNumber,
+																			s._id,
+																			s,
+																			finalChecker2,
+																		);
+																	}
+																}}>
+																Not Enough Stock
+															</Link>
+														)}
+													</td>
+												) : (
+													<td
+														style={{
+															color: "darkgreen",
+															fontWeight: "bold",
+														}}>
+														Order Already Invoiced
+													</td>
+												)}
+
 												<td
 													style={{
-														color: "darkgreen",
+														color: "blue",
 														fontWeight: "bold",
+														cursor: "pointer",
 													}}>
-													Order Already Invoiced
+													<Link to={`/admin/single-order/${s._id}`}>
+														Details....
+													</Link>
 												</td>
-											)}
-
-											<td
-												style={{
-													color: "blue",
-													fontWeight: "bold",
-													cursor: "pointer",
-												}}>
-												<Link to={`/admin/single-order/${s._id}`}>
-													Details....
-												</Link>
-											</td>
-										</tr>
-									);
-								})}
-							</tbody>
-						</table>
+											</tr>
+										);
+									})}
+								</tbody>
+							</table>
+						</div>
 					</>
 				)}
 			</div>
@@ -1378,7 +1399,8 @@ const OperationsReport = () => {
 									</div>
 								</div>
 								{user.userRole === "Order Taker" ||
-								user.userRole === "Operations" ? null : (
+								user.userRole === "Operations" ||
+								user.userRole === "Stock Keeper" ? null : (
 									<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
 										<div className='card' style={{ background: "#50cd89" }}>
 											<div className='card-body'>

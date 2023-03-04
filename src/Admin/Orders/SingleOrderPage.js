@@ -57,9 +57,13 @@ const SingleOrderPage = (props) => {
 						} else {
 							setTrackingDetails(data2);
 
-							var statusChangeCheck = data2.TrackingResults[0].Value.map(
-								(i) => i.UpdateCode,
-							).indexOf("SH239");
+							var statusChangeCheck =
+								data2.TrackingResults &&
+								data2.TrackingResults[0] &&
+								data2.TrackingResults[0].Value &&
+								data2.TrackingResults[0].Value.map((i) => i.UpdateCode).indexOf(
+									"SH239",
+								);
 
 							if (
 								!data.status.includes("Exchange") &&
@@ -102,7 +106,7 @@ const SingleOrderPage = (props) => {
 		// eslint-disable-next-line
 	}, []);
 
-	console.log(trackingDetails, "trackingDetails");
+	// console.log(trackingDetails, "trackingDetails");
 
 	const UpdatingOrder = (e) => {
 		e.preventDefault();
