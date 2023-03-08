@@ -65,6 +65,22 @@ const SingleOrderPage = (props) => {
 									"SH239",
 								);
 
+							var statusChangeCheckInTransit =
+								data2.TrackingResults &&
+								data2.TrackingResults[0] &&
+								data2.TrackingResults[0].Value &&
+								data2.TrackingResults[0].Value.map((i) => i.UpdateCode).indexOf(
+									"SH008",
+								);
+
+							var statusChangeCheckRejected =
+								data2.TrackingResults &&
+								data2.TrackingResults[0] &&
+								data2.TrackingResults[0].Value &&
+								data2.TrackingResults[0].Value.map((i) => i.UpdateCode).indexOf(
+									"SH498",
+								);
+
 							if (
 								!data.status.includes("Exchange") &&
 								!data.status.includes("Exchanged") &&
@@ -74,6 +90,55 @@ const SingleOrderPage = (props) => {
 								data.status !== "Delivered"
 							) {
 								const updatedObject = { ...data, status: "Delivered" };
+
+								updateOrder(updatedObject._id, user._id, token, updatedObject)
+									.then((response) => {
+										// toast.success("Payment on delivery order was successfully updated");
+										setTimeout(function () {
+											window.location.reload(false);
+										}, 1000);
+									})
+
+									.catch((error) => {
+										console.log(error);
+									});
+							} else if (
+								!data.status.includes("Exchange") &&
+								!data.status.includes("Exchanged") &&
+								!data.status.includes("Return") &&
+								!data.status.includes("Returned") &&
+								statusChangeCheckInTransit > -1 &&
+								statusChangeCheckRejected > -1 &&
+								data.status !== "Delivered" &&
+								data.status !== "In Transit | Rejected"
+							) {
+								const updatedObject = {
+									...data,
+									status: "In Transit | Rejected",
+								};
+
+								updateOrder(updatedObject._id, user._id, token, updatedObject)
+									.then((response) => {
+										// toast.success("Payment on delivery order was successfully updated");
+										setTimeout(function () {
+											window.location.reload(false);
+										}, 1000);
+									})
+
+									.catch((error) => {
+										console.log(error);
+									});
+							} else if (
+								!data.status.includes("Exchange") &&
+								!data.status.includes("Exchanged") &&
+								!data.status.includes("Return") &&
+								!data.status.includes("Returned") &&
+								statusChangeCheckInTransit > -1 &&
+								data.status !== "Delivered" &&
+								data.status !== "In Transit" &&
+								data.status !== "In Transit | Rejected"
+							) {
+								const updatedObject = { ...data, status: "In Transit" };
 
 								updateOrder(updatedObject._id, user._id, token, updatedObject)
 									.then((response) => {
@@ -99,6 +164,8 @@ const SingleOrderPage = (props) => {
 			}
 		});
 	};
+
+	// console.log(trackingDetails.TrackingResults[0].Value, "Tracking Details");
 
 	useEffect(() => {
 		const orderId = props.match.params.orderId;

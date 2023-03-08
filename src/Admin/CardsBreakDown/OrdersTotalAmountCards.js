@@ -38,7 +38,9 @@ const OrdersTotalAmountCards = ({ allOrders }) => {
 		0,
 	);
 
-	var shippedOrders = allOrders.filter((i) => i.status === "Shipped");
+	var shippedOrders = allOrders.filter(
+		(i) => i.status === "Shipped" || i.status === "In Transit",
+	);
 	const overallAmountArrayShipped =
 		shippedOrders && shippedOrders.map((i) => i.totalAmountAfterDiscount);
 	const ArrayOfAmountShipped = overallAmountArrayShipped.reduce(

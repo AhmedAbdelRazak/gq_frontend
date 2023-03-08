@@ -173,6 +173,28 @@ const OrdersHist = () => {
 							.filter((i) => i.status === "Cancelled")
 							.sort(sortOrdersAscendingly),
 					);
+				} else if (selectedFilter === "In Transit | Rejected") {
+					setAllOrders(
+						data
+							.filter((i) => i.status === "In Transit | Rejected")
+							.sort(sortOrdersAscendingly),
+					);
+					setExcelDataSet(
+						data
+							.filter((i) => i.status === "In Transit | Rejected")
+							.sort(sortOrdersAscendingly),
+					);
+				} else if (selectedFilter === "In Transit") {
+					setAllOrders(
+						data
+							.filter((i) => i.status === "In Transit")
+							.sort(sortOrdersAscendingly),
+					);
+					setExcelDataSet(
+						data
+							.filter((i) => i.status === "In Transit")
+							.sort(sortOrdersAscendingly),
+					);
 				} else if (selectedFilter === "NoInvoice") {
 					setAllOrders(
 						data
@@ -503,7 +525,9 @@ const OrdersHist = () => {
 											fontSize: "0.8rem",
 											width: "8.5%",
 											background:
-												s.status === "Delivered" || s.status === "Shipped"
+												s.status === "Delivered" ||
+												s.status === "Shipped" ||
+												s.status === "In Transit"
 													? "#004b00"
 													: s.status === "Cancelled"
 													? "red"
@@ -513,11 +537,15 @@ const OrdersHist = () => {
 													? "#d8ffff"
 													: s.status === "Exchange - In Processing"
 													? "#d8ebff"
+													: s.status === "In Transit | Rejected"
+													? "lightblue !important"
 													: "#ffffd8",
 											color:
 												finalChecker === "Failed"
 													? "white"
-													: s.status === "Delivered" || s.status === "Shipped"
+													: s.status === "Delivered" ||
+													  s.status === "Shipped" ||
+													  s.status === "In Transit"
 													? "white"
 													: s.status === "Cancelled"
 													? "white"

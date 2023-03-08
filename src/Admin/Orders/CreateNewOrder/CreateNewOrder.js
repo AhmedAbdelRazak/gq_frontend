@@ -1149,10 +1149,8 @@ const CreateNewOrder = () => {
 			return toast.error("Please Add Products Colors & Sizes");
 		}
 
-		if (lengthOfOrders >= 4000) {
-			return toast.error(
-				"You ran out of space, Please contact your adminstrator",
-			);
+		if (lengthOfOrders >= 3007) {
+			return toast.error("Database is full, Please contact your adminstrator");
 		}
 
 		// if (customerDetails.phone.length !== 11) {

@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import AdminMenu from "./AdminMenu/AdminMenu";
 import Navbar from "./AdminNavMenu/Navbar";
-import Chart from "react-apexcharts";
 import CountUp from "react-countup";
 import { aggregateAllOrders, getProducts, listOrdersDates } from "./apiAdmin";
 import { isAuthenticated } from "../auth";
@@ -17,12 +16,12 @@ import {
 	gettingOrderStatusSummaryCount,
 	gettingOrderStatusSummaryRevenue,
 } from "./GQShopReports/GettingNumbers";
-import OrdersCountCards from "./CardsBreakDown/OrdersCountCards";
-import OrdersQtyCard from "./CardsBreakDown/OrdersQtyCard";
-import OrdersTotalAmountCards from "./CardsBreakDown/OrdersTotalAmountCards";
+import Section1 from "./AdminDashboardComp/Section1";
+import Section2 from "./AdminDashboardComp/Section2";
 
 const AdminDashboard2 = () => {
 	const [allOrders, setAllOrders] = useState([]);
+	const [allOrders2, setAllOrders2] = useState([]);
 	const [allOrdersAggregated, setAllOrdersAggregated] = useState("");
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	// eslint-disable-next-line
@@ -49,7 +48,29 @@ const AdminDashboard2 = () => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
-				setAllOrders(data);
+				if (day1 === day2) {
+					setAllOrders(
+						data.filter(
+							(i) =>
+								new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
+								new Date(day1).setHours(0, 0, 0, 0),
+						),
+					);
+				} else {
+					setAllOrders(data);
+				}
+			}
+		});
+	};
+
+	const loadOrders2 = () => {
+		const day3 = new Date(new Date().setDate(new Date().getDate() + 1));
+		const day4 = new Date(new Date().setDate(new Date().getDate() - 30));
+		listOrdersDates(user._id, token, day3, day4).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllOrders2(data);
 			}
 		});
 	};
@@ -81,24 +102,21 @@ const AdminDashboard2 = () => {
 		// eslint-disable-next-line
 	}, [day1, day2]);
 
-	var today = new Date().toLocaleString();
+	useEffect(() => {
+		loadOrders2();
+		// eslint-disable-next-line
+	}, []);
+
+	var today = new Date();
 	var today2 = new Date();
 	// var yesterday = new Date();
-	var yesterday = new Date();
-	var last7Days = new Date();
-	var last15Days = new Date();
-	var last30Days = new Date();
-	var last90Days = new Date();
+	var yesterday = new Date(new Date().setDate(new Date().getDate() - 1));
+	var last7Days = new Date(new Date().setDate(new Date().getDate() - 7));
+	var last15Days = new Date(new Date().setDate(new Date().getDate() - 15));
+	var last30Days = new Date(new Date().setDate(new Date().getDate() - 30));
+	var last90Days = new Date(new Date().setDate(new Date().getDate() - 90));
 
-	yesterday.setDate(yesterday.getDate() - 1);
-	last7Days.setDate(last7Days.getDate() - 7);
-	last15Days.setDate(last15Days.getDate() - 15);
-	last30Days.setDate(last30Days.getDate() - 30);
-	last90Days.setDate(last90Days.getDate() - 45);
-
-	// console.log(yesterday, "yesterday");
-
-	let todaysOrders = allOrders.filter(
+	let todaysOrders = allOrders2.filter(
 		(i) =>
 			new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
 			new Date(today).setHours(0, 0, 0, 0),
@@ -109,7 +127,7 @@ const AdminDashboard2 = () => {
 
 	const sumOfTodaysRevenue = todaysRevenue.reduce((a, b) => a + b, 0);
 
-	let last7daysOrdersRevenue = allOrders
+	let last7daysOrdersRevenue = allOrders2
 		.filter(
 			(i) =>
 				new Date(i.orderCreationDate).setHours(0, 0, 0, 0) >=
@@ -121,7 +139,7 @@ const AdminDashboard2 = () => {
 	const sumOfLast7DaysRevenue =
 		last7daysOrdersRevenue && last7daysOrdersRevenue.reduce((a, b) => a + b, 0);
 
-	let last7daysOrders = allOrders
+	let last7daysOrders = allOrders2
 		.filter(
 			(i) =>
 				new Date(i.orderCreationDate).setHours(0, 0, 0, 0) >=
@@ -135,7 +153,7 @@ const AdminDashboard2 = () => {
 			};
 		});
 
-	let last30daysOrdersRevenue = allOrders
+	let last30daysOrdersRevenue = allOrders2
 		.filter((i) => i.status !== "Cancelled" || i.status !== "Returned")
 		.map((ii) => ii.totalAmountAfterDiscount);
 
@@ -143,7 +161,7 @@ const AdminDashboard2 = () => {
 		last30daysOrdersRevenue &&
 		last30daysOrdersRevenue.reduce((a, b) => a + b, 0);
 
-	let last30daysOrdersQty = allOrders
+	let last30daysOrdersQty = allOrders2
 		.filter((i) => i.status !== "Cancelled" || i.status !== "Returned")
 		.map((ii) => ii.totalOrderQty);
 
@@ -179,8 +197,6 @@ const AdminDashboard2 = () => {
 			plotOptions: {
 				bar: {
 					horizontal: false,
-					s̶t̶a̶r̶t̶i̶n̶g̶S̶h̶a̶p̶e̶: "flat",
-					e̶n̶d̶i̶n̶g̶S̶h̶a̶p̶e̶: "flat",
 					borderRadius: 0,
 					columnWidth: "90%",
 					barHeight: "100%",
@@ -325,8 +341,6 @@ const AdminDashboard2 = () => {
 
 			return res;
 		}, {});
-
-	console.log(Employees_TotalOrders_Revenue, "Employees_TotalOrders_Revenue");
 
 	const selectedDateOrdersModified = () => {
 		const modifiedArray =
@@ -541,8 +555,6 @@ const AdminDashboard2 = () => {
 			return res;
 		}, {});
 
-	console.log(OrderSourceSummary, "OrderSourceSummary");
-
 	function getMinMax(arr) {
 		if (!arr) {
 			return null;
@@ -561,11 +573,9 @@ const AdminDashboard2 = () => {
 		OrderSourceSummary &&
 		OrderSourceSummary.map((i) => i.totalAmountAfterDiscount);
 
-	console.log(getMinMax(xAxisValues)[1]);
-
 	var donutChart2 = {
 		chart: {
-			type: "bar",
+			type: "donut",
 		},
 		plotOptions: {
 			bar: {
@@ -745,206 +755,29 @@ const AdminDashboard2 = () => {
 								)}
 							</div> */}
 
-							{chosenCard === "OrdersCountCard" ? (
-								<div>
-									<OrdersCountCards allOrders={allOrders} />
-								</div>
-							) : null}
-							{chosenCard === "OrdersQtyCard" ? (
-								<div>
-									<OrdersQtyCard allOrders={allOrders} />
-								</div>
-							) : null}
-							{chosenCard === "OrdersTotalAmountCard" ? (
-								<div>
-									<OrdersTotalAmountCards allOrders={allOrders} />
-								</div>
-							) : null}
-							<div className='mb-1 ml-5'>
-								<span
-									className='mx-1 ordersCount'
-									onClick={() => {
-										setChosenCard("OrdersCountCard");
-									}}>
-									Orders Count
-								</span>
-								<span
-									className='mx-1 ordersQty'
-									onClick={() => {
-										setChosenCard("OrdersQtyCard");
-									}}>
-									Orders Quantity
-								</span>
-								<span
-									className='mx-1 ordersAmount'
-									onClick={() => {
-										setChosenCard("OrdersTotalAmountCard");
-									}}>
-									Orders Total Amount
-								</span>
-							</div>
+							<Section1
+								chosenCard={chosenCard}
+								allOrders={allOrders}
+								setChosenCard={setChosenCard}
+							/>
+
+							<Section2
+								day1={day1}
+								day2={day2}
+								OrderSourceSummary={OrderSourceSummary}
+								allOrders={allOrders}
+								donutChart2={donutChart2}
+								sumOfLast30DaysRevenue={sumOfLast30DaysRevenue}
+								sumOfLast7DaysRevenue={sumOfLast7DaysRevenue}
+								sumOfTodaysRevenue={sumOfTodaysRevenue}
+								allOrdersAggregated={allOrdersAggregated}
+								chartDataTotalAmount={chartDataTotalAmount}
+								todaysOrders={todaysOrders}
+								last7daysOrdersRevenue={last7daysOrdersRevenue}
+								last30daysOrdersRevenue={last30daysOrdersRevenue}
+								allOrders2={allOrders2}
+							/>
 							<div className='row mx-auto mt-3'>
-								<div className='col-xl-5 col-lg-8 col-md-11  mx-auto'>
-									<div className='card' style={{ maxHeight: "340px" }}>
-										<h5 className='text-center'>
-											Sales By Store
-											<span style={{ fontSize: "13px" }}>
-												{" "}
-												(From: {new Date(day2).toLocaleDateString()} to:{" "}
-												{new Date(day1).toLocaleDateString()})
-											</span>
-										</h5>
-
-										{OrderSourceSummary &&
-										allOrders &&
-										allOrders.length > 0 &&
-										OrderSourceSummary.length > 0 &&
-										OrderSourceSummary[0] ? (
-											<div className='row'>
-												<Chart
-													title={donutChart2.title}
-													options={donutChart2}
-													series={donutChart2.series}
-													type='bar'
-													height={280}
-													width={550}
-												/>
-											</div>
-										) : null}
-									</div>
-								</div>
-
-								<div className='col-xl-7 col-lg-8 col-md-11 mx-auto'>
-									<div className='card'>
-										<h5 className='text-center'>Day Over Day Sales</h5>
-
-										<div className='row' style={{ maxHeight: "273px" }}>
-											<div className='col-md-3 mt-2'>
-												<h3
-													style={{
-														fontWeight: "bold",
-														color: "green",
-														fontSize: "1.35rem",
-													}}>
-													Today
-												</h3>
-												<div className=' mb-1 row'>
-													<div
-														className='col-md-5'
-														style={{
-															fontSize: "1rem",
-															fontWeight: "bold",
-														}}>
-														EGP
-													</div>{" "}
-													<div
-														className='col-md-7'
-														style={{ fontSize: "1rem", fontWeight: "bold" }}>
-														{" "}
-														{Number(
-															Number(sumOfTodaysRevenue).toFixed(2),
-														).toLocaleString()}
-														<div
-															style={{
-																fontSize: "11px",
-																color: "darkgrey",
-															}}>
-															{Number(todaysOrders.length).toLocaleString()}{" "}
-															Orders
-														</div>
-													</div>
-												</div>
-
-												<div className='mt-1 mb-2'>
-													<div style={{ fontSize: "12px", fontWeight: "bold" }}>
-														<span style={{ color: "goldenrod" }}>WEEK</span>
-														<div
-															className='row'
-															style={{ fontSize: "11px", fontWeight: "bold" }}>
-															<div className='col-md-4'>EGP</div>{" "}
-															<div className='col-md-7'>
-																{Number(
-																	Number(sumOfLast7DaysRevenue).toFixed(2),
-																).toLocaleString()}
-																<div
-																	style={{
-																		fontSize: "11px",
-																		color: "darkgrey",
-																	}}>
-																	{Number(
-																		last7daysOrdersRevenue.length,
-																	).toLocaleString()}{" "}
-																	Orders
-																</div>
-															</div>{" "}
-														</div>{" "}
-													</div>{" "}
-												</div>
-												<div className='my-2'>
-													<div style={{ fontSize: "12px", fontWeight: "bold" }}>
-														<span style={{ color: "red" }}>MONTH</span>
-														<div
-															className='row'
-															style={{ fontSize: "11px", fontWeight: "bold" }}>
-															<div className='col-md-4'>EGP</div>{" "}
-															<div className='col-md-7'>
-																{Number(
-																	Number(sumOfLast30DaysRevenue).toFixed(2),
-																).toLocaleString()}
-																<div
-																	style={{
-																		fontSize: "11px",
-																		color: "darkgrey",
-																	}}>
-																	{Number(
-																		last30daysOrdersRevenue.length,
-																	).toLocaleString()}{" "}
-																	Orders
-																</div>
-															</div>{" "}
-														</div>{" "}
-													</div>{" "}
-												</div>
-												<div className='my-1'>
-													{" "}
-													<div style={{ fontSize: "12px", fontWeight: "bold" }}>
-														ALL
-													</div>{" "}
-													<div
-														className='row'
-														style={{ fontSize: "11px", fontWeight: "bold" }}>
-														<div className='col-md-4'>EGP</div>{" "}
-														<div className='col-md-7'>
-															{Number(
-																Number(allOrdersAggregated.totalAmount).toFixed(
-																	2,
-																),
-															).toLocaleString()}
-															<div
-																style={{ fontSize: "11px", color: "darkgrey" }}>
-																{Number(
-																	allOrdersAggregated.ordersCount,
-																).toLocaleString()}{" "}
-																Orders
-															</div>
-														</div>{" "}
-													</div>{" "}
-												</div>
-											</div>
-											<div className='col-md-9'>
-												<div className='mx-auto text-center'>
-													<Chart
-														options={chartDataTotalAmount.options}
-														series={chartDataTotalAmount.series}
-														type='area'
-														height={300}
-													/>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-
 								<div className='col-xl-4 col-lg-8 col-md-11 mx-auto'>
 									<div
 										className='card mt-4'
@@ -1381,7 +1214,9 @@ const AdminDashboard2 = () => {
 											<hr />
 										</div>
 
-										<div className='tableData'>
+										<div
+											className='tableData'
+											style={{ maxHeight: "800px", overflow: "auto" }}>
 											<AttributesModal
 												product={clickedProduct}
 												modalVisible={modalVisible3}
@@ -1391,8 +1226,18 @@ const AdminDashboard2 = () => {
 
 											<table
 												className='table table-bordered table-md-responsive table-hover '
-												style={{ fontSize: "0.75rem", overflowX: "auto" }}>
-												<thead className=''>
+												style={{
+													fontSize: "0.75rem",
+													overflow: "auto",
+												}}>
+												<thead
+													className=''
+													style={{
+														position: "sticky",
+														top: "0",
+														zIndex: "100",
+														background: "white",
+													}}>
 													<tr
 														style={{
 															fontSize: "0.75rem",

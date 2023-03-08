@@ -264,6 +264,12 @@ const Trial = ({
 								<option key='3' value='Shipped'>
 									Shipped
 								</option>
+								<option key='6' value='In Transit'>
+									In Transit
+								</option>
+								<option key='7' value='In Transit | Rejected'>
+									In Transit | Rejected
+								</option>
 								<option key='4' value='Delivered'>
 									Delivered
 								</option>

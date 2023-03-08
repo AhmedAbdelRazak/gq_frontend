@@ -34,7 +34,9 @@ const OrdersQtyCard = ({ allOrders }) => {
 		0,
 	);
 
-	var shippedOrders = allOrders.filter((i) => i.status === "Shipped");
+	var shippedOrders = allOrders.filter(
+		(i) => i.status === "Shipped" || i.status === "In Transit",
+	);
 	const overallQtyArrayShipped =
 		shippedOrders && shippedOrders.map((i) => i.totalOrderQty);
 	const ArrayOfQtyShipped = overallQtyArrayShipped.reduce((a, b) => a + b, 0);

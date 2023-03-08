@@ -13,6 +13,7 @@ import {
 	getColors,
 	getGenders,
 	getListOfSubs,
+	getProducts,
 	getStores,
 	getSubCategories,
 } from "../../apiAdmin";
@@ -49,6 +50,7 @@ const AddProduct = () => {
 	// eslint-disable-next-line
 	const [loading, setLoading] = useState(true);
 	const [productName, setProductName] = useState("");
+	const [allProducts, setAllProducts] = useState([]);
 	const [productName_Arabic, setProductName_Arabic] = useState("");
 	const [productSKU, setProductSKU] = useState("");
 	// eslint-disable-next-line
@@ -196,12 +198,23 @@ const AddProduct = () => {
 		});
 	};
 
+	const gettingAllProducts = () => {
+		getProducts().then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllProducts(data);
+			}
+		});
+	};
+
 	useEffect(() => {
 		gettingAllCategories();
 		gettingAllSubcategories();
 		gettingAllGenders();
 		gettingAllColors();
 		loadAllStores();
+		gettingAllProducts();
 		// eslint-disable-next-line
 	}, []);
 
@@ -636,6 +649,11 @@ const AddProduct = () => {
 		e.preventDefault();
 		setClickedLink("MainData");
 		window.scrollTo({ top: 0, behavior: "smooth" });
+
+		if (allProducts && allProducts.length >= 25) {
+			setClickedLink("MainData");
+			return toast.error("Database is full, Please contact your adminstrator");
+		}
 
 		if (
 			!productName ||

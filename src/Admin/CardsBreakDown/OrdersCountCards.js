@@ -9,7 +9,9 @@ const OrdersCountCards = ({ allOrders }) => {
 	var onHoldOrders = allOrders.filter((i) => i.status === "On Hold");
 	var processingOrders = allOrders.filter((i) => i.status === "In Processing");
 	var readyToShipOrders = allOrders.filter((i) => i.status === "Ready To Ship");
-	var shippedOrders = allOrders.filter((i) => i.status === "Shipped");
+	var shippedOrders = allOrders.filter(
+		(i) => i.status === "Shipped" || i.status === "In Transit",
+	);
 	var deliveredOrders = allOrders.filter(
 		(i) => i.status === "Delivered" || i.status === "Exchange - Delivered",
 	);
