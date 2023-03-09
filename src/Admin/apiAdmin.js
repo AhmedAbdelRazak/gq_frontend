@@ -1416,11 +1416,10 @@ export const CreateShippingTN = (
 				Reference3: "",
 				Shipper: {
 					Reference1: order.orderSource,
-					Reference2: "",
+					Reference2: "GQ",
 					AccountNumber: process.env.REACT_APP_ACCOUNT_NUMBER_PROD,
 					PartyAddress: {
-						Line1:
-							"العجمي -ش علي ابن ابي طالب-الحديد و الصلب- بجوار جمعية الوكيل الخيرية",
+						Line1: "العجمي -البيطاش-الحنفية",
 						Line2: "",
 						Line3: "",
 						City: "Alexandria",
