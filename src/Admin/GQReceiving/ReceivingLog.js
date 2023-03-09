@@ -24,8 +24,6 @@ const ReceivingLog = () => {
 		// eslint-disable-next-line
 	}, []);
 
-	console.log(allReceivings, "allRece");
-
 	return (
 		<ReceivingLogWrapper>
 			<div

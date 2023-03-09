@@ -6,18 +6,20 @@ import styled from "styled-components";
 import AdminMenu from "./AdminMenu/AdminMenu";
 import Navbar from "./AdminNavMenu/Navbar";
 import CountUp from "react-countup";
-import { aggregateAllOrders, getProducts, listOrdersDates } from "./apiAdmin";
+import {
+	aggregateAllOrders,
+	getProducts,
+	getReceivingLogs,
+	listOrdersDates,
+} from "./apiAdmin";
 import { isAuthenticated } from "../auth";
 // eslint-disable-next-line
 import { Link, Redirect } from "react-router-dom";
 import DarkBG from "./AdminMenu/DarkBG";
 import AttributesModal from "./Product/UpdatingProduct/AttributesModal";
-import {
-	gettingOrderStatusSummaryCount,
-	gettingOrderStatusSummaryRevenue,
-} from "./GQShopReports/GettingNumbers";
 import Section1 from "./AdminDashboardComp/Section1";
 import Section2 from "./AdminDashboardComp/Section2";
+import moment from "moment";
 
 const AdminDashboard2 = () => {
 	const [allOrders, setAllOrders] = useState([]);
@@ -29,7 +31,7 @@ const AdminDashboard2 = () => {
 	const [pageScrolled, setPageScrolled] = useState(false);
 	const [collapsed, setCollapsed] = useState(false);
 	const [chosenCard, setChosenCard] = useState("OrdersCountCard");
-
+	const [allReceivings, setAllReceivings] = useState([]);
 	const [allProducts, setAllProducts] = useState([]);
 	const [modalVisible3, setModalVisible3] = useState(false);
 	// eslint-disable-next-line
@@ -658,6 +660,46 @@ const AdminDashboard2 = () => {
 		],
 	};
 
+	const gettingReceivingLog = () => {
+		function sortByReceivingDate(a, b) {
+			const TotalAppointmentsA = a.createdAt;
+			const TotalAppointmentsB = b.createdAt;
+			let comparison = 0;
+			if (TotalAppointmentsA < TotalAppointmentsB) {
+				comparison = 1;
+			} else if (TotalAppointmentsA > TotalAppointmentsB) {
+				comparison = -1;
+			}
+			return comparison;
+		}
+
+		getReceivingLogs().then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				const dateCrit = new Date(
+					new Date().setDate(new Date().getDate() - 60),
+				);
+				setAllReceivings(
+					data
+						.filter(
+							(i) =>
+								i.storeName === "g&q" &&
+								new Date(i.createdAt).setHours(0, 0, 0, 0) >=
+									new Date(dateCrit).setHours(0, 0, 0, 0),
+						)
+						.sort(sortByReceivingDate),
+				);
+			}
+		});
+	};
+
+	useEffect(() => {
+		gettingReceivingLog();
+
+		// eslint-disable-next-line
+	}, []);
+
 	return (
 		<AdminDashboard2Wrapper show={collapsed}>
 			{user.userRole === "Order Taker" || user.userRole === "Operations" ? (
@@ -782,7 +824,7 @@ const AdminDashboard2 = () => {
 									<div
 										className='card mt-4'
 										style={{ maxHeight: "485px", overflow: "auto" }}>
-										<h5 className='mb-3'>
+										<h5 className='mb-4 mt-2'>
 											Top Employees{" "}
 											<span className='ml-1' style={{ fontSize: "13px" }}>
 												From:{" "}
@@ -898,243 +940,84 @@ const AdminDashboard2 = () => {
 								<div className='col-xl-4 col-lg-8 col-md-11  mx-auto'>
 									<div
 										className='card mt-4'
-										style={{ maxHeight: "490px", overflow: "auto" }}>
+										style={{
+											maxHeight: "490px",
+											overflow: "auto",
+											minHeight: "487px",
+										}}>
 										<h5 className='mb-4'>Items Received In Stock </h5>
 
-										<div className='row my-3'>
-											<div className='col-5 mx-auto'>
-												<span className='cardHeader'>Orders On Hold</span>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={1}
-														end={gettingOrderStatusSummaryCount(
-															OrderStatusSummary,
-															"On Hold",
-															day1,
-															day2,
-														)}
-														separator=','
-													/>{" "}
-													Orders
-												</div>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={0}
-														end={gettingOrderStatusSummaryRevenue(
-															OrderStatusSummary,
-															"On Hold",
-															day1,
-															day2,
-														)}
-														separator=','
-													/>{" "}
-													EGP
-												</div>{" "}
-											</div>
-
-											<div className='col-5 mx-auto'>
-												<span className='cardHeader'>Orders In Processing</span>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={1}
-														end={gettingOrderStatusSummaryCount(
-															OrderStatusSummary,
-															"In Processing",
-															day1,
-															day2,
-														)}
-														separator=','
-													/>{" "}
-													Orders
-												</div>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={0}
-														end={gettingOrderStatusSummaryRevenue(
-															OrderStatusSummary,
-															"In Processing",
-															day1,
-															day2,
-														)}
-														separator=','
-													/>{" "}
-													EGP
-												</div>{" "}
-											</div>
-
-											<div className='col-5 mt-5 mx-auto'>
-												<span className='cardHeader'>Orders Ready To Ship</span>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={1}
-														end={gettingOrderStatusSummaryCount(
-															OrderStatusSummary,
-															"Ready To Ship",
-															day1,
-															day2,
-														)}
-														separator=','
-													/>{" "}
-													Orders
-												</div>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={0}
-														end={gettingOrderStatusSummaryRevenue(
-															OrderStatusSummary,
-															"Ready To Ship",
-															day1,
-															day2,
-														)}
-														separator=','
-													/>{" "}
-													EGP
-												</div>{" "}
-											</div>
-
-											<div className='col-5 mt-5 mx-auto'>
-												<span className='cardHeader'>Shipped Orders</span>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={1}
-														end={gettingOrderStatusSummaryCount(
-															OrderStatusSummary,
-															"Shipped",
-															day1,
-															day2,
-														)}
-														separator=','
-													/>{" "}
-													Orders
-												</div>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={0}
-														end={gettingOrderStatusSummaryRevenue(
-															OrderStatusSummary,
-															"Shipped",
-															day1,
-															day2,
-														)}
-														separator=','
-													/>{" "}
-													EGP
-												</div>{" "}
-											</div>
-											<div className='col-5 mt-5 mx-auto'>
-												<span className='cardHeader'>Delivered Orders</span>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={0}
-														end={gettingOrderStatusSummaryCount(
-															OrderStatusSummary,
-															"Delivered",
-															day1,
-															day2,
-														)}
-														separator=','
-													/>{" "}
-													Orders
-												</div>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={0}
-														end={gettingOrderStatusSummaryRevenue(
-															OrderStatusSummary,
-															"Delivered",
-															day1,
-															day2,
-														)}
-														separator=','
-													/>{" "}
-													EGP
-												</div>{" "}
-											</div>
-											<div className='col-5 mt-5 mx-auto'>
-												<span className='cardHeader'>Cancelled Orders</span>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={0}
-														end={gettingOrderStatusSummaryCount(
-															OrderStatusSummary,
-															"Cancelled",
-															day1,
-															day2,
-														)}
-														separator=','
-													/>{" "}
-													Orders
-												</div>{" "}
-												<div className='metrics'>
-													<CountUp
-														duration='2'
-														delay={0}
-														end={gettingOrderStatusSummaryRevenue(
-															OrderStatusSummary,
-															"Cancelled",
-															day1,
-															day2,
-														)}
-														separator=','
-													/>{" "}
-													EGP
-												</div>{" "}
-											</div>
-										</div>
-										<hr />
-										<div>
-											<select
-												onChange={(e) => {
-													if (e.target.value === "SelectAll") {
-														setDay2(last90Days);
-														setDay1(today2);
-													} else if (e.target.value === "Today") {
-														setDay2(today);
-														setDay1(today);
-													} else if (e.target.value === "Yesterday") {
-														setDay2(yesterday);
-														setDay1(yesterday);
-													} else if (e.target.value === "Last7Days") {
-														setDay2(last7Days);
-														setDay1(today2);
-													} else if (e.target.value === "Last30Days") {
-														setDay2(last30Days);
-														setDay1(today2);
-													} else {
-													}
-												}}
-												placeholder='Select Return Status'
-												className=' mx-auto w-100'
+										<table
+											className='table table-bordered table-md-responsive table-hover '
+											style={{ fontSize: "0.75rem", overflow: "auto" }}>
+											<thead className=''>
+												<tr
+													style={{
+														fontSize: "0.75rem",
+														textTransform: "capitalize",
+														textAlign: "center",
+													}}>
+													<th scope='col'>Date</th>
+													<th scope='col'>Receiver</th>
+													<th scope='col'>SKU</th>
+													<th scope='col'>Qty</th>
+													<th
+														scope='col'
+														style={{ background: "#093664", color: "white" }}>
+														Case
+													</th>
+												</tr>
+											</thead>
+											<tbody
+												className='my-auto'
 												style={{
-													paddingTop: "3px",
-													paddingBottom: "3px",
-													// paddingRight: "50px",
-													// textAlign: "center",
-													border: "#cfcfcf solid 1px",
-													borderRadius: "2px",
-													fontSize: "0.9rem",
-													// boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
+													fontSize: "0.75rem",
 													textTransform: "capitalize",
+													fontWeight: "bolder",
 												}}>
-												<option value='SelectStatus'>Filters:</option>
-												<option value='SelectAll'>Select All</option>
-												<option value='Today'>Today</option>
-												<option value='Yesterday'>Yesterday</option>
-												<option value='Last7Days'>Last 7 Days</option>
-												<option value='Last30Days'>Last 30 Days</option>
-											</select>
-										</div>
+												{allReceivings &&
+													allReceivings.map((s, i) => {
+														return (
+															<tr key={i} style={{ fontSize: "10px" }}>
+																<td>
+																	{moment(s.createdAt).format("DD/MM/YYYY")}
+																</td>
+																<td>
+																	{s.receivedByEmployee &&
+																		s.receivedByEmployee.name}
+																</td>
+
+																<td>
+																	{s.receivedSKU}
+																	<br />
+																	{s.productName}{" "}
+																</td>
+																<td>{s.receivedQuantity}</td>
+																<td
+																	className='mx-auto text-center'
+																	style={{
+																		background:
+																			s.receivingCase === "return"
+																				? "red"
+																				: s.receivingCase === "new"
+																				? "#093664"
+																				: "#f6fafe",
+																		color:
+																			s.receivingCase === "return"
+																				? "white"
+																				: s.receivingCase === "new"
+																				? "white"
+																				: "black",
+																	}}>
+																	{s.receivingCase}
+																</td>
+
+																{/* <td>{Invoice(s)}</td> */}
+															</tr>
+														);
+													})}
+											</tbody>
+										</table>
 									</div>
 								</div>
 

@@ -93,7 +93,19 @@ const MainReports = () => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
-				setAllOrders(data.sort(sortOrdersAscendingly));
+				if (day1 === day2) {
+					setAllOrders(
+						data
+							.filter(
+								(i) =>
+									new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
+									new Date(day1).setHours(0, 0, 0, 0),
+							)
+							.sort(sortOrdersAscendingly),
+					);
+				} else {
+					setAllOrders(data.sort(sortOrdersAscendingly));
+				}
 			}
 		});
 	};
@@ -207,7 +219,7 @@ const MainReports = () => {
 				enabled: true,
 				enabledOnSeries: undefined,
 				formatter: function (val, opts) {
-					return val;
+					return Number(val).toLocaleString();
 				},
 				style: {
 					fontSize: "10px",
@@ -219,7 +231,7 @@ const MainReports = () => {
 			},
 
 			title: {
-				text: "Day Over Day Sales By Total Amount (L.E.) Report",
+				text: "Day Over Day Sales By Total Amount (EGP) Report",
 				align: "center",
 				margin: 35,
 				offsetX: 0,
@@ -464,6 +476,14 @@ const MainReports = () => {
 
 		dataLabels: {
 			enabled: true,
+
+			formatter: function (val, pos) {
+				return (
+					Number(val).toFixed(0) +
+					"%" +
+					` (${OrderStatus_OrdersCount[pos.seriesIndex].ordersCount} Orders)`
+				);
+			},
 		},
 		// colors: [
 		// 	"#f1416c",
@@ -487,12 +507,24 @@ const MainReports = () => {
 		}),
 		labels: OrderStatus_TotalAmount.map((i) => i.status + " Orders"),
 		title: {
-			text: "Order Status Breakdown By Total Amount (L.E.)",
+			text: "Order Status Breakdown By Total Amount (EGP)",
 			align: "center",
 		},
 
 		dataLabels: {
 			enabled: true,
+
+			formatter: function (val, pos) {
+				return (
+					// Number(val).toFixed(0) +
+					// "%" +
+					` EGP ${Number(
+						Number(
+							OrderStatus_TotalAmount[pos.seriesIndex].totalAmountAfterDiscount,
+						).toFixed(0),
+					).toLocaleString()}`
+				);
+			},
 		},
 		// colors: [
 		// 	"#f1416c",
@@ -685,6 +717,14 @@ const MainReports = () => {
 
 		dataLabels: {
 			enabled: true,
+
+			formatter: function (val, pos) {
+				return (
+					Number(val).toFixed(0) +
+					"%" +
+					` (${Stores_OrdersCount[pos.seriesIndex].ordersCount} Orders)`
+				);
+			},
 		},
 		// colors: [
 		// 	"#f1416c",
@@ -708,12 +748,24 @@ const MainReports = () => {
 		}),
 		labels: Stores_TotalAmount.map((i) => i.orderSource + " Orders"),
 		title: {
-			text: "Order Source Breakdown By Orders Total Amount (L.E.)",
+			text: "Order Source Breakdown By Orders Total Amount (EGP)",
 			align: "center",
 		},
 
 		dataLabels: {
 			enabled: true,
+
+			formatter: function (val, pos) {
+				return (
+					// Number(val).toFixed(0) +
+					// "%" +
+					` EGP ${Number(
+						Number(
+							Stores_TotalAmount[pos.seriesIndex].totalAmountAfterDiscount,
+						).toFixed(0),
+					).toLocaleString()}`
+				);
+			},
 		},
 		// colors: [
 		// 	"#f1416c",
@@ -772,7 +824,7 @@ const MainReports = () => {
 			};
 		}),
 		title: {
-			text: "Governorate Break Down By Total Amount (L.E.)",
+			text: "Governorate Break Down By Total Amount (EGP)",
 			align: "center",
 		},
 
@@ -804,7 +856,7 @@ const MainReports = () => {
 				type: "treemap",
 			},
 			title: {
-				text: "Governorate Break Down By Total Amount (L.E.)",
+				text: "Governorate Break Down By Total Amount (EGP)",
 				align: "center",
 			},
 
@@ -1034,7 +1086,7 @@ const MainReports = () => {
 									<div className='card' style={{ background: "#50cd89" }}>
 										<div className='card-body'>
 											<h5 style={{ fontWeight: "bolder", color: "white" }}>
-												Total Amount (L.E.)
+												Total Amount (EGP)
 											</h5>
 											<CountUp
 												style={{ color: "white" }}
@@ -1227,7 +1279,9 @@ const MainReports = () => {
 					</div>
 
 					<div className='col-md-9 mx-auto my-5'>
-						<div className='card'>
+						<div
+							className='card'
+							style={{ maxHeight: "800px", overflow: "auto" }}>
 							<h5
 								style={{
 									textAlign: "center",
@@ -1235,7 +1289,7 @@ const MainReports = () => {
 									fontWeight: "bolder",
 									fontSize: "1.1rem",
 								}}>
-								Top Sold Products By Total Ordered Quantity & Amount (L.E.)
+								Top Sold Products By Total Ordered Quantity & Amount (EGP)
 							</h5>
 							<div className='col-md-10 mx-auto'>
 								<hr />
@@ -1243,7 +1297,7 @@ const MainReports = () => {
 
 							<table
 								className='table table-bordered table-md-responsive table-hover'
-								style={{ fontSize: "0.75rem", overflowX: "auto" }}>
+								style={{ fontSize: "0.75rem", overflow: "auto" }}>
 								<thead className=''>
 									<tr
 										style={{
@@ -1256,7 +1310,7 @@ const MainReports = () => {
 										<th scope='col'>#</th>
 										<th scope='col'>Product Name</th>
 										<th scope='col'>Ordered Qty</th>
-										<th scope='col'>Amount (L.E.)</th>
+										<th scope='col'>Amount (EGP)</th>
 										<th scope='col'>Product Image</th>
 									</tr>
 								</thead>
@@ -1275,7 +1329,9 @@ const MainReports = () => {
 
 													<td>{s.productName}</td>
 													<td>{s.OrderedQty}</td>
-													<td>{s.totalPaidAmount}</td>
+													<td>
+														EGP {Number(s.totalPaidAmount).toLocaleString()}
+													</td>
 													<td style={{ width: "15%", textAlign: "center" }}>
 														<img
 															width='40%'
@@ -1295,7 +1351,9 @@ const MainReports = () => {
 						</div>
 					</div>
 
-					<div className='col-md-9 mx-auto my-5'>
+					<div
+						className='col-md-9 mx-auto my-5'
+						style={{ maxHeight: "800px", overflow: "auto" }}>
 						<div className='card'>
 							<h5
 								style={{
@@ -1305,7 +1363,7 @@ const MainReports = () => {
 									fontSize: "1.1rem",
 								}}>
 								Top Sold Products & SKU's By Total Ordered Quantity & Amount
-								(L.E.)
+								(EGP)
 							</h5>
 							<div className='col-md-10 mx-auto'>
 								<hr />
@@ -1313,7 +1371,7 @@ const MainReports = () => {
 
 							<table
 								className='table table-bordered table-md-responsive table-hover'
-								style={{ fontSize: "0.75rem", overflowX: "auto" }}>
+								style={{ fontSize: "0.75rem", overflow: "auto" }}>
 								<thead className=''>
 									<tr
 										style={{
@@ -1329,7 +1387,7 @@ const MainReports = () => {
 										<th scope='col'>Color</th>
 										<th scope='col'>Size</th>
 										<th scope='col'>Ordered Qty</th>
-										<th scope='col'>Amount (L.E.)</th>
+										<th scope='col'>Amount (EGP)</th>
 										<th scope='col'>Product Image</th>
 									</tr>
 								</thead>
@@ -1363,7 +1421,9 @@ const MainReports = () => {
 
 													<td>{s.SubSKUSize}</td>
 													<td>{s.OrderedQty}</td>
-													<td>{s.totalPaidAmount}</td>
+													<td>
+														EGP {Number(s.totalPaidAmount).toLocaleString()}
+													</td>
 													<td style={{ width: "15%", textAlign: "center" }}>
 														<img
 															width='40%'
@@ -1464,6 +1524,14 @@ const MainReportsWrapper = styled.div`
 		padding: 9px 25px;
 		cursor: pointer;
 		transition: 0.3s;
+	}
+
+	g > text {
+		font-size: 11px !important;
+	}
+
+	.apexcharts-legend {
+		text-transform: uppercase !important;
 	}
 
 	.tableData {

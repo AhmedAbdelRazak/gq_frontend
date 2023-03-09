@@ -237,77 +237,85 @@ const EmployeeShare = () => {
 								style={{ borderRadius: "20px", width: "50%" }}
 							/>
 						</div>
-						<table
-							className='table table-bordered table-md-responsive table-hover'
-							style={{
-								fontSize: "0.75rem",
-								overflowX: "auto",
-							}}>
-							<thead className=''>
-								<tr
+						<div style={{ maxHeight: "800px", overflow: "auto" }}>
+							<table
+								className='table table-bordered table-md-responsive table-hover'
+								style={{
+									fontSize: "0.75rem",
+									overflow: "auto",
+								}}>
+								<thead
+									className=''
+									style={{
+										position: "sticky",
+										top: "0",
+										zIndex: "100",
+									}}>
+									<tr
+										style={{
+											fontSize: "0.75rem",
+											textTransform: "capitalize",
+											textAlign: "center",
+											backgroundColor: "#009ef7",
+											color: "wheat",
+										}}>
+										<th scope='col'>Order Date</th>
+										<th scope='col'>Employee Name</th>
+										<th scope='col'>Orders Count</th>
+										<th scope='col'>Total Amount (L.E.)</th>
+										<th scope='col'>Employee Share (%1)</th>
+										<th scope='col'>To Meet Target</th>
+									</tr>
+								</thead>
+								<tbody
+									className='my-auto'
 									style={{
 										fontSize: "0.75rem",
 										textTransform: "capitalize",
-										textAlign: "center",
-										backgroundColor: "#009ef7",
-										color: "wheat",
+										fontWeight: "bolder",
 									}}>
-									<th scope='col'>Order Date</th>
-									<th scope='col'>Employee Name</th>
-									<th scope='col'>Orders Count</th>
-									<th scope='col'>Total Amount (L.E.)</th>
-									<th scope='col'>Employee Share (%1)</th>
-									<th scope='col'>To Meet Target</th>
-								</tr>
-							</thead>
-							<tbody
-								className='my-auto'
-								style={{
-									fontSize: "0.75rem",
-									textTransform: "capitalize",
-									fontWeight: "bolder",
-								}}>
-								{Employees_TotalOrders_Revenue &&
-									search(Employees_TotalOrders_Revenue).map((s, i) => {
-										return (
-											<tr key={i} className=''>
-												<td className='my-auto'>
-													{new Date(s.orderCreationDate).toDateString()}
-												</td>
-
-												<td>{s.EmployeeName}</td>
-												<td>{s.totalOrders}</td>
-												<td>
-													{Number(s.totalAmountAfterDiscount).toFixed(2)} L.E.
-												</td>
-												{Number(s.totalAmountAfterDiscount) > 5000 ? (
-													<td>
-														{Number(
-															(Number(s.totalAmountAfterDiscount) - 5000) *
-																0.01,
-														).toFixed(2)}{" "}
-														L.E.
+									{Employees_TotalOrders_Revenue &&
+										search(Employees_TotalOrders_Revenue).map((s, i) => {
+											return (
+												<tr key={i} className=''>
+													<td className='my-auto'>
+														{new Date(s.orderCreationDate).toDateString()}
 													</td>
-												) : (
-													<td>DID NOT MEET TARGET</td>
-												)}
-												{Number(s.totalAmountAfterDiscount) < 5000 ? (
-													<td>
-														{Number(5000 - s.totalAmountAfterDiscount).toFixed(
-															2,
-														)}{" "}
-														L.E.
-													</td>
-												) : (
-													<td>0</td>
-												)}
 
-												{/* <td>{Invoice(s)}</td> */}
-											</tr>
-										);
-									})}
-							</tbody>
-						</table>
+													<td>{s.EmployeeName}</td>
+													<td>{s.totalOrders}</td>
+													<td>
+														{Number(s.totalAmountAfterDiscount).toFixed(2)} L.E.
+													</td>
+													{Number(s.totalAmountAfterDiscount) > 5000 ? (
+														<td>
+															{Number(
+																(Number(s.totalAmountAfterDiscount) - 5000) *
+																	0.01,
+															).toFixed(2)}{" "}
+															L.E.
+														</td>
+													) : (
+														<td>DID NOT MEET TARGET</td>
+													)}
+													{Number(s.totalAmountAfterDiscount) < 5000 ? (
+														<td>
+															{Number(
+																5000 - s.totalAmountAfterDiscount,
+															).toFixed(2)}{" "}
+															L.E.
+														</td>
+													) : (
+														<td>0</td>
+													)}
+
+													{/* <td>{Invoice(s)}</td> */}
+												</tr>
+											);
+										})}
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
