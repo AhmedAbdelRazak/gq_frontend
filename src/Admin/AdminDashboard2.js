@@ -51,6 +51,7 @@ const AdminDashboard2 = () => {
 				console.log(data.error);
 			} else {
 				if (day1 === day2) {
+					console.log(data, "data");
 					setAllOrders(
 						data.filter(
 							(i) =>
