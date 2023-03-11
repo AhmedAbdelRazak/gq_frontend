@@ -532,7 +532,8 @@ const AdminDashboard2 = () => {
 			(iii) =>
 				new Date(iii.orderCreationDate).setHours(0, 0, 0, 0) >=
 					new Date(day2).setHours(0, 0, 0, 0) &&
-				iii.totalAmountAfterDiscount !== 0,
+				iii.totalAmountAfterDiscount !== 0 &&
+				iii.status !== "Cancelled",
 		);
 
 	var OrderSourceSummary = [];

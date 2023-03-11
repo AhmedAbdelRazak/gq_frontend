@@ -105,6 +105,7 @@ import PrintBarcodesMain from "./Admin/OnlineStore/PrintBarcodes/BarcodesUpdate/
 import Receiving from "./Admin/GQReceiving/Receiving";
 import AdminDashboard2 from "./Admin/AdminDashboard2";
 import ReceivingLog from "./Admin/GQReceiving/ReceivingLog";
+import SalesReportMain from "./Admin/GQShopReports/SalesReport/SalesReportMain";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -261,6 +262,11 @@ const App = () => {
 				/>
 
 				<AdminRoute path='/admin/receiving' exact component={Receiving} />
+				<AdminRoute
+					path='/admin/sales-report-main'
+					exact
+					component={SalesReportMain}
+				/>
 
 				<AdminRoute path='/admin/add-category' exact component={AddCategory} />
 				<AdminRoute

@@ -923,6 +923,7 @@ const MainReports = () => {
 
 	return (
 		<MainReportsWrapper show={collapsed}>
+			<Redirect to='/admin/sales-report-main' />
 			{user.userRole === "Order Taker" || user.userRole === "Operations" ? (
 				<Redirect to='/admin/create-new-order' />
 			) : null}

@@ -251,5 +251,6 @@ const OrdersCountCardsWrapper = styled.div`
 		min-height: 65px;
 		padding: 0px !important;
 		margin-bottom: 0px;
+		width: 100px;
 	}
 `;
