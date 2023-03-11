@@ -527,7 +527,8 @@ const OrdersHist = () => {
 											background:
 												s.status === "Delivered" ||
 												s.status === "Shipped" ||
-												s.status === "In Transit"
+												s.status === "In Transit" ||
+												s.status === "Rejected Order | Received"
 													? "#004b00"
 													: s.status === "Cancelled"
 													? "red"
@@ -545,7 +546,8 @@ const OrdersHist = () => {
 													? "white"
 													: s.status === "Delivered" ||
 													  s.status === "Shipped" ||
-													  s.status === "In Transit"
+													  s.status === "In Transit" ||
+													  s.status === "Rejected Order | Received"
 													? "white"
 													: s.status === "Cancelled"
 													? "white"

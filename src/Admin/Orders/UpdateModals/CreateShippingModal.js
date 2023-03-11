@@ -20,6 +20,12 @@ const CreateShippingModal = ({
 	setAramexResponse,
 	allInvoices,
 }) => {
+	const transFees = Number(
+		(Number(updateSingleOrder.totalAmount) -
+			Number(updateSingleOrder.shippingFees)) *
+			0.01,
+	).toFixed(2);
+
 	const mainForm = () => {
 		console.log(updateSingleOrder, "updateSingleOrder Modal");
 		return (
@@ -102,6 +108,66 @@ const CreateShippingModal = ({
 							value={updateCustomerDetails.orderComment}
 							placeholder='Optional - Add Any Relatable Comment'
 						/>
+					</div>
+				</div>
+				<div>
+					<div>
+						<div className='row'>
+							<div className='col-3'>Total Amount Before Discount: </div>
+
+							<div className='col-3'>
+								<strong>
+									EGP{" "}
+									{Number(updateSingleOrder.totalAmount) -
+										Number(updateSingleOrder.shippingFees)}
+								</strong>
+							</div>
+						</div>
+					</div>
+					<div>
+						<div className='row'>
+							<div className='col-3'>Total Amount After Discount: </div>
+							<div className='col-3'>
+								<strong>
+									EGP{" "}
+									{Number(updateSingleOrder.totalAmount) -
+										Number(updateSingleOrder.shippingFees)}
+								</strong>
+							</div>
+						</div>
+					</div>
+					<div>
+						<div className='row'>
+							<div className='col-3'>Applied Shipping Fees: </div>
+							<div className='col-3'>
+								<strong>EGP {Number(updateSingleOrder.shippingFees)}</strong>
+							</div>
+						</div>
+					</div>
+					<div>
+						<div className='row'>
+							<div className='col-3'>COD Fees:</div>
+							<div className='col-3'>
+								<strong>EGP {transFees}</strong>
+							</div>
+						</div>
+					</div>
+
+					<div>
+						<div className='row mt-2'>
+							<div className='col-3' style={{ fontSize: "16px" }}>
+								Total Amount Due:{" "}
+							</div>
+							<div className='col-3' style={{ fontSize: "16px" }}>
+								<strong>
+									EGP{" "}
+									{Number(
+										Number(updateSingleOrder.totalAmountAfterDiscount) +
+											Number(transFees),
+									).toFixed(2)}
+								</strong>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div className='mx-auto text-center'>

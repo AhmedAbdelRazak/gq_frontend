@@ -1396,6 +1396,7 @@ export const CreateShippingTN = (
 	const transFees = Number(
 		(Number(order.totalAmount) - Number(order.shippingFees)) * 0.01,
 	).toFixed(2);
+
 	const AramexObject = {
 		ClientInfo: {
 			UserName: process.env.REACT_APP_ARAMEX_USERNAME_PROD,
@@ -1561,7 +1562,7 @@ export const CreateShippingTN = (
 					CustomsValueAmount: null,
 					CashOnDeliveryAmount: {
 						Value: Number(
-							Number(order.totalAmountAfterDiscount) + transFees,
+							Number(order.totalAmountAfterDiscount) + Number(transFees),
 						).toFixed(2),
 						CurrencyCode: "EGP",
 					},
