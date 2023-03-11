@@ -26,6 +26,23 @@ const ReturnReceivingE = ({
 
 	var mergedReturnedItemsDetails = [].concat.apply([], returnedItemsDetails);
 
+	const chosenProductQtyWithVariablesDetails =
+		submitInvoice &&
+		selectedOrder &&
+		selectedOrder.chosenProductQtyWithVariables &&
+		selectedOrder.chosenProductQtyWithVariables.length > 0 &&
+		selectedOrder.customerDetails &&
+		selectedOrder.customerDetails.fullName
+			? selectedOrder.chosenProductQtyWithVariables.map((i) =>
+					i.map((ii) => ii),
+			  )
+			: null;
+
+	var mergedChosenProductQtyWithVariablesDetails = [].concat.apply(
+		[],
+		chosenProductQtyWithVariablesDetails,
+	);
+
 	const exchangedItemsDetails =
 		submitInvoice &&
 		selectedOrder &&
@@ -80,15 +97,28 @@ const ReturnReceivingE = ({
 				.indexOf(i.SubSKU.toLowerCase()) > -1,
 	);
 
+	const activeStockFinal3 = allAttributesFinalOfFinal.filter(
+		(i) =>
+			mergedChosenProductQtyWithVariablesDetails &&
+			mergedChosenProductQtyWithVariablesDetails
+				.map((ii) => ii.SubSKU.toLowerCase())
+				.indexOf(i.SubSKU.toLowerCase()) > -1,
+	);
+
 	// console.log(mergedReturnedItemsDetails, "mergedReturnedItemsDetails");
 	// console.log(allAttributesFinalOfFinal, "allAttributesFinalOfFinal");
 	// console.log(activeStockFinal, "activeStockFinal");
+	// console.log(
+	// 	mergedChosenProductQtyWithVariablesDetails,
+	// 	"mergedChosenProductQtyWithVariablesDetails",
+	// );
 
 	var alreadyStockedQuantity =
 		chosenProduct && chosenProduct.receivedQuantity
 			? chosenProduct.receivedQuantity
 			: 0;
 
+	// eslint-disable-next-line
 	var updatedProductAttributesFinal =
 		chosenProduct &&
 		chosenProduct.productAttributes.map((i) =>
@@ -101,7 +131,7 @@ const ReturnReceivingE = ({
 				  }
 				: i,
 		);
-	console.log(updatedProductAttributesFinal, "updatedProductAttributesFinal");
+	// console.log(updatedProductAttributesFinal, "updatedProductAttributesFinal");
 
 	const variableImage =
 		chosenProduct &&
@@ -117,7 +147,7 @@ const ReturnReceivingE = ({
 			(i) => i.SubSKU.toLowerCase() === chosenProduct.SubSKU.toLowerCase(),
 		)[0].productImages[0].url;
 
-	console.log(variableImage, "variableImage");
+	// console.log(variableImage, "variableImage");
 
 	return (
 		<ReturnReceivingEWrapper>
@@ -305,6 +335,77 @@ const ReturnReceivingE = ({
 									// borderBottom: "lightgrey solid 1px",
 								}
 							}></div>
+					</div>
+				</div>
+			) : null}
+
+			{submitInvoice &&
+			receivingSource === "Rejected" &&
+			selectedOrder &&
+			selectedOrder.chosenProductQtyWithVariables &&
+			selectedOrder.chosenProductQtyWithVariables.length > 0 &&
+			selectedOrder.customerDetails &&
+			selectedOrder.customerDetails.fullName ? (
+				<div>
+					<div>
+						{selectedOrder.chosenProductQtyWithVariables.map((p, i) => {
+							return (
+								<div key={i}>
+									{p.map((pp, ii) => {
+										return (
+											<div key={ii} className='row'>
+												<div className='col-3'>ITEM</div>
+												<div className='col-3'>BEFORE</div>
+												<div className='col-3'>RECEIVED</div>
+												<div className='col-3'>AFTER</div>
+												<div className='col-3'>
+													<img
+														width='70%'
+														src={pp.productSubSKUImage}
+														alt='infinite-apps.com'
+													/>
+													<br />
+													<strong>SKU</strong> : {pp.SubSKU}
+												</div>
+
+												<div className='col-3'>
+													{activeStockFinal3 &&
+														activeStockFinal3[i] &&
+														activeStockFinal3[i].quantity}
+												</div>
+												<div className='col-3'>{pp.OrderedQty}</div>
+												<div className='col-3'>
+													{Number(pp.OrderedQty) +
+														Number(
+															activeStockFinal3 &&
+																activeStockFinal3[i] &&
+																activeStockFinal3[i].quantity,
+														)}
+												</div>
+												<div className='col-6 text-center mt-3'>
+													<button
+														className='btn btn-success'
+														disabled={returnStatusUpdate}
+														style={{
+															background: returnStatusUpdate
+																? "darkblue"
+																: null,
+														}}
+														onClick={() => setReturnStatusUpdate(true)}>
+														STATUS UPDATE
+													</button>
+												</div>
+												<div
+													className='col-12 mt-3'
+													style={{
+														borderBottom: "lightgrey solid 1px",
+													}}></div>
+											</div>
+										);
+									})}
+								</div>
+							);
+						})}
 					</div>
 				</div>
 			) : null}

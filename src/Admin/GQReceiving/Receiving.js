@@ -28,6 +28,7 @@ const Receiving = () => {
 	const [allOrders, setAllOrders] = useState([]);
 	const [returnInvoices, setReturnInvoices] = useState([]);
 	const [exchangeInvoices, setExchangeInvoices] = useState([]);
+	const [rejectedInvoices, setRejectedInvoices] = useState([]);
 	const [receivingSource, setReceivingSource] = useState("");
 	const [chosenInvoice, setChosenInvoice] = useState("");
 	const [selectedOrder, setSelectedOrder] = useState("");
@@ -67,14 +68,19 @@ const Receiving = () => {
 				const invoicesOfReturns = data
 					.filter((i) => i.status.includes("Return"))
 					.map((ii) => ii && ii.invoiceNumber);
+
 				const invoicesOfExchange = data
 					.filter((i) => i.status.includes("Exchange"))
 					.map((ii) => ii && ii.invoiceNumber);
 
-				setAllOrders(data.sort(sortOrdersAscendingly));
+				const invoicesOfReject = data
+					.filter((i) => i.status === "In Transit | Rejected")
+					.map((ii) => ii && ii.invoiceNumber);
 
+				setAllOrders(data.sort(sortOrdersAscendingly));
 				setReturnInvoices(invoicesOfReturns);
 				setExchangeInvoices(invoicesOfExchange);
+				setRejectedInvoices(invoicesOfReject);
 
 				const chosenOrder = data.filter(
 					(i) => i.invoiceNumber === chosenInvoice,
@@ -119,6 +125,18 @@ const Receiving = () => {
 					const orderModified = {
 						...chosenOrder,
 						status: "Exchanged - Stocked",
+					};
+
+					setSelectedOrder(orderModified);
+					setSelectedOrder2(orderModified);
+				} else if (
+					receivingSource === "Rejected" &&
+					chosenOrder &&
+					chosenOrder.status === "In Transit | Rejected"
+				) {
+					const orderModified = {
+						...chosenOrder,
+						status: "Rejected Order | Received",
 					};
 
 					setSelectedOrder(orderModified);
@@ -289,6 +307,59 @@ const Receiving = () => {
 								receivedSKU: i.SubSKU,
 								receivedQuantity: i.OrderedQty,
 								receivingCase: "Exchange",
+								PONumber: selectedOrder.invoiceNumber,
+							}).then((data) => {
+								if (data.error) {
+									setTimeout(function () {
+										// window.location.reload(false);
+									}, 1000);
+								} else {
+									toast.success("Successfully Added To Your Receiving Log");
+								}
+							});
+						});
+
+					setTimeout(function () {
+						window.location.reload(false);
+					}, 3000);
+				})
+
+				.catch((error) => {
+					console.log(error);
+				});
+		} else if (selectedOrder2.status === "Rejected Order | Received") {
+			updateOrder(selectedOrder2._id, user._id, token, selectedOrder2)
+				.then((response) => {
+					toast.success("Order was successfully updated");
+
+					const chosenProductQtyWithVariables =
+						submitInvoice &&
+						selectedOrder &&
+						selectedOrder.chosenProductQtyWithVariables &&
+						selectedOrder.chosenProductQtyWithVariables.length > 0 &&
+						selectedOrder.customerDetails &&
+						selectedOrder.customerDetails.fullName
+							? selectedOrder.chosenProductQtyWithVariables.map((i) =>
+									i.map((ii) => ii),
+							  )
+							: null;
+
+					var mergedchosenProductQtyWithVariables = [].concat.apply(
+						[],
+						chosenProductQtyWithVariables,
+					);
+
+					mergedchosenProductQtyWithVariables &&
+						mergedchosenProductQtyWithVariables.map((i) => {
+							return receiveNew(user._id, token, {
+								productName: i.productName,
+								productId: i.productId,
+								receivedByEmployee: user,
+								storeName: "g&q",
+								storeBranch: "g&q",
+								receivedSKU: i.SubSKU,
+								receivedQuantity: i.OrderedQty,
+								receivingCase: "Rejected Order | Received",
 								PONumber: selectedOrder.invoiceNumber,
 							}).then((data) => {
 								if (data.error) {
@@ -502,9 +573,14 @@ const Receiving = () => {
 							<option value='Exchange'>
 								Exchange ({exchangeInvoices && exchangeInvoices.length} Orders)
 							</option>
+							<option value='Rejected'>
+								Rejected ({rejectedInvoices && rejectedInvoices.length} Orders)
+							</option>
 							<option value='New Receiving Order'>New Receiving Order</option>
 						</select>
-						{receivingSource === "Return" || receivingSource === "Exchange" ? (
+						{receivingSource === "Return" ||
+						receivingSource === "Exchange" ||
+						receivingSource === "Rejected" ? (
 							<div className='mt-4'>
 								{receivingSource === "Return" ? (
 									<Select
@@ -522,6 +598,32 @@ const Receiving = () => {
 										}}>
 										{returnInvoices &&
 											returnInvoices.map((invoice, i) => {
+												return (
+													<Option
+														key={i}
+														value={invoice}
+														style={{ textTransform: "uppercase" }}>
+														{invoice}
+													</Option>
+												);
+											})}
+									</Select>
+								) : receivingSource === "Rejected" ? (
+									<Select
+										style={{
+											color: "black",
+											textTransform: "uppercase",
+											width: "100%",
+										}}
+										showSearch
+										placeholder={`Search For A Rejected Invoice`}
+										value={chosenInvoice ? chosenInvoice : null}
+										allowClear
+										onChange={(value) => {
+											setChosenInvoice(value);
+										}}>
+										{rejectedInvoices &&
+											rejectedInvoices.map((invoice, i) => {
 												return (
 													<Option
 														key={i}
@@ -561,7 +663,8 @@ const Receiving = () => {
 								)}
 
 								{receivingSource === "Return" ||
-								receivingSource === "Exchange" ? (
+								receivingSource === "Exchange" ||
+								receivingSource === "Rejected" ? (
 									<div className='mt-4 text-center'>
 										<button
 											className='btn btn-info'

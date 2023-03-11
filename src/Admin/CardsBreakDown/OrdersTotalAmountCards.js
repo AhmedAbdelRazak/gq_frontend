@@ -5,7 +5,9 @@ import styled from "styled-components";
 import CountUp from "react-countup";
 
 const OrdersTotalAmountCards = ({ allOrders }) => {
-	var cancelledOrders = allOrders.filter((i) => i.status === "Cancelled");
+	var cancelledOrders = allOrders.filter(
+		(i) => i.status === "Cancelled" || i.status.includes("Rejected"),
+	);
 	const overallAmountArrayCancelled =
 		cancelledOrders && cancelledOrders.map((i) => i.totalAmountAfterDiscount);
 	const ArrayOfAmountCancelled = overallAmountArrayCancelled.reduce(
@@ -206,7 +208,7 @@ const OrdersTotalAmountCards = ({ allOrders }) => {
 										color: "white",
 										fontSize: "11px",
 									}}>
-									Cancelled
+									Cancelled/ Rejected
 								</h5>
 								<CountUp
 									style={{ color: "white", fontSize: "15px" }}

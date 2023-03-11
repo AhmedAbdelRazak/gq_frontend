@@ -5,7 +5,9 @@ import styled from "styled-components";
 import CountUp from "react-countup";
 
 const OrdersCountCards = ({ allOrders }) => {
-	var cancelledOrders = allOrders.filter((i) => i.status === "Cancelled");
+	var cancelledOrders = allOrders.filter(
+		(i) => i.status === "Cancelled" || i.status.includes("Rejected"),
+	);
 	var onHoldOrders = allOrders.filter((i) => i.status === "On Hold");
 	var processingOrders = allOrders.filter((i) => i.status === "In Processing");
 	var readyToShipOrders = allOrders.filter((i) => i.status === "Ready To Ship");
@@ -142,7 +144,7 @@ const OrdersCountCards = ({ allOrders }) => {
 										color: "white",
 										fontSize: "11px",
 									}}>
-									Cancelled
+									Cancelled/ Rejected
 								</h5>
 								<CountUp
 									style={{ color: "white", fontSize: "15px" }}

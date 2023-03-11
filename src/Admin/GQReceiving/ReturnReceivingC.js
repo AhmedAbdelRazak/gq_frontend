@@ -47,7 +47,12 @@ const ReturnReceivingC = ({
 								Returning Reason: <br />
 								<strong>
 									{" "}
-									{selectedOrder && selectedOrder.reasonForReturn}
+									{selectedOrder && selectedOrder.reasonForReturn
+										? selectedOrder.reasonForReturn
+										: selectedOrder &&
+										  selectedOrder.status === "Rejected Order | Received"
+										? "Rejected"
+										: null}
 								</strong>
 							</div>
 						</div>
@@ -109,7 +114,12 @@ const ReturnReceivingC = ({
 						<div className='col-md-4 mt-4'>
 							<div>
 								Order Status: <br />
-								<strong>{selectedOrder && selectedOrder.status}</strong>
+								<strong>
+									{selectedOrder &&
+									selectedOrder.status === "Rejected Order | Received"
+										? "In Transit | Rejected"
+										: selectedOrder.status}
+								</strong>
 							</div>
 						</div>
 					</div>

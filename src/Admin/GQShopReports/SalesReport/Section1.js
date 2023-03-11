@@ -11,7 +11,12 @@ const Section1 = ({ allOrdersAggregated, allOrders2, allOrders, day2 }) => {
 	var last15Days = new Date(new Date().setDate(new Date().getDate() - 15));
 
 	let last30daysOrdersRevenue = allOrders2
-		.filter((i) => i.status !== "Cancelled" || i.status !== "Returned")
+		.filter(
+			(i) =>
+				i.status !== "Cancelled" &&
+				i.status !== "Returned" &&
+				!i.status.includes("Rejected"),
+		)
 		.map((ii) => ii.totalAmountAfterDiscount);
 
 	const sumOfLast30DaysRevenue =
@@ -46,7 +51,9 @@ const Section1 = ({ allOrdersAggregated, allOrders2, allOrders, day2 }) => {
 			(i) =>
 				new Date(i.orderCreationDate).setHours(0, 0, 0, 0) >=
 					new Date(last7Days).setHours(0, 0, 0, 0) &&
-				(i.status !== "Cancelled" || i.status !== "Returned"),
+				i.status !== "Cancelled" &&
+				i.status !== "Returned" &&
+				!i.status.includes("Rejected"),
 		)
 		.map((ii) => ii.totalAmountAfterDiscount);
 
@@ -58,7 +65,9 @@ const Section1 = ({ allOrdersAggregated, allOrders2, allOrders, day2 }) => {
 			(i) =>
 				new Date(i.orderCreationDate).setHours(0, 0, 0, 0) >=
 					new Date(last15Days).setHours(0, 0, 0, 0) &&
-				(i.status !== "Cancelled" || i.status !== "Returned"),
+				i.status !== "Cancelled" &&
+				i.status !== "Returned" &&
+				!i.status.includes("Rejected"),
 		)
 		.map((ii) => {
 			return {

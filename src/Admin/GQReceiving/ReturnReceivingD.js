@@ -5,6 +5,7 @@ import styled from "styled-components";
 
 const ReturnReceivingD = ({
 	submitInvoice,
+	receivingSource,
 	selectedOrder,
 	setAcceptedReturn,
 	allColors,
@@ -277,6 +278,77 @@ const ReturnReceivingD = ({
 								ACCEPT
 							</button>
 						</div>
+					</div>
+				</div>
+			) : null}
+
+			{submitInvoice &&
+			receivingSource === "Rejected" &&
+			selectedOrder &&
+			selectedOrder.chosenProductQtyWithVariables &&
+			selectedOrder.chosenProductQtyWithVariables.length > 0 &&
+			selectedOrder.customerDetails &&
+			selectedOrder.customerDetails.fullName ? (
+				<div>
+					<div>
+						{selectedOrder.chosenProductQtyWithVariables.map((p, i) => {
+							return (
+								<div key={i}>
+									{p.map((pp, ii) => {
+										return (
+											<div key={ii} className='row'>
+												<div className='col-5'>
+													<img
+														width='60%'
+														src={pp.productSubSKUImage}
+														alt='infinite-apps.com'
+													/>
+												</div>
+												<div
+													className='col-6'
+													style={{
+														fontSize: "12px",
+														textTransform: "uppercase",
+													}}>
+													<strong>SKU</strong> : {pp.SubSKU}
+													<br />
+													<strong>Size</strong> : {pp.SubSKUSize}
+													<br />
+													<strong>Color</strong> :{" "}
+													{allColors[
+														allColors.map((i) => i.hexa).indexOf(pp.SubSKUColor)
+													]
+														? allColors[
+																allColors
+																	.map((i) => i.hexa)
+																	.indexOf(pp.SubSKUColor)
+														  ].color
+														: pp.SubSKUColor}
+													<br />
+													<strong>Description</strong> : {pp.productName}
+													<br />
+													<strong>Quantity</strong> : {pp.OrderedQty}
+												</div>
+												<div className='col-6 text-center mt-2 mb-3'>
+													<button
+														disabled={acceptedReturn}
+														style={{
+															background: acceptedReturn ? "darkblue" : null,
+														}}
+														className='btn btn-success p-1'
+														onClick={() => setAcceptedReturn(true)}>
+														ACCEPT
+													</button>
+												</div>
+												<div className='col-6 text-center mt-2 mb-3'>
+													<button className='btn btn-danger p-1'>REFUSE</button>
+												</div>
+											</div>
+										);
+									})}
+								</div>
+							);
+						})}
 					</div>
 				</div>
 			) : null}

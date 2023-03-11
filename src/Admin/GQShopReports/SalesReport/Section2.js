@@ -31,7 +31,9 @@ const Section2 = ({ allOrders2, allOrders, day2, day1 }) => {
 	var onlineOrdersCancelled =
 		ordersModified &&
 		ordersModified.filter(
-			(i) => i.channel === "online" && i.status === "Cancelled",
+			(i) =>
+				i.channel === "online" &&
+				(i.status === "Cancelled" || i.status.includes("Rejected")),
 		);
 
 	var orderSourceModified =
@@ -454,7 +456,10 @@ const Section2 = ({ allOrders2, allOrders, day2, day1 }) => {
 							<span style={{ color: "black" }}>
 								EGP {Number(sumOfOnlineCancelled).toLocaleString()}
 							</span>{" "}
-							<br /> CANCELLED ORDERS
+							<br />{" "}
+							<span style={{ fontSize: "13.5px" }}>
+								CANCELLED/ REJECTED ORDERS
+							</span>
 						</h5>
 						{OrderSourceSummary &&
 						allOrders &&

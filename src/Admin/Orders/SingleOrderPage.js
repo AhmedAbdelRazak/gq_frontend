@@ -110,7 +110,8 @@ const SingleOrderPage = (props) => {
 								statusChangeCheckInTransit > -1 &&
 								statusChangeCheckRejected > -1 &&
 								data.status !== "Delivered" &&
-								data.status !== "In Transit | Rejected"
+								data.status !== "In Transit | Rejected" &&
+								data.status !== "Rejected Order | Received"
 							) {
 								const updatedObject = {
 									...data,
@@ -136,7 +137,8 @@ const SingleOrderPage = (props) => {
 								statusChangeCheckInTransit > -1 &&
 								data.status !== "Delivered" &&
 								data.status !== "In Transit" &&
-								data.status !== "In Transit | Rejected"
+								data.status !== "In Transit | Rejected" &&
+								data.status !== "Rejected Order | Received"
 							) {
 								const updatedObject = { ...data, status: "In Transit" };
 

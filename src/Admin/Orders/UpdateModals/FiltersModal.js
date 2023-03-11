@@ -51,6 +51,9 @@ const FiltersModal = ({
 						<option value='Delivered'>Delivered</option>
 						<option value='In Transit'>In Transit</option>
 						<option value='In Transit | Rejected'>In Transit | Rejected</option>
+						<option value='Rejected Order | Received'>
+							Rejected Order | Received
+						</option>
 						<option value='Return'>Returns</option>
 						<option value='Exchanged'>Exchange</option>
 						<option value='Cancelled'>Cancelled</option>

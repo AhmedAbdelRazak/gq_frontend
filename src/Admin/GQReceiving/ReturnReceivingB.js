@@ -232,6 +232,92 @@ const ReturnReceivingB = ({
 						</div>
 					</div>
 				</div>
+			) : receivingSource === "Rejected" && submitInvoice ? (
+				<div
+					className=' my-auto mx-auto text-center'
+					style={{
+						backgroundColor: "white",
+						padding: "80px 50px 180px 50px",
+					}}>
+					<h2 className='mb-4'>STATUS UPDATE</h2>
+
+					<div className='row col-12 mx-auto'>
+						<div
+							className='col-4 mb-2'
+							style={{ fontWeight: "bold", width: "140px" }}>
+							INVOICE STATUS
+						</div>
+						<div
+							className='col-4 mb-2'
+							style={{ fontWeight: "bold", width: "140px" }}>
+							CHECK
+						</div>
+						<div
+							className='col-4 mb-2'
+							style={{ fontWeight: "bold", width: "140px" }}>
+							STATUS UPDATE
+						</div>
+					</div>
+					<div className='row col-12 mx-auto'>
+						{selectedOrder && selectedOrder.status ? (
+							<div
+								className='col-3 mx-auto'
+								style={{
+									backgroundColor: "orangered",
+									padding: "10px 0px",
+									color: "white",
+									fontWeight: "bolder",
+									borderRadius: "4px",
+									fontSize: "10px",
+								}}>
+								Rejected Order
+								{acceptedReturn ? (
+									<div
+										style={{
+											position: "absolute",
+											borderTop: "solid 2px black",
+											padding: "30px",
+											left: "100%",
+											top: "50%",
+										}}></div>
+								) : null}
+							</div>
+						) : null}
+						<div
+							className='col-3 mx-auto'
+							style={{
+								backgroundColor: "darkgreen",
+								padding: "10px 0px",
+								color: "white",
+								fontWeight: "bolder",
+								borderRadius: "4px",
+							}}>
+							Accepted
+							{returnStatusUpdate ? (
+								<div
+									style={{
+										position: "absolute",
+										borderTop: "solid 2px black",
+										padding: "30px",
+										left: "100%",
+										top: "50%",
+									}}></div>
+							) : null}
+						</div>
+						<div
+							className='col-3 mx-auto'
+							style={{
+								backgroundColor: "lightgreen",
+								padding: "10px 0px",
+								color: "black",
+								fontWeight: "bolder",
+								borderRadius: "4px",
+								fontSize: "12px",
+							}}>
+							Rejected Order | Receive
+						</div>
+					</div>
+				</div>
 			) : (
 				<div
 					style={{
