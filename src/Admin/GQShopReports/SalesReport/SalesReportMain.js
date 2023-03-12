@@ -4,7 +4,12 @@ import { GroupOutlined } from "@ant-design/icons";
 import React, { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import styled from "styled-components";
-import { aggregateAllOrders, getColors, listOrdersDates } from "../../apiAdmin";
+import {
+	aggregateAllOrders,
+	aggregateOrdersByDatesAndStatus,
+	getColors,
+	listOrdersDates,
+} from "../../apiAdmin";
 import { isAuthenticated } from "../../../auth";
 // import { isAuthenticated } from "../../auth";
 import AdminMenu from "../../AdminMenu/AdminMenu";
@@ -61,6 +66,7 @@ const SalesReportMain = () => {
 		new Date(new Date().setDate(new Date().getDate() - 7)),
 	);
 
+	const [allOrdersByDateAndStatus, setAllOrdersByDateAndStatus] = useState([]);
 	// eslint-disable-next-line
 	const [allColors, setAllColors] = useState([]);
 
@@ -161,6 +167,16 @@ const SalesReportMain = () => {
 		});
 	};
 
+	const loadOrdersAggregateByDateAndStatus = () => {
+		aggregateOrdersByDatesAndStatus(user._id, token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllOrdersByDateAndStatus(data);
+			}
+		});
+	};
+
 	useEffect(() => {
 		loadOrders();
 		gettingAllColors();
@@ -170,6 +186,7 @@ const SalesReportMain = () => {
 
 	useEffect(() => {
 		loadOrders2();
+		loadOrdersAggregateByDateAndStatus();
 		// eslint-disable-next-line
 	}, []);
 
@@ -439,6 +456,7 @@ const SalesReportMain = () => {
 							allOrders={allOrders}
 							day2={day2}
 							day1={day1}
+							allOrdersByDateAndStatus={allOrdersByDateAndStatus}
 						/>
 					</div>
 				</div>
