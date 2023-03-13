@@ -636,6 +636,26 @@ export const updateOrder = (orderId, userId, token, order) => {
 		.catch((err) => console.log(err));
 };
 
+export const updateOrderEditing = (orderId, userId, token, order) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/update-edit/order-edit/${orderId}/${userId}`,
+		{
+			method: "PUT",
+			headers: {
+				// content type?
+				"Content-Type": "application/json",
+				Accept: "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify({ order: order }),
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
 export const updateOrderNoDecrease = (orderId, userId, token, order) => {
 	return fetch(
 		`${process.env.REACT_APP_API_URL}/update/order/nodecrease/${orderId}/${userId}`,

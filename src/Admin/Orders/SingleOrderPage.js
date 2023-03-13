@@ -16,19 +16,26 @@ import {
 	getTrackingDetails,
 	readSingleOrder,
 	updateOrder,
+	updateOrderEditing,
 	updateOrderExchangeAndReturn,
 	updateOrderNoDecrease,
 } from "../apiAdmin";
 import SingleOrderPageDetails from "./SingleOrderPageDetails";
 import Trial from "./UpdateModals/Trials";
+import UpdateProductModal from "./UpdateModals/UpdateProductModal";
 
 const SingleOrderPage = (props) => {
 	const [loading, setLoading] = useState(true);
 	const [modalVisible, setModalVisible] = useState(false);
+	const [modalVisible2, setModalVisible2] = useState(false);
+	const [editProductClicked, setEditProductClicked] = useState(false);
 	const [updateElement, setUpdateElement] = useState("");
 	const [singleOrder, setSingleOrder] = useState({});
 	const [updateSingleOrder, setUpdateSingleOrder] = useState({});
+	const [oldProducts, setOldProducts] = useState([]);
+	const [newProducts, setNewProducts] = useState([]);
 	const [updateCustomerDetails, setUpdateCustomerDetails] = useState({});
+	const [productToBeUpdated, setProductToBeUpdated] = useState("");
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [allColors, setAllColors] = useState([]);
 	const [offset, setOffset] = useState(0);
@@ -47,7 +54,7 @@ const SingleOrderPage = (props) => {
 				setLoading(true);
 
 				setSingleOrder(data);
-				setUpdateSingleOrder(data);
+				setUpdateSingleOrder({ ...data, oldProducts: [], newProducts: [] });
 				setUpdateCustomerDetails(data.customerDetails);
 
 				if (data.trackingNumber && data.trackingNumber !== "Not Added") {
@@ -256,6 +263,30 @@ const SingleOrderPage = (props) => {
 		}
 	};
 
+	const UpdatingOrderForEditing = (e) => {
+		e.preventDefault();
+		window.scrollTo({ top: 0, behavior: "smooth" });
+
+		updateOrderEditing(
+			updateSingleOrder._id,
+			user._id,
+			token,
+			updateSingleOrder,
+		)
+			.then((response) => {
+				toast.success("Payment on delivery order was successfully updated");
+				setTimeout(function () {
+					window.location.reload(false);
+				}, 2500);
+			})
+
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+
+	console.log(updateSingleOrder, "single");
+
 	const gettingShippingLabel = () => {
 		getShippingLabel(user._id, token, updateSingleOrder).then((data) => {
 			if (data.error) {
@@ -344,6 +375,22 @@ const SingleOrderPage = (props) => {
 								setUpdateSingleOrder={setUpdateSingleOrder}
 								updateCustomerDetails={updateCustomerDetails}
 								setUpdateCustomerDetails={setUpdateCustomerDetails}
+							/>
+
+							<UpdateProductModal
+								modalVisible={modalVisible2}
+								setModalVisible={setModalVisible2}
+								updateSingleOrder={updateSingleOrder}
+								setUpdateSingleOrder={setUpdateSingleOrder}
+								updateElement={updateElement}
+								setProductToBeUpdated={setProductToBeUpdated}
+								productToBeUpdated={productToBeUpdated}
+								singleOrder={singleOrder}
+								allColors={allColors}
+								oldProducts={oldProducts}
+								setOldProducts={setOldProducts}
+								newProducts={newProducts}
+								setNewProducts={setNewProducts}
 							/>
 							<h5
 								style={{
@@ -504,6 +551,23 @@ const SingleOrderPage = (props) => {
 									{updateSingleOrder.invoiceNumber}
 								</span>
 							</h5>
+							{/* {updateSingleOrder.trackingNumber === "Not Added" ? (
+								<h5
+									style={{
+										fontWeight: "bold",
+										textAlign: "center",
+										marginBottom: "20px",
+									}}>
+									<Link
+										to={`/admin/update-miscellaneous-order/${updateSingleOrder._id}`}>
+										Edit Order
+										<span className='ml-2' style={{ cursor: "pointer" }}>
+											<EditOutlined />
+										</span>
+									</Link>
+								</h5>
+							) : null} */}
+
 							{updateSingleOrder.paymentStatus === "Paid Online" && (
 								<h5
 									style={{
@@ -853,90 +917,138 @@ const SingleOrderPage = (props) => {
 										style={{ fontSize: "1rem", fontWeight: "bolder" }}>
 										Products With Variables:
 									</div>
+									{updateSingleOrder.trackingNumber === "Not Added" ||
+									!updateSingleOrder.trackingNumber ? (
+										<h5
+											style={{
+												fontWeight: "bold",
+												marginBottom: "20px",
+												fontSize: "1rem",
+											}}>
+											Add Products To Order{" "}
+											<strong style={{ color: "darkgreen" }}>
+												<span
+													className='ml-2'
+													style={{ cursor: "pointer" }}
+													onClick={() => {
+														setModalVisible2(true);
+														setUpdateElement("Add New Products To The Order");
+													}}>
+													<EditOutlined />
+												</span>
+											</strong>
+										</h5>
+									) : null}
 
 									<div className='row'>
-										{singleOrder.chosenProductQtyWithVariables.map((p, i) => {
-											return (
-												<React.Fragment key={i}>
-													{p.map((pp, ii) => {
-														return (
-															<div
-																className='col-md-4 text-capitalize'
-																key={ii}>
-																<div className='row'>
-																	<div className='col-md-6'>
-																		Product Name:{" "}
-																		<strong
-																			style={{
-																				color: "darkblue",
-																				textTransform: "capitalize",
-																			}}>
-																			{pp.productName} | {pp.SubSKU} |{" "}
-																			{allColors[
-																				allColors
-																					.map((i) => i.hexa)
-																					.indexOf(pp.SubSKUColor)
-																			]
-																				? allColors[
-																						allColors
-																							.map((i) => i.hexa)
-																							.indexOf(pp.SubSKUColor)
-																				  ].color
-																				: pp.SubSKUColor}
-																		</strong>
-																		<br />
-																		<br />
-																		Quantity:{" "}
-																		<strong style={{ color: "darkblue" }}>
-																			{pp.OrderedQty}{" "}
-																		</strong>
-																		{Number(pp.OrderedQty) > 1
-																			? "Units"
-																			: "Unit"}
-																		<br />
-																		Price:{" "}
-																		<strong style={{ color: "darkblue" }}>
-																			{pp.pickedPrice}
-																		</strong>{" "}
-																		L.E
-																	</div>
+										{updateSingleOrder.chosenProductQtyWithVariables.map(
+											(p, i) => {
+												return (
+													<React.Fragment key={i}>
+														{p.map((pp, ii) => {
+															return (
+																<div
+																	className='col-md-4 text-capitalize'
+																	key={ii}>
+																	<div className='row'>
+																		<div className='col-md-6'>
+																			Product Name:{" "}
+																			<strong
+																				style={{
+																					color: "darkblue",
+																					textTransform: "capitalize",
+																				}}>
+																				{pp.productName} | {pp.SubSKU} |{" "}
+																				{allColors[
+																					allColors
+																						.map((i) => i.hexa)
+																						.indexOf(pp.SubSKUColor)
+																				]
+																					? allColors[
+																							allColors
+																								.map((i) => i.hexa)
+																								.indexOf(pp.SubSKUColor)
+																					  ].color
+																					: pp.SubSKUColor}
+																			</strong>
+																			<br />
+																			<br />
+																			Quantity:{" "}
+																			<strong style={{ color: "darkblue" }}>
+																				{pp.OrderedQty}{" "}
+																			</strong>
+																			{Number(pp.OrderedQty) > 1
+																				? "Units"
+																				: "Unit"}
+																			<br />
+																			Price:{" "}
+																			<strong style={{ color: "darkblue" }}>
+																				{pp.pickedPrice}
+																			</strong>{" "}
+																			L.E
+																		</div>
 
-																	<div className='col-md-6'>
-																		{pp.productSubSKUImage ? (
-																			<img
-																				style={{ width: "100px" }}
-																				src={
-																					pp.productSubSKUImage
-																						? pp.productSubSKUImage
-																						: ""
-																				}
-																				alt=''
-																			/>
-																		) : (
-																			<img
-																				style={{ width: "100px" }}
-																				src={
-																					pp.productMainImage
-																						? pp.productMainImage
-																						: ""
-																				}
-																				alt=''
-																			/>
-																		)}
+																		<div className='col-md-6'>
+																			{updateSingleOrder.trackingNumber ===
+																				"Not Added" ||
+																			!updateSingleOrder.trackingNumber ? (
+																				<strong
+																					style={{
+																						fontWeight: "bold",
+																						marginBottom: "20px",
+																						fontSize: "1rem",
+																					}}>
+																					<span
+																						className='ml-2'
+																						style={{ cursor: "pointer" }}
+																						onClick={() => {
+																							setUpdateElement(
+																								`Update Product ${pp.productName} | ${pp.SubSKU}`,
+																							);
+																							setModalVisible2(true);
+																							setProductToBeUpdated(pp);
+																							setEditProductClicked(true);
+																						}}>
+																						<EditOutlined />
+																					</span>
+																				</strong>
+																			) : null}
+																			{pp.productSubSKUImage ? (
+																				<img
+																					style={{ width: "100px" }}
+																					src={
+																						pp.productSubSKUImage
+																							? pp.productSubSKUImage
+																							: ""
+																					}
+																					alt=''
+																				/>
+																			) : (
+																				<img
+																					style={{ width: "100px" }}
+																					src={
+																						pp.productMainImage
+																							? pp.productMainImage
+																							: ""
+																					}
+																					alt=''
+																				/>
+																			)}
+																		</div>
 																	</div>
 																</div>
-															</div>
-														);
-													})}
-												</React.Fragment>
-											);
-										})}
+															);
+														})}
+													</React.Fragment>
+												);
+											},
+										)}
 									</div>
 								</>
 							) : null}
 
-							{singleOrder.returnedItems.length > 0 &&
-							singleOrder.status.includes("(Partial)") ? (
+							{updateSingleOrder.returnedItems.length > 0 &&
+							updateSingleOrder.status.includes("(Partial)") ? (
 								<>
 									<div
 										style={{
@@ -952,33 +1064,33 @@ const SingleOrderPage = (props) => {
 										<div
 											className='col-md-3 mx-auto my-3'
 											style={{ fontWeight: "bold" }}>
-											Refund Number: {singleOrder.refundNumber}
+											Refund Number: {updateSingleOrder.refundNumber}
 										</div>
 										<div
 											className='col-md-3 mx-auto my-3'
 											style={{ fontWeight: "bold" }}>
-											Refund Method: {singleOrder.refundMethod}
+											Refund Method: {updateSingleOrder.refundMethod}
 										</div>
 										<div
 											className='col-md-3 mx-auto my-3'
 											style={{ fontWeight: "bold" }}>
-											Reason For Return: {singleOrder.reasonForReturn}
+											Reason For Return: {updateSingleOrder.reasonForReturn}
 										</div>
 										<div
 											className='col-md-3 mx-auto my-3'
 											style={{ fontWeight: "bold" }}>
 											Return Date:{" "}
-											{new Date(singleOrder.returnDate).toDateString()}
+											{new Date(updateSingleOrder.returnDate).toDateString()}
 										</div>
 									</div>
 
 									<div className='row'>
-										{singleOrder.returnedItems &&
-											singleOrder.returnedItems.length > 0 &&
-											singleOrder.exchangedProductQtyWithVariables &&
-											singleOrder.exchangedProductQtyWithVariables.length ===
-												0 &&
-											singleOrder.returnedItems.map((p, i) => {
+										{updateSingleOrder.returnedItems &&
+											updateSingleOrder.returnedItems.length > 0 &&
+											updateSingleOrder.exchangedProductQtyWithVariables &&
+											updateSingleOrder.exchangedProductQtyWithVariables
+												.length === 0 &&
+											updateSingleOrder.returnedItems.map((p, i) => {
 												return (
 													<React.Fragment key={i}>
 														<div className='col-md-4 text-capitalize'>
@@ -1054,11 +1166,11 @@ const SingleOrderPage = (props) => {
 								<hr />
 							</div>
 
-							{singleOrder &&
-							singleOrder.exchangedProductQtyWithVariables &&
-							singleOrder.exchangedProductQtyWithVariables.length > 0 &&
-							singleOrder.returnedItems &&
-							singleOrder.returnedItems.length > 0 ? (
+							{updateSingleOrder &&
+							updateSingleOrder.exchangedProductQtyWithVariables &&
+							updateSingleOrder.exchangedProductQtyWithVariables.length > 0 &&
+							updateSingleOrder.returnedItems &&
+							updateSingleOrder.returnedItems.length > 0 ? (
 								<SingleOrderPageDetails
 									singleOrder={singleOrder}
 									updateSingleOrder={updateSingleOrder}
@@ -1165,52 +1277,53 @@ const SingleOrderPage = (props) => {
 
 									<div className='mt-4' style={{ fontSize: "1.2rem" }}>
 										Total Amount:{" "}
-										{singleOrder.totalAmount !==
-										singleOrder.totalAmountAfterDiscount ? (
+										{updateSingleOrder.totalAmount !==
+										updateSingleOrder.totalAmountAfterDiscount ? (
 											<>
 												<strong>
 													<s style={{ color: "darkred" }}>
-														{singleOrder.totalAmount} L.E.
+														{updateSingleOrder.totalAmount} L.E.
 													</s>
 												</strong>{" "}
 												<strong style={{ color: "darkblue" }}>
-													{singleOrder.totalAmountAfterDiscount} L.E.
+													{updateSingleOrder.totalAmountAfterDiscount} L.E.
 												</strong>
 											</>
 										) : (
 											<strong style={{ color: "darkblue" }}>
-												{singleOrder.totalAmountAfterDiscount} L.E.
+												{updateSingleOrder.totalAmountAfterDiscount} L.E.
 											</strong>
 										)}
 									</div>
-									{singleOrder.returnedItems &&
-									singleOrder.returnedItems.length > 0 ? (
+									{updateSingleOrder.returnedItems &&
+									updateSingleOrder.returnedItems.length > 0 ? (
 										<div className='mt-2' style={{ fontSize: "1.2rem" }}>
 											<strong
 												style={{ color: "red", border: "solid lightgrey 1px" }}>
 												Total Amount Should Be Refunded:{" "}
-												{singleOrder.returnAmount} L.E.
+												{updateSingleOrder.returnAmount} L.E.
 											</strong>
 											<br />
 											Total Amount After Refund:{" "}
 											<strong style={{ color: "darkblue" }}>
-												{singleOrder.returnAmount -
-													singleOrder.totalAmountAfterDiscount <
+												{updateSingleOrder.returnAmount -
+													updateSingleOrder.totalAmountAfterDiscount <
 												0
-													? singleOrder.totalAmountAfterDiscount -
-													  singleOrder.returnAmount
+													? updateSingleOrder.totalAmountAfterDiscount -
+													  updateSingleOrder.returnAmount
 													: 0}{" "}
 												L.E.
 											</strong>
 										</div>
 									) : null}
 
-									{singleOrder.exchangedProductQtyWithVariables &&
-									singleOrder.exchangedProductQtyWithVariables.length > 0 ? (
+									{updateSingleOrder.exchangedProductQtyWithVariables &&
+									updateSingleOrder.exchangedProductQtyWithVariables.length >
+										0 ? (
 										<div className='mt-2' style={{ fontSize: "1.2rem" }}>
 											Total Amount After Exchange:{" "}
 											<strong style={{ color: "darkblue" }}>
-												{singleOrder.totalAmountAfterExchange} L.E.
+												{updateSingleOrder.totalAmountAfterExchange} L.E.
 											</strong>
 											<br />
 											<strong
@@ -1249,22 +1362,30 @@ const SingleOrderPage = (props) => {
 								</>
 							)}
 
-							{singleOrder.returnedItems.length === 0 &&
-							(singleOrder.status.includes("Return") ||
-								singleOrder.status.includes("Returned")) ? (
+							{updateSingleOrder.returnedItems.length === 0 &&
+							(updateSingleOrder.status.includes("Return") ||
+								updateSingleOrder.status.includes("Returned")) ? (
 								<div className='mt-2' style={{ fontSize: "1.2rem" }}>
 									Refund Amount:{" "}
 									<strong style={{ color: "darkblue" }}>
-										{singleOrder.returnAmount} L.E.
+										{updateSingleOrder.returnAmount} L.E.
 									</strong>
 								</div>
 							) : null}
 							<div className='col-md-5 mx-auto text-center my-5'>
-								<button
-									className='btn btn-success btn-block mb-3 mx-auto text-center'
-									onClick={UpdatingOrder}>
-									Update Order
-								</button>
+								{editProductClicked ? (
+									<button
+										className='btn btn-success btn-block mb-3 mx-auto text-center'
+										onClick={UpdatingOrderForEditing}>
+										Update Order
+									</button>
+								) : (
+									<button
+										className='btn btn-success btn-block mb-3 mx-auto text-center'
+										onClick={UpdatingOrder}>
+										Update Order
+									</button>
+								)}
 							</div>
 						</div>
 					)}

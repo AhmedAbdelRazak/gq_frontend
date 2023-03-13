@@ -1149,7 +1149,12 @@ const CreateNewOrder = () => {
 			return toast.error("Please Add Products Colors & Sizes");
 		}
 
-		if (lengthOfOrders >= 3007) {
+		if (customerDetails.phone.length !== 11) {
+			setClickedLink("CustomerDetails");
+			return toast.error("Phone Number Should Be 11 Digits Only");
+		}
+
+		if (lengthOfOrders >= 3023) {
 			return toast.error("Database is full, Please contact your adminstrator");
 		}
 

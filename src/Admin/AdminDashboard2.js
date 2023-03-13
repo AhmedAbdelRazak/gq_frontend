@@ -122,7 +122,10 @@ const AdminDashboard2 = () => {
 	let todaysOrders = allOrders2.filter(
 		(i) =>
 			new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
-			new Date(today).setHours(0, 0, 0, 0),
+				new Date(today).setHours(0, 0, 0, 0) &&
+			i.status !== "Cancelled" &&
+			i.status !== "Returned" &&
+			!i.status.includes("Rejected"),
 	);
 
 	const todaysRevenue =
@@ -135,7 +138,9 @@ const AdminDashboard2 = () => {
 			(i) =>
 				new Date(i.orderCreationDate).setHours(0, 0, 0, 0) >=
 					new Date(last7Days).setHours(0, 0, 0, 0) &&
-				(i.status !== "Cancelled" || i.status !== "Returned"),
+				i.status !== "Cancelled" &&
+				i.status !== "Returned" &&
+				!i.status.includes("Rejected"),
 		)
 		.map((ii) => ii.totalAmountAfterDiscount);
 
@@ -147,7 +152,9 @@ const AdminDashboard2 = () => {
 			(i) =>
 				new Date(i.orderCreationDate).setHours(0, 0, 0, 0) >=
 					new Date(last15Days).setHours(0, 0, 0, 0) &&
-				(i.status !== "Cancelled" || i.status !== "Returned"),
+				i.status !== "Cancelled" &&
+				i.status !== "Returned" &&
+				!i.status.includes("Rejected"),
 		)
 		.map((ii) => {
 			return {
@@ -157,7 +164,12 @@ const AdminDashboard2 = () => {
 		});
 
 	let last30daysOrdersRevenue = allOrders2
-		.filter((i) => i.status !== "Cancelled" || i.status !== "Returned")
+		.filter(
+			(i) =>
+				i.status !== "Cancelled" &&
+				i.status !== "Returned" &&
+				!i.status.includes("Rejected"),
+		)
 		.map((ii) => ii.totalAmountAfterDiscount);
 
 	const sumOfLast30DaysRevenue =
@@ -165,7 +177,7 @@ const AdminDashboard2 = () => {
 		last30daysOrdersRevenue.reduce((a, b) => a + b, 0);
 
 	let last30daysOrdersQty = allOrders2
-		.filter((i) => i.status !== "Cancelled" || i.status !== "Returned")
+		.filter((i) => i.status !== "Cancelled" && i.status !== "Returned")
 		.map((ii) => ii.totalOrderQty);
 
 	// eslint-disable-next-line
@@ -305,7 +317,10 @@ const AdminDashboard2 = () => {
 			new Date(i.orderCreationDate).setHours(0, 0, 0, 0) >=
 				new Date(day2).setHours(0, 0, 0, 0) &&
 			new Date(i.orderCreationDate).setHours(0, 0, 0, 0) <=
-				new Date(day1).setHours(0, 0, 0, 0),
+				new Date(day1).setHours(0, 0, 0, 0) &&
+			i.status !== "Cancelled" &&
+			i.status !== "Returned" &&
+			!i.status.includes("Rejected"),
 	);
 
 	function sortByTopEmployee(a, b) {

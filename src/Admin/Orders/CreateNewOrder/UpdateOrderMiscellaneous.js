@@ -117,6 +117,8 @@ const UpdateOrderMiscellaneous = (props) => {
 					if (data2.error) {
 						console.log(data2.error);
 					} else {
+						localStorage.setItem("oldOrder", JSON.stringify(data2));
+
 						var chosenProductVariableMerged = [].concat.apply(
 							[],
 							data2.chosenProductQtyWithVariables,
@@ -719,7 +721,8 @@ const UpdateOrderMiscellaneous = (props) => {
 		gettingAllColors();
 		// eslint-disable-next-line
 	}, []);
-	// console.log(addedProductsToCart, "addedProductsToCart");
+	console.log(addedProductsToCart, "addedProductsToCart");
+	console.log(chosenProductVariables, "chosenProductVariables");
 
 	const sizesAndColorsOptions = () => {
 		return (
@@ -1829,7 +1832,7 @@ const UpdateOrderMiscellaneous = (props) => {
 					<button
 						className='btn btn-success btn-block mb-3 mx-auto text-center'
 						onClick={CreatingOrder}>
-						Create A New Order
+						Update Order
 					</button>
 				</div>
 			</div>
@@ -1869,7 +1872,7 @@ const UpdateOrderMiscellaneous = (props) => {
 					<h3
 						className='mx-auto text-center mb-5'
 						style={{ color: "#009ef7", fontWeight: "bold" }}>
-						Create A New Order
+						Update Order
 					</h3>
 
 					<div className='row'>

@@ -26,7 +26,10 @@ const Section1 = ({ allOrdersAggregated, allOrders2, allOrders, day2 }) => {
 	let todaysOrders = allOrders2.filter(
 		(i) =>
 			new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
-			new Date(today).setHours(0, 0, 0, 0),
+				new Date(today).setHours(0, 0, 0, 0) &&
+			i.status !== "Cancelled" &&
+			i.status !== "Returned" &&
+			!i.status.includes("Rejected"),
 	);
 
 	const todaysRevenue =
@@ -37,7 +40,10 @@ const Section1 = ({ allOrdersAggregated, allOrders2, allOrders, day2 }) => {
 	let yesterdaysOrders = allOrders2.filter(
 		(i) =>
 			new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
-			new Date(yesterday).setHours(0, 0, 0, 0),
+				new Date(yesterday).setHours(0, 0, 0, 0) &&
+			i.status !== "Cancelled" &&
+			i.status !== "Returned" &&
+			!i.status.includes("Rejected"),
 	);
 
 	const yesterdaysRevenue =
@@ -202,7 +208,10 @@ const Section1 = ({ allOrdersAggregated, allOrders2, allOrders, day2 }) => {
 			(iii) =>
 				new Date(iii.orderCreationDate).setHours(0, 0, 0, 0) >=
 					new Date(day2).setHours(0, 0, 0, 0) &&
-				iii.totalAmountAfterDiscount !== 0,
+				iii.totalAmountAfterDiscount !== 0 &&
+				iii.status !== "Cancelled" &&
+				iii.status !== "Returned" &&
+				!iii.status.includes("Rejected"),
 		);
 
 	var OrderChannelSummary = [];

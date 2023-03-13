@@ -63,7 +63,7 @@ const SalesReportMain = () => {
 		new Date(new Date().setDate(new Date().getDate() + 1)),
 	);
 	const [day2, setDay2] = useState(
-		new Date(new Date().setDate(new Date().getDate() - 7)),
+		new Date(new Date().setDate(new Date().getDate() - 30)),
 	);
 
 	const [allOrdersByDateAndStatus, setAllOrdersByDateAndStatus] = useState([]);

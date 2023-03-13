@@ -31,7 +31,11 @@ const Section2 = ({
 	var onlineOrdersOnly =
 		ordersModified &&
 		ordersModified.filter(
-			(i) => i.channel === "online" && i.status !== "Cancelled",
+			(i) =>
+				i.channel === "online" &&
+				i.status !== "Cancelled" &&
+				i.status !== "Returned" &&
+				!i.status.includes("Rejected"),
 		);
 
 	var onlineOrdersCancelled =
