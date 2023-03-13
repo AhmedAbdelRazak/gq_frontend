@@ -49,7 +49,7 @@ const UpdateExistingProduct = ({
 	}, []);
 
 	// console.log(updateSingleOrder, "updateSingleOrder");
-	console.log(productToBeUpdated, "productToBeUpdated");
+	// console.log(productToBeUpdated, "productToBeUpdated");
 	// console.log(chosenProduct, "chosenProduct");
 	// console.log(chosenProductAttribute, "chosenProductAttribute");
 	// console.log(removeProduct, "removeProduct");
@@ -95,9 +95,6 @@ const UpdateExistingProduct = ({
 		}
 		// eslint-disable-next-line
 	}, [removeProduct]);
-
-	console.log(oldProducts, "oldProducts");
-	console.log(newProducts, "newProducts");
 
 	return (
 		<UpdateExistingProductWrapper>
@@ -196,7 +193,6 @@ const UpdateExistingProduct = ({
 								],
 								newProducts: [modifyChosenSKU],
 							});
-							console.log(value, "value");
 						}}>
 						{chosenProduct &&
 							chosenProduct.productAttributes.map((att, ii) => {

@@ -33,6 +33,7 @@ const UpdateProductModal = ({
 					<UpdateAddingNewProduct
 						updateSingleOrder={updateSingleOrder}
 						setUpdateSingleOrder={setUpdateSingleOrder}
+						allColors={allColors}
 					/>
 				) : updateElement.includes("Update Product") ? (
 					<UpdateExistingProduct

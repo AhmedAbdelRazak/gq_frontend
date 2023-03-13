@@ -267,6 +267,9 @@ const SingleOrderPage = (props) => {
 		e.preventDefault();
 		window.scrollTo({ top: 0, behavior: "smooth" });
 
+		if (updateSingleOrder.chosenProductQtyWithVariables[0].length === 0) {
+			return toast.info("No Products Available in this order");
+		}
 		updateOrderEditing(
 			updateSingleOrder._id,
 			user._id,
@@ -933,6 +936,7 @@ const SingleOrderPage = (props) => {
 													onClick={() => {
 														setModalVisible2(true);
 														setUpdateElement("Add New Products To The Order");
+														setEditProductClicked(true);
 													}}>
 													<EditOutlined />
 												</span>
