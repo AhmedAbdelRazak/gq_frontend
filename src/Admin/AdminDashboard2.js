@@ -36,7 +36,7 @@ const AdminDashboard2 = () => {
 	const [modalVisible3, setModalVisible3] = useState(false);
 	// eslint-disable-next-line
 	const [day1, setDay1] = useState(
-		new Date(new Date().setDate(new Date().getDate() + 1)),
+		new Date(new Date().setDate(new Date().getDate())),
 	);
 	const [day2, setDay2] = useState(
 		new Date(new Date().setDate(new Date().getDate() - 30)),

@@ -106,6 +106,8 @@ import Receiving from "./Admin/GQReceiving/Receiving";
 import AdminDashboard2 from "./Admin/AdminDashboard2";
 import ReceivingLog from "./Admin/GQReceiving/ReceivingLog";
 import SalesReportMain from "./Admin/GQShopReports/SalesReport/SalesReportMain";
+import AddAccountTable from "./Admin/GQFinancialAffairs/AddingTables/AddAccountTable";
+import FinanceMainDashboard from "./Admin/GQFinancialAffairs/FinanceMainDashboard";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -371,6 +373,18 @@ const App = () => {
 					path='/admin/create-new-order'
 					exact
 					component={CreateNewOrder}
+				/>
+
+				<AdminRoute
+					path='/admin/create-accounts'
+					exact
+					component={AddAccountTable}
+				/>
+
+				<AdminRoute
+					path='/admin/account-tree'
+					exact
+					component={FinanceMainDashboard}
 				/>
 
 				<AdminRoute

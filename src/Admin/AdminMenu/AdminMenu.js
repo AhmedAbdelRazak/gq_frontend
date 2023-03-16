@@ -313,7 +313,14 @@ const items = [
 	]),
 
 	getItem("Financial Affairs", "sub33", <MoneyCollectOutlined />, [
-		getItem("Financial Report", "/admin/financial-report"),
+		getItem(
+			<Link to='/admin/create-accounts'>Create Accounts</Link>,
+			"/admin/create-accounts",
+		),
+		getItem(
+			<Link to='/admin/account-tree'>Accounts' Tree</Link>,
+			"/admin/account-tree",
+		),
 	]),
 
 	getItem("ACE Store Management", "sub34", <BorderHorizontalOutlined />, [
@@ -620,6 +627,10 @@ const AdminMenu = ({
 						? "/admin/employee-share"
 						: fromPage === "AceReceivingLog"
 						? "/admin/ace-receiving-log"
+						: fromPage === "NewAccount"
+						? "/admin/create-accounts"
+						: fromPage === "AccountsTree"
+						? "/admin/account-tree"
 						: "/admin/dashboard"
 				}
 				defaultOpenKeys={[
@@ -629,6 +640,9 @@ const AdminMenu = ({
 					fromPage === "UpdateGender" ||
 					fromPage === "DeleteGender"
 						? "sub2"
+						: null,
+					fromPage === "NewAccount" || fromPage === "AccountsTree"
+						? "sub33"
 						: null,
 
 					fromPage === "AddCategory" ||

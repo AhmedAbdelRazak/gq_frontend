@@ -209,6 +209,18 @@ const EmployeeShare = () => {
 									</span>
 								</div>
 							</div>
+							<div
+								style={{
+									fontSize: "1.3rem",
+									fontWeight: "bolder",
+									marginTop: "10px",
+									textTransform: "uppercase",
+									border: "1px black solid",
+									padding: "15px",
+									color: "grey",
+								}}>
+								Target: EGP 3,000
+							</div>
 						</div>
 					</div>
 					<div
@@ -262,7 +274,7 @@ const EmployeeShare = () => {
 										<th scope='col'>Order Date</th>
 										<th scope='col'>Employee Name</th>
 										<th scope='col'>Orders Count</th>
-										<th scope='col'>Total Amount (L.E.)</th>
+										<th scope='col'>Total Amount</th>
 										<th scope='col'>Employee Share (%1)</th>
 										<th scope='col'>To Meet Target</th>
 									</tr>
@@ -285,25 +297,25 @@ const EmployeeShare = () => {
 													<td>{s.EmployeeName}</td>
 													<td>{s.totalOrders}</td>
 													<td>
-														{Number(s.totalAmountAfterDiscount).toFixed(2)} L.E.
+														EGP {Number(s.totalAmountAfterDiscount).toFixed(2)}
 													</td>
-													{Number(s.totalAmountAfterDiscount) > 5000 ? (
-														<td>
+													{Number(s.totalAmountAfterDiscount) > 3000 ? (
+														<td style={{ background: "lightgreen" }}>
+															EGP{" "}
 															{Number(
-																(Number(s.totalAmountAfterDiscount) - 5000) *
+																(Number(s.totalAmountAfterDiscount) - 3000) *
 																	0.01,
 															).toFixed(2)}{" "}
-															L.E.
 														</td>
 													) : (
 														<td>DID NOT MEET TARGET</td>
 													)}
-													{Number(s.totalAmountAfterDiscount) < 5000 ? (
+													{Number(s.totalAmountAfterDiscount) < 3000 ? (
 														<td>
+															EGP{" "}
 															{Number(
-																5000 - s.totalAmountAfterDiscount,
+																3000 - s.totalAmountAfterDiscount,
 															).toFixed(2)}{" "}
-															L.E.
 														</td>
 													) : (
 														<td>0</td>

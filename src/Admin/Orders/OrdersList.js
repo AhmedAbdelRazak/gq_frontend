@@ -82,6 +82,9 @@ const OrdersList = () => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
+				var ordersModified = data.filter(
+					(i) => i.status !== "In Transit | Rejected",
+				);
 				if (backorders === "Clicked") {
 					getProducts().then((data2) => {
 						if (data2.error) {
@@ -115,7 +118,7 @@ const OrdersList = () => {
 								}
 							};
 
-							var stockCheckHelper = data.map((i) =>
+							var stockCheckHelper = ordersModified.map((i) =>
 								i.chosenProductQtyWithVariables.map((ii) =>
 									ii.map((iii) =>
 										checkingWithLiveStock(
@@ -138,7 +141,7 @@ const OrdersList = () => {
 							for (var i = 0; i < beforeel.length; i++) {
 								for (var ii = 0; ii < beforeel[i].length; ii++) {
 									if (beforeel[i][ii].indexOf(true) !== -1) {
-										backordersAll.push(data[i]);
+										backordersAll.push(ordersModified[i]);
 									}
 								}
 							}
@@ -168,7 +171,7 @@ const OrdersList = () => {
 								return QtyChecker;
 							};
 
-							var stockCheckHelper = data.map((i) =>
+							var stockCheckHelper = ordersModified.map((i) =>
 								i.chosenProductQtyWithVariables.map((ii) =>
 									ii.map((iii) =>
 										checkingWithLiveStock(
@@ -193,7 +196,7 @@ const OrdersList = () => {
 										beforeel[i][0].indexOf(true) === -1 &&
 										beforeel[i].length === 1
 									) {
-										backordersAll.push(data[i]);
+										backordersAll.push(ordersModified[i]);
 									} else if (
 										beforeel[i][0].indexOf(true) === -1 &&
 										beforeel[i].length === 2
@@ -202,7 +205,7 @@ const OrdersList = () => {
 											beforeel[i][0].indexOf(true) === -1 &&
 											beforeel[i][1].indexOf(true) === -1
 										) {
-											backordersAll.push(data[i]);
+											backordersAll.push(ordersModified[i]);
 										}
 									}
 								}
@@ -214,20 +217,20 @@ const OrdersList = () => {
 					});
 				} else if (backorders === "Processing") {
 					setAllOrders(
-						data.filter(
+						ordersModified.filter(
 							(i) =>
 								i.status.includes("Processing") || i.status === "Ready To Ship",
 						),
 					);
 					setExcelDataSet(
-						data.filter(
+						ordersModified.filter(
 							(i) =>
 								i.status.includes("Processing") || i.status === "Ready To Ship",
 						),
 					);
 				} else {
-					setAllOrders(data.sort(sortOrdersAscendingly));
-					setExcelDataSet(data.sort(sortOrdersAscendingly));
+					setAllOrders(ordersModified.sort(sortOrdersAscendingly));
+					setExcelDataSet(ordersModified.sort(sortOrdersAscendingly));
 				}
 			}
 		});

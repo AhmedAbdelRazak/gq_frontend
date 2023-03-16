@@ -113,8 +113,11 @@ const OperationsReport = () => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
+				var ordersModified = data.filter(
+					(i) => i.status !== "In Transit | Rejected",
+				);
 				if (requiredSKU && modalVisible2 === false) {
-					var returnValue = data.map((i) => {
+					var returnValue = ordersModified.map((i) => {
 						return {
 							...i,
 							chosenProductQtyWithVariables:
@@ -134,8 +137,6 @@ const OperationsReport = () => {
 								.map((ii) => ii.length > 0)
 								.indexOf(true) > -1,
 					);
-
-					console.log(returnValue2, "ReturnValue2");
 
 					setAllOrders(returnValue2.sort(sortOrdersAscendingly));
 					setExcelDataSet(returnValue2.sort(sortOrdersAscendingly));
@@ -172,7 +173,7 @@ const OperationsReport = () => {
 								}
 							};
 
-							var stockCheckHelper = data.map((i) =>
+							var stockCheckHelper = ordersModified.map((i) =>
 								i.chosenProductQtyWithVariables.map((ii) =>
 									ii.map((iii) =>
 										checkingWithLiveStock(
@@ -195,7 +196,7 @@ const OperationsReport = () => {
 							for (var i = 0; i < beforeel.length; i++) {
 								for (var ii = 0; ii < beforeel[i].length; ii++) {
 									if (beforeel[i][ii].indexOf(true) !== -1) {
-										backordersAll.push(data[i]);
+										backordersAll.push(ordersModified[i]);
 									}
 								}
 							}
@@ -225,7 +226,7 @@ const OperationsReport = () => {
 								return QtyChecker;
 							};
 
-							var stockCheckHelper = data.map((i) =>
+							var stockCheckHelper = ordersModified.map((i) =>
 								i.chosenProductQtyWithVariables.map((ii) =>
 									ii.map((iii) =>
 										checkingWithLiveStock(
@@ -250,7 +251,7 @@ const OperationsReport = () => {
 										beforeel[i][0].indexOf(true) === -1 &&
 										beforeel[i].length === 1
 									) {
-										backordersAll.push(data[i]);
+										backordersAll.push(ordersModified[i]);
 									} else if (
 										beforeel[i][0].indexOf(true) === -1 &&
 										beforeel[i].length === 2
@@ -259,7 +260,7 @@ const OperationsReport = () => {
 											beforeel[i][0].indexOf(true) === -1 &&
 											beforeel[i][1].indexOf(true) === -1
 										) {
-											backordersAll.push(data[i]);
+											backordersAll.push(ordersModified[i]);
 										}
 									}
 								}
@@ -271,20 +272,20 @@ const OperationsReport = () => {
 					});
 				} else if (backorders === "Processing") {
 					setAllOrders(
-						data.filter(
+						ordersModified.filter(
 							(i) =>
 								i.status.includes("Processing") || i.status === "Ready To Ship",
 						),
 					);
 					setExcelDataSet(
-						data.filter(
+						ordersModified.filter(
 							(i) =>
 								i.status.includes("Processing") || i.status === "Ready To Ship",
 						),
 					);
 				} else {
-					setAllOrders(data.sort(sortOrdersAscendingly));
-					setExcelDataSet(data.sort(sortOrdersAscendingly));
+					setAllOrders(ordersModified.sort(sortOrdersAscendingly));
+					setExcelDataSet(ordersModified.sort(sortOrdersAscendingly));
 				}
 			}
 		});
@@ -1065,15 +1066,13 @@ const OperationsReport = () => {
 													{s.status}
 												</td>
 
-												<td style={{ width: "11%" }}>
+												<td style={{ width: "10%" }}>
 													{s.customerDetails.fullName}
 												</td>
-												<td style={{ width: "11%" }}>
-													{s.customerDetails.phone}
-												</td>
+												<td>{s.customerDetails.phone}</td>
 												<td>{s.totalAmountAfterDiscount.toFixed(0)} L.E.</td>
 
-												<td>
+												<td style={{ width: "12%" }}>
 													{s.chosenProductQtyWithVariables.map((i) =>
 														i.map((ii) => (
 															<span>

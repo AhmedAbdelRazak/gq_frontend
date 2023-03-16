@@ -1154,7 +1154,7 @@ const CreateNewOrder = () => {
 			return toast.error("Phone Number Should Be 11 Digits Only");
 		}
 
-		if (lengthOfOrders >= 3023) {
+		if (lengthOfOrders >= 3523) {
 			return toast.error("Database is full, Please contact your adminstrator");
 		}
 

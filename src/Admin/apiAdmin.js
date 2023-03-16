@@ -1517,11 +1517,13 @@ export const CreateShippingTN = (
 					Contact: {
 						Department: "Source, Ads",
 						PersonName: updateCustomerDetails.fullName,
-						Title: "",
-						CompanyName: "Customer",
+						Title: updateCustomerDetails.fullName,
+						CompanyName: updateCustomerDetails.fullName,
 						PhoneNumber1: updateCustomerDetails.phone,
 						PhoneNumber1Ext: "",
-						PhoneNumber2: "",
+						PhoneNumber2: updateCustomerDetails.phone
+							? updateCustomerDetails.phone
+							: "",
 						PhoneNumber2Ext: "",
 						FaxNumber: "",
 						CellPhone: updateCustomerDetails.phone
@@ -1559,9 +1561,9 @@ export const CreateShippingTN = (
 					},
 					Contact: {
 						Department: "",
-						PersonName: "",
+						PersonName: updateCustomerDetails.fullName,
 						Title: "",
-						CompanyName: "",
+						CompanyName: updateCustomerDetails.fullName,
 						PhoneNumber1: updateCustomerDetails.phone,
 						PhoneNumber1Ext: "",
 						PhoneNumber2: "",
@@ -1767,3 +1769,159 @@ export const getTrackingDetails = (userId, token, order) => {
 			console.log(err);
 		});
 };
+
+/**
+ * Create Accounts
+ * */
+
+export const createNewAccount = (userId, token, newAccount) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/newaccount/create/${userId}`, {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify(newAccount),
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+};
+
+export const updateAccounts = (newaccountId, userId, token, newAccount) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/newaccount/${newaccountId}/${userId}`,
+		{
+			method: "PUT",
+			headers: {
+				// content type?
+				"Content-Type": "application/json",
+				Accept: "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify(newAccount),
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const removeAccount = (newaccountId, userId, token) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/newaccount/${newaccountId}/${userId}`,
+		{
+			method: "DELETE",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const getNewAccounts = (token) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/newaccounts`, {
+		method: "GET",
+		headers: {
+			// content type?
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+/**End Create New Accounts */
+
+/**
+ * Create Finances
+ * */
+
+export const createFinance = (userId, token, finance) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/finance/create/${userId}`, {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify(finance),
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+};
+
+export const updateFinance = (financeId, userId, token, finance) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/finance/${financeId}/${userId}`,
+		{
+			method: "PUT",
+			headers: {
+				// content type?
+				"Content-Type": "application/json",
+				Accept: "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify(finance),
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const removeFinance = (financeId, userId, token) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/finance/${financeId}/${userId}`,
+		{
+			method: "DELETE",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const getFinances = (token) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/finances`, {
+		method: "GET",
+		headers: {
+			// content type?
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+/**End Finance */

@@ -920,8 +920,9 @@ const SingleOrderPage = (props) => {
 										style={{ fontSize: "1rem", fontWeight: "bolder" }}>
 										Products With Variables:
 									</div>
-									{updateSingleOrder.trackingNumber === "Not Added" ||
-									!updateSingleOrder.trackingNumber ? (
+									{(updateSingleOrder.trackingNumber === "Not Added" ||
+										!updateSingleOrder.trackingNumber) &&
+									updateSingleOrder.invoiceNumber === "Not Added" ? (
 										<h5
 											style={{
 												fontWeight: "bold",
@@ -993,9 +994,11 @@ const SingleOrderPage = (props) => {
 																		</div>
 
 																		<div className='col-md-6'>
-																			{updateSingleOrder.trackingNumber ===
+																			{(updateSingleOrder.trackingNumber ===
 																				"Not Added" ||
-																			!updateSingleOrder.trackingNumber ? (
+																				!updateSingleOrder.trackingNumber) &&
+																			updateSingleOrder.invoiceNumber ===
+																				"Not Added" ? (
 																				<strong
 																					style={{
 																						fontWeight: "bold",
