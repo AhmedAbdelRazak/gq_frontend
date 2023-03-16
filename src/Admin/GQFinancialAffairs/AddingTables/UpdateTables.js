@@ -4,6 +4,9 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Modal } from "antd";
 import "antd/dist/antd.css"; // or 'antd/dist/antd.less'
+import { removeAccount, updateAccounts } from "../../apiAdmin";
+import { isAuthenticated } from "../../../auth";
+import { toast } from "react-toastify";
 
 // import { toast } from "react-toastify";
 
@@ -15,10 +18,49 @@ const UpdateTables = ({ setModalVisible, modalVisible, chosenTable }) => {
 	const [iteration, setIteration] = useState(0);
 	const [account_description, setAccount_description] = useState("");
 
+	const { user, token } = isAuthenticated();
+
 	const clickSubmit = (e) => {
 		e.preventDefault();
 
-		console.log("submitted");
+		if (
+			!account_name ||
+			subaccount.descriptions.length === 0 ||
+			subaccount.subaccounts.length === 0 ||
+			!account_type
+		) {
+			return toast.error("Please Fill In All Fields");
+		}
+
+		if (subaccount.descriptions.length !== subaccount.subaccounts.length) {
+			return toast.error(
+				"Please make sure to add descriptions for all subaccounts",
+			);
+		}
+
+		const newAccount = {
+			account_name: account_name,
+			account_type: account_type,
+			subaccount: subaccount,
+		};
+
+		// make request to api to update Account
+		updateAccounts(chosenTable._id, user._id, token, newAccount).then(
+			(data) => {
+				if (data.error) {
+					console.log(data.error, "Creating New Account");
+					setTimeout(function () {
+						window.location.reload(false);
+					}, 1000);
+				} else {
+					toast.success("Account Successfully updated.");
+
+					setTimeout(function () {
+						window.location.reload(false);
+					}, 2500);
+				}
+			},
+		);
 	};
 
 	useEffect(() => {
@@ -29,6 +71,7 @@ const UpdateTables = ({ setModalVisible, modalVisible, chosenTable }) => {
 	}, [modalVisible]);
 
 	console.log(chosenTable, "chosenTable");
+	console.log(subaccount, "subaccount");
 
 	const mainForm = () => {
 		return (
@@ -87,13 +130,41 @@ const UpdateTables = ({ setModalVisible, modalVisible, chosenTable }) => {
 										subaccount.subaccounts.map((sub, i) => {
 											return (
 												<div
-													className='col-md-2 ml-3'
+													className='col-md-2 ml-3 my-2'
 													key={i}
 													style={{
 														fontWeight: "bold",
 														textTransform: "capitalize",
+														fontSize: "12px",
 													}}>
 													{sub}
+													<span
+														onClick={() => {
+															var clickedItem = subaccount.subaccounts.splice(
+																i,
+																1,
+															)[0];
+
+															var remainderElements =
+																subaccount.subaccounts.filter(
+																	(i) => i !== clickedItem,
+																);
+
+															setSubaccount({
+																...subaccount,
+																subaccounts: remainderElements,
+															});
+														}}
+														className='ml-2'
+														style={{
+															fontSize: "10px",
+															color: "red",
+															border: "1px solid lightgrey",
+															padding: "2px 5px",
+															cursor: "pointer",
+														}}>
+														Remove
+													</span>
 												</div>
 											);
 										})}
@@ -158,6 +229,33 @@ const UpdateTables = ({ setModalVisible, modalVisible, chosenTable }) => {
 												{" "}
 												For subaccount ({subaccount.subaccounts[i]})
 											</span>
+											<span
+												onClick={() => {
+													var clickedItem = subaccount.descriptions.splice(
+														i,
+														1,
+													)[0];
+
+													var remainderElements =
+														subaccount.descriptions.filter(
+															(i) => i !== clickedItem,
+														);
+
+													setSubaccount({
+														...subaccount,
+														descriptions: remainderElements,
+													});
+												}}
+												className='ml-2'
+												style={{
+													fontSize: "10px",
+													color: "red",
+													border: "1px solid lightgrey",
+													padding: "2px 5px",
+													cursor: "pointer",
+												}}>
+												Remove
+											</span>
 										</div>
 									);
 								})}
@@ -203,6 +301,41 @@ const UpdateTables = ({ setModalVisible, modalVisible, chosenTable }) => {
 									style={{ textTransform: "capitalize" }}
 									onClick={clickSubmit}>
 									Update Account "{chosenTable.account_type}"
+								</button>
+							) : null}
+						</>
+					) : null}
+					{subaccount &&
+					subaccount.subaccounts &&
+					subaccount.subaccounts.length ? (
+						<>
+							{account_name && account_type ? (
+								<button
+									className='btn btn-danger mb-3 mx-5'
+									style={{ textTransform: "capitalize" }}
+									onClick={() => {
+										if (
+											window.confirm(
+												`Are You Sure You Want To Delete Account ${chosenTable.account_type}?`,
+											)
+										) {
+											removeAccount(chosenTable._id, user._id, token)
+												.then((res) => {
+													toast.error(
+														`Account "${res.data.account_type}" deleted`,
+													);
+													setTimeout(function () {
+														window.location.reload(false);
+													}, 2500);
+													setModalVisible(false);
+												})
+												.catch((err) => console.log(err));
+										}
+										setTimeout(function () {
+											window.location.reload(false);
+										}, 2500);
+									}}>
+									Delete Account "{chosenTable.account_type}"
 								</button>
 							) : null}
 						</>
