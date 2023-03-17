@@ -690,6 +690,17 @@ const SingleOrderPage = (props) => {
 										{updateSingleOrder.customerDetails.email}
 									</strong>
 								</div>
+								{updateSingleOrder &&
+								updateSingleOrder.customerDetails &&
+								updateSingleOrder.customerDetails.customerProfileLink ? (
+									<div className='col-md-6'>
+										Customer Profile Link:{" "}
+										<strong style={{ color: "darkblue" }}>
+											{" "}
+											{updateSingleOrder.customerDetails.customerProfileLink}
+										</strong>
+									</div>
+								) : null}
 
 								<div className='col-md-6 mx-auto'>
 									Customer Additional Comment:{" "}
