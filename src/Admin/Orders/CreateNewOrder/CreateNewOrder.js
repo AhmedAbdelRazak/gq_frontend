@@ -82,6 +82,7 @@ const CreateNewOrder = () => {
 		cityName: "Unavailable",
 		carrierName: "No Shipping Carrier",
 		orderComment: "",
+		customerProfileLink: "",
 	});
 	const [lengthOfOrders, setLengthOfOrders] = useState(0);
 	const [modalVisible, setModalVisible] = useState(false);
@@ -171,6 +172,7 @@ const CreateNewOrder = () => {
 		freeShipping,
 		sendSMS,
 		customerDetails.state,
+		customerDetails.customerProfileLink,
 	]);
 
 	function search(orders) {
@@ -909,6 +911,16 @@ const CreateNewOrder = () => {
 							className='form-control'
 							value={customerDetails.address}
 							placeholder='Required - Customer Physical Address'
+						/>
+					</div>
+					<div className='form-group col-md-6 '>
+						<label className=''>Customer Profile Link</label>
+						<input
+							onChange={handleChange("customerProfileLink")}
+							type='text'
+							className='form-control'
+							value={customerDetails.customerProfileLink}
+							placeholder='Optional - please add profile link'
 						/>
 					</div>
 					<div className='form-group col-md-6 mx-auto '>

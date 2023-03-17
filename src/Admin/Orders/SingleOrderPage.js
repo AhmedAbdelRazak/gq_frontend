@@ -288,8 +288,6 @@ const SingleOrderPage = (props) => {
 			});
 	};
 
-	console.log(updateSingleOrder, "single");
-
 	const gettingShippingLabel = () => {
 		getShippingLabel(user._id, token, updateSingleOrder).then((data) => {
 			if (data.error) {
