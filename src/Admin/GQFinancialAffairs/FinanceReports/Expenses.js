@@ -16,6 +16,7 @@ const Expenses = ({ reportName, allAddedAccounts }) => {
 	return (
 		<ExpensesWrapper>
 			{reportName.toLowerCase() === "marketing expenses" ||
+			reportName.toLowerCase() === "subscriptions" ||
 			reportName.toLowerCase() === "social media ads" ? (
 				<div className='mt-5' style={{ background: "white", padding: "10px" }}>
 					<div className='row'>
@@ -41,7 +42,7 @@ const Expenses = ({ reportName, allAddedAccounts }) => {
 											className='mt-2'
 											style={{ textTransform: "capitalize" }}>
 											{" "}
-											{v.vendor}
+											{v.vendor.vendorName ? v.vendor.vendorName : v.vendor}
 										</div>
 									);
 								})}

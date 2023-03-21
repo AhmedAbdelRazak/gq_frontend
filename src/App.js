@@ -109,6 +109,8 @@ import SalesReportMain from "./Admin/GQShopReports/SalesReport/SalesReportMain";
 import AddAccountTable from "./Admin/GQFinancialAffairs/AddingTables/AddAccountTable";
 import FinanceMainDashboard from "./Admin/GQFinancialAffairs/FinanceMainDashboard";
 import FinanceMainReport from "./Admin/GQFinancialAffairs/FinanceReports/FinanceMainReport";
+import AddVendor from "./Admin/GQFinancialAffairs/AddingVendors/AddVendor";
+import Billing from "./Admin/GQFinancialAffairs/Billing";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -381,6 +383,8 @@ const App = () => {
 					exact
 					component={AddAccountTable}
 				/>
+				<AdminRoute path='/admin/add-vendors' exact component={AddVendor} />
+				<AdminRoute path='/admin/account-billing' exact component={Billing} />
 
 				<AdminRoute
 					path='/admin/account-tree'

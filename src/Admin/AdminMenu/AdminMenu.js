@@ -318,6 +318,14 @@ const items = [
 			"/admin/create-accounts",
 		),
 		getItem(
+			<Link to='/admin/add-vendors'>Create Vendors</Link>,
+			"/admin/add-vendors",
+		),
+		getItem(
+			<Link to='/admin/account-billing'>Billing</Link>,
+			"/admin/account-billing",
+		),
+		getItem(
 			<Link to='/admin/account-tree'>Accounts' Tree</Link>,
 			"/admin/account-tree",
 		),
@@ -631,6 +639,8 @@ const AdminMenu = ({
 						? "/admin/create-accounts"
 						: fromPage === "AccountsTree"
 						? "/admin/account-tree"
+						: fromPage === "AddVendor"
+						? "/admin/add-vendors"
 						: "/admin/dashboard"
 				}
 				defaultOpenKeys={[
@@ -641,7 +651,9 @@ const AdminMenu = ({
 					fromPage === "DeleteGender"
 						? "sub2"
 						: null,
-					fromPage === "NewAccount" || fromPage === "AccountsTree"
+					fromPage === "NewAccount" ||
+					fromPage === "AccountsTree" ||
+					fromPage === "AddVendor"
 						? "sub33"
 						: null,
 

@@ -8,18 +8,30 @@ import styled from "styled-components";
 import { isAuthenticated } from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import DarkBG from "../AdminMenu/DarkBG";
-import { createFinance, getNewAccounts } from "../apiAdmin";
+import {
+	createFinance,
+	getNewAccounts,
+	getStores,
+	getVendors,
+} from "../apiAdmin";
 
 const FinanceMainDashboard = () => {
 	const [collapsed, setCollapsed] = useState(false);
 	const [AdminMenuStatus, setAdminMenuStatus] = useState(false);
 	const [allAccountsData, setAllAccountsData] = useState("");
+	const [allStores, setAllStores] = useState("");
+	const [allVendors, setAllVendors] = useState("");
 	const [chosenAccount, setChosenAccount] = useState("");
 	const [chosenSubaccount, setChosenSubaccount] = useState("");
 	const [chosenDate, setChosenDate] = useState(moment(new Date()));
 	const [chosenSubaccountDesc, setChosenSubaccountDesc] = useState("");
 	const [chosenAccountData, setChosenAccountData] = useState("");
+	const [paymentMethod, setPaymentMethod] = useState("");
 	const [chosenVendor, setChosenVendor] = useState("");
+	const [chosenVendor2, setChosenVendor2] = useState("");
+	const [referenceNumber, setReferenceNumber] = useState("");
+	const [checkNumber, setCheckNumber] = useState("");
+	const [chosenStore, setChosenStore] = useState("");
 	const [chosenAccountValue, setChosenAccountValue] = useState("");
 	const [employeeComment, setEmployeeComment] = useState("");
 
@@ -35,9 +47,30 @@ const FinanceMainDashboard = () => {
 			}
 		});
 	};
+	const gettingAllStores = () => {
+		getStores(token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllStores(data);
+			}
+		});
+	};
+
+	const gettingAllVendors = () => {
+		getVendors(token).then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllVendors(data);
+			}
+		});
+	};
 
 	useEffect(() => {
 		gettingAllAccounts();
+		gettingAllStores();
+		gettingAllVendors();
 		// eslint-disable-next-line
 	}, []);
 
@@ -55,6 +88,23 @@ const FinanceMainDashboard = () => {
 		if (!chosenAccountValue) {
 			return toast.error("Please Add Desired Value");
 		}
+		if (!chosenStore) {
+			return toast.error("Please Add Desired Store");
+		}
+		if (!chosenVendor) {
+			return toast.error("Please Add Desired Vendor");
+		}
+
+		if (!paymentMethod) {
+			return toast.error("Please Add A Payment Method");
+		}
+		if (!referenceNumber) {
+			return toast.error("Please Add A Payment Method");
+		}
+
+		if (paymentMethod === "Cheque" && !checkNumber) {
+			return toast.error("Please Add A Check Number");
+		}
 
 		createFinance(user._id, token, {
 			account_type: chosenAccount,
@@ -63,9 +113,13 @@ const FinanceMainDashboard = () => {
 			account_description: chosenSubaccountDesc,
 			value: chosenAccountValue,
 			employeeComment: employeeComment,
-			vendor: chosenVendor ? chosenVendor : "No Vendor",
+			storeName: chosenStore,
+			vendor: chosenVendor ? chosenVendor2 : { vendorName: "No Vendor" },
 			logDate: chosenDate,
 			addedByUser: user,
+			paymentMethod: paymentMethod,
+			referenceNumber: referenceNumber,
+			chequeNumber: checkNumber ? checkNumber : "Not Added",
 		}).then((data) => {
 			if (data.error) {
 				console.log(data.error, "error");
@@ -120,10 +174,10 @@ const FinanceMainDashboard = () => {
 										Add New Account
 									</h5>
 									<div className='row'>
-										<div className='col-md-4 mt-4' style={{ fontSize: "13px" }}>
+										<div className='col-md-4 mt-2' style={{ fontSize: "13px" }}>
 											Account Type
 										</div>
-										<div className='col-md-8 mt-4'>
+										<div className='col-md-8 mt-2'>
 											<select
 												className='form-control'
 												onChange={(e) => {
@@ -154,7 +208,7 @@ const FinanceMainDashboard = () => {
 										</div>
 
 										<div className='col-md-4 mt-4' style={{ fontSize: "13px" }}>
-											SUB Account
+											Subccount
 										</div>
 										<div className='col-md-8 mt-4'>
 											<select
@@ -192,19 +246,100 @@ const FinanceMainDashboard = () => {
 													)}
 											</select>
 										</div>
-										{chosenAccountData &&
-										chosenAccountData.account_type &&
-										chosenAccountData.account_type === "expenses" ? (
+
+										<div className='col-md-4 mt-4' style={{ fontSize: "13px" }}>
+											Vendor
+										</div>
+										<div className='col-md-8 mt-4'>
+											<select
+												className='form-control'
+												onChange={(e) => {
+													setChosenVendor(e.target.value);
+													var indexAccountData =
+														allVendors &&
+														allVendors
+															.map((i) => i._id)
+															.indexOf(e.target.value);
+													setChosenVendor2(allVendors[indexAccountData]);
+												}}
+												style={{
+													border: "#cfcfcf solid 1px",
+													borderRadius: "5px",
+													fontSize: "0.8rem",
+													textTransform: "capitalize",
+												}}>
+												<option value='Select'>Select A Vendor</option>
+												{allVendors &&
+													allVendors.map((acc, i) => {
+														return (
+															<option value={acc._id} key={i}>
+																{acc.vendorName}
+															</option>
+														);
+													})}
+											</select>
+										</div>
+
+										<div className='col-md-4 mt-4' style={{ fontSize: "13px" }}>
+											Store Name
+										</div>
+										<div className='col-md-8 mt-4'>
+											<select
+												className='form-control'
+												onChange={(e) => {
+													setChosenStore(e.target.value);
+												}}
+												style={{
+													border: "#cfcfcf solid 1px",
+													borderRadius: "5px",
+													fontSize: "0.8rem",
+													textTransform: "capitalize",
+												}}>
+												<option value='Select'>Select A Store</option>
+												{allStores &&
+													allStores.map((acc, i) => {
+														return (
+															<option value={acc.storeName} key={i}>
+																{acc.storeName}
+															</option>
+														);
+													})}
+											</select>
+										</div>
+
+										<div className='col-md-4 mt-4' style={{ fontSize: "13px" }}>
+											Payment
+										</div>
+										<div className='col-md-8 mt-4'>
+											<select
+												className='form-control'
+												onChange={(e) => {
+													setPaymentMethod(e.target.value);
+												}}
+												style={{
+													border: "#cfcfcf solid 1px",
+													borderRadius: "5px",
+													fontSize: "0.8rem",
+													textTransform: "capitalize",
+												}}>
+												<option value='Select'>Payment Method</option>
+												<option value='Cash'>Cash</option>
+												<option value='Online Payment'>Online Payment</option>
+												<option value='Cheque'>Cheque</option>
+											</select>
+										</div>
+
+										{paymentMethod && paymentMethod === "Cheque" ? (
 											<>
 												<div
 													className='col-md-4 mt-4'
 													style={{ fontSize: "13px" }}>
-													Vendor
+													Check Number
 												</div>
 												<div className='col-md-8 mt-4'>
 													<input
 														type='text'
-														value={chosenVendor}
+														value={checkNumber}
 														className='w-100 mx-auto '
 														style={{
 															border: "#cfcfcf solid 1px",
@@ -213,14 +348,34 @@ const FinanceMainDashboard = () => {
 															textTransform: "capitalize",
 															padding: "5px",
 														}}
-														placeholder='e.g. Facebook Ads, Instagram Ads, etc...'
 														onChange={(e) => {
-															setChosenVendor(e.target.value);
+															setCheckNumber(e.target.value);
 														}}
 													/>
 												</div>
 											</>
 										) : null}
+
+										<div className='col-md-4 mt-4' style={{ fontSize: "13px" }}>
+											Reference Number
+										</div>
+										<div className='col-md-8 mt-4'>
+											<input
+												type='text'
+												value={referenceNumber}
+												className='w-100 mx-auto '
+												style={{
+													border: "#cfcfcf solid 1px",
+													borderRadius: "5px",
+													fontSize: "0.8rem",
+													textTransform: "capitalize",
+													padding: "5px",
+												}}
+												onChange={(e) => {
+													setReferenceNumber(e.target.value);
+												}}
+											/>
+										</div>
 
 										<div className='col-md-4 mt-4' style={{ fontSize: "13px" }}>
 											Value (EGP)
@@ -276,7 +431,7 @@ const FinanceMainDashboard = () => {
 											<textarea
 												type='text'
 												value={chosenSubaccountDesc}
-												rows={3}
+												rows={2}
 												className='w-100 mx-auto'
 												style={{
 													border: "#cfcfcf solid 1px",
@@ -297,7 +452,7 @@ const FinanceMainDashboard = () => {
 												value={employeeComment}
 												placeholder='Add Comments'
 												onChange={(e) => setEmployeeComment(e.target.value)}
-												rows={3}
+												rows={2}
 												className='w-100 mx-auto'
 												style={{
 													border: "#cfcfcf solid 1px",

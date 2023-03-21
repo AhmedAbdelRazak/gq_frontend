@@ -1925,3 +1925,81 @@ export const getFinances = (token) => {
 };
 
 /**End Finance */
+
+/**
+ * Create Vendors
+ * */
+
+export const createNewVendor = (userId, token, vendor) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/vendor/create/${userId}`, {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+		body: JSON.stringify(vendor),
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+};
+
+export const updateVendor = (vendorId, userId, token, vendor) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/vendor/${vendorId}/${userId}`,
+		{
+			method: "PUT",
+			headers: {
+				// content type?
+				"Content-Type": "application/json",
+				Accept: "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify(vendor),
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const removeVendor = (vendorId, userId, token) => {
+	return fetch(
+		`${process.env.REACT_APP_API_URL}/vendor/${vendorId}/${userId}`,
+		{
+			method: "DELETE",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		},
+	)
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+export const getVendors = (token) => {
+	return fetch(`${process.env.REACT_APP_API_URL}/vendors`, {
+		method: "GET",
+		headers: {
+			// content type?
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			Authorization: `Bearer ${token}`,
+		},
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.catch((err) => console.log(err));
+};
+
+/**End Create New Accounts */
