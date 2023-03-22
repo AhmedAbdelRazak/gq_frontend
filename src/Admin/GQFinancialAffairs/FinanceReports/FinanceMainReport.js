@@ -82,7 +82,7 @@ const FinanceMainReport = ({ match }) => {
 								fontWeight: "bold",
 								textAlign: "center",
 							}}>
-							{reportName}
+							{reportName === "allexpenses" ? "All Expenses" : reportName}
 						</h3>
 						<div className='col-md-9 mx-auto'>
 							<Expenses

@@ -5,10 +5,13 @@ import styled from "styled-components";
 
 const Expenses = ({ reportName, allAddedAccounts }) => {
 	var allAddedAccountModified =
-		allAddedAccounts &&
-		allAddedAccounts.filter(
-			(i) => i.subaccount.toLowerCase() === reportName.toLowerCase(),
-		);
+		reportName === "allexpenses"
+			? allAddedAccounts &&
+			  allAddedAccounts.filter((i) => i.account_name === "expenses")
+			: allAddedAccounts &&
+			  allAddedAccounts.filter(
+					(i) => i.subaccount.toLowerCase() === reportName.toLowerCase(),
+			  );
 
 	var allAddedValues =
 		allAddedAccountModified && allAddedAccountModified.map((i) => i.value);
@@ -17,7 +20,8 @@ const Expenses = ({ reportName, allAddedAccounts }) => {
 		<ExpensesWrapper>
 			{reportName.toLowerCase() === "marketing expenses" ||
 			reportName.toLowerCase() === "subscriptions" ||
-			reportName.toLowerCase() === "social media ads" ? (
+			reportName.toLowerCase() === "social media ads" ||
+			reportName.toLowerCase() === "allexpenses" ? (
 				<div className='mt-5' style={{ background: "white", padding: "10px" }}>
 					<div className='row'>
 						<div className='col-2 mx-auto'>
@@ -85,7 +89,9 @@ const Expenses = ({ reportName, allAddedAccounts }) => {
 														<strong>
 															EGP{" "}
 															{allAddedValues &&
-																allAddedValues.reduce((a, b) => a + b, 0)}
+																Number(
+																	allAddedValues.reduce((a, b) => a + b, 0),
+																).toLocaleString()}
 														</strong>
 													</div>
 												</>
@@ -102,16 +108,37 @@ const Expenses = ({ reportName, allAddedAccounts }) => {
 										<div
 											key={i}
 											className='mt-2'
-											style={{ textTransform: "capitalize" }}>
+											style={{ textTransform: "capitalize", fontSize: "13px" }}>
 											{" "}
 											{v.employeeComment}
 										</div>
 									);
 								})}
 						</div>
-						<div className='col-2 mx-auto'>
-							<strong>Edit</strong>
-						</div>
+						{reportName === "allexpenses" ? (
+							<div className='col-2 mx-auto'>
+								<strong>Account</strong>
+								{allAddedAccountModified &&
+									allAddedAccountModified.map((v, i) => {
+										return (
+											<div
+												key={i}
+												className='mt-2'
+												style={{
+													textTransform: "capitalize",
+													fontSize: "13px",
+												}}>
+												{" "}
+												{v.subaccount}
+											</div>
+										);
+									})}
+							</div>
+						) : (
+							<div className='col-2 mx-auto'>
+								<strong>Edit</strong>
+							</div>
+						)}
 					</div>
 				</div>
 			) : null}

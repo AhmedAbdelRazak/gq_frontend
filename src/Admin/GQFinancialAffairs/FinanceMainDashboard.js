@@ -88,17 +88,12 @@ const FinanceMainDashboard = () => {
 		if (!chosenAccountValue) {
 			return toast.error("Please Add Desired Value");
 		}
-		if (!chosenStore) {
-			return toast.error("Please Add Desired Store");
-		}
+
 		if (!chosenVendor) {
 			return toast.error("Please Add Desired Vendor");
 		}
 
 		if (!paymentMethod) {
-			return toast.error("Please Add A Payment Method");
-		}
-		if (!referenceNumber) {
 			return toast.error("Please Add A Payment Method");
 		}
 
@@ -113,12 +108,12 @@ const FinanceMainDashboard = () => {
 			account_description: chosenSubaccountDesc,
 			value: chosenAccountValue,
 			employeeComment: employeeComment,
-			storeName: chosenStore,
+			storeName: chosenStore ? chosenStore : "Not Added",
 			vendor: chosenVendor ? chosenVendor2 : { vendorName: "No Vendor" },
 			logDate: chosenDate,
 			addedByUser: user,
 			paymentMethod: paymentMethod,
-			referenceNumber: referenceNumber,
+			referenceNumber: referenceNumber ? referenceNumber : "Not Added",
 			chequeNumber: checkNumber ? checkNumber : "Not Added",
 		}).then((data) => {
 			if (data.error) {
