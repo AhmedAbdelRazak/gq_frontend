@@ -314,6 +314,10 @@ const UpdateProductSingle = ({ match }) => {
 		gettingAllGenders();
 		loadAllStores();
 
+		setTimeout(() => {
+			setVariablesSubmit(true);
+		}, 3000);
+
 		// eslint-disable-next-line
 	}, [match.params.productId, variablesSubmit]);
 

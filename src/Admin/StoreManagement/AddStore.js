@@ -81,7 +81,7 @@ const AddStore = () => {
 			return toast.error("Please add a store name before creating.");
 		}
 
-		if (allStores.length > 0 && allStores.length >= 6) {
+		if (allStores.length >= 5) {
 			return toast.error("No more space, Please contact your adminstrator");
 		}
 

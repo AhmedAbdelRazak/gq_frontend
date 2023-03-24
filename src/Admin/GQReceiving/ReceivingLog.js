@@ -9,11 +9,34 @@ const ReceivingLog = () => {
 	const [allReceivings, setAllReceivings] = useState([]);
 
 	const gettingReceivingLog = () => {
+		function sortByReceivingDate(a, b) {
+			const TotalAppointmentsA = a.createdAt;
+			const TotalAppointmentsB = b.createdAt;
+			let comparison = 0;
+			if (TotalAppointmentsA < TotalAppointmentsB) {
+				comparison = 1;
+			} else if (TotalAppointmentsA > TotalAppointmentsB) {
+				comparison = -1;
+			}
+			return comparison;
+		}
 		getReceivingLogs().then((data) => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
-				setAllReceivings(data.filter((i) => i.storeName === "g&q"));
+				const dateCrit = new Date(
+					new Date().setDate(new Date().getDate() - 60),
+				);
+				setAllReceivings(
+					data
+						.filter(
+							(i) =>
+								i.storeName === "g&q" &&
+								new Date(i.createdAt).setHours(0, 0, 0, 0) >=
+									new Date(dateCrit).setHours(0, 0, 0, 0),
+						)
+						.sort(sortByReceivingDate),
+				);
 			}
 		});
 	};

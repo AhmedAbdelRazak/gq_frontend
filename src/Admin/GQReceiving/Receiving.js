@@ -7,6 +7,7 @@ import { isAuthenticated } from "../../auth";
 import {
 	getColors,
 	getProducts,
+	getReceivingLogs,
 	listOrdersProcessing,
 	receiveNew,
 	updateOrder,
@@ -29,6 +30,7 @@ const Receiving = () => {
 	const [returnInvoices, setReturnInvoices] = useState([]);
 	const [exchangeInvoices, setExchangeInvoices] = useState([]);
 	const [rejectedInvoices, setRejectedInvoices] = useState([]);
+	const [allReceivings, setAllReceivings] = useState([]);
 	const [receivingSource, setReceivingSource] = useState("");
 	const [chosenInvoice, setChosenInvoice] = useState("");
 	const [selectedOrder, setSelectedOrder] = useState("");
@@ -225,6 +227,16 @@ const Receiving = () => {
 		});
 	};
 
+	const gettingReceivingLog = () => {
+		getReceivingLogs().then((data) => {
+			if (data.error) {
+				console.log(data.error);
+			} else {
+				setAllReceivings(data.filter((i) => i.storeName === "g&q"));
+			}
+		});
+	};
+
 	useEffect(() => {
 		gettingAllProducts();
 		gettingAllColors();
@@ -232,9 +244,18 @@ const Receiving = () => {
 		// eslint-disable-next-line
 	}, [chosenSubSKU]);
 
+	useEffect(() => {
+		gettingReceivingLog();
+		// eslint-disable-next-line
+	}, []);
+
 	const UpdatingOrder = (e) => {
 		e.preventDefault();
 		window.scrollTo({ top: 0, behavior: "smooth" });
+
+		if (allReceivings.length >= 1275) {
+			return toast.error("No more space, Please contact your adminstrator");
+		}
 
 		if (
 			selectedOrder2.status === "Returned and Not Refunded" ||
