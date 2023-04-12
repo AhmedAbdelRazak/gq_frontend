@@ -51,28 +51,23 @@ const MainReports = () => {
 	const [allOrders, setAllOrders] = useState([]);
 	const [requiredSKU, setRequiredSKU] = useState("");
 	const [day1, setDay1] = useState(
-		new Date(new Date().setDate(new Date().getDate() + 1)),
+		new Date(new Date().setDate(new Date().getDate() + 3)),
 	);
 	const [day2, setDay2] = useState(
-		new Date(new Date().setDate(new Date().getDate() - 7)),
+		new Date(new Date().setDate(new Date().getDate() - 30)),
 	);
 	const [allColors, setAllColors] = useState([]);
 
 	const { user, token } = isAuthenticated();
 
 	// eslint-disable-next-line
-	var today = new Date();
 
-	var today2 = new Date();
-	var yesterday = new Date();
-	var last7Days = new Date();
-	var last30Days = new Date();
-	var last90Days = new Date();
-
-	yesterday.setDate(yesterday.getDate() - 1);
-	last7Days.setDate(last7Days.getDate() - 7);
-	last30Days.setDate(last30Days.getDate() - 30);
-	last90Days.setDate(last90Days.getDate() - 200);
+	var today = new Date(new Date().setDate(new Date().getDate() + 3));
+	// var yesterday = new Date();
+	var yesterday = new Date(new Date().setDate(new Date().getDate() - 1));
+	var last7Days = new Date(new Date().setDate(new Date().getDate() - 7));
+	var last30Days = new Date(new Date().setDate(new Date().getDate() - 30));
+	var last90Days = new Date(new Date().setDate(new Date().getDate() - 200));
 
 	// var todayTimeZone = moment(new Date().toISOString()).utcOffset(120)._i;
 
@@ -93,13 +88,23 @@ const MainReports = () => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
-				if (day1 === day2) {
+				if (selectedFilter === "Today") {
 					setAllOrders(
 						data
 							.filter(
 								(i) =>
 									new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
-									new Date(day1).setHours(0, 0, 0, 0),
+									new Date().setHours(0, 0, 0, 0),
+							)
+							.sort(sortOrdersAscendingly),
+					);
+				} else if (selectedFilter === "Yesterday") {
+					setAllOrders(
+						data
+							.filter(
+								(i) =>
+									new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
+									new Date(yesterday).setHours(0, 0, 0, 0),
 							)
 							.sort(sortOrdersAscendingly),
 					);
@@ -958,7 +963,7 @@ const MainReports = () => {
 							onClick={() => {
 								setSelectedFilter("SelectAll");
 								setDay2(last90Days);
-								setDay1(today2);
+								setDay1(today);
 							}}>
 							Select All
 						</span>
@@ -967,8 +972,6 @@ const MainReports = () => {
 							className='mx-2 filterItem'
 							onClick={() => {
 								setSelectedFilter("Today");
-								setDay2(today);
-								setDay1(today2);
 							}}>
 							Today
 						</span>
@@ -977,8 +980,6 @@ const MainReports = () => {
 							className='mx-2 filterItem'
 							onClick={() => {
 								setSelectedFilter("Yesterday");
-								setDay2(yesterday);
-								setDay1(yesterday);
 							}}>
 							Yesterday
 						</span>
@@ -988,7 +989,7 @@ const MainReports = () => {
 							onClick={() => {
 								setSelectedFilter("Last7Days");
 								setDay2(last7Days);
-								setDay1(today2);
+								setDay1(today);
 							}}>
 							Last 7 Days
 						</span>
@@ -998,7 +999,7 @@ const MainReports = () => {
 							onClick={() => {
 								setSelectedFilter("Last30Days");
 								setDay2(last30Days);
-								setDay1(today2);
+								setDay1(today);
 							}}>
 							Last 30 Days
 						</span>
@@ -1299,7 +1300,13 @@ const MainReports = () => {
 							<table
 								className='table table-bordered table-md-responsive table-hover'
 								style={{ fontSize: "0.75rem", overflow: "auto" }}>
-								<thead className=''>
+								<thead
+									className=''
+									style={{
+										position: "sticky",
+										top: "0",
+										zIndex: "100",
+									}}>
 									<tr
 										style={{
 											fontSize: "0.75rem",

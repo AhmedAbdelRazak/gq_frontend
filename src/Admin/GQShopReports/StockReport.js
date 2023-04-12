@@ -132,6 +132,28 @@ const StockReport = () => {
 		return Number(QtyNoVariables) + Number(sum_array(QtyWithVariables));
 	};
 
+	const overallStockTotalCost = () => {
+		var QtyNoVariables =
+			productsWithNoVariables &&
+			productsWithNoVariables
+				.map((iii) =>
+					Number(iii.quantity) > 0
+						? Number(iii.quantity) * Number(iii.MSRP)
+						: 0,
+				)
+				.reduce((a, b) => a + b, 0);
+
+		var QtyWithVariables = productsWithVariables.map((iii) =>
+			iii.map((iiii) =>
+				Number(iiii.quantity) > 0
+					? Number(iiii.quantity) * Number(iiii.MSRP)
+					: 0,
+			),
+		);
+
+		return Number(QtyNoVariables) + Number(sum_array(QtyWithVariables));
+	};
+
 	const modifyingInventoryTable = () => {
 		let modifiedArray = allProducts.map((i) => {
 			return {
@@ -157,6 +179,13 @@ const StockReport = () => {
 							)
 							.reduce((a, b) => a + b, 0)
 					: Number(i.quantity) * Number(i.priceAfterDiscount),
+
+				totalStockCost: i.addVariables
+					? i.productAttributes
+							.map((iii) => Number(iii.quantity) * Number(iii.MSRP))
+							.reduce((a, b) => a + b, 0)
+					: Number(i.quantity) * Number(i.MSRP),
+
 				productAttributes: i.productAttributes,
 			};
 		});
@@ -193,9 +222,28 @@ const StockReport = () => {
 			align: "center",
 		},
 
+		tooltip: {
+			enabled: true,
+			y: {
+				formatter: function (val, { seriesIndex }) {
+					let percentage =
+						(
+							(val /
+								TotalStockByCategory.reduce((a, b) => a + b.productQty, 0)) *
+							100
+						).toFixed(2) + "%";
+					return `${val} (${percentage})`;
+				},
+			},
+		},
+
 		dataLabels: {
 			enabled: true,
+			formatter: function (val, opts) {
+				return `${TotalStockByCategory[opts.seriesIndex].productQty} Items `;
+			},
 		},
+
 		colors: [
 			"#004589",
 			"#F7B844",
@@ -227,13 +275,37 @@ const StockReport = () => {
 		}),
 		labels: TotalStockByCategory.map((i) => i.category),
 		title: {
-			text: "Product Categories By Total Stock Worth (L.E.)",
+			text: "Product Categories By Total Stock Worth (EGP)",
 			align: "center",
+		},
+
+		tooltip: {
+			enabled: true,
+			y: {
+				formatter: function (val, { seriesIndex }) {
+					let percentage =
+						(
+							(val /
+								TotalStockByCategory.reduce(
+									(a, b) => a + b.totalStockWorth,
+									0,
+								)) *
+							100
+						).toFixed(2) + "%";
+					return `${val} (${percentage})`;
+				},
+			},
 		},
 
 		dataLabels: {
 			enabled: true,
+			formatter: function (val, opts) {
+				return `EGP ${TotalStockByCategory[
+					opts.seriesIndex
+				].totalStockWorth.toLocaleString()}`;
+			},
 		},
+
 		colors: [
 			"#004589",
 			"#F7B844",
@@ -288,6 +360,7 @@ const StockReport = () => {
 					productSize: ii.size,
 					createdAt: i.createdAt,
 					totalStockWorth: Number(ii.quantity) * Number(ii.priceAfterDiscount),
+					totalStockCost: Number(ii.quantity) * Number(ii.MSRP),
 				};
 			});
 		});
@@ -303,14 +376,9 @@ const StockReport = () => {
 
 	destructingNestedArray && destructingNestedArray.sort(sortTopProductByQty);
 
-	console.log(
-		modifyingInventorySkusTable().map((i) => i.map((ii) => ii.productSKU)),
-	);
-
-	console.log(destructingNestedArray, "destructingNestedArray");
 	return (
 		<StockReportWrapper show={collapsed}>
-			{isAuthenticated().user.userRole === "Order Taker" ? (
+			{user.userRole === "Order Taker" || user.userRole === "Operations" ? (
 				<Redirect to='/admin/create-new-order' />
 			) : null}
 			{user.userRole === "Stock Keeper" ? (
@@ -333,7 +401,7 @@ const StockReport = () => {
 					<Navbar fromPage='StockReport' pageScrolled={pageScrolled} />
 
 					<div className='row mx-4 my-5'>
-						<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+						<div className='col-xl-3 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
 							<div className='card' style={{ background: "#f1416c" }}>
 								<div className='card-body'>
 									<h5 style={{ fontWeight: "bolder", color: "white" }}>
@@ -358,7 +426,7 @@ const StockReport = () => {
 							</div>
 						</div>
 
-						<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+						<div className='col-xl-3 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
 							<div className='card' style={{ background: "#009ef7" }}>
 								<div className='card-body'>
 									<h5 style={{ fontWeight: "bolder", color: "white" }}>
@@ -384,12 +452,13 @@ const StockReport = () => {
 						</div>
 
 						{isAuthenticated().user.userRole === "Order Taker" ? null : (
-							<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+							<div className='col-xl-3 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
 								<div className='card' style={{ background: "#50cd89" }}>
 									<div className='card-body'>
 										<h5 style={{ fontWeight: "bolder", color: "white" }}>
-											Stock Worth (L.E.)
+											Stock Worth (EGP)
 										</h5>
+
 										<CountUp
 											style={{ color: "white" }}
 											duration='3'
@@ -403,7 +472,34 @@ const StockReport = () => {
 												marginLeft: "5px",
 												fontSize: "1.2rem",
 											}}>
-											EGY Pounds
+											EGP{" "}
+										</span>
+									</div>
+								</div>
+							</div>
+						)}
+						{isAuthenticated().user.userRole === "Order Taker" ? null : (
+							<div className='col-xl-3 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+								<div className='card' style={{ background: "#185434" }}>
+									<div className='card-body'>
+										<h5 style={{ fontWeight: "bolder", color: "white" }}>
+											Total Cost (EGP)
+										</h5>
+
+										<CountUp
+											style={{ color: "white" }}
+											duration='3'
+											delay={1}
+											end={overallStockTotalCost()}
+											separator=','
+										/>
+										<span
+											style={{
+												color: "white",
+												marginLeft: "5px",
+												fontSize: "1.2rem",
+											}}>
+											EGP{" "}
 										</span>
 									</div>
 								</div>
@@ -411,7 +507,7 @@ const StockReport = () => {
 						)}
 					</div>
 					<div className='row mx-3 my-5'>
-						<div className='col-md-6 mx-auto'>
+						<div className='col-md-5 mx-auto'>
 							<Chart
 								title={donutChart1.title}
 								options={donutChart1}
@@ -419,7 +515,7 @@ const StockReport = () => {
 								type='donut'
 							/>
 						</div>
-						<div className='col-md-6 mx-auto'>
+						<div className='col-md-5 mx-auto'>
 							<Chart
 								title={donutChart2.title}
 								options={donutChart2}
@@ -430,14 +526,20 @@ const StockReport = () => {
 					</div>
 
 					<div className='col-md-12  mx-auto mb-5'>
-						<div className='card'>
+						<div
+							className='card'
+							style={{
+								maxHeight: "790px",
+								overflow: "auto",
+								minHeight: "487px",
+							}}>
 							<h5
 								style={{
 									textAlign: "center",
 									marginTop: "10px",
 									fontWeight: "bold",
 								}}>
-								G&Q Shop Inventory Report Grouped By Product Name
+								G&Q Shop Inventory Report Grouped By Product Name (Parent SKU)
 							</h5>
 							<div className='col-md-10 mx-auto'>
 								<hr />
@@ -446,8 +548,14 @@ const StockReport = () => {
 							<div className='tableData'>
 								<table
 									className='table table-bordered table-md-responsive table-hover '
-									style={{ fontSize: "0.75rem", overflowX: "auto" }}>
-									<thead className=''>
+									style={{ fontSize: "0.75rem", overflow: "auto" }}>
+									<thead
+										className=''
+										style={{
+											position: "sticky",
+											top: "0",
+											zIndex: "100",
+										}}>
 										<tr
 											style={{
 												fontSize: "0.75rem",
@@ -460,10 +568,10 @@ const StockReport = () => {
 											<th scope='col'>Product Name</th>
 											<th scope='col'>Product Main SKU</th>
 											<th scope='col'>Product Total Price</th>
+											<th scope='col'>Product Total Cost</th>
 											<th scope='col'>Stock Onhand</th>
 											<th scope='col'>Product Creation Date</th>
 											<th scope='col'>Product Created By</th>
-											<th scope='col'>Product Image</th>
 										</tr>
 									</thead>
 									<tbody
@@ -480,7 +588,8 @@ const StockReport = () => {
 
 													<td>{s.productName}</td>
 													<td>{s.productSKU}</td>
-													<td>{s.totalStockWorth}</td>
+													<td>EGP {s.totalStockWorth.toLocaleString()}</td>
+													<td>EGP {s.totalStockCost.toLocaleString()}</td>
 													<td
 														style={{
 															background: s.productQty <= 0 ? "#fdd0d0" : "",
@@ -489,7 +598,7 @@ const StockReport = () => {
 													</td>
 													<td>{new Date(s.createdAt).toDateString()}</td>
 													<td>{s.addedBy.name}</td>
-													<td style={{ width: "15%", textAlign: "center" }}>
+													{/* <td style={{ width: "15%", textAlign: "center" }}>
 														<img
 															width='40%'
 															height='40%'
@@ -501,9 +610,7 @@ const StockReport = () => {
 															}
 															alt={s.productName}
 														/>
-													</td>
-
-													{/* <td>{Invoice(s)}</td> */}
+													</td> */}
 												</tr>
 											);
 										})}
@@ -514,7 +621,13 @@ const StockReport = () => {
 					</div>
 
 					<div className='col-md-12  mx-auto mb-5'>
-						<div className='card'>
+						<div
+							className='card'
+							style={{
+								maxHeight: "1500px",
+								overflow: "auto",
+								minHeight: "487px",
+							}}>
 							<h5
 								style={{
 									textAlign: "center",
@@ -522,6 +635,7 @@ const StockReport = () => {
 									fontWeight: "bold",
 								}}>
 								G&Q Shop Inventory Report Grouped By Product Name And SKU's
+								(Variations)
 							</h5>
 							<div className='col-md-10 mx-auto'>
 								<hr />
@@ -530,8 +644,14 @@ const StockReport = () => {
 							<div className='tableData'>
 								<table
 									className='table table-bordered table-md-responsive table-hover '
-									style={{ fontSize: "0.75rem", overflowX: "auto" }}>
-									<thead className=''>
+									style={{ fontSize: "0.75rem", overflow: "auto" }}>
+									<thead
+										className=''
+										style={{
+											position: "sticky",
+											top: "0",
+											zIndex: "100",
+										}}>
 										<tr
 											style={{
 												fontSize: "0.75rem",
@@ -544,6 +664,7 @@ const StockReport = () => {
 											<th scope='col'>Product Name</th>
 											<th scope='col'>Product SKU </th>
 											<th scope='col'>Product Total Price</th>
+											<th scope='col'>Product Total Cost</th>
 											<th scope='col'>Stock Onhand</th>
 											<th scope='col'>Color</th>
 											<th scope='col'>Size</th>
@@ -566,7 +687,8 @@ const StockReport = () => {
 
 														<td>{s.productName}</td>
 														<td>{s.productSKU}</td>
-														<td>{s.totalStockWorth}</td>
+														<td> EGP {s.totalStockWorth.toLocaleString()}</td>
+														<td> EGP {s.totalStockCost.toLocaleString()}</td>
 														<td
 															style={{
 																background: s.productQty <= 0 ? "#fdd0d0" : "",

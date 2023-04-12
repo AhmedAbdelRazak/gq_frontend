@@ -724,7 +724,13 @@ const OperationsReport = () => {
 						<table
 							className='table table-bordered table-md-responsive table-hover'
 							style={{ fontSize: "0.75rem", overflow: "auto" }}>
-							<thead className=''>
+							<thead
+								className=''
+								style={{
+									position: "sticky",
+									top: "0",
+									zIndex: "100",
+								}}>
 								<tr
 									style={{
 										fontSize: "0.75rem",

@@ -111,6 +111,7 @@ import FinanceMainDashboard from "./Admin/GQFinancialAffairs/FinanceMainDashboar
 import FinanceMainReport from "./Admin/GQFinancialAffairs/FinanceReports/FinanceMainReport";
 import AddVendor from "./Admin/GQFinancialAffairs/AddingVendors/AddVendor";
 import Billing from "./Admin/GQFinancialAffairs/Billing";
+import InvoicePDF2 from "./Admin/Orders/InvoicePDF2";
 
 const App = () => {
 	// eslint-disable-next-line
@@ -455,6 +456,12 @@ const App = () => {
 					exact
 					component={InvoicePDF}
 				/>
+				<AdminRoute
+					path='/admin/single-order/invoice2/:orderId'
+					exact
+					component={InvoicePDF2}
+				/>
+
 				<AdminRoute
 					path='/admin/exchange-order/:orderId'
 					exact

@@ -101,6 +101,28 @@ const UpdateProduct = () => {
 		return Number(QtyNoVariables) + Number(sum_array(QtyWithVariables));
 	};
 
+	const overallStockTotalCost = () => {
+		var QtyNoVariables =
+			productsWithNoVariables &&
+			productsWithNoVariables
+				.map((iii) =>
+					Number(iii.quantity) > 0
+						? Number(iii.quantity) * Number(iii.MSRP)
+						: 0,
+				)
+				.reduce((a, b) => a + b, 0);
+
+		var QtyWithVariables = productsWithVariables.map((iii) =>
+			iii.map((iiii) =>
+				Number(iiii.quantity) > 0
+					? Number(iiii.quantity) * Number(iiii.MSRP)
+					: 0,
+			),
+		);
+
+		return Number(QtyNoVariables) + Number(sum_array(QtyWithVariables));
+	};
+
 	// console.log(overallStockWorth(), "overallStockWorth");
 
 	function search(orders) {
@@ -300,7 +322,7 @@ const UpdateProduct = () => {
 
 					<div className=' tableWrapper container-fluid'>
 						<div className='row'>
-							<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+							<div className='col-xl-3 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
 								<div className='card' style={{ background: "#f1416c" }}>
 									<div className='card-body'>
 										<h5 style={{ fontWeight: "bolder", color: "white" }}>
@@ -325,7 +347,7 @@ const UpdateProduct = () => {
 								</div>
 							</div>
 
-							<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+							<div className='col-xl-3 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
 								<div className='card' style={{ background: "#009ef7" }}>
 									<div className='card-body'>
 										<h5 style={{ fontWeight: "bolder", color: "white" }}>
@@ -353,11 +375,11 @@ const UpdateProduct = () => {
 							{isAuthenticated().user.userRole === "Order Taker" ||
 							isAuthenticated().user.userRole === "Operations" ||
 							isAuthenticated().user.userRole === "Stock Keeper" ? null : (
-								<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+								<div className='col-xl-3 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
 									<div className='card' style={{ background: "#50cd89" }}>
 										<div className='card-body'>
 											<h5 style={{ fontWeight: "bolder", color: "white" }}>
-												Stock Worth (L.E.)
+												Stock Worth (EGP)
 											</h5>
 											<CountUp
 												style={{ color: "white" }}
@@ -372,7 +394,36 @@ const UpdateProduct = () => {
 													marginLeft: "5px",
 													fontSize: "1.2rem",
 												}}>
-												EGY Pounds
+												EGP
+											</span>
+										</div>
+									</div>
+								</div>
+							)}
+
+							{isAuthenticated().user.userRole === "Order Taker" ||
+							isAuthenticated().user.userRole === "Operations" ||
+							isAuthenticated().user.userRole === "Stock Keeper" ? null : (
+								<div className='col-xl-3 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
+									<div className='card' style={{ background: "#185434" }}>
+										<div className='card-body'>
+											<h5 style={{ fontWeight: "bolder", color: "white" }}>
+												Total Cost (EGP)
+											</h5>
+											<CountUp
+												style={{ color: "white" }}
+												duration='3'
+												delay={1}
+												end={overallStockTotalCost()}
+												separator=','
+											/>
+											<span
+												style={{
+													color: "white",
+													marginLeft: "5px",
+													fontSize: "1.2rem",
+												}}>
+												EGP
 											</span>
 										</div>
 									</div>

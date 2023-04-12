@@ -599,6 +599,23 @@ const SingleOrderPage = (props) => {
 									Display Invoice
 								</Link>
 							</h5>
+
+							{updateSingleOrder &&
+							updateSingleOrder.status &&
+							(updateSingleOrder.status.includes("Exchange") ||
+								updateSingleOrder.status.includes("Exchanged")) ? (
+								<h5
+									style={{
+										fontWeight: "bold",
+										textAlign: "center",
+										marginBottom: "20px",
+									}}>
+									<Link
+										to={`/admin/single-order/invoice2/${updateSingleOrder._id}`}>
+										Display Invoice 2 (For Exchange)
+									</Link>
+								</h5>
+							) : null}
 							{updateSingleOrder &&
 							updateSingleOrder.trackingNumber &&
 							updateSingleOrder.trackingNumber !== "Not Added" ? (

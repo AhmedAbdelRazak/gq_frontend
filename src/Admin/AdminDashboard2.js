@@ -34,9 +34,10 @@ const AdminDashboard2 = () => {
 	const [allReceivings, setAllReceivings] = useState([]);
 	const [allProducts, setAllProducts] = useState([]);
 	const [modalVisible3, setModalVisible3] = useState(false);
+	const [selectedFilter, setSelectedFilter] = useState("");
 	// eslint-disable-next-line
 	const [day1, setDay1] = useState(
-		new Date(new Date().setDate(new Date().getDate())),
+		new Date(new Date().setDate(new Date().getDate() + 3)),
 	);
 	const [day2, setDay2] = useState(
 		new Date(new Date().setDate(new Date().getDate() - 30)),
@@ -45,18 +46,33 @@ const AdminDashboard2 = () => {
 
 	const { user, token } = isAuthenticated();
 
+	var today = new Date(new Date().setDate(new Date().getDate() + 3));
+	// var yesterday = new Date();
+	var yesterday = new Date(new Date().setDate(new Date().getDate() - 1));
+	var last7Days = new Date(new Date().setDate(new Date().getDate() - 7));
+	var last15Days = new Date(new Date().setDate(new Date().getDate() - 15));
+	var last30Days = new Date(new Date().setDate(new Date().getDate() - 30));
+	var last90Days = new Date(new Date().setDate(new Date().getDate() - 90));
+
 	const loadOrders = () => {
 		listOrdersDates(user._id, token, day1, day2).then((data) => {
 			if (data.error) {
 				console.log(data.error);
 			} else {
-				if (day1 === day2) {
-					console.log(data, "data");
+				if (selectedFilter === "Today") {
 					setAllOrders(
 						data.filter(
 							(i) =>
 								new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
-								new Date(day1).setHours(0, 0, 0, 0),
+								new Date().setHours(0, 0, 0, 0),
+						),
+					);
+				} else if (selectedFilter === "Yesterday") {
+					setAllOrders(
+						data.filter(
+							(i) =>
+								new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
+								new Date(yesterday).setHours(0, 0, 0, 0),
 						),
 					);
 				} else {
@@ -103,26 +119,17 @@ const AdminDashboard2 = () => {
 		gettingAllProducts();
 		loadOrdersAggregate();
 		// eslint-disable-next-line
-	}, [day1, day2]);
+	}, [day1, day2, selectedFilter]);
 
 	useEffect(() => {
 		loadOrders2();
 		// eslint-disable-next-line
 	}, []);
 
-	var today = new Date();
-	var today2 = new Date();
-	// var yesterday = new Date();
-	var yesterday = new Date(new Date().setDate(new Date().getDate() - 1));
-	var last7Days = new Date(new Date().setDate(new Date().getDate() - 7));
-	var last15Days = new Date(new Date().setDate(new Date().getDate() - 15));
-	var last30Days = new Date(new Date().setDate(new Date().getDate() - 30));
-	var last90Days = new Date(new Date().setDate(new Date().getDate() - 90));
-
 	let todaysOrders = allOrders2.filter(
 		(i) =>
 			new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
-				new Date(today).setHours(0, 0, 0, 0) &&
+				new Date().setHours(0, 0, 0, 0) &&
 			i.status !== "Cancelled" &&
 			i.status !== "Returned" &&
 			!i.status.includes("Rejected"),
@@ -747,74 +754,6 @@ const AdminDashboard2 = () => {
 					/>
 					<div className='mx-auto'>
 						<div className='container-fluid'>
-							{/* <div className='my-3 text-center'>
-								<span
-									style={{
-										fontSize: "0.9rem",
-										color: "black",
-										textAlign: "center",
-										fontWeight: "normal",
-									}}>
-									(Selected Date Range From{" "}
-									<strong> {new Date(day2).toDateString()}</strong> to{" "}
-									<strong>{new Date(day1).toDateString()}</strong>)
-								</span>
-							</div> */}
-
-							{/* <div className='row mb-3'>
-								<div className='col-xl-3 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-									<div className='' style={{ background: "#f1416c" }}>
-										<div className='card-body'>
-											<h5 style={{ fontWeight: "bolder", color: "white" }}>
-												Overall Orders Count
-											</h5>
-											<CountUp
-												style={{ color: "white" }}
-												duration='3'
-												delay={1}
-												end={allOrders.length}
-												separator=','
-											/>
-										</div>
-									</div>
-								</div>
-
-								<div className='col-xl-3 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-									<div className='' style={{ background: "#009ef7" }}>
-										<div className='card-body'>
-											<h5 style={{ fontWeight: "bolder", color: "white" }}>
-												Overall Ordered Items
-											</h5>
-											<CountUp
-												style={{ color: "white" }}
-												duration='3'
-												delay={1}
-												end={sumOfLast30DaysQty}
-												separator=','
-											/>
-										</div>
-									</div>
-								</div>
-								{user.userRole === "Order Taker" ? null : (
-									<div className='col-xl-3 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-										<div className='' style={{ background: "#50cd89" }}>
-											<div className='card-body'>
-												<h5 style={{ fontWeight: "bolder", color: "white" }}>
-													Total Amount (EGP)
-												</h5>
-												<CountUp
-													style={{ color: "white" }}
-													duration='3'
-													delay={1}
-													end={sumOfLast30DaysRevenue}
-													separator=','
-												/>
-											</div>
-										</div>
-									</div>
-								)}
-							</div> */}
-
 							<Section1
 								chosenCard={chosenCard}
 								allOrders={allOrders}
@@ -836,6 +775,7 @@ const AdminDashboard2 = () => {
 								last7daysOrdersRevenue={last7daysOrdersRevenue}
 								last30daysOrdersRevenue={last30daysOrdersRevenue}
 								allOrders2={allOrders2}
+								selectedFilter={selectedFilter}
 							/>
 							<div className='row mx-auto mt-3'>
 								<div className='col-xl-4 col-lg-8 col-md-11 mx-auto'>
@@ -844,16 +784,26 @@ const AdminDashboard2 = () => {
 										style={{ maxHeight: "485px", overflow: "auto" }}>
 										<h5 className='mb-4 mt-2'>
 											Top Employees{" "}
-											<span className='ml-1' style={{ fontSize: "13px" }}>
-												From:{" "}
-												<strong style={{ color: "#006ca9" }}>
-													{new Date(day2).toLocaleDateString()}
-												</strong>{" "}
-												To:{" "}
-												<strong style={{ color: "#006ca9" }}>
-													{new Date(day1).toLocaleDateString()}
-												</strong>
-											</span>
+											{selectedFilter === "Today" ||
+											selectedFilter === "Yesterday" ? (
+												<span
+													className='ml-1'
+													style={{ fontSize: "13px", color: "#006ca9" }}>
+													{" "}
+													({selectedFilter})
+												</span>
+											) : (
+												<span className='ml-1' style={{ fontSize: "13px" }}>
+													From:{" "}
+													<strong style={{ color: "#006ca9" }}>
+														{new Date(day2).toLocaleDateString()}
+													</strong>{" "}
+													To:{" "}
+													<strong style={{ color: "#006ca9" }}>
+														{new Date(day1).toLocaleDateString()}
+													</strong>
+												</span>
+											)}
 										</h5>{" "}
 										{Employees_TotalOrders_Revenue &&
 											Employees_TotalOrders_Revenue.sort(sortByTopEmployee).map(
@@ -915,19 +865,20 @@ const AdminDashboard2 = () => {
 													onChange={(e) => {
 														if (e.target.value === "SelectAll") {
 															setDay2(last90Days);
-															setDay1(today2);
-														} else if (e.target.value === "Today") {
-															setDay2(today);
 															setDay1(today);
+															setSelectedFilter("");
+														} else if (e.target.value === "Today") {
+															setSelectedFilter("Today");
 														} else if (e.target.value === "Yesterday") {
-															setDay2(yesterday);
-															setDay1(yesterday);
+															setSelectedFilter("Yesterday");
 														} else if (e.target.value === "Last7Days") {
 															setDay2(last7Days);
-															setDay1(today2);
+															setDay1(today);
+															setSelectedFilter("");
 														} else if (e.target.value === "Last30Days") {
 															setDay2(last30Days);
-															setDay1(today2);
+															setDay1(today);
+															setSelectedFilter("");
 														} else {
 														}
 													}}

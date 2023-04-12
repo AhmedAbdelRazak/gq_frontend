@@ -19,6 +19,7 @@ const Section2 = ({
 	last7daysOrdersRevenue,
 	last30daysOrdersRevenue,
 	allOrders2,
+	selectedFilter,
 }) => {
 	return (
 		<Section2Wrapper className='row mx-auto mt-3'>
@@ -27,9 +28,15 @@ const Section2 = ({
 					<h5 className='text-center'>
 						Sales By Store
 						<span style={{ fontSize: "13px" }}>
-							{" "}
-							(From: {new Date(day2).toLocaleDateString()} to:{" "}
-							{new Date(day1).toLocaleDateString()})
+							{selectedFilter === "Today" || selectedFilter === "Yesterday" ? (
+								<span> ({selectedFilter})</span>
+							) : (
+								<span>
+									{" "}
+									(From: {new Date(day2).toLocaleDateString()} to:{" "}
+									{new Date(day1).toLocaleDateString()})
+								</span>
+							)}
 						</span>
 					</h5>
 
