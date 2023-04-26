@@ -1,8 +1,8 @@
 /** @format */
 
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import styled from "styled-components";
-import { isAuthenticated } from "../../auth";
+import {isAuthenticated} from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import Navbar from "../AdminNavMenu/Navbar";
 import CountUp from "react-countup";
@@ -16,10 +16,10 @@ import {
 	listOrdersDates,
 	removeOrder,
 } from "../apiAdmin";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import DarkBG from "../AdminMenu/DarkBG";
-import { toast } from "react-toastify";
-import { GroupOutlined } from "@ant-design/icons";
+import {toast} from "react-toastify";
+import {GroupOutlined} from "@ant-design/icons";
 import FiltersModal from "./UpdateModals/FiltersModal";
 import Pagination from "./Pagination";
 import OrdersCountCards from "../CardsBreakDown/OrdersCountCards";
@@ -69,10 +69,10 @@ const OrdersHist = () => {
 	const [postsPerPage, setPostsPerPage] = useState(100);
 	const [allProducts, setAllProducts] = useState([]);
 	const [day1, setDay1] = useState(
-		new Date(new Date().setDate(new Date().getDate() + 3)),
+		new Date(new Date().setDate(new Date().getDate() + 3))
 	);
 	const [day2, setDay2] = useState(
-		new Date(new Date().setDate(new Date().getDate() - 30)),
+		new Date(new Date().setDate(new Date().getDate() - 30))
 	);
 	const [chosenCard, setChosenCard] = useState("OrdersCountCard");
 
@@ -81,7 +81,7 @@ const OrdersHist = () => {
 	// eslint-disable-next-line
 	const [aramexResponse, setAramexResponse] = useState("");
 
-	const { user, token } = isAuthenticated();
+	const {user, token} = isAuthenticated();
 
 	// eslint-disable-next-line
 	var today = new Date();
@@ -122,89 +122,89 @@ const OrdersHist = () => {
 					setAllOrders(
 						data
 							.filter((i) => i.status === "In Processing")
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 					setExcelDataSet(
 						data
 							.filter((i) => i.status === "In Processing")
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 				} else if (selectedFilter === "OnHold") {
 					setAllOrders(
 						data
 							.filter((i) => i.status === "On Hold")
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 					setExcelDataSet(
 						data
 							.filter((i) => i.status === "On Hold")
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 				} else if (selectedFilter === "Shipped") {
 					setAllOrders(
 						data
 							.filter((i) => i.status === "Shipped")
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 					setExcelDataSet(
 						data
 							.filter((i) => i.status === "Shipped")
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 				} else if (selectedFilter === "Delivered") {
 					setAllOrders(
 						data
 							.filter((i) => i.status === "Delivered")
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 					setExcelDataSet(
 						data
 							.filter((i) => i.status === "Delivered")
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 				} else if (selectedFilter === "Cancelled") {
 					setAllOrders(
 						data
 							.filter((i) => i.status === "Cancelled")
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 					setExcelDataSet(
 						data
 							.filter((i) => i.status === "Cancelled")
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 				} else if (selectedFilter === "In Transit | Rejected") {
 					setAllOrders(
 						data
 							.filter((i) => i.status === "In Transit | Rejected")
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 					setExcelDataSet(
 						data
 							.filter((i) => i.status === "In Transit | Rejected")
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 				} else if (selectedFilter === "In Transit") {
 					setAllOrders(
 						data
 							.filter((i) => i.status === "In Transit")
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 					setExcelDataSet(
 						data
 							.filter((i) => i.status === "In Transit")
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 				} else if (selectedFilter === "NoInvoice") {
 					setAllOrders(
 						data
 							.filter((i) => i.invoiceNumber === "Not Added")
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 					setExcelDataSet(
 						data
 							.filter((i) => i.invoiceNumber === "Not Added")
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 				} else if (selectedFilter === "Exchanged") {
 					setAllOrders(
@@ -212,35 +212,35 @@ const OrdersHist = () => {
 							.filter(
 								(i) =>
 									i.status.includes("Exchange") ||
-									i.status.includes("Exchanged"),
+									i.status.includes("Exchanged")
 							)
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 					setExcelDataSet(
 						data
 							.filter(
 								(i) =>
 									i.status.includes("Exchange") ||
-									i.status.includes("Exchanged"),
+									i.status.includes("Exchanged")
 							)
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 				} else if (selectedFilter === "Return") {
 					setAllOrders(
 						data
 							.filter(
 								(i) =>
-									i.status.includes("Return") || i.status.includes("Returned"),
+									i.status.includes("Return") || i.status.includes("Returned")
 							)
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 					setExcelDataSet(
 						data
 							.filter(
 								(i) =>
-									i.status.includes("Return") || i.status.includes("Returned"),
+									i.status.includes("Return") || i.status.includes("Returned")
 							)
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 				} else if (selectedFilter === "Today") {
 					setAllOrders(
@@ -248,18 +248,18 @@ const OrdersHist = () => {
 							.filter(
 								(i) =>
 									new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
-									new Date(today).setHours(0, 0, 0, 0),
+									new Date(today).setHours(0, 0, 0, 0)
 							)
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 					setExcelDataSet(
 						data
 							.filter(
 								(i) =>
 									new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
-									new Date(today).setHours(0, 0, 0, 0),
+									new Date(today).setHours(0, 0, 0, 0)
 							)
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 				} else if (selectedFilter === "Yesterday") {
 					setAllOrders(
@@ -267,18 +267,18 @@ const OrdersHist = () => {
 							.filter(
 								(i) =>
 									new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
-									new Date(yesterday).setHours(0, 0, 0, 0),
+									new Date(yesterday).setHours(0, 0, 0, 0)
 							)
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 					setExcelDataSet(
 						data
 							.filter(
 								(i) =>
 									new Date(i.orderCreationDate).setHours(0, 0, 0, 0) ===
-									new Date(yesterday).setHours(0, 0, 0, 0),
+									new Date(yesterday).setHours(0, 0, 0, 0)
 							)
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 				} else if (selectedFilter === "Last7Days") {
 					setAllOrders(
@@ -286,18 +286,18 @@ const OrdersHist = () => {
 							.filter(
 								(i) =>
 									new Date(i.orderCreationDate).setHours(0, 0, 0, 0) >=
-									new Date(last7Days).setHours(0, 0, 0, 0),
+									new Date(last7Days).setHours(0, 0, 0, 0)
 							)
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 					setExcelDataSet(
 						data
 							.filter(
 								(i) =>
 									new Date(i.orderCreationDate).setHours(0, 0, 0, 0) >=
-									new Date(last7Days).setHours(0, 0, 0, 0),
+									new Date(last7Days).setHours(0, 0, 0, 0)
 							)
-							.sort(sortOrdersAscendingly),
+							.sort(sortOrdersAscendingly)
 					);
 				} else {
 					setAllOrders(data.sort(sortOrdersAscendingly));
@@ -412,7 +412,8 @@ const OrdersHist = () => {
 							fontSize: "1.05rem",
 							color: "black",
 							borderRadius: "20px",
-						}}>
+						}}
+					>
 						Search
 					</label>
 					<input
@@ -429,7 +430,7 @@ const OrdersHist = () => {
 							}
 						}}
 						placeholder='Search By Client Phone, Client Name, Status Or Carrier'
-						style={{ borderRadius: "20px", width: "50%" }}
+						style={{borderRadius: "20px", width: "50%"}}
 					/>
 				</div>
 
@@ -441,7 +442,8 @@ const OrdersHist = () => {
 				/>
 				<table
 					className='table table-bordered table-md-responsive table-hover text-center'
-					style={{ fontSize: "0.75rem" }}>
+					style={{fontSize: "0.75rem"}}
+				>
 					<thead className='thead-light'>
 						<tr>
 							{/* <th scope='col'>Order #</th> */}
@@ -453,7 +455,7 @@ const OrdersHist = () => {
 							<th scope='col'>Phone</th>
 							<th scope='col'>Amount</th>
 							<th scope='col'>Store</th>
-							<th scope='col' style={{ width: "6%" }}>
+							<th scope='col' style={{width: "6%"}}>
 								Taker
 							</th>
 							<th scope='col'>Governorate</th>
@@ -461,7 +463,7 @@ const OrdersHist = () => {
 							<th scope='col'>Tracking #</th>
 							<th scope='col'>Comments</th>
 							<th scope='col'>Quantity</th>
-							<th scope='col' style={{ width: "9%" }}>
+							<th scope='col' style={{width: "9%"}}>
 								Details
 							</th>
 						</tr>
@@ -478,7 +480,7 @@ const OrdersHist = () => {
 									pickedSub &&
 									pickedSub.productAttributes &&
 									pickedSub.productAttributes.filter(
-										(iii) => iii.SubSKU === SubSKU,
+										(iii) => iii.SubSKU === SubSKU
 									)[0];
 								const QtyChecker =
 									GetSpecificSubSKU && GetSpecificSubSKU.quantity < OrderedQty;
@@ -492,9 +494,9 @@ const OrdersHist = () => {
 										checkingWithLiveStock(
 											iiii.productId,
 											iiii.SubSKU,
-											iiii.OrderedQty,
-										),
-									),
+											iiii.OrderedQty
+										)
+									)
 							);
 							var merged = [].concat.apply([], stockCheckHelper);
 							var finalChecker =
@@ -502,11 +504,11 @@ const OrdersHist = () => {
 							return (
 								<tr key={i} className=''>
 									{s.orderCreationDate ? (
-										<td style={{ width: "10%" }}>
+										<td style={{width: "10%"}}>
 											{new Date(s.orderCreationDate).toDateString()}{" "}
 										</td>
 									) : (
-										<td style={{ width: "10%" }}>
+										<td style={{width: "10%"}}>
 											{new Date(s.createdAt).toDateString()}{" "}
 										</td>
 									)}
@@ -516,7 +518,8 @@ const OrdersHist = () => {
 											width: "10%",
 											background:
 												s.invoiceNumber === "Not Added" ? "#f4e4e4" : "",
-										}}>
+										}}
+									>
 										{s.invoiceNumber}
 									</td>
 									<td
@@ -552,28 +555,37 @@ const OrdersHist = () => {
 													: s.status === "Cancelled"
 													? "white"
 													: "black",
-										}}>
+										}}
+									>
 										{s.status}
 									</td>
 
-									<td style={{ width: "11%", fontSize: "0.7rem" }}>
+									<td style={{width: "11%", fontSize: "0.7rem"}}>
 										{s.customerDetails.fullName}
 									</td>
 									<td>{s.customerDetails.phone}</td>
-									<td>{s.totalAmountAfterDiscount.toFixed(0)} L.E.</td>
+									<td style={{width: "7.5%"}}>
+										{Number(
+											Number(s.totalAmountAfterDiscount) +
+												(Number(s.totalAmount) - Number(s.shippingFees)) * 0.01
+										).toFixed(2)}{" "}
+										L.E.
+									</td>
 									<td
 										style={{
 											textTransform: "uppercase",
 											width: "5.8%",
 											fontSize: "0.7rem",
-										}}>
+										}}
+									>
 										{s.orderSource}
 									</td>
 									<td
 										style={{
 											background:
 												s.employeeData === "Online Order" ? "#ffc994" : "",
-										}}>
+										}}
+									>
 										{s.employeeData.name
 											? s.employeeData.name
 											: s.employeeData === "Online Order"
@@ -583,10 +595,10 @@ const OrdersHist = () => {
 									<td>{s.customerDetails.state}</td>
 									{/* <td>{s.customerDetails.cityName}</td> */}
 
-									<td style={{ width: "8%" }}>
+									<td style={{width: "8%"}}>
 										{s.trackingNumber ? s.trackingNumber : "Not Added"}
 									</td>
-									<td style={{ width: "10%" }}>
+									<td style={{width: "10%"}}>
 										{s.customerDetails.orderComment
 											? s.customerDetails.orderComment
 											: "Not Added"}
@@ -600,7 +612,8 @@ const OrdersHist = () => {
 												cursor: "pointer",
 												fontSize: "10px,",
 												fontWeight: "bold",
-											}}>
+											}}
+										>
 											<Link to={`/admin/single-order/${s._id}`}>
 												Show More....
 											</Link>
@@ -646,7 +659,8 @@ const OrdersHist = () => {
 												fontSize: "10px,",
 												color: "darkgray",
 												fontWeight: "bold",
-											}}>
+											}}
+										>
 											<Link to={`/admin/single-order/${s._id}`}>
 												Show More....
 											</Link>
@@ -688,7 +702,7 @@ const OrdersHist = () => {
 		const onScroll = () => setOffset(window.pageYOffset);
 		// clean up code
 		window.removeEventListener("scroll", onScroll);
-		window.addEventListener("scroll", onScroll, { passive: true });
+		window.addEventListener("scroll", onScroll, {passive: true});
 		if (window.pageYOffset > 0) {
 			setPageScrolled(true);
 		} else {
@@ -702,14 +716,20 @@ const OrdersHist = () => {
 		excelDataSet.map((i, counter) => {
 			var descriptionChecker = i.chosenProductQtyWithVariables.map((iii) =>
 				iii.map(
-					(iiii) => "SKU: " + iiii.SubSKU + ", Qty: " + iiii.OrderedQty,
+					(iiii) => "SKU: " + iiii.SubSKU + ", Qty: " + iiii.OrderedQty
 					// "  /  " +
 					// iiii.productName,
-				),
+				)
 			);
 
 			var merged = [].concat.apply([], descriptionChecker);
 			var merged2 = [].concat.apply([], merged);
+
+			var gettingTotalAmount = Number(
+				Number(i.totalAmountAfterDiscount) +
+					(Number(i.totalAmount) - Number(i.shippingFees)) * 0.01
+			).toFixed(2);
+
 			return {
 				Index: counter + 1,
 				Name: i.customerDetails.fullName,
@@ -725,7 +745,7 @@ const OrdersHist = () => {
 						: merged2.length === 3
 						? merged2[0] + " | " + merged2[1] + " | " + merged2[2]
 						: merged2[0],
-				totalAmount: i.totalAmountAfterDiscount,
+				totalAmount: gettingTotalAmount,
 				ReferenceNumber:
 					i.invoiceNumber !== "Not Added" ? i.invoiceNumber : i.OTNumber,
 				parcels: 1,
@@ -748,10 +768,12 @@ const OrdersHist = () => {
 					<Link
 						className='btn btn-danger mr-5 ml-2'
 						// onClick={() => exportPDF()}
-						to='#'>
+						to='#'
+					>
 						Download Report (Excel)
 					</Link>
-				}>
+				}
+			>
 				<ExcelSheet data={adjustedExcelData} name='GQ_Orders'>
 					<ExcelColumn label='#' value='Index' />
 					<ExcelColumn label='Name' value='Name' />
@@ -784,7 +806,8 @@ const OrdersHist = () => {
 						fontWeight: "bolder",
 						marginTop: "50px",
 						fontSize: "2.5rem",
-					}}>
+					}}
+				>
 					Loading....
 				</div>
 			) : (
@@ -816,7 +839,8 @@ const OrdersHist = () => {
 									textAlign: "right",
 									fontSize: "13px",
 								}}
-								className='py-3 mb-5'>
+								className='py-3 mb-5'
+							>
 								<span
 									style={isActive("SelectAll", selectedFilter)}
 									className='mx-2 filterItem'
@@ -824,25 +848,29 @@ const OrdersHist = () => {
 										setSelectedFilter("SelectAll");
 										setDay2(last90Days);
 										setDay1(today);
-									}}>
+									}}
+								>
 									Select All
 								</span>
 								<span
 									style={isActive("Today", selectedFilter)}
 									className='mx-2 filterItem'
-									onClick={() => setSelectedFilter("Today")}>
+									onClick={() => setSelectedFilter("Today")}
+								>
 									Today
 								</span>
 								<span
 									style={isActive("Yesterday", selectedFilter)}
 									className='mx-2 filterItem'
-									onClick={() => setSelectedFilter("Yesterday")}>
+									onClick={() => setSelectedFilter("Yesterday")}
+								>
 									Yesterday
 								</span>
 								<span
 									style={isActive("Last7Days", selectedFilter)}
 									className='mx-2 filterItem'
-									onClick={() => setSelectedFilter("Last7Days")}>
+									onClick={() => setSelectedFilter("Last7Days")}
+								>
 									Last 7 Days
 								</span>
 
@@ -852,13 +880,15 @@ const OrdersHist = () => {
 									onClick={() => {
 										setModalVisible(true);
 										setSelectedFilter("Group");
-									}}>
+									}}
+								>
 									Group <GroupOutlined />
 								</span>
 							</div>
 							<h3
-								style={{ color: "#009ef7", fontWeight: "bold" }}
-								className='mx-auto text-center mb-5'>
+								style={{color: "#009ef7", fontWeight: "bold"}}
+								className='mx-auto text-center mb-5'
+							>
 								SALES HISTORY <br />
 								<span
 									style={{
@@ -866,7 +896,8 @@ const OrdersHist = () => {
 										color: "black",
 										textAlign: "center",
 										fontWeight: "normal",
-									}}>
+									}}
+								>
 									(Selected Date Range From{" "}
 									<strong> {new Date(day2).toDateString()}</strong> to{" "}
 									<strong>{new Date(day1).toDateString()}</strong>)
@@ -876,13 +907,13 @@ const OrdersHist = () => {
 							<div className='container-fluid'>
 								<div className='row'>
 									<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-										<div className='card' style={{ background: "#f1416c" }}>
+										<div className='card' style={{background: "#f1416c"}}>
 											<div className='card-body'>
-												<h5 style={{ fontWeight: "bolder", color: "white" }}>
+												<h5 style={{fontWeight: "bolder", color: "white"}}>
 													Overall Orders Count
 												</h5>
 												<CountUp
-													style={{ color: "white" }}
+													style={{color: "white"}}
 													duration='3'
 													delay={1}
 													end={allOrders.length}
@@ -893,13 +924,13 @@ const OrdersHist = () => {
 									</div>
 
 									<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-										<div className='card' style={{ background: "#009ef7" }}>
+										<div className='card' style={{background: "#009ef7"}}>
 											<div className='card-body'>
-												<h5 style={{ fontWeight: "bolder", color: "white" }}>
+												<h5 style={{fontWeight: "bolder", color: "white"}}>
 													Overall Ordered Items
 												</h5>
 												<CountUp
-													style={{ color: "white" }}
+													style={{color: "white"}}
 													duration='3'
 													delay={1}
 													end={ArrayOfQty}
@@ -912,13 +943,13 @@ const OrdersHist = () => {
 									user.userRole === "Operations" ||
 									user.userRole === "Stock Keeper" ? null : (
 										<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-											<div className='card' style={{ background: "#50cd89" }}>
+											<div className='card' style={{background: "#50cd89"}}>
 												<div className='card-body'>
-													<h5 style={{ fontWeight: "bolder", color: "white" }}>
+													<h5 style={{fontWeight: "bolder", color: "white"}}>
 														Total Amount (L.E.)
 													</h5>
 													<CountUp
-														style={{ color: "white" }}
+														style={{color: "white"}}
 														duration='3'
 														delay={1}
 														end={ArrayOfAmount}
@@ -934,21 +965,24 @@ const OrdersHist = () => {
 										className='mx-1 ordersCount'
 										onClick={() => {
 											setChosenCard("OrdersCountCard");
-										}}>
+										}}
+									>
 										Orders Count
 									</span>
 									<span
 										className='mx-1 ordersQty'
 										onClick={() => {
 											setChosenCard("OrdersQtyCard");
-										}}>
+										}}
+									>
 										Orders Quantity
 									</span>
 									<span
 										className='mx-1 ordersAmount'
 										onClick={() => {
 											setChosenCard("OrdersTotalAmountCard");
-										}}>
+										}}
+									>
 										Orders Total Amount
 									</span>
 								</div>

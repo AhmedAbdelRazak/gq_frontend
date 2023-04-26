@@ -1,9 +1,9 @@
 /** @format */
 
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {Link} from "react-router-dom";
 import styled from "styled-components";
-import { isAuthenticated } from "../../auth";
+import {isAuthenticated} from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import DarkBG from "../AdminMenu/DarkBG";
 import Navbar from "../AdminNavMenu/Navbar";
@@ -24,7 +24,7 @@ import CountUp from "react-countup";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import ReactExport from "react-export-excel";
-import { FileSearchOutlined } from "@ant-design/icons";
+import {FileSearchOutlined} from "@ant-design/icons";
 import CustomDatesModal from "./CustomDatesModal";
 import SKUModal from "../Modals/SKUModal";
 // import ExcelToJson from "./ExcelToJson";
@@ -76,13 +76,13 @@ const OperationsReport = () => {
 	const [postsPerPage, setPostsPerPage] = useState(100);
 
 	const [day1, setDay1] = useState(
-		new Date(new Date().setDate(new Date().getDate() + 2)),
+		new Date(new Date().setDate(new Date().getDate() + 2))
 	);
 	const [day2, setDay2] = useState(
-		new Date(new Date().setDate(new Date().getDate() - 90)),
+		new Date(new Date().setDate(new Date().getDate() - 90))
 	);
 
-	const { user, token } = isAuthenticated();
+	const {user, token} = isAuthenticated();
 
 	// eslint-disable-next-line
 	var today = new Date();
@@ -114,7 +114,7 @@ const OperationsReport = () => {
 				console.log(data.error);
 			} else {
 				var ordersModified = data.filter(
-					(i) => i.status !== "In Transit | Rejected",
+					(i) => i.status !== "In Transit | Rejected"
 				);
 				if (requiredSKU && modalVisible2 === false) {
 					var returnValue = ordersModified.map((i) => {
@@ -125,8 +125,8 @@ const OperationsReport = () => {
 									// eslint-disable-next-line
 									ii.filter(
 										(iii) =>
-											iii.SubSKU.toLowerCase() === requiredSKU.toLowerCase(),
-									),
+											iii.SubSKU.toLowerCase() === requiredSKU.toLowerCase()
+									)
 								),
 						};
 					});
@@ -135,7 +135,7 @@ const OperationsReport = () => {
 						(i) =>
 							i.chosenProductQtyWithVariables
 								.map((ii) => ii.length > 0)
-								.indexOf(true) > -1,
+								.indexOf(true) > -1
 					);
 
 					setAllOrders(returnValue2.sort(sortOrdersAscendingly));
@@ -149,7 +149,7 @@ const OperationsReport = () => {
 								productId,
 								SubSKU,
 								OrderedQty,
-								status,
+								status
 							) => {
 								if (
 									status === "In Processing" ||
@@ -163,7 +163,7 @@ const OperationsReport = () => {
 										pickedSub &&
 										pickedSub.productAttributes &&
 										pickedSub.productAttributes.filter(
-											(iii) => iii.SubSKU === SubSKU,
+											(iii) => iii.SubSKU === SubSKU
 										)[0];
 									const QtyChecker =
 										GetSpecificSubSKU &&
@@ -180,15 +180,15 @@ const OperationsReport = () => {
 											iii.productId,
 											iii.SubSKU,
 											iii.OrderedQty,
-											i.status,
-										),
-									),
-								),
+											i.status
+										)
+									)
+								)
 							);
 							// var merged = [].concat.apply([], stockCheckHelper);
 
 							var beforeel = stockCheckHelper.map((i) =>
-								i.map((ii) => ii.filter((iii) => iii === true)),
+								i.map((ii) => ii.filter((iii) => iii === true))
 							);
 
 							var backordersAll = [];
@@ -218,7 +218,7 @@ const OperationsReport = () => {
 									pickedSub &&
 									pickedSub.productAttributes &&
 									pickedSub.productAttributes.filter(
-										(iii) => iii.SubSKU === SubSKU,
+										(iii) => iii.SubSKU === SubSKU
 									)[0];
 								const QtyChecker =
 									GetSpecificSubSKU && GetSpecificSubSKU.quantity < OrderedQty;
@@ -232,15 +232,15 @@ const OperationsReport = () => {
 										checkingWithLiveStock(
 											iii.productId,
 											iii.SubSKU,
-											iii.OrderedQty,
-										),
-									),
-								),
+											iii.OrderedQty
+										)
+									)
+								)
 							);
 							// var merged = [].concat.apply([], stockCheckHelper);
 
 							var beforeel = stockCheckHelper.map((i) =>
-								i.map((ii) => ii.filter((iii) => iii === true)),
+								i.map((ii) => ii.filter((iii) => iii === true))
 							);
 
 							var backordersAll = [];
@@ -274,14 +274,14 @@ const OperationsReport = () => {
 					setAllOrders(
 						ordersModified.filter(
 							(i) =>
-								i.status.includes("Processing") || i.status === "Ready To Ship",
-						),
+								i.status.includes("Processing") || i.status === "Ready To Ship"
+						)
 					);
 					setExcelDataSet(
 						ordersModified.filter(
 							(i) =>
-								i.status.includes("Processing") || i.status === "Ready To Ship",
-						),
+								i.status.includes("Processing") || i.status === "Ready To Ship"
+						)
 					);
 				} else {
 					setAllOrders(ordersModified.sort(sortOrdersAscendingly));
@@ -333,7 +333,7 @@ const OperationsReport = () => {
 		const onScroll = () => setOffset(window.pageYOffset);
 		// clean up code
 		window.removeEventListener("scroll", onScroll);
-		window.addEventListener("scroll", onScroll, { passive: true });
+		window.addEventListener("scroll", onScroll, {passive: true});
 		if (window.pageYOffset > 0) {
 			setPageScrolled(true);
 		} else {
@@ -377,7 +377,7 @@ const OperationsReport = () => {
 		invoiceNumber,
 		orderId,
 		order,
-		finalChecker2,
+		finalChecker2
 	) => {
 		if (finalChecker2 === "Failed") {
 			console.log(finalChecker2, "Ahowan Yaba sha3'al");
@@ -403,7 +403,7 @@ const OperationsReport = () => {
 						...iiii,
 						quantity: checkingWithLiveStock(iiii.productId, iiii.SubSKU),
 					};
-				}),
+				})
 			);
 
 			var orderFinal = {
@@ -420,7 +420,7 @@ const OperationsReport = () => {
 				orderId,
 				orderFinal,
 				invoiceNumber,
-				"Not On Hold",
+				"Not On Hold"
 			).then((data) => {
 				if (data.error) {
 					console.log("Status update failed");
@@ -436,7 +436,7 @@ const OperationsReport = () => {
 					} else {
 						window.location.reload(false);
 					}
-				},
+				}
 			);
 		}
 	};
@@ -460,8 +460,8 @@ const OperationsReport = () => {
 
 			var stockCheckHelper = i.chosenProductQtyWithVariables.map((iii) =>
 				iii.map((iiii) =>
-					checkingWithLiveStock(iiii.productId, iiii.SubSKU, iiii.OrderedQty),
-				),
+					checkingWithLiveStock(iiii.productId, iiii.SubSKU, iiii.OrderedQty)
+				)
 			);
 			var merged = [].concat.apply([], stockCheckHelper);
 			var finalChecker = merged.indexOf(true) === -1 ? "Passed" : "Failed";
@@ -484,8 +484,8 @@ const OperationsReport = () => {
 							iiii.OrderedQty +
 							"  /  " +
 							iiii.productName +
-							" \n",
-					),
+							" \n"
+					)
 				),
 				backorder: finalChecker === "Passed" ? "Good" : "Backorder",
 			};
@@ -538,7 +538,7 @@ const OperationsReport = () => {
 			head: headers,
 			body: data,
 			// theme: "plain",
-			styles: { fontSize: 8, cellWidth: "auto" },
+			styles: {fontSize: 8, cellWidth: "auto"},
 		};
 
 		doc.text(title, marginLeft, 40);
@@ -551,10 +551,10 @@ const OperationsReport = () => {
 		excelDataSet.map((i, counter) => {
 			var descriptionChecker = i.chosenProductQtyWithVariables.map((iii) =>
 				iii.map(
-					(iiii) => "SKU: " + iiii.SubSKU + ", Qty: " + iiii.OrderedQty,
+					(iiii) => "SKU: " + iiii.SubSKU + ", Qty: " + iiii.OrderedQty
 					// "  /  " +
 					// iiii.productName,
-				),
+				)
 			);
 
 			var merged = [].concat.apply([], descriptionChecker);
@@ -600,10 +600,12 @@ const OperationsReport = () => {
 					<Link
 						className='btn btn-info mr-5 ml-2'
 						// onClick={() => exportPDF()}
-						to='#'>
+						to='#'
+					>
 						Download Report (Excel)
 					</Link>
-				}>
+				}
+			>
 				<ExcelSheet data={adjustedExcelData} name='GQ_Orders'>
 					<ExcelColumn label='#' value='Index' />
 					<ExcelColumn label='Name' value='Name' />
@@ -645,8 +647,8 @@ const OperationsReport = () => {
 								Number(iii.pickedPrice).toFixed(2) *
 								Number(iii.OrderedQty).toFixed(2),
 						};
-					}),
-				),
+					})
+				)
 			);
 
 		return modifiedArray;
@@ -655,7 +657,7 @@ const OperationsReport = () => {
 	var destructingNestedArraySKUs = [];
 	selectedDateOrdersSKUsModified() &&
 		selectedDateOrdersSKUsModified().map((i) =>
-			i.map((ii) => destructingNestedArraySKUs.push(...ii)),
+			i.map((ii) => destructingNestedArraySKUs.push(...ii))
 		);
 
 	function sortTopOrdersProductsSKUs(a, b) {
@@ -688,10 +690,10 @@ const OperationsReport = () => {
 			}
 
 			res[value.productName + value.SubSKU].OrderedQty += Number(
-				value.OrderedQty,
+				value.OrderedQty
 			);
 			res[value.productName + value.SubSKU].totalPaidAmount += Number(
-				value.totalPaidAmount,
+				value.totalPaidAmount
 			);
 
 			return res;
@@ -709,7 +711,8 @@ const OperationsReport = () => {
 							marginTop: "10px",
 							fontWeight: "bolder",
 							fontSize: "1.1rem",
-						}}>
+						}}
+					>
 						Unfulfilled Sold Products & SKU's By Total Ordered Quantity
 					</h5>
 					<div className='col-md-10 mx-auto'>
@@ -720,17 +723,20 @@ const OperationsReport = () => {
 						style={{
 							maxHeight: "700px",
 							overflow: "auto",
-						}}>
+						}}
+					>
 						<table
 							className='table table-bordered table-md-responsive table-hover'
-							style={{ fontSize: "0.75rem", overflow: "auto" }}>
+							style={{fontSize: "0.75rem", overflow: "auto"}}
+						>
 							<thead
 								className=''
 								style={{
 									position: "sticky",
 									top: "0",
 									zIndex: "100",
-								}}>
+								}}
+							>
 								<tr
 									style={{
 										fontSize: "0.75rem",
@@ -738,7 +744,8 @@ const OperationsReport = () => {
 										textAlign: "center",
 										backgroundColor: "#009ef7",
 										color: "wheat",
-									}}>
+									}}
+								>
 									<th scope='col'>#</th>
 									<th scope='col'>SKU</th>
 									<th scope='col'>Product Name</th>
@@ -754,15 +761,14 @@ const OperationsReport = () => {
 									fontSize: "0.75rem",
 									textTransform: "capitalize",
 									fontWeight: "bolder",
-								}}>
+								}}
+							>
 								{TopSoldProductsSKUs &&
 									TopSoldProductsSKUs.map((s, i) => {
 										return (
 											<tr key={i} className=''>
 												<td className='my-auto'>{i + 1}</td>
-												<td style={{ textTransform: "uppercase" }}>
-													{s.SubSKU}
-												</td>
+												<td style={{textTransform: "uppercase"}}>{s.SubSKU}</td>
 												<td>{s.productName}</td>
 												<td>
 													{allColors[
@@ -776,15 +782,15 @@ const OperationsReport = () => {
 														: s.SubSKUColor}
 												</td>
 
-												<td style={{ textTransform: "uppercase" }}>
+												<td style={{textTransform: "uppercase"}}>
 													{s.SubSKUSize}
 												</td>
 												<td>{s.OrderedQty}</td>
-												<td style={{ width: "15%", textAlign: "center" }}>
+												<td style={{width: "15%", textAlign: "center"}}>
 													<img
 														width='40%'
 														height='40%'
-														style={{ marginLeft: "20px" }}
+														style={{marginLeft: "20px"}}
 														src={s.productSubSKUImage}
 														alt={s.productName}
 													/>
@@ -808,7 +814,8 @@ const OperationsReport = () => {
 				{allOrders && allOrders.length === 0 ? (
 					<div
 						className='text-center mt-5'
-						style={{ fontSize: "1.2rem", fontWeight: "bold" }}>
+						style={{fontSize: "1.2rem", fontWeight: "bold"}}
+					>
 						No Un-invoiced Orders Available
 					</div>
 				) : (
@@ -817,7 +824,8 @@ const OperationsReport = () => {
 							<Link
 								className='btn btn-primary mr-4'
 								onClick={() => exportPDF()}
-								to='#'>
+								to='#'
+							>
 								Download Report (PDF)
 							</Link>
 							{backorders === "Clicked" ? (
@@ -827,7 +835,8 @@ const OperationsReport = () => {
 										setBackorders("NotClicked");
 										setRequiredSKU("");
 									}}
-									to='#'>
+									to='#'
+								>
 									Revert To Default
 								</Link>
 							) : (
@@ -837,18 +846,20 @@ const OperationsReport = () => {
 										setBackorders("Clicked");
 										setRequiredSKU("");
 									}}
-									to='#'>
+									to='#'
+								>
 									Backorders
 								</Link>
 							)}
 							<Link
 								className='btn'
-								style={{ background: "black", color: "white" }}
+								style={{background: "black", color: "white"}}
 								onClick={() => {
 									setBackorders("Processing");
 									setRequiredSKU("");
 								}}
-								to='#'>
+								to='#'
+							>
 								In Processing
 							</Link>
 							<Link
@@ -858,7 +869,8 @@ const OperationsReport = () => {
 									setBackorders("Good");
 									setRequiredSKU("");
 								}}
-								to='#'>
+								to='#'
+							>
 								Good Orders
 							</Link>
 						</div>
@@ -870,9 +882,10 @@ const OperationsReport = () => {
 								to='#'
 								onClick={() => {
 									setModalVisible2(true);
-								}}>
+								}}
+							>
 								Search By SKU{" "}
-								<span className='ml-3' style={{ fontSize: "1.11rem" }}>
+								<span className='ml-3' style={{fontSize: "1.11rem"}}>
 									<FileSearchOutlined />
 								</span>
 							</Link>
@@ -885,7 +898,8 @@ const OperationsReport = () => {
 									fontSize: "1.05rem",
 									color: "black",
 									borderRadius: "20px",
-								}}>
+								}}
+							>
 								Search
 							</label>
 							<input
@@ -902,7 +916,7 @@ const OperationsReport = () => {
 									}
 								}}
 								placeholder='Search By Client Phone, Client Name, Status Or Carrier'
-								style={{ borderRadius: "20px", width: "50%" }}
+								style={{borderRadius: "20px", width: "50%"}}
 							/>
 						</div>
 						<Pagination
@@ -916,11 +930,13 @@ const OperationsReport = () => {
 								maxHeight: "700px",
 								overflow: "auto",
 								marginTop: "80px",
-							}}>
+							}}
+						>
 							<table
 								className='table table-bordered table-md-responsive table-hover text-center my-5'
-								style={{ fontSize: "0.75rem", overflow: "auto" }}
-								id='ahowan'>
+								style={{fontSize: "0.75rem", overflow: "auto"}}
+								id='ahowan'
+							>
 								<thead className='thead-light'>
 									<tr>
 										<th scope='col'>#</th>
@@ -946,7 +962,7 @@ const OperationsReport = () => {
 											productId,
 											SubSKU,
 											OrderedQty,
-											status,
+											status
 										) => {
 											if (
 												status === "In Processing" ||
@@ -961,7 +977,7 @@ const OperationsReport = () => {
 													pickedSub &&
 													pickedSub.productAttributes &&
 													pickedSub.productAttributes.filter(
-														(iii) => iii.SubSKU === SubSKU,
+														(iii) => iii.SubSKU === SubSKU
 													)[0];
 												const QtyChecker =
 													GetSpecificSubSKU &&
@@ -978,9 +994,9 @@ const OperationsReport = () => {
 														iiii.productId,
 														iiii.SubSKU,
 														iiii.OrderedQty,
-														s.status,
-													),
-												),
+														s.status
+													)
+												)
 										);
 
 										var merged = [].concat.apply([], stockCheckHelper);
@@ -990,7 +1006,7 @@ const OperationsReport = () => {
 										//Getting stock as of the time the order was taken
 										var stockCheckHelper2 = s.chosenProductQtyWithVariables.map(
 											(iii) =>
-												iii.map((iiii) => iiii.quantity < iiii.OrderedQty),
+												iii.map((iiii) => iiii.quantity < iiii.OrderedQty)
 										);
 
 										var merged2 = [].concat.apply([], stockCheckHelper2);
@@ -1006,7 +1022,7 @@ const OperationsReport = () => {
 												pickedSub &&
 												pickedSub.productAttributes &&
 												pickedSub.productAttributes.filter(
-													(iii) => iii.SubSKU === SubSKU,
+													(iii) => iii.SubSKU === SubSKU
 												)[0];
 											const liveStock =
 												GetSpecificSubSKU && GetSpecificSubSKU.quantity;
@@ -1020,11 +1036,11 @@ const OperationsReport = () => {
 											<tr key={i} className=''>
 												<td>{i + 1}</td>
 												{s.orderCreationDate ? (
-													<td style={{ width: "8%" }}>
+													<td style={{width: "8%"}}>
 														{new Date(s.orderCreationDate).toDateString()}{" "}
 													</td>
 												) : (
-													<td style={{ width: "8%" }}>
+													<td style={{width: "8%"}}>
 														{new Date(s.createdAt).toDateString()}{" "}
 													</td>
 												)}
@@ -1034,7 +1050,8 @@ const OperationsReport = () => {
 														width: "10%",
 														background:
 															s.invoiceNumber === "Not Added" ? "#f4e4e4" : "",
-													}}>
+													}}
+												>
 													{s.invoiceNumber}
 												</td>
 												<td
@@ -1068,23 +1085,24 @@ const OperationsReport = () => {
 																: s.status === "Cancelled"
 																? "white"
 																: "black",
-													}}>
+													}}
+												>
 													{s.status}
 												</td>
 
-												<td style={{ width: "10%" }}>
+												<td style={{width: "10%"}}>
 													{s.customerDetails.fullName}
 												</td>
 												<td>{s.customerDetails.phone}</td>
 												<td>{s.totalAmountAfterDiscount.toFixed(0)} L.E.</td>
 
-												<td style={{ width: "12%" }}>
+												<td style={{width: "12%"}}>
 													{s.chosenProductQtyWithVariables.map((i) =>
 														i.map((ii) => (
 															<span>
 																{ii.SubSKU} <br />
 															</span>
-														)),
+														))
 													)}
 												</td>
 
@@ -1094,7 +1112,7 @@ const OperationsReport = () => {
 															<span>
 																{ii.OrderedQty} <br />
 															</span>
-														)),
+														))
 													)}
 												</td>
 												<td>
@@ -1103,7 +1121,7 @@ const OperationsReport = () => {
 															<span>
 																{ii.quantity} <br />
 															</span>
-														)),
+														))
 													)}
 												</td>
 												<td>
@@ -1113,7 +1131,7 @@ const OperationsReport = () => {
 																{returnLiveStock(ii.productId, ii.SubSKU)}{" "}
 																<br />
 															</span>
-														)),
+														))
 													)}
 												</td>
 
@@ -1124,7 +1142,8 @@ const OperationsReport = () => {
 															fontWeight: "bold",
 															cursor: "pointer",
 															width: "9%",
-														}}>
+														}}
+													>
 														{finalChecker === "Passed" ? (
 															<Link
 																to={`#`}
@@ -1148,26 +1167,27 @@ const OperationsReport = () => {
 																		invoiceNumber,
 																		s._id,
 																		s,
-																		finalChecker2,
+																		finalChecker2
 																	);
-																}}>
+																}}
+															>
 																Invoice
 															</Link>
 														) : (
 															<Link
 																to={`#`}
-																style={{ color: "darkred" }}
+																style={{color: "darkred"}}
 																onClick={() => {
 																	if (
 																		window.confirm(
-																			"Are You Sure You Want To Invoice? Please note that there is no enough stock...",
+																			"Are You Sure You Want To Invoice? Please note that there is no enough stock..."
 																		)
 																	) {
 																		var today = new Date().toDateString(
 																			"en-US",
 																			{
 																				timeZone: "Africa/Cairo",
-																			},
+																			}
 																		);
 
 																		let text = s.OTNumber;
@@ -1185,10 +1205,11 @@ const OperationsReport = () => {
 																			invoiceNumber,
 																			s._id,
 																			s,
-																			finalChecker2,
+																			finalChecker2
 																		);
 																	}
-																}}>
+																}}
+															>
 																Not Enough Stock
 															</Link>
 														)}
@@ -1198,7 +1219,8 @@ const OperationsReport = () => {
 														style={{
 															color: "darkgreen",
 															fontWeight: "bold",
-														}}>
+														}}
+													>
 														Order Already Invoiced
 													</td>
 												)}
@@ -1208,7 +1230,8 @@ const OperationsReport = () => {
 														color: "blue",
 														fontWeight: "bold",
 														cursor: "pointer",
-													}}>
+													}}
+												>
 													<Link to={`/admin/single-order/${s._id}`}>
 														Details....
 													</Link>
@@ -1244,7 +1267,8 @@ const OperationsReport = () => {
 						fontWeight: "bolder",
 						marginTop: "50px",
 						fontSize: "2.5rem",
-					}}>
+					}}
+				>
 					Loading....
 				</div>
 			) : (
@@ -1270,7 +1294,8 @@ const OperationsReport = () => {
 									textAlign: "right",
 									fontSize: "13px",
 								}}
-								className='py-3 mb-5'>
+								className='py-3 mb-5'
+							>
 								<span
 									style={isActive("SelectAll", selectedFilter)}
 									className='mx-2 filterItem'
@@ -1279,7 +1304,8 @@ const OperationsReport = () => {
 										setDay2(last90Days);
 										setDay1(today2);
 										setRequiredSKU("");
-									}}>
+									}}
+								>
 									Select All
 								</span>
 								<span
@@ -1290,7 +1316,8 @@ const OperationsReport = () => {
 										setDay2(today);
 										setDay1(today2);
 										setRequiredSKU("");
-									}}>
+									}}
+								>
 									Today
 								</span>
 								<span
@@ -1301,7 +1328,8 @@ const OperationsReport = () => {
 										setDay2(yesterday);
 										setDay1(yesterday);
 										setRequiredSKU("");
-									}}>
+									}}
+								>
 									Yesterday
 								</span>
 								<span
@@ -1312,7 +1340,8 @@ const OperationsReport = () => {
 										setDay2(last7Days);
 										setDay1(today2);
 										setRequiredSKU("");
-									}}>
+									}}
+								>
 									Last 7 Days
 								</span>
 								<span
@@ -1323,7 +1352,8 @@ const OperationsReport = () => {
 										setDay2(last30Days);
 										setDay1(today2);
 										setRequiredSKU("");
-									}}>
+									}}
+								>
 									Last 30 Days
 								</span>
 
@@ -1334,7 +1364,8 @@ const OperationsReport = () => {
 										setSelectedFilter("CustomDates");
 										setModalVisible(true);
 										setRequiredSKU("");
-									}}>
+									}}
+								>
 									Custom Dates
 								</span>
 							</div>
@@ -1355,7 +1386,7 @@ const OperationsReport = () => {
 								requiredSKU={requiredSKU}
 								setRequiredSKU={setRequiredSKU}
 							/>
-							<h3 className='mt-5 text-center' style={{ fontWeight: "bolder" }}>
+							<h3 className='mt-5 text-center' style={{fontWeight: "bolder"}}>
 								Operations Unfulfilled Orders Report By SKU <br />
 								<span
 									style={{
@@ -1363,7 +1394,8 @@ const OperationsReport = () => {
 										color: "black",
 										textAlign: "center",
 										fontWeight: "normal",
-									}}>
+									}}
+								>
 									(Selected Date Range From{" "}
 									<strong> {new Date(day2).toDateString()}</strong> to{" "}
 									<strong>{new Date(day1).toDateString()}</strong>)
@@ -1371,13 +1403,13 @@ const OperationsReport = () => {
 							</h3>
 							<div className='row mx-5 mt-5'>
 								<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-									<div className='card' style={{ background: "#f1416c" }}>
+									<div className='card' style={{background: "#f1416c"}}>
 										<div className='card-body'>
-											<h5 style={{ fontWeight: "bolder", color: "white" }}>
+											<h5 style={{fontWeight: "bolder", color: "white"}}>
 												Overall Orders Count
 											</h5>
 											<CountUp
-												style={{ color: "white" }}
+												style={{color: "white"}}
 												duration='3'
 												delay={1}
 												end={allOrders.length}
@@ -1388,13 +1420,13 @@ const OperationsReport = () => {
 								</div>
 
 								<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-									<div className='card' style={{ background: "#009ef7" }}>
+									<div className='card' style={{background: "#009ef7"}}>
 										<div className='card-body'>
-											<h5 style={{ fontWeight: "bolder", color: "white" }}>
+											<h5 style={{fontWeight: "bolder", color: "white"}}>
 												Overall Ordered Items
 											</h5>
 											<CountUp
-												style={{ color: "white" }}
+												style={{color: "white"}}
 												duration='3'
 												delay={1}
 												end={ArrayOfQty}
@@ -1407,13 +1439,13 @@ const OperationsReport = () => {
 								user.userRole === "Operations" ||
 								user.userRole === "Stock Keeper" ? null : (
 									<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-										<div className='card' style={{ background: "#50cd89" }}>
+										<div className='card' style={{background: "#50cd89"}}>
 											<div className='card-body'>
-												<h5 style={{ fontWeight: "bolder", color: "white" }}>
+												<h5 style={{fontWeight: "bolder", color: "white"}}>
 													Total Amount (L.E.)
 												</h5>
 												<CountUp
-													style={{ color: "white" }}
+													style={{color: "white"}}
 													duration='3'
 													delay={1}
 													end={ArrayOfAmount}
@@ -1490,7 +1522,6 @@ const OperationsReportWrapper = styled.div`
 		cursor: pointer;
 	}
 
-	@charset "UTF-8";
 	.page-break {
 		page-break-after: always;
 		page-break-inside: avoid;

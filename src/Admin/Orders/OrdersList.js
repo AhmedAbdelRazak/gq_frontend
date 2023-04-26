@@ -1,9 +1,9 @@
 /** @format */
 
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {Link} from "react-router-dom";
 import styled from "styled-components";
-import { isAuthenticated } from "../../auth";
+import {isAuthenticated} from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import DarkBG from "../AdminMenu/DarkBG";
 import Navbar from "../AdminNavMenu/Navbar";
@@ -24,6 +24,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import ReactExport from "react-export-excel";
 import CreateShippingModal from "./UpdateModals/CreateShippingModal";
+import moment from "moment";
 // import ExcelToJson from "./ExcelToJson";
 
 const ExcelFile = ReactExport.ExcelFile;
@@ -53,7 +54,7 @@ const OrdersList = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [postsPerPage, setPostsPerPage] = useState(100);
 
-	const { user, token } = isAuthenticated();
+	const {user, token} = isAuthenticated();
 
 	// eslint-disable-next-line
 	var today = new Date();
@@ -83,7 +84,10 @@ const OrdersList = () => {
 				console.log(data.error);
 			} else {
 				var ordersModified = data.filter(
-					(i) => i.status !== "In Transit | Rejected",
+					(i) =>
+						i.status !== "In Transit | Rejected" &&
+						!i.status.includes("Return") &&
+						!i.status.includes("Exchange")
 				);
 				if (backorders === "Clicked") {
 					getProducts().then((data2) => {
@@ -94,7 +98,7 @@ const OrdersList = () => {
 								productId,
 								SubSKU,
 								OrderedQty,
-								status,
+								status
 							) => {
 								if (
 									status === "In Processing" ||
@@ -108,7 +112,7 @@ const OrdersList = () => {
 										pickedSub &&
 										pickedSub.productAttributes &&
 										pickedSub.productAttributes.filter(
-											(iii) => iii.SubSKU === SubSKU,
+											(iii) => iii.SubSKU === SubSKU
 										)[0];
 									const QtyChecker =
 										GetSpecificSubSKU &&
@@ -125,15 +129,15 @@ const OrdersList = () => {
 											iii.productId,
 											iii.SubSKU,
 											iii.OrderedQty,
-											i.status,
-										),
-									),
-								),
+											i.status
+										)
+									)
+								)
 							);
 							// var merged = [].concat.apply([], stockCheckHelper);
 
 							var beforeel = stockCheckHelper.map((i) =>
-								i.map((ii) => ii.filter((iii) => iii === true)),
+								i.map((ii) => ii.filter((iii) => iii === true))
 							);
 
 							var backordersAll = [];
@@ -163,7 +167,7 @@ const OrdersList = () => {
 									pickedSub &&
 									pickedSub.productAttributes &&
 									pickedSub.productAttributes.filter(
-										(iii) => iii.SubSKU === SubSKU,
+										(iii) => iii.SubSKU === SubSKU
 									)[0];
 								const QtyChecker =
 									GetSpecificSubSKU && GetSpecificSubSKU.quantity < OrderedQty;
@@ -177,15 +181,15 @@ const OrdersList = () => {
 										checkingWithLiveStock(
 											iii.productId,
 											iii.SubSKU,
-											iii.OrderedQty,
-										),
-									),
-								),
+											iii.OrderedQty
+										)
+									)
+								)
 							);
 							// var merged = [].concat.apply([], stockCheckHelper);
 
 							var beforeel = stockCheckHelper.map((i) =>
-								i.map((ii) => ii.filter((iii) => iii === true)),
+								i.map((ii) => ii.filter((iii) => iii === true))
 							);
 
 							var backordersAll = [];
@@ -219,14 +223,14 @@ const OrdersList = () => {
 					setAllOrders(
 						ordersModified.filter(
 							(i) =>
-								i.status.includes("Processing") || i.status === "Ready To Ship",
-						),
+								i.status.includes("Processing") || i.status === "Ready To Ship"
+						)
 					);
 					setExcelDataSet(
 						ordersModified.filter(
 							(i) =>
-								i.status.includes("Processing") || i.status === "Ready To Ship",
-						),
+								i.status.includes("Processing") || i.status === "Ready To Ship"
+						)
 					);
 				} else {
 					setAllOrders(ordersModified.sort(sortOrdersAscendingly));
@@ -278,7 +282,7 @@ const OrdersList = () => {
 		const onScroll = () => setOffset(window.pageYOffset);
 		// clean up code
 		window.removeEventListener("scroll", onScroll);
-		window.addEventListener("scroll", onScroll, { passive: true });
+		window.addEventListener("scroll", onScroll, {passive: true});
 		if (window.pageYOffset > 0) {
 			setPageScrolled(true);
 		} else {
@@ -318,7 +322,7 @@ const OrdersList = () => {
 		invoiceNumber,
 		orderId,
 		order,
-		finalChecker2,
+		finalChecker2
 	) => {
 		if (finalChecker2 === "Failed") {
 			console.log(finalChecker2, "Ahowan Yaba sha3'al");
@@ -344,7 +348,7 @@ const OrdersList = () => {
 						...iiii,
 						quantity: checkingWithLiveStock(iiii.productId, iiii.SubSKU),
 					};
-				}),
+				})
 			);
 
 			var orderFinal = {
@@ -361,7 +365,7 @@ const OrdersList = () => {
 				orderId,
 				orderFinal,
 				invoiceNumber,
-				"Not On Hold",
+				"Not On Hold"
 			).then((data) => {
 				if (data.error) {
 					console.log("Status update failed");
@@ -377,7 +381,7 @@ const OrdersList = () => {
 					} else {
 						window.location.reload(false);
 					}
-				},
+				}
 			);
 		}
 	};
@@ -403,11 +407,16 @@ const OrdersList = () => {
 
 			var stockCheckHelper = i.chosenProductQtyWithVariables.map((iii) =>
 				iii.map((iiii) =>
-					checkingWithLiveStock(iiii.productId, iiii.SubSKU, iiii.OrderedQty),
-				),
+					checkingWithLiveStock(iiii.productId, iiii.SubSKU, iiii.OrderedQty)
+				)
 			);
 			var merged = [].concat.apply([], stockCheckHelper);
 			var finalChecker = merged.indexOf(true) === -1 ? "Passed" : "Failed";
+
+			var gettingTotalAmount = Number(
+				Number(i.totalAmountAfterDiscount) +
+					(Number(i.totalAmount) - Number(i.shippingFees)) * 0.01
+			).toFixed(2);
 
 			return {
 				PurchaseDate: new Date(i.orderCreationDate).toLocaleDateString(),
@@ -416,7 +425,7 @@ const OrdersList = () => {
 				// Name: i.customerDetails.fullName.toString(),
 				Phone: i.customerDetails.phone,
 				fullName: i.customerDetails.fullName,
-				Amount: i.totalAmountAfterDiscount + " L.E.",
+				Amount: gettingTotalAmount + " L.E.",
 				Store: i.orderSource.toUpperCase(),
 				Governorate: i.customerDetails.state,
 				// Carrier: i.customerDetails.carrierName,
@@ -428,8 +437,8 @@ const OrdersList = () => {
 							iiii.OrderedQty +
 							"  /  " +
 							iiii.productName +
-							" \n",
-					),
+							" \n"
+					)
 				),
 				backorder: finalChecker === "Passed" ? "Good" : "Backorder",
 			};
@@ -482,7 +491,7 @@ const OrdersList = () => {
 			head: headers,
 			body: data,
 			// theme: "plain",
-			styles: { fontSize: 8, cellWidth: "auto" },
+			styles: {fontSize: 8, cellWidth: "auto"},
 		};
 
 		doc.text(title, marginLeft, 40);
@@ -521,14 +530,19 @@ const OrdersList = () => {
 		excelDataSet.map((i, counter) => {
 			var descriptionChecker = i.chosenProductQtyWithVariables.map((iii) =>
 				iii.map(
-					(iiii) => "SKU: " + iiii.SubSKU + ", Qty: " + iiii.OrderedQty,
+					(iiii) => "SKU: " + iiii.SubSKU + ", Qty: " + iiii.OrderedQty
 					// "  /  " +
 					// iiii.productName,
-				),
+				)
 			);
 
 			var merged = [].concat.apply([], descriptionChecker);
 			var merged2 = [].concat.apply([], merged);
+			var gettingTotalAmount = Number(
+				Number(i.totalAmountAfterDiscount) +
+					(Number(i.totalAmount) - Number(i.shippingFees)) * 0.01
+			).toFixed(2);
+
 			return {
 				Index: counter + 1,
 				Name: i.customerDetails.fullName,
@@ -536,6 +550,9 @@ const OrdersList = () => {
 				phone1: i.customerDetails.phone,
 				phone2: "",
 				City: i.customerDetails.cityName.toUpperCase(),
+				orderDate: i.orderCreationDate
+					? moment(i.orderCreationDate).format("DD/MM/YYYY")
+					: moment(i.createdAt).format("DD/MM/YYYY"),
 				DescriptionOfGoods:
 					merged2.length === 1
 						? merged2[0]
@@ -544,7 +561,7 @@ const OrdersList = () => {
 						: merged2.length === 3
 						? merged2[0] + " | " + merged2[1] + " | " + merged2[2]
 						: merged2[0],
-				totalAmount: i.totalAmountAfterDiscount,
+				totalAmount: gettingTotalAmount,
 				ReferenceNumber:
 					i.invoiceNumber !== "Not Added" ? i.invoiceNumber : i.OTNumber,
 				parcels: 1,
@@ -579,8 +596,8 @@ const OrdersList = () => {
 								Number(iii.pickedPrice).toFixed(2) *
 								Number(iii.OrderedQty).toFixed(2),
 						};
-					}),
-				),
+					})
+				)
 			);
 
 		return modifiedArray;
@@ -589,7 +606,7 @@ const OrdersList = () => {
 	var destructingNestedArraySKUs = [];
 	selectedDateOrdersSKUsModified() &&
 		selectedDateOrdersSKUsModified().map((i) =>
-			i.map((ii) => destructingNestedArraySKUs.push(...ii)),
+			i.map((ii) => destructingNestedArraySKUs.push(...ii))
 		);
 
 	function sortTopOrdersProductsSKUs(a, b) {
@@ -624,10 +641,10 @@ const OrdersList = () => {
 			}
 
 			res[value.productName + value.SubSKU].OrderedQty += Number(
-				value.OrderedQty,
+				value.OrderedQty
 			);
 			res[value.productName + value.SubSKU].totalPaidAmount += Number(
-				value.totalPaidAmount,
+				value.totalPaidAmount
 			);
 
 			return res;
@@ -645,10 +662,12 @@ const OrdersList = () => {
 					<Link
 						className='btn btn-info mr-5 ml-2'
 						// onClick={() => exportPDF()}
-						to='#'>
+						to='#'
+					>
 						Download Report (Excel)
 					</Link>
-				}>
+				}
+			>
 				<ExcelSheet data={adjustedExcelData} name='GQ_Orders'>
 					<ExcelColumn label='#' value='Index' />
 					<ExcelColumn label='Name' value='Name' />
@@ -656,6 +675,7 @@ const OrdersList = () => {
 					<ExcelColumn label='Phone' value='phone1' />
 					<ExcelColumn label='Phone2' value='phone2' />
 					<ExcelColumn label='City' value='City' />
+					<ExcelColumn label='Order Date' value='orderDate' />
 					<ExcelColumn
 						label='Description Of Goods'
 						value='DescriptionOfGoods'
@@ -691,7 +711,8 @@ const OrdersList = () => {
 				{allOrders && allOrders.length === 0 ? (
 					<div
 						className='text-center mt-5'
-						style={{ fontSize: "1.2rem", fontWeight: "bold" }}>
+						style={{fontSize: "1.2rem", fontWeight: "bold"}}
+					>
 						No Un-invoiced Orders Available
 					</div>
 				) : (
@@ -708,11 +729,13 @@ const OrdersList = () => {
 								maxHeight: "700px",
 								overflow: "auto",
 								margin: "40px 100px",
-							}}>
+							}}
+						>
 							<table
 								className='table table-bordered table-md-responsive table-hover'
-								style={{ fontSize: "0.75rem", overflow: "auto" }}>
-								<thead style={{ position: "sticky", top: "0" }}>
+								style={{fontSize: "0.75rem", overflow: "auto"}}
+							>
+								<thead style={{position: "sticky", top: "0"}}>
 									<tr
 										style={{
 											fontSize: "0.75rem",
@@ -720,7 +743,8 @@ const OrdersList = () => {
 											textAlign: "center",
 											backgroundColor: "#009ef7",
 											color: "wheat",
-										}}>
+										}}
+									>
 										<th scope='col'>#</th>
 										<th scope='col'>SKU</th>
 										<th scope='col'>Product Name</th>
@@ -737,13 +761,14 @@ const OrdersList = () => {
 										fontSize: "0.75rem",
 										textTransform: "capitalize",
 										fontWeight: "bolder",
-									}}>
+									}}
+								>
 									{TopSoldProductsSKUs &&
 										TopSoldProductsSKUs.map((s, i) => {
 											return (
 												<tr key={i} className=''>
 													<td className='my-auto'>{i + 1}</td>
-													<td style={{ textTransform: "uppercase" }}>
+													<td style={{textTransform: "uppercase"}}>
 														{s.SubSKU}
 													</td>
 													<td>{s.productName}</td>
@@ -761,12 +786,12 @@ const OrdersList = () => {
 															: s.SubSKUColor}
 													</td>
 
-													<td style={{ textTransform: "uppercase" }}>
+													<td style={{textTransform: "uppercase"}}>
 														{s.SubSKUSize}
 													</td>
 													<td>{s.OrderedQty}</td>
 													<td>{s.status}</td>
-													<td style={{ textAlign: "center" }}>
+													<td style={{textAlign: "center"}}>
 														<Link to={`/admin/single-order/${s.orderId}`}>
 															Details...
 														</Link>
@@ -795,7 +820,8 @@ const OrdersList = () => {
 									fontSize: "1.05rem",
 									color: "black",
 									borderRadius: "20px",
-								}}>
+								}}
+							>
 								Search
 							</label>
 							<input
@@ -812,7 +838,7 @@ const OrdersList = () => {
 									}
 								}}
 								placeholder='Search By Client Phone, Client Name, Status Or Carrier'
-								style={{ borderRadius: "20px", width: "50%" }}
+								style={{borderRadius: "20px", width: "50%"}}
 							/>
 						</div>
 
@@ -826,7 +852,8 @@ const OrdersList = () => {
 							<Link
 								className='btn btn-primary'
 								onClick={() => exportPDF()}
-								to='#'>
+								to='#'
+							>
 								Download Report (PDF)
 							</Link>
 							{DownloadExcel()}
@@ -834,29 +861,33 @@ const OrdersList = () => {
 								<Link
 									className='btn btn-info mx-2'
 									onClick={() => setBackorders("NotClicked")}
-									to='#'>
+									to='#'
+								>
 									Revert To Default
 								</Link>
 							) : (
 								<Link
 									className='btn btn-danger mx-2'
 									onClick={() => setBackorders("Clicked")}
-									to='#'>
+									to='#'
+								>
 									Backorders
 								</Link>
 							)}
 							<Link
 								className='btn'
-								style={{ background: "black", color: "white" }}
+								style={{background: "black", color: "white"}}
 								onClick={() => setBackorders("Processing")}
-								to='#'>
+								to='#'
+							>
 								In Processing
 							</Link>
 							<Link
 								className='btn ml-2 btn-success'
 								// style={{ background: "black", color: "white" }}
 								onClick={() => setBackorders("Good")}
-								to='#'>
+								to='#'
+							>
 								Good Orders
 							</Link>
 						</div>
@@ -867,14 +898,17 @@ const OrdersList = () => {
 								maxHeight: "1200px",
 								overflow: "auto",
 								margin: "40px 0px",
-							}}>
+							}}
+						>
 							<table
 								className='table table-bordered table-md-responsive table-hover text-center'
-								style={{ fontSize: "0.7rem", overflow: "auto" }}
-								id='ahowan'>
+								style={{fontSize: "0.7rem", overflow: "auto"}}
+								id='ahowan'
+							>
 								<thead
 									className='thead-light'
-									style={{ position: "sticky", top: "0" }}>
+									style={{position: "sticky", top: "0"}}
+								>
 									<tr>
 										<th scope='col'>Purchase Date</th>
 										<th scope='col'>INV #</th>
@@ -901,7 +935,7 @@ const OrdersList = () => {
 											productId,
 											SubSKU,
 											OrderedQty,
-											status,
+											status
 										) => {
 											if (
 												status === "In Processing" ||
@@ -916,7 +950,7 @@ const OrdersList = () => {
 													pickedSub &&
 													pickedSub.productAttributes &&
 													pickedSub.productAttributes.filter(
-														(iii) => iii.SubSKU === SubSKU,
+														(iii) => iii.SubSKU === SubSKU
 													)[0];
 												const QtyChecker =
 													GetSpecificSubSKU &&
@@ -933,9 +967,9 @@ const OrdersList = () => {
 														iiii.productId,
 														iiii.SubSKU,
 														iiii.OrderedQty,
-														s.status,
-													),
-												),
+														s.status
+													)
+												)
 										);
 
 										var merged = [].concat.apply([], stockCheckHelper);
@@ -945,7 +979,7 @@ const OrdersList = () => {
 										//Getting stock as of the time the order was taken
 										var stockCheckHelper2 = s.chosenProductQtyWithVariables.map(
 											(iii) =>
-												iii.map((iiii) => iiii.quantity < iiii.OrderedQty),
+												iii.map((iiii) => iiii.quantity < iiii.OrderedQty)
 										);
 
 										var merged2 = [].concat.apply([], stockCheckHelper2);
@@ -957,11 +991,11 @@ const OrdersList = () => {
 										return (
 											<tr key={i} className=''>
 												{s.orderCreationDate ? (
-													<td style={{ width: "8%" }}>
+													<td style={{width: "8%"}}>
 														{new Date(s.orderCreationDate).toDateString()}{" "}
 													</td>
 												) : (
-													<td style={{ width: "8%" }}>
+													<td style={{width: "8%"}}>
 														{new Date(s.createdAt).toDateString()}{" "}
 													</td>
 												)}
@@ -971,7 +1005,8 @@ const OrdersList = () => {
 														width: "10%",
 														background:
 															s.invoiceNumber === "Not Added" ? "#f4e4e4" : "",
-													}}>
+													}}
+												>
 													{s.invoiceNumber}
 												</td>
 												<td
@@ -1005,16 +1040,24 @@ const OrdersList = () => {
 																: s.status === "Cancelled"
 																? "white"
 																: "black",
-													}}>
+													}}
+												>
 													{s.status}
 												</td>
 
-												<td style={{ width: "11%" }}>
+												<td style={{width: "11%"}}>
 													{s.customerDetails.fullName}
 												</td>
 												<td>{s.customerDetails.phone}</td>
-												<td>{s.totalAmountAfterDiscount.toFixed(0)} L.E.</td>
-												<td style={{ textTransform: "uppercase" }}>
+												<td style={{width: "7%"}}>
+													{Number(
+														Number(s.totalAmountAfterDiscount) +
+															(Number(s.totalAmount) - Number(s.shippingFees)) *
+																0.01
+													).toFixed(2)}{" "}
+													L.E.
+												</td>
+												<td style={{textTransform: "uppercase"}}>
 													{s.orderSource}
 												</td>
 												<td
@@ -1023,7 +1066,8 @@ const OrdersList = () => {
 															s.employeeData === "Online Order"
 																? "#ffc994"
 																: "",
-													}}>
+													}}
+												>
 													{s.employeeData.name
 														? s.employeeData.name
 														: s.employeeData === "Online Order"
@@ -1037,7 +1081,7 @@ const OrdersList = () => {
 													s.chosenShippingOption[0] &&
 													s.chosenShippingOption[0].carrierName}
 											</td> */}
-												<td style={{ width: "8%" }}>
+												<td style={{width: "8%"}}>
 													{s.trackingNumber ? s.trackingNumber : "Not Added"}
 												</td>
 												<td>{s.totalOrderQty}</td>
@@ -1049,7 +1093,8 @@ const OrdersList = () => {
 															fontWeight: "bold",
 															cursor: "pointer",
 															width: "8%",
-														}}>
+														}}
+													>
 														{finalChecker === "Passed" ? (
 															<Link
 																to={`#`}
@@ -1073,26 +1118,27 @@ const OrdersList = () => {
 																		invoiceNumber,
 																		s._id,
 																		s,
-																		finalChecker2,
+																		finalChecker2
 																	);
-																}}>
+																}}
+															>
 																Invoice
 															</Link>
 														) : (
 															<Link
 																to={`#`}
-																style={{ color: "darkred" }}
+																style={{color: "darkred"}}
 																onClick={() => {
 																	if (
 																		window.confirm(
-																			"Are You Sure You Want To Invoice? Please note that there is no enough stock...",
+																			"Are You Sure You Want To Invoice? Please note that there is no enough stock..."
 																		)
 																	) {
 																		var today = new Date().toDateString(
 																			"en-US",
 																			{
 																				timeZone: "Africa/Cairo",
-																			},
+																			}
 																		);
 
 																		let text = s.OTNumber;
@@ -1110,10 +1156,11 @@ const OrdersList = () => {
 																			invoiceNumber,
 																			s._id,
 																			s,
-																			finalChecker2,
+																			finalChecker2
 																		);
 																	}
-																}}>
+																}}
+															>
 																Not Enough Stock
 															</Link>
 														)}
@@ -1123,7 +1170,8 @@ const OrdersList = () => {
 														style={{
 															color: "darkgreen",
 															fontWeight: "bold",
-														}}>
+														}}
+													>
 														Invoiced
 													</td>
 												)}
@@ -1136,14 +1184,16 @@ const OrdersList = () => {
 															cursor: "pointer",
 															fontSize: "10px,",
 															fontWeight: "bold",
-														}}>
+														}}
+													>
 														<Link
 															to={`#`}
 															onClick={() => {
 																setPickedOrder(s);
 																setUpdateCustomerDetails(s.customerDetails);
 																setModalVisible(true);
-															}}>
+															}}
+														>
 															Create Shipping
 														</Link>
 													</td>
@@ -1154,7 +1204,8 @@ const OrdersList = () => {
 															fontSize: "10px,",
 															color: "darkgray",
 															fontWeight: "bold",
-														}}>
+														}}
+													>
 														Create Shipping
 													</td>
 												)}
@@ -1164,7 +1215,8 @@ const OrdersList = () => {
 														color: "blue",
 														fontWeight: "bold",
 														cursor: "pointer",
-													}}>
+													}}
+												>
 													<Link to={`/admin/single-order/${s._id}`}>
 														Details....
 													</Link>
@@ -1199,7 +1251,8 @@ const OrdersList = () => {
 						fontWeight: "bolder",
 						marginTop: "50px",
 						fontSize: "2.5rem",
-					}}>
+					}}
+				>
 					Loading....
 				</div>
 			) : (
@@ -1220,18 +1273,18 @@ const OrdersList = () => {
 						<div className='mainContent'>
 							<Navbar fromPage='OrdersList' pageScrolled={pageScrolled} />
 
-							<h3 className='mt-5 text-center' style={{ fontWeight: "bolder" }}>
+							<h3 className='mt-5 text-center' style={{fontWeight: "bolder"}}>
 								PENDING ORDERS
 							</h3>
 							<div className='row mx-5 mt-5'>
 								<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-									<div className='card' style={{ background: "#f1416c" }}>
+									<div className='card' style={{background: "#f1416c"}}>
 										<div className='card-body'>
-											<h5 style={{ fontWeight: "bolder", color: "white" }}>
+											<h5 style={{fontWeight: "bolder", color: "white"}}>
 												Overall Orders Count
 											</h5>
 											<CountUp
-												style={{ color: "white" }}
+												style={{color: "white"}}
 												duration='3'
 												delay={1}
 												end={allOrders.length}
@@ -1242,13 +1295,13 @@ const OrdersList = () => {
 								</div>
 
 								<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-									<div className='card' style={{ background: "#009ef7" }}>
+									<div className='card' style={{background: "#009ef7"}}>
 										<div className='card-body'>
-											<h5 style={{ fontWeight: "bolder", color: "white" }}>
+											<h5 style={{fontWeight: "bolder", color: "white"}}>
 												Overall Ordered Items
 											</h5>
 											<CountUp
-												style={{ color: "white" }}
+												style={{color: "white"}}
 												duration='3'
 												delay={1}
 												end={ArrayOfQty}
@@ -1261,13 +1314,13 @@ const OrdersList = () => {
 								user.userRole === "Operations" ||
 								user.userRole === "Stock Keeper" ? null : (
 									<div className='col-xl-4 col-lg-6 col-md-11 col-sm-11 text-center mx-auto my-2'>
-										<div className='card' style={{ background: "#50cd89" }}>
+										<div className='card' style={{background: "#50cd89"}}>
 											<div className='card-body'>
-												<h5 style={{ fontWeight: "bolder", color: "white" }}>
+												<h5 style={{fontWeight: "bolder", color: "white"}}>
 													Total Amount (L.E.)
 												</h5>
 												<CountUp
-													style={{ color: "white" }}
+													style={{color: "white"}}
 													duration='3'
 													delay={1}
 													end={ArrayOfAmount}
@@ -1330,7 +1383,6 @@ const OrdersListWrapper = styled.div`
 	.filters-item {
 	}
 
-	@charset "UTF-8";
 	.page-break {
 		page-break-after: always;
 		page-break-inside: avoid;

@@ -1,8 +1,8 @@
 /** @format */
 
-import React from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
-import { Modal } from "antd";
+import {Modal} from "antd";
 import "antd/dist/antd.css"; // or 'antd/dist/antd.less'
 
 // import { toast } from "react-toastify";
@@ -15,37 +15,38 @@ const EditPrice = ({
 	setModalVisible2,
 	setCollapsed,
 }) => {
+	const [priceHelper, setPriceHelper] = useState("");
+	const [chosenCustomPrice, setChosenCustomPrice] = useState(0);
+
 	const handlePriceChange = (e, p) => {
 		const habal = chosenProductQty
 			.map((i) =>
-				i.filter(
-					(ii) => ii.productId === p.productId && ii.SubSKU === p.SubSKU,
-				),
+				i.filter((ii) => ii.productId === p.productId && ii.SubSKU === p.SubSKU)
 			)
 			.filter((ix) => ix.length > 0)[0][0];
 
 		chosenProductQty
 			.map((i) =>
-				i.filter(
-					(ii) => ii.productId === p.productId && ii.SubSKU === p.SubSKU,
-				),
+				i.filter((ii) => ii.productId === p.productId && ii.SubSKU === p.SubSKU)
 			)
 			.filter((ix) => ix.length > 0)[0][0].pickedPrice = e.target.value;
 		setChosenProductQty([...chosenProductQty]);
 
-		console.log(habal, "habal");
+		console.log(habal, "final");
 	};
 
-	console.log(clickedChosenProductQty, "clickedChosenProductQty");
 	const mainForm = () => {
 		return (
 			<div className='mx-auto text-center'>
-				<label style={{ fontWeight: "bolder", fontSize: "1rem" }}>
+				<label style={{fontWeight: "bolder", fontSize: "1rem"}}>
 					Please Choose a specific Price
 				</label>
 				<br />
 				<select
-					onChange={(e) => handlePriceChange(e, clickedChosenProductQty)}
+					onChange={(e) => {
+						handlePriceChange(e, clickedChosenProductQty);
+						setPriceHelper(e.target.value);
+					}}
 					placeholder='Select a Ticket'
 					className=' mb-3 col-md-10 mx-auto my-1'
 					style={{
@@ -58,7 +59,8 @@ const EditPrice = ({
 						fontSize: "0.9rem",
 						// boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
 						textTransform: "capitalize",
-					}}>
+					}}
+				>
 					<option value='Choose Price'>Please Choose Specific Price</option>
 					<option value={clickedChosenProductQty.SubSKUMSRP}>
 						Manufacturing Price: {clickedChosenProductQty.SubSKUMSRP} L.E.
@@ -79,8 +81,38 @@ const EditPrice = ({
 						L.E.
 					</option>
 					<option value='0'>For Free: 0 L.E.</option>
+					<option value='Add Custom Price'>Add Custom Price</option>
 				</select>
 				<br />
+
+				{priceHelper && priceHelper === "Add Custom Price" ? (
+					<div>
+						<label className='mr-2' style={{fontWeight: "bolder"}}>
+							Custom Price
+						</label>
+						<input
+							className=' mb-3 col-md-7 mx-auto my-1'
+							style={{
+								paddingTop: "12px",
+								paddingBottom: "12px",
+								// paddingRight: "50px",
+								// textAlign: "center",
+								border: "#cfcfcf solid 1px",
+								borderRadius: "10px",
+								fontSize: "0.9rem",
+								// boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
+								textTransform: "capitalize",
+							}}
+							placeholder='please fill in your desired price'
+							type='number'
+							value={chosenCustomPrice}
+							onChange={(e) => {
+								handlePriceChange(e, clickedChosenProductQty);
+								setChosenCustomPrice(e.target.value);
+							}}
+						/>
+					</div>
+				) : null}
 			</div>
 		);
 	};
@@ -95,7 +127,8 @@ const EditPrice = ({
 							textAlign: "center",
 							fontWeight: "bold",
 							fontSize: "1.3rem",
-						}}>{`Here are all available prices....`}</div>
+						}}
+					>{`Here are all available prices....`}</div>
 				}
 				visible={modalVisible2}
 				onOk={() => {
@@ -103,11 +136,12 @@ const EditPrice = ({
 					setCollapsed(false);
 				}}
 				// okButtonProps={{ style: { display: "none" } }}
-				cancelButtonProps={{ style: { display: "none" } }}
+				cancelButtonProps={{style: {display: "none"}}}
 				onCancel={() => {
 					setCollapsed(false);
 					setModalVisible2(false);
-				}}>
+				}}
+			>
 				{mainForm()}
 			</Modal>
 		</EditPriceWrapper>

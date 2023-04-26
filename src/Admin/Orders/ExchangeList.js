@@ -1,13 +1,13 @@
 /** @format */
 
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {Link} from "react-router-dom";
 import styled from "styled-components";
-import { isAuthenticated } from "../../auth";
+import {isAuthenticated} from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import DarkBG from "../AdminMenu/DarkBG";
 import Navbar from "../AdminNavMenu/Navbar";
-import { listOrdersExchange, updateOrderInvoice } from "../apiAdmin";
+import {listOrdersExchange, updateOrderInvoice} from "../apiAdmin";
 // eslint-disable-next-line
 import Pagination from "./Pagination";
 import ReactExport from "react-export-excel";
@@ -29,7 +29,7 @@ const ExchangeList = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [postsPerPage, setPostsPerPage] = useState(100);
 
-	const { user, token } = isAuthenticated();
+	const {user, token} = isAuthenticated();
 
 	// eslint-disable-next-line
 	var today = new Date().toDateString("en-US", {
@@ -75,7 +75,7 @@ const ExchangeList = () => {
 		const onScroll = () => setOffset(window.pageYOffset);
 		// clean up code
 		window.removeEventListener("scroll", onScroll);
-		window.addEventListener("scroll", onScroll, { passive: true });
+		window.addEventListener("scroll", onScroll, {passive: true});
 		if (window.pageYOffset > 0) {
 			setPageScrolled(true);
 		} else {
@@ -126,14 +126,20 @@ const ExchangeList = () => {
 		excelDataSet.map((i, counter) => {
 			var descriptionChecker = i.chosenProductQtyWithVariables.map((iii) =>
 				iii.map(
-					(iiii) => "SKU: " + iiii.SubSKU + ", Qty: " + iiii.OrderedQty,
+					(iiii) => "SKU: " + iiii.SubSKU + ", Qty: " + iiii.OrderedQty
 					// "  /  " +
 					// iiii.productName,
-				),
+				)
 			);
 
 			var merged = [].concat.apply([], descriptionChecker);
 			var merged2 = [].concat.apply([], merged);
+
+			var gettingTotalAmount = Number(
+				Number(i.totalAmountAfterDiscount) +
+					(Number(i.totalAmount) - Number(i.shippingFees)) * 0.01
+			).toFixed(2);
+
 			return {
 				Index: counter + 1,
 				Name: i.customerDetails.fullName,
@@ -150,7 +156,7 @@ const ExchangeList = () => {
 						: merged2.length === 3
 						? merged2[0] + " | " + merged2[1] + " | " + merged2[2]
 						: merged2[0],
-				totalAmount: i.totalAmountAfterDiscount,
+				totalAmount: gettingTotalAmount,
 				AfterExchange: i.totalAmountAfterExchange,
 				AmountDue: i.totalAmountAfterExchange - i.totalAmountAfterDiscount,
 				ReferenceNumber:
@@ -175,10 +181,12 @@ const ExchangeList = () => {
 					<Link
 						className='btn btn-danger mr-5 ml-2'
 						// onClick={() => exportPDF()}
-						to='#'>
+						to='#'
+					>
 						Download Report (Excel)
 					</Link>
-				}>
+				}
+			>
 				<ExcelSheet data={adjustedExcelData} name='GQ_Orders'>
 					<ExcelColumn label='#' value='Index' />
 					<ExcelColumn label='Name' value='Name' />
@@ -210,7 +218,8 @@ const ExchangeList = () => {
 				{allOrders && allOrders.length === 0 ? (
 					<div
 						className='text-center mt-5'
-						style={{ fontSize: "1.2rem", fontWeight: "bold" }}>
+						style={{fontSize: "1.2rem", fontWeight: "bold"}}
+					>
 						No Return Orders Available
 					</div>
 				) : (
@@ -218,7 +227,8 @@ const ExchangeList = () => {
 						<div>
 							<Link
 								className='btn btn-info ml-2'
-								to='/admin/exchange-or-return'>
+								to='/admin/exchange-or-return'
+							>
 								New Exchange
 							</Link>
 						</div>
@@ -232,7 +242,8 @@ const ExchangeList = () => {
 									fontSize: "1.05rem",
 									color: "black",
 									borderRadius: "20px",
-								}}>
+								}}
+							>
 								Search
 							</label>
 							<input
@@ -249,7 +260,7 @@ const ExchangeList = () => {
 									}
 								}}
 								placeholder='Search By Client Phone, Client Name, Status Or Carrier'
-								style={{ borderRadius: "20px", width: "50%" }}
+								style={{borderRadius: "20px", width: "50%"}}
 							/>
 						</div>
 
@@ -261,7 +272,8 @@ const ExchangeList = () => {
 				/> */}
 						<table
 							className='table table-bordered table-md-responsive table-hover text-center'
-							style={{ fontSize: "0.75rem" }}>
+							style={{fontSize: "0.75rem"}}
+						>
 							<thead className='thead-light'>
 								<tr>
 									<th scope='col'>Purchase Date</th>
@@ -271,9 +283,7 @@ const ExchangeList = () => {
 									<th scope='col'>Phone</th>
 									<th scope='col'>Amount</th>
 									<th scope='col'>After Exch.</th>
-									<th
-										scope='col'
-										style={{ background: "black", color: "white" }}>
+									<th scope='col' style={{background: "black", color: "white"}}>
 										Amount Due
 									</th>
 									<th scope='col'>Store</th>
@@ -296,7 +306,8 @@ const ExchangeList = () => {
 												width: "10%",
 												background:
 													s.invoiceNumber === "Not Added" ? "#f4e4e4" : "",
-											}}>
+											}}
+										>
 											{s.invoiceNumber}
 										</td>
 										<td
@@ -314,35 +325,34 @@ const ExchangeList = () => {
 													: s.status.includes("Stocked")
 													? "white"
 													: "black",
-											}}>
+											}}
+										>
 											{s.status}
 										</td>
 
-										<td style={{ width: "9%" }}>
-											{s.customerDetails.fullName}
-										</td>
+										<td style={{width: "9%"}}>{s.customerDetails.fullName}</td>
 										<td>{s.customerDetails.phone}</td>
 										<td>{s.totalAmountAfterDiscount.toFixed(0)} L.E.</td>
 										<td>{s.totalAmountAfterExchange} L.E.</td>
-										<td style={{ background: "#003456", color: "white" }}>
+										<td style={{background: "#003456", color: "white"}}>
 											{Number(
-												s.totalAmountAfterExchange - s.totalAmountAfterDiscount,
+												s.totalAmountAfterExchange - s.totalAmountAfterDiscount
 											).toFixed(2)}{" "}
 											L.E.
 										</td>
 
-										<td style={{ textTransform: "uppercase" }}>
+										<td style={{textTransform: "uppercase"}}>
 											{s.orderSource}
 										</td>
 										<td>{s.employeeData.name}</td>
 										<td>{s.customerDetails.state}</td>
 										{/* <td>{s.customerDetails.cityName}</td> */}
-										<td style={{ width: "8%" }}>
+										<td style={{width: "8%"}}>
 											{s.chosenShippingOption &&
 												s.chosenShippingOption[0] &&
 												s.chosenShippingOption[0].carrierName}
 										</td>
-										<td style={{ width: "8%" }}>
+										<td style={{width: "8%"}}>
 											{s.trackingNumber ? s.trackingNumber : "Not Added"}
 										</td>
 										<td>{s.totalOrderQty}</td>

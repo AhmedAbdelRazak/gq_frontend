@@ -1,16 +1,17 @@
 /** @format */
 
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {Link} from "react-router-dom";
 import styled from "styled-components";
-import { isAuthenticated } from "../../auth";
+import {isAuthenticated} from "../../auth";
 import AdminMenu from "../AdminMenu/AdminMenu";
 import DarkBG from "../AdminMenu/DarkBG";
 import Navbar from "../AdminNavMenu/Navbar";
-import { listOrdersReturn, updateOrderInvoice } from "../apiAdmin";
+import {listOrdersReturn, updateOrderInvoice} from "../apiAdmin";
 // eslint-disable-next-line
 import Pagination from "./Pagination";
 import ReactExport from "react-export-excel";
+import moment from "moment";
 
 const ExcelFile = ReactExport.ExcelFile;
 const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
@@ -29,7 +30,7 @@ const ReturnList = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [postsPerPage, setPostsPerPage] = useState(100);
 
-	const { user, token } = isAuthenticated();
+	const {user, token} = isAuthenticated();
 
 	// eslint-disable-next-line
 	var today = new Date().toDateString("en-US", {
@@ -46,12 +47,12 @@ const ReturnList = () => {
 
 	const loadOrders = () => {
 		function sortOrdersAscendingly(a, b) {
-			const TotalAppointmentsA = a.returnDate;
-			const TotalAppointmentsB = b.returnDate;
+			const TotalAppointmentsA = a.returnDate ? a.returnDate : a.updatedAt;
+			const TotalAppointmentsB = b.returnDate ? b.returnDate : b.updatedAt;
 			let comparison = 0;
-			if (TotalAppointmentsA > TotalAppointmentsB) {
+			if (TotalAppointmentsA < TotalAppointmentsB) {
 				comparison = 1;
-			} else if (TotalAppointmentsA < TotalAppointmentsB) {
+			} else if (TotalAppointmentsA >= TotalAppointmentsB) {
 				comparison = -1;
 			}
 			return comparison;
@@ -75,7 +76,7 @@ const ReturnList = () => {
 		const onScroll = () => setOffset(window.pageYOffset);
 		// clean up code
 		window.removeEventListener("scroll", onScroll);
-		window.addEventListener("scroll", onScroll, { passive: true });
+		window.addEventListener("scroll", onScroll, {passive: true});
 		if (window.pageYOffset > 0) {
 			setPageScrolled(true);
 		} else {
@@ -126,14 +127,20 @@ const ReturnList = () => {
 		excelDataSet.map((i, counter) => {
 			var descriptionChecker = i.chosenProductQtyWithVariables.map((iii) =>
 				iii.map(
-					(iiii) => "SKU: " + iiii.SubSKU + ", Qty: " + iiii.OrderedQty,
+					(iiii) => "SKU: " + iiii.SubSKU + ", Qty: " + iiii.OrderedQty
 					// "  /  " +
 					// iiii.productName,
-				),
+				)
 			);
 
 			var merged = [].concat.apply([], descriptionChecker);
 			var merged2 = [].concat.apply([], merged);
+
+			var gettingTotalAmount = Number(
+				Number(i.totalAmountAfterDiscount) +
+					(Number(i.totalAmount) - Number(i.shippingFees)) * 0.01
+			).toFixed(2);
+
 			return {
 				Index: counter + 1,
 				Name: i.customerDetails.fullName,
@@ -141,6 +148,9 @@ const ReturnList = () => {
 				phone1: i.customerDetails.phone,
 				phone2: "",
 				City: i.customerDetails.cityName.toUpperCase(),
+				returnDate: i.returnDate
+					? moment(i.returnDate).format("DD/MM/YYYY")
+					: moment(i.updatedAt).format("DD/MM/YYYY"),
 				DescriptionOfGoods:
 					merged2.length === 1
 						? merged2[0]
@@ -149,7 +159,7 @@ const ReturnList = () => {
 						: merged2.length === 3
 						? merged2[0] + " | " + merged2[1] + " | " + merged2[2]
 						: merged2[0],
-				totalAmount: i.totalAmountAfterDiscount,
+				totalAmount: gettingTotalAmount,
 				returnAmount: i.returnAmount.toFixed(0),
 				ReferenceNumber:
 					i.invoiceNumber !== "Not Added" ? i.invoiceNumber : i.OTNumber,
@@ -166,17 +176,19 @@ const ReturnList = () => {
 	const DownloadExcel = () => {
 		return (
 			<ExcelFile
-				filename={`GQ_Orders_ ${new Date().toLocaleString("en-US", {
+				filename={`GQ_Return_List_ ${new Date().toLocaleString("en-US", {
 					timeZone: "Africa/Cairo",
 				})}`}
 				element={
 					<Link
 						className='btn btn-danger mr-5 ml-2'
 						// onClick={() => exportPDF()}
-						to='#'>
+						to='#'
+					>
 						Download Report (Excel)
 					</Link>
-				}>
+				}
+			>
 				<ExcelSheet data={adjustedExcelData} name='GQ_Orders'>
 					<ExcelColumn label='#' value='Index' />
 					<ExcelColumn label='Name' value='Name' />
@@ -184,6 +196,7 @@ const ReturnList = () => {
 					<ExcelColumn label='Phone' value='phone1' />
 					<ExcelColumn label='Phone2' value='phone2' />
 					<ExcelColumn label='City' value='City' />
+					<ExcelColumn label='Return Date' value='returnDate' />
 					<ExcelColumn
 						label='Description Of Goods'
 						value='DescriptionOfGoods'
@@ -207,7 +220,8 @@ const ReturnList = () => {
 				{allOrders && allOrders.length === 0 ? (
 					<div
 						className='text-center mt-5'
-						style={{ fontSize: "1.2rem", fontWeight: "bold" }}>
+						style={{fontSize: "1.2rem", fontWeight: "bold"}}
+					>
 						No Return Orders Available
 					</div>
 				) : (
@@ -215,7 +229,8 @@ const ReturnList = () => {
 						<div>
 							<Link
 								className='btn btn-info ml-2'
-								to='/admin/exchange-or-return'>
+								to='/admin/exchange-or-return'
+							>
 								New Return
 							</Link>
 						</div>
@@ -229,7 +244,8 @@ const ReturnList = () => {
 									fontSize: "1.05rem",
 									color: "black",
 									borderRadius: "20px",
-								}}>
+								}}
+							>
 								Search
 							</label>
 							<input
@@ -246,7 +262,7 @@ const ReturnList = () => {
 									}
 								}}
 								placeholder='Search By Client Phone, Client Name, Status Or Carrier'
-								style={{ borderRadius: "20px", width: "50%" }}
+								style={{borderRadius: "20px", width: "50%"}}
 							/>
 						</div>
 
@@ -258,7 +274,8 @@ const ReturnList = () => {
 				/> */}
 						<table
 							className='table table-bordered table-md-responsive table-hover text-center'
-							style={{ fontSize: "0.75rem" }}>
+							style={{fontSize: "0.75rem"}}
+						>
 							<thead className='thead-light'>
 								<tr>
 									<th scope='col'>Purchase Date</th>
@@ -284,13 +301,18 @@ const ReturnList = () => {
 								{search(allOrders).map((s, i) => (
 									<tr key={i} className=''>
 										<td>{new Date(s.orderCreationDate).toDateString()}</td>
-										<td>{new Date(s.returnDate).toDateString()}</td>
+										<td>
+											{s.returnDate
+												? new Date(s.returnDate).toDateString()
+												: new Date(s.updatedAt).toDateString()}
+										</td>
 										<td
 											style={{
 												width: "10%",
 												background:
 													s.invoiceNumber === "Not Added" ? "#f4e4e4" : "",
-											}}>
+											}}
+										>
 											{s.invoiceNumber}
 										</td>
 										<td
@@ -312,30 +334,29 @@ const ReturnList = () => {
 														: s.status === "Cancelled"
 														? "white"
 														: "white",
-											}}>
+											}}
+										>
 											{s.status}
 										</td>
 
-										<td style={{ width: "9%" }}>
-											{s.customerDetails.fullName}
-										</td>
+										<td style={{width: "9%"}}>{s.customerDetails.fullName}</td>
 										<td>{s.customerDetails.phone}</td>
 										<td>{s.totalAmountAfterDiscount.toFixed(0)} L.E.</td>
-										<td style={{ width: "7.8%" }}>
+										<td style={{width: "7.8%"}}>
 											{s.returnAmount.toFixed(0)} L.E.
 										</td>
-										<td style={{ textTransform: "uppercase" }}>
+										<td style={{textTransform: "uppercase"}}>
 											{s.orderSource}
 										</td>
 										<td>{s.employeeData.name}</td>
 										<td>{s.customerDetails.state}</td>
 										{/* <td>{s.customerDetails.cityName}</td> */}
-										<td style={{ width: "8%" }}>
+										<td style={{width: "8%"}}>
 											{s.chosenShippingOption &&
 												s.chosenShippingOption[0] &&
 												s.chosenShippingOption[0].carrierName}
 										</td>
-										<td style={{ width: "8%" }}>
+										<td style={{width: "8%"}}>
 											{s.trackingNumber ? s.trackingNumber : "Not Added"}
 										</td>
 										<td>{s.totalOrderQty}</td>

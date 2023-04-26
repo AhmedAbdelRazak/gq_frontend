@@ -34,13 +34,13 @@ const ReturnReceivingE = ({
 		selectedOrder.customerDetails &&
 		selectedOrder.customerDetails.fullName
 			? selectedOrder.chosenProductQtyWithVariables.map((i) =>
-					i.map((ii) => ii),
+					i.map((ii) => ii)
 			  )
 			: null;
 
 	var mergedChosenProductQtyWithVariablesDetails = [].concat.apply(
 		[],
-		chosenProductQtyWithVariablesDetails,
+		chosenProductQtyWithVariablesDetails
 	);
 
 	const exchangedItemsDetails =
@@ -72,7 +72,7 @@ const ReturnReceivingE = ({
 					size: ii.size,
 					receivedQuantity: ii.receivedQuantity ? ii.receivedQuantity : 0,
 				};
-			}),
+			})
 		);
 
 	var mergedFinalOfFinal = [].concat.apply([], addingVariablesToMain);
@@ -85,8 +85,8 @@ const ReturnReceivingE = ({
 		(i) =>
 			mergedReturnedItemsDetails &&
 			mergedReturnedItemsDetails
-				.map((ii) => ii.SubSKU.toLowerCase())
-				.indexOf(i.SubSKU.toLowerCase()) > -1,
+				.map((ii) => ii.SubSKU && ii.SubSKU.toLowerCase())
+				.indexOf(i.SubSKU && i.SubSKU.toLowerCase()) > -1
 	);
 
 	const activeStockFinal2 = allAttributesFinalOfFinal.filter(
@@ -94,15 +94,15 @@ const ReturnReceivingE = ({
 			exchangedItemsDetails &&
 			exchangedItemsDetails
 				.map((ii) => ii.exchangedProduct.SubSKU.toLowerCase())
-				.indexOf(i.SubSKU.toLowerCase()) > -1,
+				.indexOf(i.SubSKU.toLowerCase()) > -1
 	);
 
 	const activeStockFinal3 = allAttributesFinalOfFinal.filter(
 		(i) =>
 			mergedChosenProductQtyWithVariablesDetails &&
 			mergedChosenProductQtyWithVariablesDetails
-				.map((ii) => ii.SubSKU.toLowerCase())
-				.indexOf(i.SubSKU.toLowerCase()) > -1,
+				.map((ii) => ii.SubSKU && ii.SubSKU.toLowerCase())
+				.indexOf(i.SubSKU && i.SubSKU.toLowerCase()) > -1
 	);
 
 	// console.log(mergedReturnedItemsDetails, "mergedReturnedItemsDetails");
@@ -129,22 +129,22 @@ const ReturnReceivingE = ({
 							Number(alreadyStockedQuantity) + Number(quantityToBeReceived),
 						quantity: Number(i.quantity) - Number(quantityToBeReceived),
 				  }
-				: i,
+				: i
 		);
 	// console.log(updatedProductAttributesFinal, "updatedProductAttributesFinal");
 
 	const variableImage =
 		chosenProduct &&
 		chosenProduct.productAttributes.filter(
-			(i) => i.SubSKU.toLowerCase() === chosenProduct.SubSKU.toLowerCase(),
+			(i) => i.SubSKU.toLowerCase() === chosenProduct.SubSKU.toLowerCase()
 		) &&
 		chosenProduct &&
 		chosenProduct.productAttributes.filter(
-			(i) => i.SubSKU.toLowerCase() === chosenProduct.SubSKU.toLowerCase(),
+			(i) => i.SubSKU.toLowerCase() === chosenProduct.SubSKU.toLowerCase()
 		)[0] &&
 		chosenProduct &&
 		chosenProduct.productAttributes.filter(
-			(i) => i.SubSKU.toLowerCase() === chosenProduct.SubSKU.toLowerCase(),
+			(i) => i.SubSKU.toLowerCase() === chosenProduct.SubSKU.toLowerCase()
 		)[0].productImages[0].url;
 
 	// console.log(variableImage, "variableImage");
@@ -189,7 +189,7 @@ const ReturnReceivingE = ({
 														Number(
 															activeStockFinal &&
 																activeStockFinal[i] &&
-																activeStockFinal[i].quantity,
+																activeStockFinal[i].quantity
 														)}
 												</div>
 												<div className='col-6 text-center mt-3'>
@@ -201,7 +201,8 @@ const ReturnReceivingE = ({
 																? "darkblue"
 																: null,
 														}}
-														onClick={() => setReturnStatusUpdate(true)}>
+														onClick={() => setReturnStatusUpdate(true)}
+													>
 														STATUS UPDATE
 													</button>
 												</div>
@@ -209,7 +210,8 @@ const ReturnReceivingE = ({
 													className='col-12 mt-3'
 													style={{
 														borderBottom: "lightgrey solid 1px",
-													}}></div>
+													}}
+												></div>
 											</div>
 										);
 									})}
@@ -256,7 +258,7 @@ const ReturnReceivingE = ({
 												Number(
 													activeStockFinal2 &&
 														activeStockFinal2[i] &&
-														activeStockFinal2[i].quantity,
+														activeStockFinal2[i].quantity
 												)}
 										</div>
 										<div className='col-6 text-center mt-3'>
@@ -266,7 +268,8 @@ const ReturnReceivingE = ({
 												style={{
 													background: returnStatusUpdate ? "darkblue" : null,
 												}}
-												onClick={() => setReturnStatusUpdate(true)}>
+												onClick={() => setReturnStatusUpdate(true)}
+											>
 												STATUS UPDATE
 											</button>
 										</div>
@@ -274,7 +277,8 @@ const ReturnReceivingE = ({
 											className='col-12 mt-3'
 											style={{
 												borderBottom: "lightgrey solid 1px",
-											}}></div>
+											}}
+										></div>
 									</div>
 								</div>
 							);
@@ -324,7 +328,8 @@ const ReturnReceivingE = ({
 								style={{
 									background: returnStatusUpdate ? "darkblue" : null,
 								}}
-								onClick={() => setReturnStatusUpdate(true)}>
+								onClick={() => setReturnStatusUpdate(true)}
+							>
 								STATUS UPDATE
 							</button>
 						</div>
@@ -334,7 +339,8 @@ const ReturnReceivingE = ({
 								{
 									// borderBottom: "lightgrey solid 1px",
 								}
-							}></div>
+							}
+						></div>
 					</div>
 				</div>
 			) : null}
@@ -379,7 +385,7 @@ const ReturnReceivingE = ({
 														Number(
 															activeStockFinal3 &&
 																activeStockFinal3[i] &&
-																activeStockFinal3[i].quantity,
+																activeStockFinal3[i].quantity
 														)}
 												</div>
 												<div className='col-6 text-center mt-3'>
@@ -391,7 +397,8 @@ const ReturnReceivingE = ({
 																? "darkblue"
 																: null,
 														}}
-														onClick={() => setReturnStatusUpdate(true)}>
+														onClick={() => setReturnStatusUpdate(true)}
+													>
 														STATUS UPDATE
 													</button>
 												</div>
@@ -399,7 +406,8 @@ const ReturnReceivingE = ({
 													className='col-12 mt-3'
 													style={{
 														borderBottom: "lightgrey solid 1px",
-													}}></div>
+													}}
+												></div>
 											</div>
 										);
 									})}

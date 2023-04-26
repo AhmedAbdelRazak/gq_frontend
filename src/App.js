@@ -67,34 +67,15 @@ import AceOrdersList from "./Admin/OnlineStore/AceOrdersList";
 //Store
 import NavbarTop from "./Navbar/NavbarTop";
 import NavbarBottom from "./Navbar/NavbarBottom";
-import Home from "./pages/Home/Home";
 import NavbarAds from "./Navbar/NavbarAds";
 import { getAllAds } from "./Admin/apiAdmin";
 import AddHeroComp from "./Admin/OnlineStore/AddHeroComp";
 
-import SingleProduct from "./pages/SingleProduct/SingleProduct";
-import ShopPageMain from "./pages/ShopPage/ShopPageMain";
-import Cart from "./Checkout/Cart";
 import InvoicePDF from "./Admin/Orders/InvoicePDF";
-// eslint-disable-next-line
-import { isAuthenticated } from "./auth";
-import CheckoutMain from "./Checkout/CheckoutForm/CheckoutMain";
-// eslint-disable-next-line
-import GenderNav from "./Navbar/GenderNav";
-import UserDashboard from "./pages/User/UserDashboard";
-import PrivateRoute from "./auth/PrivateRoute";
 import EditWebsite from "./Admin/OnlineStore/OnlineStorePages/EditWebsite";
 import EditAboutUsPage from "./Admin/OnlineStore/OnlineStorePages/EditAboutUsPage";
 import EditContactUsPage from "./Admin/OnlineStore/OnlineStorePages/EditContactUsPage";
-import About from "./pages/About/About";
-import AboutArabic from "./pages/About/AboutArabic";
-import Contactus from "./pages/Contact/Contackus";
-import ContactArabic from "./pages/Contact/ContactArabic";
-import UserWishlist from "./pages/User/UserWishlist";
 import AceReceiving from "./Admin/OnlineStore/AceReceiving";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import CookiePolicy from "./pages/CookiePolicy";
-import RetExchPolicy from "./pages/RetExchPolicy";
 import OnsiteOrderTaking from "./Admin/OnlineStore/OnsiteOrderTaking/OnsiteOrderTaking";
 import PrintBarcodes from "./Admin/OnlineStore/PrintBarcodes/PrintBarcodes";
 import SingleBarcodePage from "./Admin/OnlineStore/PrintBarcodes/SingleBarcodePage";
@@ -198,45 +179,7 @@ const App = () => {
 
 			<Switch>
 				<Route path='/' exact component={Login} />
-
-				<Route
-					path='/home'
-					exact
-					component={() => <Home chosenLanguage={language} />}
-				/>
-				<Route
-					path='/product/:categoryslug/:slug/:productId'
-					exact
-					component={SingleProduct}
-				/>
-				<Route path='/privacy-policy' exact component={PrivacyPolicy} />
-				<Route path='/cookie-policy' exact component={CookiePolicy} />
-				<Route path='/return-exchange-policy' exact component={RetExchPolicy} />
-				<Route path='/user/wishlist' exact component={UserWishlist} />
 				<Route path='/signup' exact component={Register} />
-				<Route
-					path='/our-products'
-					exact
-					component={() => <ShopPageMain chosenLanguage={language} />}
-				/>
-				<Route
-					path='/cart'
-					exact
-					component={() => <Cart chosenLanguage={language} />}
-				/>
-				<Route path='/checkout' exact component={CheckoutMain} />
-				{language === "Arabic" ? (
-					<Route path='/contact' exact component={ContactArabic} />
-				) : (
-					<Route path='/contact' exact component={Contactus} />
-				)}
-
-				{language === "Arabic" ? (
-					<Route path='/about' exact component={AboutArabic} />
-				) : (
-					<Route path='/about' exact component={About} />
-				)}
-				<PrivateRoute path='/user/dashboard' exact component={UserDashboard} />
 
 				<AdminRoute path='/admin/dashboard' exact component={AdminDashboard} />
 				<AdminRoute
