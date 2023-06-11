@@ -1,13 +1,13 @@
 /** @format */
 
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import styled from "styled-components";
 
-import { isAuthenticated } from "../../../auth/index";
+import {isAuthenticated} from "../../../auth/index";
 import axios from "axios";
 import Resizer from "react-image-file-resizer";
-import { createAbout, getAbouts, cloudinaryUpload1 } from "../../apiAdmin";
-import { ToastContainer, toast } from "react-toastify";
+import {createAbout, getAbouts, cloudinaryUpload1} from "../../apiAdmin";
+import {ToastContainer, toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import AdminMenu from "../../AdminMenu/AdminMenu";
 import DarkBG from "../../AdminMenu/DarkBG";
@@ -29,7 +29,7 @@ const EditAboutUsPage = () => {
 	const [error, setError] = useState(false);
 	// eslint-disable-next-line
 	const [success, setSuccess] = useState(false);
-	const { user, token } = isAuthenticated();
+	const {user, token} = isAuthenticated();
 
 	const handleChange2 = (e) => {
 		setError("");
@@ -59,22 +59,32 @@ const EditAboutUsPage = () => {
 				setAllAbouts(data[data.length - 1]);
 				setHeader1(data[data.length - 1] && data[data.length - 1].header_1);
 				setHeader1_Arabic(
-					data[data.length - 1] && data[data.length - 1].header_1_Arabic,
+					data[data.length - 1] && data[data.length - 1].header_1_Arabic
 				);
 				setDescription1(
-					data[data.length - 1] && data[data.length - 1].description_1,
+					data[data.length - 1] && data[data.length - 1].description_1
 				);
 				setDescription1_Arabic(
-					data[data.length - 1] && data[data.length - 1].description_1_Arabic,
+					data[data.length - 1] && data[data.length - 1].description_1_Arabic
 				);
 
-				setAddThumbnail({
-					images:
-						data[data.length - 1] &&
-						data[data.length - 1].thumbnail &&
-						data[data.length - 1] &&
-						data[data.length - 1].thumbnail.map((i) => i.url),
-				});
+				if (
+					data[data.length - 1] &&
+					data[data.length - 1].thumbnail &&
+					data[data.length - 1].thumbnail[0]
+				) {
+					setAddThumbnail({
+						images:
+							data[data.length - 1] &&
+							data[data.length - 1].thumbnail &&
+							data[data.length - 1].thumbnail[0]
+								? data[data.length - 1] &&
+								  data[data.length - 1].thumbnail.map((i) => i.url)
+								: [],
+					});
+				} else {
+					setAddThumbnail([]);
+				}
 			}
 		});
 	};
@@ -87,23 +97,23 @@ const EditAboutUsPage = () => {
 			for (let i = 0; i < files.length; i++) {
 				Resizer.imageFileResizer(
 					files[i],
-					720,
-					720,
+					1728,
+					565,
 					"JPEG",
 					100,
 					0,
 					(uri) => {
-						cloudinaryUpload1(user._id, token, { image: uri })
+						cloudinaryUpload1(user._id, token, {image: uri})
 							.then((data) => {
 								allUploadedFiles.push(data);
 
-								setAddThumbnail({ ...addThumbnail, images: allUploadedFiles });
+								setAddThumbnail({...addThumbnail, images: allUploadedFiles});
 							})
 							.catch((err) => {
 								console.log("CLOUDINARY UPLOAD ERR", err);
 							});
 					},
-					"base64",
+					"base64"
 				);
 			}
 		}
@@ -114,7 +124,8 @@ const EditAboutUsPage = () => {
 			<>
 				<label
 					className='btn btn-info btn-raised'
-					style={{ cursor: "pointer", fontSize: "0.95rem" }}>
+					style={{cursor: "pointer", fontSize: "0.95rem"}}
+				>
 					Add a Thumbnail
 					<input
 						type='file'
@@ -133,17 +144,17 @@ const EditAboutUsPage = () => {
 		axios
 			.post(
 				`${process.env.REACT_APP_API_URL}/admin/removeimage/${user._id}`,
-				{ public_id },
+				{public_id},
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,
 					},
-				},
+				}
 			)
 			.then((res) => {
 				setLoading(false);
 				// eslint-disable-next-line
-				const { images } = addThumbnail;
+				const {images} = addThumbnail;
 				// let filteredImages = images.filter((item) => {
 				// 	return item.public_id !== public_id;
 				// });
@@ -246,6 +257,9 @@ const EditAboutUsPage = () => {
 		</form>
 	);
 
+	console.log(allAbouts, "allAbouts");
+	console.log(addThumbnail, "addThumbnail");
+
 	return (
 		<EditAboutUsPageWrapper>
 			{!collapsed ? (
@@ -274,6 +288,7 @@ const EditAboutUsPage = () => {
 						<div className='col-12'>
 							{addThumbnail &&
 								addThumbnail.images &&
+								addThumbnail.images[0] &&
 								addThumbnail.images.map((image, i) => {
 									return (
 										<div className='m-3 col-6 ' key={i}>
@@ -288,7 +303,8 @@ const EditAboutUsPage = () => {
 													background: "black",
 													fontSize: "20px",
 												}}
-												aria-label='Close'>
+												aria-label='Close'
+											>
 												<span aria-hidden='true'>&times;</span>
 											</button>
 											<img
