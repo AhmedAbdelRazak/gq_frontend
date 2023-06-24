@@ -1,9 +1,9 @@
 /** @format */
 
-import React, {useEffect, useState} from "react";
-import {Route, BrowserRouter, Switch} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Route, BrowserRouter, Switch } from "react-router-dom";
 import "./App.css";
-import {ToastContainer} from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "antd/dist/antd.min.css";
 import ReactGA from "react-ga";
 import Login from "./pages/Login";
@@ -68,7 +68,7 @@ import AceOrdersList from "./Admin/OnlineStore/AceOrdersList";
 import NavbarTop from "./Navbar/NavbarTop";
 import NavbarBottom from "./Navbar/NavbarBottom";
 import NavbarAds from "./Navbar/NavbarAds";
-import {getAllAds} from "./Admin/apiAdmin";
+import { getAllAds } from "./Admin/apiAdmin";
 import AddHeroComp from "./Admin/OnlineStore/AddHeroComp";
 
 import InvoicePDF from "./Admin/Orders/InvoicePDF";

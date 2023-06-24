@@ -69,8 +69,8 @@ const CreateNewOrder = () => {
 		new Date(
 			new Date().toLocaleString("en-US", {
 				timeZone: "Africa/Cairo",
-			}),
-		),
+			})
+		)
 	);
 	const [customerDetails, setCustomerDetails] = useState({
 		fullName: "",
@@ -112,7 +112,7 @@ const CreateNewOrder = () => {
 							...i,
 							orderedQuantity: 1,
 						};
-					}),
+					})
 				);
 			}
 		});
@@ -203,7 +203,8 @@ const CreateNewOrder = () => {
 							fontSize: "1.05rem",
 							color: "black",
 							borderRadius: "20px",
-						}}>
+						}}
+					>
 						Search
 					</label>
 
@@ -226,14 +227,16 @@ const CreateNewOrder = () => {
 						fontSize: "0.75rem",
 						overflowX: "auto",
 						background: "white",
-					}}>
+					}}
+				>
 					<thead className='thead-light'>
 						<tr
 							style={{
 								fontSize: "0.78rem",
 								textTransform: "capitalize",
 								textAlign: "center",
-							}}>
+							}}
+						>
 							<th scope='col' style={{ width: "12%" }}>
 								Add To Order
 							</th>
@@ -244,7 +247,8 @@ const CreateNewOrder = () => {
 									width: "12%",
 									background: "#006200",
 									color: "white",
-								}}>
+								}}
+							>
 								Stock Onhand
 							</th>
 							<th scope='col'>Product Price</th>
@@ -261,7 +265,8 @@ const CreateNewOrder = () => {
 							fontSize: "0.75rem",
 							textTransform: "capitalize",
 							fontWeight: "bolder",
-						}}>
+						}}
+					>
 						{search(allProducts).map((s, i) => {
 							return (
 								<>
@@ -272,13 +277,15 @@ const CreateNewOrder = () => {
 												to='#'
 												onClick={() => {
 													setAddedProductToCart([...addedProductsToCart, s]);
-												}}>
+												}}
+											>
 												<td
 													style={{
 														color: "blue",
 														fontWeight: "bold",
 														cursor: "pointer",
-													}}>
+													}}
+												>
 													Add To Order
 												</td>
 											</Link>
@@ -299,7 +306,8 @@ const CreateNewOrder = () => {
 											<td
 												style={{
 													background: s.productQty <= 0 ? "#fdd0d0" : "",
-												}}>
+												}}
+											>
 												{s.addVariables
 													? s.productAttributes
 															.map((iii) => iii.quantity)
@@ -319,7 +327,8 @@ const CreateNewOrder = () => {
 															textDecoration: "underline",
 															color: "darkblue",
 															cursor: "pointer",
-														}}>
+														}}
+													>
 														Check Product Attributes
 													</span>
 												) : (
@@ -350,17 +359,19 @@ const CreateNewOrder = () => {
 														setAddedProductToCart(
 															addedProductsToCart.filter(
 																(ppp) =>
-																	ppp._id !== addedProductsToCart[index]._id,
-															),
+																	ppp._id !== addedProductsToCart[index]._id
+															)
 														);
 													}
-												}}>
+												}}
+											>
 												<td
 													style={{
 														color: "red",
 														fontWeight: "bold",
 														cursor: "pointer",
-													}}>
+													}}
+												>
 													Remove From Order
 												</td>
 											</Link>
@@ -387,7 +398,8 @@ const CreateNewOrder = () => {
 														: s.quantity <= 0
 														? "#fdd0d0"
 														: "",
-												}}>
+												}}
+											>
 												{s.addVariables
 													? s.productAttributes
 															.map((iii) => iii.quantity)
@@ -407,7 +419,8 @@ const CreateNewOrder = () => {
 															textDecoration: "underline",
 															color: "darkblue",
 															cursor: "pointer",
-														}}>
+														}}
+													>
 														Check Product Attributes
 													</span>
 												) : (
@@ -465,7 +478,7 @@ const CreateNewOrder = () => {
 	useEffect(() => {
 		const productSubSKUImage = (requiredProduct, productSubSKUColor) => {
 			const theReturn = requiredProduct.productAttributes.filter(
-				(i) => i.color === productSubSKUColor,
+				(i) => i.color === productSubSKUColor
 			)[0].productImages;
 			return theReturn[0] ? theReturn[0].url : undefined;
 		};
@@ -479,21 +492,20 @@ const CreateNewOrder = () => {
 						productId: i.productId,
 						productName: i.productName,
 						productMainImage: addedProductsToCart.filter(
-							(s) => s._id === i.productId,
+							(s) => s._id === i.productId
 						)[0].thumbnailImage[0].images[0].url,
 
 						productSubSKUImage: productSubSKUImage(
 							addedProductsToCart.filter((s) => s._id === i.productId)[0],
 							addedProductsToCart
 								.filter((s) => s._id === i.productId)[0]
-								.productAttributes.filter((ss) => ss.SubSKU === ii)[0].color,
+								.productAttributes.filter((ss) => ss.SubSKU === ii)[0].color
 						)
 							? productSubSKUImage(
 									addedProductsToCart.filter((s) => s._id === i.productId)[0],
 									addedProductsToCart
 										.filter((s) => s._id === i.productId)[0]
-										.productAttributes.filter((ss) => ss.SubSKU === ii)[0]
-										.color,
+										.productAttributes.filter((ss) => ss.SubSKU === ii)[0].color
 							  )
 							: addedProductsToCart.filter((s) => s._id === i.productId)[0]
 									.thumbnailImage[0].images[0].url,
@@ -547,7 +559,7 @@ const CreateNewOrder = () => {
 							.productAttributes.filter((ss) => ss.SubSKU === ii)[0].MSRP,
 					};
 				});
-			}),
+			})
 		);
 		// eslint-disable-next-line
 	}, [chosenProductVariables]);
@@ -576,7 +588,8 @@ const CreateNewOrder = () => {
 					padding: "20px 5px",
 					borderRadius: "10px",
 					minHeight: "250px",
-				}}>
+				}}
+			>
 				{productNameWithAttributes ? (
 					<React.Fragment>
 						{productNameWithAttributes.map((p, i) => {
@@ -599,7 +612,7 @@ const CreateNewOrder = () => {
 											const index = chosenProductVariables.findIndex(
 												(object) => {
 													return object.productId === p.productId;
-												},
+												}
 											);
 
 											if (index !== -1) {
@@ -622,7 +635,8 @@ const CreateNewOrder = () => {
 													},
 												]);
 											}
-										}}>
+										}}
+									>
 										{p.productAttributes.map((att, ii) => {
 											return (
 												<Option value={att.SubSKU} key={ii}>
@@ -664,7 +678,8 @@ const CreateNewOrder = () => {
 					background: "white",
 					padding: "20px 15px",
 					borderRadius: "10px",
-				}}>
+				}}
+			>
 				<EditPrice
 					setChosenProductQty={setChosenProductQty}
 					chosenProductQty={chosenProductQty}
@@ -680,17 +695,18 @@ const CreateNewOrder = () => {
 							<div key={i}>
 								{p.map((pp, ii) => {
 									let requiredAttributes = productNameWithAttributes.filter(
-										(x) => x.productId === pp.productId,
+										(x) => x.productId === pp.productId
 									)[0];
 									let AvailableStock =
 										requiredAttributes.productAttributes.filter(
-											(xx) => xx.SubSKU === pp.SubSKU,
+											(xx) => xx.SubSKU === pp.SubSKU
 										)[0];
 									return (
 										<div key={{ ii }} className='my-3 text-capitalize'>
 											<label
 												className='text-muted'
-												style={{ fontWeight: "bold", fontSize: "14px" }}>
+												style={{ fontWeight: "bold", fontSize: "14px" }}
+											>
 												{pp.productName} | {pp.SubSKU} | Available Stock:{" "}
 												{AvailableStock.quantity} Units |<br />{" "}
 												<div
@@ -703,7 +719,8 @@ const CreateNewOrder = () => {
 														color: "black",
 														fontWeight: "bolder",
 														cursor: "pointer",
-													}}>
+													}}
+												>
 													Price: {pp.pickedPrice} L.E. <EditOutlined />
 												</div>{" "}
 												Total Amount:{" "}
@@ -724,7 +741,7 @@ const CreateNewOrder = () => {
 																	object.productId === pp.productId &&
 																	object.SubSKU === pp.SubSKU
 																);
-															},
+															}
 														);
 
 														if (index !== -1) {
@@ -754,7 +771,8 @@ const CreateNewOrder = () => {
 											fontWeight: "bold",
 											fontSize: "15px",
 											width: "100%",
-										}}>
+										}}
+									>
 										{p.productName} | {p.productSKU} | Available Stock:{" "}
 										{p.quantity} | Price: {p.pickedPrice} | Total Amount:{" "}
 										{Number(p.orderedQuantity) * Number(p.pickedPrice)}
@@ -769,7 +787,7 @@ const CreateNewOrder = () => {
 												const index = addedProductsToCart.findIndex(
 													(object) => {
 														return object._id === p._id;
-													},
+													}
 												);
 
 												if (index !== -1) {
@@ -812,7 +830,7 @@ const CreateNewOrder = () => {
 				.reduce((a, b) => a + b, 0);
 
 		var QtyWithVariables = chosenProductQty.map((iii) =>
-			iii.map((iiii) => Number(iiii.OrderedQty)),
+			iii.map((iiii) => Number(iiii.OrderedQty))
 		);
 
 		return Number(QtyNoVariables) + Number(sum_array(QtyWithVariables));
@@ -829,8 +847,8 @@ const CreateNewOrder = () => {
 				(i) =>
 					i.chosenShippingData
 						.map((iii) => iii.governorate)
-						.indexOf(e.target.value) > -1,
-			),
+						.indexOf(e.target.value) > -1
+			)
 		);
 	};
 
@@ -856,7 +874,7 @@ const CreateNewOrder = () => {
 		setCustomerDetails({ ...customerDetails, carrierName: e.target.value });
 
 		setChosenShippingOption(
-			allShippingOptions.filter((i) => i.carrierName === e.target.value),
+			allShippingOptions.filter((i) => i.carrierName === e.target.value)
 		);
 	};
 
@@ -868,7 +886,8 @@ const CreateNewOrder = () => {
 					background: "white",
 					padding: "20px 15px",
 					borderRadius: "10px",
-				}}>
+				}}
+			>
 				<h5 className='mb-4'>Customer Details</h5>
 				<div className='row'>
 					<div className='form-group col-md-6 '>
@@ -954,7 +973,8 @@ const CreateNewOrder = () => {
 							fontSize: "0.9rem",
 							// boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
 							textTransform: "capitalize",
-						}}>
+						}}
+					>
 						<option value='SelectGovernorate'>Select A Governorate</option>
 						{UniqueGovernorates.map((g, ii) => {
 							return <option key={ii}>{g}</option>;
@@ -978,7 +998,8 @@ const CreateNewOrder = () => {
 								fontSize: "0.9rem",
 								// boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
 								textTransform: "capitalize",
-							}}>
+							}}
+						>
 							<option value='SelectGovernorate'>Select A City</option>
 							{chosenCity.map((g, ii) => {
 								return (
@@ -1007,7 +1028,8 @@ const CreateNewOrder = () => {
 								fontSize: "0.9rem",
 								// boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
 								textTransform: "capitalize",
-							}}>
+							}}
+						>
 							<option value='SelectGovernorate'>Select A Carrier</option>
 							{allShippingOptions.map((g, ii) => {
 								return <option key={ii}>{g.carrierName}</option>;
@@ -1052,7 +1074,7 @@ const CreateNewOrder = () => {
 		.reduce((a, b) => a + b, 0);
 
 	var PriceWithVariables = chosenProductQty.map((iii) =>
-		iii.map((iiii) => Number(iiii.pickedPrice) * Number(iiii.OrderedQty)),
+		iii.map((iiii) => Number(iiii.pickedPrice) * Number(iiii.OrderedQty))
 	);
 
 	let variableProductTotalAmount = Number(sum_array(PriceWithVariables));
@@ -1092,7 +1114,7 @@ const CreateNewOrder = () => {
 		chosenProductQty &&
 		chosenProductQty.length > 0 &&
 		chosenProductQty.map((ii) =>
-			ii.filter((iii) => iii.OrderedQty <= iii.quantity || iii.quantity !== 0),
+			ii.filter((iii) => iii.OrderedQty <= iii.quantity || iii.quantity !== 0)
 		);
 
 	let lengthsOfArrays =
@@ -1110,7 +1132,7 @@ const CreateNewOrder = () => {
 	let QuantityValidation_NoVariables =
 		productsWithNoVariables &&
 		productsWithNoVariables.filter(
-			(ii) => ii.orderedQuantity <= ii.quantity || ii.quantity !== 0,
+			(ii) => ii.orderedQuantity <= ii.quantity || ii.quantity !== 0
 		);
 
 	// console.log(QuantityValidation_NoVariables, "QuantityValidation_NoVariables");
@@ -1166,7 +1188,7 @@ const CreateNewOrder = () => {
 			return toast.error("Phone Number Should Be 11 Digits Only");
 		}
 
-		if (lengthOfOrders >= 3523) {
+		if (lengthOfOrders >= 7225) {
 			return toast.error("Database is full, Please contact your adminstrator");
 		}
 
@@ -1189,7 +1211,7 @@ const CreateNewOrder = () => {
 		var today = new Date(
 			new Date().toLocaleString("en-US", {
 				timeZone: "Africa/Cairo",
-			}),
+			})
 		);
 
 		//In Processing, Ready To Ship, Shipped, Delivered
@@ -1266,7 +1288,8 @@ const CreateNewOrder = () => {
 					background: "white",
 					padding: "20px 15px",
 					borderRadius: "10px",
-				}}>
+				}}
+			>
 				<div style={{ fontSize: "1.25rem", fontWeight: "bolder" }}>
 					Customer Details
 				</div>
@@ -1395,7 +1418,8 @@ const CreateNewOrder = () => {
 				</div>
 				<div
 					className='my-3'
-					style={{ fontSize: "1rem", fontWeight: "bolder" }}>
+					style={{ fontSize: "1rem", fontWeight: "bolder" }}
+				>
 					Basic Products:
 				</div>
 
@@ -1422,7 +1446,8 @@ const CreateNewOrder = () => {
 					<>
 						<div
 							className='my-3'
-							style={{ fontSize: "1rem", fontWeight: "bolder" }}>
+							style={{ fontSize: "1rem", fontWeight: "bolder" }}
+						>
 							Products With Variables:
 						</div>
 
@@ -1438,7 +1463,8 @@ const CreateNewOrder = () => {
 														style={{
 															color: "darkblue",
 															textTransform: "capitalize",
-														}}>
+														}}
+													>
 														{pp.productName} | {pp.SubSKU} |{" "}
 														{allColors[
 															allColors
@@ -1510,7 +1536,8 @@ const CreateNewOrder = () => {
 							width: "100%",
 							// boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
 							textTransform: "capitalize",
-						}}>
+						}}
+					>
 						<option value='SelectSource'>Select Order Source</option>
 						{allStores.map((g, ii) => {
 							return <option key={ii}>{g.storeName}</option>;
@@ -1523,7 +1550,8 @@ const CreateNewOrder = () => {
 						<div className='form-group'>
 							<label
 								className=' mx-2'
-								style={{ fontWeight: "bold", fontSize: "17px" }}>
+								style={{ fontWeight: "bold", fontSize: "17px" }}
+							>
 								Send SMS
 							</label>
 
@@ -1541,7 +1569,8 @@ const CreateNewOrder = () => {
 						<div className='form-group'>
 							<label
 								className=' mx-2'
-								style={{ fontWeight: "bold", fontSize: "17px" }}>
+								style={{ fontWeight: "bold", fontSize: "17px" }}
+							>
 								Free Shipping
 							</label>
 
@@ -1566,7 +1595,7 @@ const CreateNewOrder = () => {
 						className='inputFields'
 						onChange={(date) => {
 							setOrderCreationDate(
-								new Date(date._d).toLocaleDateString() || date._d,
+								new Date(date._d).toLocaleDateString() || date._d
 							);
 						}}
 						// disabledDate={disabledDate}
@@ -1686,7 +1715,8 @@ const CreateNewOrder = () => {
 								fontSize: "0.9rem",
 								// boxShadow: "2px 2px 2px 2px rgb(0,0,0,0.2)",
 								textTransform: "capitalize",
-							}}>
+							}}
+						>
 							<option value='SelectSize'>Select Size</option>
 							<option value='small'>Small</option>
 							<option value='medium'>Medium</option>
@@ -1701,7 +1731,8 @@ const CreateNewOrder = () => {
 				<div className='mx-auto text-center mt-5 col-md-8'>
 					<button
 						className='btn btn-success btn-block mb-3 mx-auto text-center'
-						onClick={CreatingOrder}>
+						onClick={CreatingOrder}
+					>
 						Create A New Order
 					</button>
 				</div>
@@ -1742,7 +1773,8 @@ const CreateNewOrder = () => {
 					<Navbar fromPage='CreateNewOrder' pageScrolled={pageScrolled} />
 					<h3
 						className='mx-auto text-center mb-5'
-						style={{ color: "#009ef7", fontWeight: "bold" }}>
+						style={{ color: "#009ef7", fontWeight: "bold" }}
+					>
 						Create A New Order
 					</h3>
 
@@ -1752,7 +1784,8 @@ const CreateNewOrder = () => {
 								<li
 									className='mb-4 mainLi'
 									onClick={() => setClickedLink("ChooseProducts")}
-									style={isActive("ChooseProducts", clickedLink)}>
+									style={isActive("ChooseProducts", clickedLink)}
+								>
 									Choose Required Products{" "}
 									{addedProductsToCart.length > 0 ? (
 										<span
@@ -1763,7 +1796,8 @@ const CreateNewOrder = () => {
 												borderRadius: "5px",
 												marginLeft: "5px",
 												fontSize: "0.75rem",
-											}}>
+											}}
+										>
 											{addedProductsToCart.length}
 										</span>
 									) : null}
@@ -1774,7 +1808,8 @@ const CreateNewOrder = () => {
 										<li
 											className='my-4 mainLi'
 											onClick={() => setClickedLink("ProductFeatures")}
-											style={isActive("ProductFeatures", clickedLink)}>
+											style={isActive("ProductFeatures", clickedLink)}
+										>
 											Adjust Product Features (Colors, Sizes)
 										</li>
 										<hr />
@@ -1784,7 +1819,8 @@ const CreateNewOrder = () => {
 								<li
 									className='my-4 mainLi'
 									onClick={() => setClickedLink("AdjustQuantity")}
-									style={isActive("AdjustQuantity", clickedLink)}>
+									style={isActive("AdjustQuantity", clickedLink)}
+								>
 									Adjust Order Quantity
 									{addedProductsToCart.length > 0 ? (
 										<span
@@ -1795,7 +1831,8 @@ const CreateNewOrder = () => {
 												borderRadius: "5px",
 												marginLeft: "5px",
 												fontSize: "0.75rem",
-											}}>
+											}}
+										>
 											{allAddedQty()}
 										</span>
 									) : null}
@@ -1804,7 +1841,8 @@ const CreateNewOrder = () => {
 								<li
 									className='my-4 mainLi'
 									onClick={() => setClickedLink("CustomerDetails")}
-									style={isActive("CustomerDetails", clickedLink)}>
+									style={isActive("CustomerDetails", clickedLink)}
+								>
 									Add Customer Details / Shipping
 								</li>
 								<hr />
@@ -1812,7 +1850,8 @@ const CreateNewOrder = () => {
 								<li
 									className='my-4 mainLi'
 									onClick={() => setClickedLink("ReviewOrder")}
-									style={isActive("ReviewOrder", clickedLink)}>
+									style={isActive("ReviewOrder", clickedLink)}
+								>
 									Review Your Order
 								</li>
 								<hr />
@@ -1831,7 +1870,8 @@ const CreateNewOrder = () => {
 										onClick={() => {
 											window.scrollTo({ top: 0, behavior: "smooth" });
 											setClickedLink("ProductFeatures");
-										}}>
+										}}
+									>
 										Next: Adjust Product Features{" "}
 									</button>
 								) : (
@@ -1840,7 +1880,8 @@ const CreateNewOrder = () => {
 										onClick={() => {
 											window.scrollTo({ top: 0, behavior: "smooth" });
 											setClickedLink("AdjustQuantity");
-										}}>
+										}}
+									>
 										Next: Adjust Quantity{" "}
 									</button>
 								)}
@@ -1858,7 +1899,8 @@ const CreateNewOrder = () => {
 									onClick={() => {
 										window.scrollTo({ top: 0, behavior: "smooth" });
 										setClickedLink("AdjustQuantity");
-									}}>
+									}}
+								>
 									Next: Adjust Quantity{" "}
 								</button>
 							</div>
@@ -1875,7 +1917,8 @@ const CreateNewOrder = () => {
 									onClick={() => {
 										window.scrollTo({ top: 0, behavior: "smooth" });
 										setClickedLink("CustomerDetails");
-									}}>
+									}}
+								>
 									Next: Fill In Customer Data{" "}
 								</button>
 							</div>
@@ -1891,7 +1934,8 @@ const CreateNewOrder = () => {
 									onClick={() => {
 										window.scrollTo({ top: 0, behavior: "smooth" });
 										setClickedLink("ReviewOrder");
-									}}>
+									}}
+								>
 									Next: Review Your Order{" "}
 								</button>
 							</div>
